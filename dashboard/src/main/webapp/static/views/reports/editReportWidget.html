@@ -185,7 +185,7 @@
         <div class="panel-body header-title">
             <div id="hbreadcrumb" class="pull-right">
             </div>
-            <h2 class="font-bold m-b-xs ng-binding">
+            <h2 class="font-bold m-b-xs ng-binding" translate>
                 Edit Report Widget
             </h2>               
         </div>
@@ -201,11 +201,11 @@
         <div class="row col-md-12">
             <div class="col-lg-4">
                 <div>
-                    <label>Data Source</label>
+                    <label translate>Data Source</label>
                     <div class="input-group m-b">
                         <span class="input-group-addon">
                             <div ng-if="permission.createDataSource === true;"> 
-                                <i title="Data Source" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
+                                <i title="{{'Data Source'| translate}}" ng-click="removeBackDrop()" data-ui-sref="index.dataSource({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
                             </div>                            
                         </span>
                         <select class="form-control m-b" ng-model="widget.dataSourceId" ng-disabled="widget.chartType == 'text'"
@@ -217,11 +217,11 @@
             </div>
             <div class="col-lg-4">
                 <div>
-                    <label>Data Set</label>
+                    <label translate>Data Set</label>
                     <div class="input-group m-b">
                         <span class="input-group-addon">                                
                             <div ng-if="permission.createDataSet === true;">
-                                <i title="Data Set" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
+                                <i title="{{'Data Set'| translate}}" ng-click="removeBackDrop()" data-ui-sref="index.dataSet({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})" class="fa fa-link"></i>
                             </div>
                         </span>
                         <select class="form-control" ng-disabled="widget.chartType == 'text'" ng-model="widget.dataSetId" ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" ng-change="changeUrl(widget.dataSetId, widget)">
@@ -231,7 +231,7 @@
             </div>
             <div class="col-lg-4">
                 <div class="col-md-12">
-                    <div><label>Chart Type</label></div>
+                    <div><label translate>Chart Type</label></div>
                     <a class="btn btn-app" ng-repeat="chartType in chartTypes track by chartType.id" ng-click="previewChart(chartType, widget)"> 
                         <span class="previewChart" title="{{chartType.name}}">
                             <i style="cursor: pointer" class="fa {{chartType.icon}}" ng-class="{'selected': chartType.type == (selectedRow?selectedRow:widget.chartType)}"></i> </span>
@@ -243,7 +243,7 @@
             <div ng-if="editChartType == 'table'">   
                 <div class="form-group col-md-4">
                     <div>
-                        <label>Max Record</label>
+                        <label translate>Max Record</label>
                         <input type="text" ng-model="widget.maxRecord" class="form-control">
                         <!--<input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">-->
                     </div>
@@ -252,12 +252,12 @@
                     <div class="col-md-12">
                         <div class="checkbox col-md-6" >
                             <input type="checkbox" ng-model="widget.tableFooter" ng-checked="widget.tableFooter == 1" />
-                            <label> Table Footer </label>
+                            <label translate>Table Footer</label>
                         </div>
 
                         <div class="checkbox col-md-6" >
                             <input type="checkbox" ng-model="widget.zeroSuppression" ng-checked="widget.zeroSuppression == 1">
-                            <label>Zero Suppression</label>
+                            <label translate>Zero Suppression</label>
                         </div>
                     </div>
                 </div> 
@@ -265,7 +265,7 @@
         </div>
         <div class="row col-md-12">
             <div class="col-md-4">
-                <label>Date Range</label>
+                <label translate>Date Range</label>
                 <div>
                     <div class="dropdown editWidgetDropDown">
                         <button class="drop btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" id="dateRangeName">
@@ -288,46 +288,46 @@
                                 <!--</div>-->    
                             </li>
                             <li ng-click="selectWidgetDuration('Last N Days', widget)">
-                                <a>Last <input type="text"
+                                <a><span translate>Last</span> <input type="text"
                                                ng-model="widget.lastNdays" 
                                                ng-change="selectWidgetDuration('Last N Days', widget)" 
                                                class="form-control" 
                                                ng-model-options="{debounce: 500}"
                                                style="width: 60px; display: contents; height: 25px;"> 
-                                    Days
+                                    <span translate>Days</span>
                                 </a>
                             </li>
                             <li ng-click="selectWidgetDuration('Last N Weeks', widget)">
-                                <a>Last <input type="text" 
+                                <a><span translate>Last</span> <input type="text" 
                                                ng-model="widget.lastNweeks" 
                                                ng-change="selectWidgetDuration('Last N Weeks', widget)"
                                                class="form-control" 
                                                ng-model-options="{debounce: 500}"
                                                style="width: 60px; display: contents; height: 25px;"> 
-                                    Weeks
+                                    <span translate>Weeks</span>
                                 </a>
                             </li>
                             <li ng-click="selectWidgetDuration('Last N Months', widget)">
-                                <a>Last <input type="text" 
+                                <a><span translate>Last</span> <input type="text" 
                                                ng-model="widget.lastNmonths" 
                                                ng-change="selectWidgetDuration('Last N Months', widget)"
                                                class="form-control" 
                                                ng-model-options="{debounce: 500}"
                                                style="width: 60px; display: contents; height: 25px;"> 
-                                    Months
+                                    <span translate>Months</span>
                                 </a>
                             </li>
                             <li ng-click="selectWidgetDuration('Last N Years', widget)">
-                                <a>Last <input type="text" 
+                                <a><span translate>Last</span> <input type="text" 
                                                ng-model="widget.lastNyears" 
                                                ng-change="selectWidgetDuration('Last N Years', widget)"
                                                class="form-control" 
                                                ng-model-options="{debounce: 500}"
                                                style="width: 60px; display: contents; height: 25px;"> 
-                                    Years
+                                    <span translate>Years</span>
                                 </a>
                             </li>
-                            <li><a class="col-md-12" ng-click="selectWidgetDuration('None', widget)">None</a></li>
+                            <li><a class="col-md-12" ng-click="selectWidgetDuration('None', widget)" translate>None</a></li>
                         </ul>
                     </div>
                 </div>
@@ -346,10 +346,10 @@
                         </div>    -->
 
             <div class="col-md-4">
-                <label>Tags</label>
+                <label translate>Tags</label>
                 <div>
                     <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="widget.tagName"  on-remove="removedTags($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
-                        <ui-select-match placeholder="Tags...">{{$item}}</ui-select-match>
+                        <ui-select-match placeholder="{{'Tags' | translate}}">{{$item}}</ui-select-match>
                         <ui-select-choices repeat="tag in tags | filter:$select.search">
                             {{tag}}
                         </ui-select-choices>
@@ -361,7 +361,7 @@
         <div class="nav-tabs-custom col-md-12">
             <ul class="nav nav-tabs">
                 <li ng-class="{ active: isSet(1) }">
-                    <a href ng-click="setTab(1)"> Config
+                    <a href ng-click="setTab(1)" translate> Config
                     </a>
                 </li>
                 <!--                <li ng-class="{ active: isSet(2) }">
@@ -399,7 +399,7 @@
                                     <div class="col-md-6" ng-if="editChartType != 'ticker'">
                                         <div class="form-group">
                                             <div class="col-md-12" ng-if="editChartType != 'pie'">
-                                                <label>Select X-Axis</label>
+                                                <label translate>Select X-Axis</label>
                                                 <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                                         class="form-control" ng-model="xColumn" 
                                                         ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
@@ -407,7 +407,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-12" ng-show="editChartType == 'pie'">
-                                                <label>Select X Axis</label>
+                                                <label translate>Select X Axis</label>
                                                 <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                                         class="form-control" ng-model="selectPieChartXAxis" 
                                                         ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
@@ -415,7 +415,7 @@
                                                 </select>
                                             </div>
                                             <div class="col-md-12" ng-show="editChartType == 'pie'">
-                                                <label>Select Y Axis</label>
+                                                <label translate>Select Y Axis</label>
                                                 <select style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                                         class="form-control" ng-model="selectPieChartYAxis" 
                                                         ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
@@ -426,9 +426,9 @@
 
                                         <div class="form-group" ng-if="editChartType != 'pie'">
                                             <div class="col-md-12">
-                                                <label>Select Y1-Axis</label>
+                                                <label translate>Select Y1-Axis</label>
                                                 <ui-select multiple ng-model="y1Column" theme="bootstrap"  on-select="selectY1Axis(widget, y1Column)" on-remove="removedByY1Column(widget,$item, y1Column)">
-                                                    <ui-select-match placeholder=" y1 Axis...">{{$item.displayName}}</ui-select-match>
+                                                    <ui-select-match placeholder="{{'y1 Axis'|translate}}">{{$item.displayName}}</ui-select-match>
                                                     <ui-select-choices repeat="y1axis in collectionFields  | filter:$select.search">
                                                         {{y1axis.displayName}}
                                                     </ui-select-choices>
@@ -438,9 +438,9 @@
 
                                         <div class="form-group" ng-if="editChartType != 'pie'">
                                             <div class="col-md-12">
-                                                <label>Select Y2-Axis</label>
+                                                <label translate>Select Y2-Axis</label>
                                                 <ui-select multiple ng-model="y2Column" theme="bootstrap" on-select="selectY2Axis(widget, y2Column)" on-remove="removedByY2Column(widget,$item, y2Column)">
-                                                    <ui-select-match placeholder=" y2 Axis...">{{$item.displayName}}</ui-select-match>
+                                                    <ui-select-match placeholder="{{'y2 Axis'|translate}}">{{$item.displayName}}</ui-select-match>
                                                     <ui-select-choices repeat="y2axis in collectionFields  | filter:$select.search">
                                                         {{y2axis.displayName}}
                                                     </ui-select-choices>
@@ -450,10 +450,10 @@
 
                                         <div class="form-group">
                                             <div class="col-md-6">
-                                                <input type="checkbox" ng-model="showAdvanceOptions"> Advance Options
+                                                <input type="checkbox" ng-model="showAdvanceOptions" translate> Advance Options
                                             </div>
                                             <div class="col-md-6" ng-if="editChartType != 'pie'">
-                                                <label>Grid Line</label>
+                                                <label translate>Grid Line</label>
                                                 <select class='form-control' style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='widget.isGridLine' ng-change="setGridLine(widget)">
                                                     <option ng-repeat=' grid in gridLine' value='{{grid.value}}'>{{grid.name}}</option>
                                                 </select> 
@@ -462,16 +462,16 @@
 
                                         <div class="form-group" ng-if="showAdvanceOptions == true">
                                             <div class="col-md-12">
-                                                <label>Format</label>                                 
+                                                <label translate>Format</label>                                 
                                                 <table class="table table-bordered table-responsive">
                                                     <thead>
                                                         <tr>
-                                                            <th>Field Name</th>
-                                                            <th>Display Name</th>
-                                                            <th>Format</th>
-                                                            <th>Sort</th>
-                                                            <th>Field Type</th>
-                                                            <th>Combination Type</th>
+                                                            <th translate>Field Name</th>
+                                                            <th translate>Display Name</th>
+                                                            <th translate>Format</th>
+                                                            <th translate>Sort</th>
+                                                            <th translate>Field Type</th>
+                                                            <th translate>Combination Type</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -511,9 +511,9 @@
                                     <div class="col-md-4" ng-show="editChartType == 'ticker'">
                                         <div class="form-group">
                                             <div class="col-md-12">
-                                                <label>Ticker Items</label>
+                                                <label translate>Ticker Items</label>
                                                 <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap" on-select="ticker(widget, tickerItem)" on-remove="removedByTicker(widget,$item,tickerItem)">
-                                                    <ui-select-match placeholder=" Ticker Value...">{{$item.displayName}}</ui-select-match>
+                                                    <ui-select-match placeholder="{{'Ticker Value' | translate}}">{{$item.displayName}}</ui-select-match>
                                                     <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
                                                         {{currentColumn.displayName}}
                                                     </ui-select-choices>
@@ -522,13 +522,13 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="col-md-12">
-                                                <label>Format</label>
+                                                <label translate>Format</label>
                                                 <table class="table table-bordered">
                                                     <thead>
                                                         <tr>
-                                                            <td>Field Name</td>
-                                                            <td>Display Name</td>
-                                                            <td>Format</td>
+                                                            <td translate>Field Name</td>
+                                                            <td translate>Display Name</td>
+                                                            <td translate>Format</td>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -554,7 +554,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group" ng-if="editChartType != 'ticker'">
                                             <div>
-                                                <label>Max Record</label>
+                                                <label translate>Max Record</label>
                                                 <input type="text" ng-model="widget.maxRecord" class="form-control" ng-change="reloadMaxRecord(widget)">
                                             </div>
                                         </div>
@@ -603,8 +603,8 @@
                                 </div> 
                                 <div class='panel-footer'>
                                     <div>
-                                        <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-                                        <button class='btn btn-info' ng-click='saveReportWidget(widget)'><span class='fa fa-save'></span> Save</button>
+                                        <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> <span translate>Cancel</span></button>
+                                        <button class='btn btn-info' ng-click='saveReportWidget(widget)'><span class='fa fa-save'></span> <span translate>Save</span></button>
                                     </div>
                                 </div>
                             </div>
@@ -682,8 +682,8 @@
                             </div>  
                             <div class='panel-footer'>
                                 <div>
-                                    <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> Cancel</button>
-                                    <button class='btn btn-info' ng-click='saveReportWidget(widget)'><span class='fa fa-save'></span> Save</button>
+                                    <button class='btn btn-default' ng-click='closeWidget()'><span class='fa fa-times'></span> <span translate>Cancel</span></button>
+                                    <button class='btn btn-info' ng-click='saveReportWidget(widget)'><span class='fa fa-save'></span> <span translate>Save</span></button>
                                 </div>
                             </div>
                         </div>
@@ -693,7 +693,7 @@
             <div ng-show="isSet(2)" class="license">
                 <div class="col-lg-12">
                     <div class="alert alert-info">
-                        <strong>Output</strong><br>
+                        <strong translate>Output</strong><br>
                         <span ng-bind-html="output"></span>
                     </div>
                     <query-builder group="filter.group" collection="{{widget.columns}}"></query-builder>

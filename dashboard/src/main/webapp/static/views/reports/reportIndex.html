@@ -3,7 +3,7 @@
         <div class="panel-body header-title">
             <div id="hbreadcrumb" class="pull-right">
             </div>
-            <h2 class="font-bold m-b-xs ng-binding">
+            <h2 class="font-bold m-b-xs ng-binding" translate>
                 Dashboard Reports
             </h2>               
         </div>
@@ -19,7 +19,7 @@
                             </a>
                         </li>-->
             <li ng-class="{active: $state.current.activetab == 'report'}">
-                <a ui-sref="index.report.reports({locationId: locationId, reportId: reportId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
+                <a ui-sref="index.report.reports({locationId: locationId, reportId: reportId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;" translate>
                     Reports
                 </a>
             </li>

@@ -140,30 +140,30 @@
                 </div>
                 <div class="col-md-9">
                     <div class="form-group col-sm-10">
-                        <label class="col-sm-2">Report Title</label>
+                        <label class="col-sm-2" translate>Report Title</label>
                         <div ng-hide="editReport" class="form-group col-sm-10">
                             {{reportTitle}}
                         </div>
                         <div ng-show="editReport" class="form-group col-sm-10">
-                            <input type="text" ng-model="reportTitle" class="form-control" placeholder="Title">
+                            <input type="text" ng-model="reportTitle" class="form-control" placeholder="{{'Title'|translate}}">
                         </div>
                     </div>
                     <div class="form-group col-sm-10">
-                        <label class="col-sm-2">Description</label>
+                        <label class="col-sm-2" translate>Description</label>
                         <div ng-hide="editReport" class="form-group col-sm-10" style="word-break: break-all;">
                             {{description?description:"-"}}
                         </div> 
                         <div ng-show="editReport" class="form-group col-sm-10">
-                            <textarea placeholder="Description" ng-model="description" class="form-control" style="min-height: 100px;"></textarea>
+                            <textarea placeholder="{{'Description'|translate}}" ng-model="description" class="form-control" style="min-height: 100px;"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div ng-hide="editReport" class="pull-right">
-                    <button class="btn btn-block btn-success" ng-click="editReport = true;">Edit</button>
+                    <button class="btn btn-block btn-success" ng-click="editReport = true;"><span translate>Edit</span></button>
                 </div>
                 <div ng-show="editReport" class="pull-right">
-                    <button class="btn btn-info" ng-click="saveReportData(); editReport = false;">Save</button>
+                    <button class="btn btn-info" ng-click="saveReportData(); editReport = false;"><span translate>Save</span></button>
                 </div>
 
             </div>
@@ -177,12 +177,12 @@
                 <div class="panel-heading">
                     <div class="panel-tools">
                         <!--<i class="fa fa-heart" title="Favourites" ng-click="favourites = !favourites;favouritesNew(favourites)" ng-class="{'red' : favourites,'green':!favourites}"></i>-->
-                        <a ng-if="reportWidget.widgetId.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="reportWidget.widgetId.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="reportWidget.widgetId.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="reportWidget.widgetId.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="reportWidget.widgetId.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="reportWidget.widgetId.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
+                        <a ng-if="reportWidget.widgetId.chartType === 'line'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                        <a ng-if="reportWidget.widgetId.chartType === 'bar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                        <a ng-if="reportWidget.widgetId.chartType === 'pie'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
+                        <a ng-if="reportWidget.widgetId.chartType === 'area'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
+                        <a ng-if="reportWidget.widgetId.chartType === 'stackedbar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
+                        <a ng-if="reportWidget.widgetId.chartType === 'table'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
                         <a class="edit" ng-click="editReportWidget(reportWidget);"
 
                            ui-sref="index.editWidget({accountId: accountId, 
@@ -194,8 +194,8 @@
                         </a>
                         <a class="closebox" data-toggle="modal" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
 
-                        <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                        <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
+                        <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="{{'Resize-Left'| translate}}"><i class="fa fa-chevron-left"></i></a>
+                        <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="{{'Resize-Right'| translate}}"><i class="fa fa-chevron-right"></i></a>
                     </div>
                     <span class="{{reportWidget.icon}}"></span> 
                     <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle}}</span>
@@ -264,15 +264,15 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header" style="background-color:#9DD6D7;color:black;">
-                        <strong>Delete</strong>
+                        <strong translate>Delete</strong>
                         <strong><button class="close" data-dismiss="modal">&times;</button></strong>
                     </div>
                     <div class="modal-body">
-                        <span>Want to delete ? </span>
+                        <span translate>Want to delete?</span>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal">Yes</button>
-                        <button class="btn btn-danger btn-xs" data-dismiss="modal">No</button>
+                        <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal"><span translate>Yes</span></button>
+                        <button class="btn btn-danger btn-xs" data-dismiss="modal"><span>No</span></button>
                     </div>
                 </div>
             </div>

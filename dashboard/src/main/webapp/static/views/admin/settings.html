@@ -11,7 +11,7 @@
         <div class="panel-body header-title">
             <div id="hbreadcrumb" class="pull-right">
             </div>
-            <h2 class="font-bold m-b-xs ng-binding">
+            <h2 class="font-bold m-b-xs ng-binding" translate>
                 Settings
             </h2>               
         </div>
@@ -26,40 +26,40 @@
                 <div ng-hide="showSettings">
                     <form class="form-horizontal">
                         <div class="form-group">
-                            <label>Group Name</label>
+                            <label translate>Group Name</label>
                             <div>
-                                <input type="text" class="form-control" ng-model="settings.groupName" placeholder="Group Name">
+                                <input type="text" class="form-control" ng-model="settings.groupName" placeholder="{{'Group Name'|translate}}">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Property Name</label>
+                            <label translate>Property Name</label>
                             <div>
-                                <input type="text" class="form-control" ng-model="settings.propertyName" placeholder="Property Name">
+                                <input type="text" class="form-control" ng-model="settings.propertyName" placeholder="{{'Property Name'|translate}}">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Property Type</label>
+                            <label translate>Property Type</label>
                             <div>
-                                <input type="text" class="form-control" ng-model="settings.propertyType" placeholder="Property Name">
+                                <input type="text" class="form-control" ng-model="settings.propertyType" placeholder="{{'Property Type'| translate}}">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>Property Value</label>
+                            <label translate>Property Value</label>
                             <div>
-                                <input type="text" class="form-control" ng-model="settings.propertyValue" placeholder="Property Name">
+                                <input type="text" class="form-control" ng-model="settings.propertyValue" placeholder="{{'Property Name' | translate}}">
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label>Remarks</label>
+                            <label translate>Remarks</label>
                             <div>
-                                <textarea class="form-control" ng-model="settings.remarks" placeholder="Remark" rows="1" style="min-height: 100px;"></textarea>
+                                <textarea class="form-control" ng-model="settings.remarks" placeholder="{{'Remark'| translate}}" rows="1" style="min-height: 100px;"></textarea>
                             </div>
                         </div>
                         <div class="form-group pull-right">
-                            <button class="btn btn-info" ng-click="saveSettings(settings)">Save</button>
-                            <button class="btn btn-warning" ng-click="clearSettings()">Cancel</button>
+                            <button class="btn btn-info" ng-click="saveSettings(settings)" translate>Save</button>
+                            <button class="btn btn-warning" ng-click="clearSettings()" translate>Cancel</button>
                         </div>
                     </form>
                 </div>
@@ -77,9 +77,9 @@
                                 <li  class="list-unstyled"> 
                                     <table class="table table-striped">
                                         <tr>
-                                            <th>Property Name</th>
-                                            <th>Property Value</th>
-                                            <th>Action</th>
+                                            <th translate>Property Name</th>
+                                            <th translate>Property Value</th>
+                                            <th translate>Action</th>
                                         </tr>
                                         <tbody>
                                             <tr ng-repeat="fileList in fileLists">
@@ -92,70 +92,70 @@
                                                         <div ng-if="fileList.propertyType === 'string'">
                                                             <input class="form-control" type="text" name="string{{$index + 1}}" ng-model="fileList.propertyValue">
                                                             <span style="color:red" ng-show="myForm.string{{$index + 1}}.$dirty && myForm.string{{$index + 1}}.$invalid">
-                                                                <span ng-show="myForm.string{{$index + 1}}.$error.required">String is required.</span>
+                                                                <span ng-show="myForm.string{{$index + 1}}.$error.required" translate>String is required.</span>
                                                             </span>
                                                         </div>
 
                                                         <div ng-if="fileList.propertyType === 'int'">
-                                                            <input class="textbox-n form-control" placeholder="number" name="int" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'number')" onblur="(this.type = 'text')" id="number">
+                                                            <input class="textbox-n form-control" placeholder="{{'number'| translate}}" name="int" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'number')" onblur="(this.type = 'text')" id="number">
                                                             <span style="color:red" ng-show="myForm.int.$dirty && myForm.int.$invalid">
-                                                                <span ng-show="myForm.int.$error.required">Number is required.</span>
+                                                                <span ng-show="myForm.int.$error.required" translate>Number is required.</span>
                                                             </span>
                                                         </div>
 
                                                         <div ng-if="fileList.propertyType === 'email'">
                                                             <input class="form-control" type="email" name="email{{$index + 1}}" ng-model="fileList.propertyValue" required>
                                                             <span style="color:red" ng-show="myForm.email{{$index + 1}}.$dirty && myForm.email{{$index + 1}}.$invalid">
-                                                                <span ng-show="myForm.email{{$index + 1}}.$error.required">Email is required.</span>
+                                                                <span ng-show="myForm.email{{$index + 1}}.$error.required" translate>Email is required.</span>
                                                             </span>
                                                         </div>
 
                                                         <div ng-if="fileList.propertyType === 'date'">
-                                                            <input placeholder="Date" name="date{{$index + 1}}" class="textbox-n form-control" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'date')" onblur="(this.type = 'text')" id="date">
+                                                            <input placeholder="{{'Date'| translate}}" name="date{{$index + 1}}" class="textbox-n form-control" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'date')" onblur="(this.type = 'text')" id="date">
                                                             <span style="color:red" ng-show="myForm.date{{$index + 1}}.$dirty && myForm.date{{$index + 1}}.$invalid">
-                                                                <span ng-show="myForm.date{{$index + 1}}.$error.required">Date is required.</span>
+                                                                <span ng-show="myForm.date{{$index + 1}}.$error.required" translate>Date is required.</span>
                                                             </span>
                                                         </div>
 
                                                         <div ng-if="fileList.propertyType === 'time'">
-                                                            <input placeholder="Time" name="time{{$index + 1}}" class="textbox-n form-control" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'time')" onblur="(this.type = 'text')" id="time">
+                                                            <input placeholder="{{'Time' | translate}}" name="time{{$index + 1}}" class="textbox-n form-control" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'time')" onblur="(this.type = 'text')" id="time">
                                                             <span style="color:red" ng-show="myForm.time{{$index + 1}}.$dirty && myForm.time{{$index + 1}}.$invalid">
-                                                                <span ng-show="myForm.time{{$index + 1}}.$error.required">Time is required.</span>
+                                                                <span ng-show="myForm.time{{$index + 1}}.$error.required" translate>Time is required.</span>
                                                             </span>
                                                         </div>
 
                                                         <div ng-if="fileList.propertyType === 'datetime'">
-                                                            <input placeholder="DateTime" name="datetime{{$index + 1}}" class="textbox-n form-control" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'datetime-local')" onblur="(this.type = 'text')" id="datetime">
+                                                            <input placeholder="{{'DateTime' | translate}}" name="datetime{{$index + 1}}" class="textbox-n form-control" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'datetime-local')" onblur="(this.type = 'text')" id="datetime">
                                                             <span style="color:red" ng-show="myForm.datetime{{$index + 1}}.$dirty && myForm.datetime{{$index + 1}}.$invalid">
-                                                                <span ng-show="myForm.datetime{{$index + 1}}.$error.required">Datetime is required.</span>
+                                                                <span ng-show="myForm.datetime{{$index + 1}}.$error.required" translate>Datetime is required.</span>
                                                             </span>
                                                         </div>
 
                                                         <div ng-if="fileList.propertyType === 'month'">
-                                                            <input placeholder="Month" name="month{{$index + 1}}" class="textbox-n form-control" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'month')" onblur="(this.type = 'text')" id="month">
+                                                            <input placeholder="{{'Month' | translate}}" name="month{{$index + 1}}" class="textbox-n form-control" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'month')" onblur="(this.type = 'text')" id="month">
                                                             <span style="color:red" ng-show="myForm.month{{$index + 1}}.$dirty && myForm.month{{$index + 1}}.$invalid">
-                                                                <span ng-show="myForm.month{{$index + 1}}.$error.required">Month is required.</span>
+                                                                <span ng-show="myForm.month{{$index + 1}}.$error.required" translate>Month is required.</span>
                                                             </span>
                                                         </div>
 
                                                         <div ng-if="fileList.propertyType === 'week'">
-                                                            <input placeholder="Week" name="week{{$index + 1}}" class="textbox-n form-control" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'week')" onblur="(this.type = 'text')" id="week">
+                                                            <input placeholder="{{'Week' |translate}}" name="week{{$index + 1}}" class="textbox-n form-control" ng-model="fileList.propertyValue" type="text" onfocus="(this.type = 'week')" onblur="(this.type = 'text')" id="week">
                                                             <span style="color:red" ng-show="myForm.week{{$index + 1}}.$dirty && myForm.week{{$index + 1}}.$invalid">
-                                                                <span ng-show="myForm.week{{$index + 1}}.$error.required">Week is required.</span>
+                                                                <span ng-show="myForm.week{{$index + 1}}.$error.required" translate>Week is required.</span>
                                                             </span>
                                                         </div>
 
                                                         <div ng-if="fileList.propertyType === 'url'">
                                                             <input class="form-control" type="url" name="url{{$index + 1}}" ng-model="fileList.propertyValue" required>
                                                             <span style="color:red" ng-show="myForm.url{{$index + 1}}.$dirty && myForm.url{{$index + 1}}.$invalid">
-                                                                <span ng-show="myForm.url{{$index + 1}}.$error.required">Url is required.</span>
+                                                                <span ng-show="myForm.url{{$index + 1}}.$error.required" translate>Url is required.</span>
                                                             </span>
                                                         </div>
 
                                                         <div ng-if="fileList.propertyType === 'range'">
                                                             <input class="form-control" type="range" name="range{{$index + 1}}" ng-model="fileList.propertyValue" required>
                                                             <span style="color:red" ng-show="myForm.range{{$index + 1}}.$dirty && myForm.range{{$index + 1}}.$invalid">
-                                                                <span ng-show="myForm.range{{$index + 1}}.$error.required">Range is required.</span>
+                                                                <span ng-show="myForm.range{{$index + 1}}.$error.required" translate>Range is required.</span>
                                                             </span>
                                                         </div>
 

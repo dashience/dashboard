@@ -1,11 +1,47 @@
-app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $stateParams, localStorageService, $state, $location, $rootScope) {
+app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $stateParams, localStorageService, $state, $location, $rootScope,$translate) {
     $scope.permission = localStorageService.get("permission");
     $scope.userName = $cookies.getObject("username");
     $scope.isAdmin = $cookies.getObject("isAdmin");
     $scope.agencyId = $cookies.getObject("agencyId");
+    console.log($scope.agencyId);
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
+    
+    
+     $scope.agencyLanguage = localStorageService.get("agencyLanguage");
+    $scope.tempLan = localStorageService.get('agenLan');
+    console.log($scope.tempLan)
+    $scope.lan = $stateParams.lan ? $stateParams.lan : $scope.agencyLanguage;
+    $stateParams.lan = $scope.lan;
+    changeLanguage($scope.lan);
+
+
+   
+    function changeLanguage(key) {
+        alert(key)
+        if ($scope.lan != 'en') {
+            $scope.showLangBtn = 'en';
+        } else {
+            var getAgencyLan = localStorageService.get('agenLan');
+            $scope.showLangBtn = getAgencyLan;
+        }
+        $translate.use(key);
+    }
+
+    $scope.changeAgencyLang = function (lan) {
+        if (lan == 'en') {
+            localStorageService.set('agencyLanguage', lan);
+            var agencyLan = localStorageService.get('agenLan');
+            $scope.showLangBtn = agencyLan;
+        } else {
+            localStorageService.set('agencyLanguage', lan);
+            $scope.showLangBtn = 'en';
+        }
+        $stateParams.lan = lan;
+        $scope.lan = lan;
+        $scope.loadNewUrl();
+    };
 
     $scope.setParamsProduct = function (product) {
         var setTabId = 0;
@@ -71,6 +107,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             return;
         }
         getAgencyProduct($scope.name.userId.agencyId.id);
+        console.log($scope.name.userId.agencyId.agencyLanguage);
+//        changeAgencyLang($scope.name.userId.agencyId.agencyLanguage);
+        changeLanguage($scope.name.userId.agencyId.agencyLanguage);
     });
 
     $scope.getAccountId = function (account) {
@@ -128,6 +167,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     function getAgencyProduct(agencyId) {
         $http.get('admin/user/agencyProduct/' + agencyId).success(function (response) {
             $scope.products = response;
+            console.log($scope.products);
             if (!response) {
                 return;
             }

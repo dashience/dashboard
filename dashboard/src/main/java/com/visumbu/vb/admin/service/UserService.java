@@ -84,6 +84,7 @@ public class UserService {
         }
         return null;
     }
+    
 
     public LoginUserBean authenicate(LoginUserBean userBean) {
         List<VbUser> users = userDao.findByUserName(userBean.getUsername());

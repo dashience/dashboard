@@ -136,6 +136,8 @@ public class UserController extends BaseController {
         }
         return userBean;
     }
+    
+   
 
     @RequestMapping(value = "getPermission", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody

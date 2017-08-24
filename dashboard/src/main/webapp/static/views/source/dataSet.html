@@ -76,7 +76,7 @@
         <div class="panel-body header-title">
             <div id="hbreadcrumb" class="pull-right">
             </div>
-            <h2 class="font-bold m-b-xs ng-binding">
+            <h2 class="font-bold m-b-xs ng-binding" translate>
                 Data Set
             </h2>               
         </div>
@@ -87,11 +87,11 @@
         <div class="col-sm-12">
             <ul class="nav nav-tabs">
                 <li ng-if="permission.createDataSet === true" ng-class="{ active: isSet(1) }" >
-                    <a href ng-click="setTab(1)"> DataSet
+                    <a href ng-click="setTab(1)"  translate> DataSet
                     </a>
                 </li>
                 <li ng-if="permission.createJoinDataSet === true" ng-class="{ active: isSet(2) }">
-                    <a ng-click="setTab(2)"> Join DataSet
+                    <a ng-click="setTab(2)" translate> Join DataSet
                     </a>
                 </li>
             </ul>
@@ -108,7 +108,7 @@
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-8 data-search">
-                                    <input type="text" class="form-control" ng-model="searchDataSource" placeholder="Search...">
+                                    <input type="text" class="form-control" ng-model="searchDataSource" placeholder="{{'Search'|translate}}">
                                 </div>
                                 <div class="col-md-4 data-search">
                                     <select class="form-control" ng-change="clearDataSet(dataSet)"
@@ -119,9 +119,9 @@
                             <table class="table table-fixed">
                                 <thead>
                                     <tr>
-                                        <th class="col-xs-5">Data Source</th>
-                                        <th class="col-xs-4">Name</th>
-                                        <th class="col-xs-2">Publish</th>
+                                        <th class="col-xs-5" translate>Data Source</th>
+                                        <th class="col-xs-4" translate>Name</th>
+                                        <th class="col-xs-2" translate>Publish</th>
                                         <th class="col-xs-1"></th>
                                     </tr>
                                 </thead>
@@ -146,14 +146,14 @@
                                                         <div class="color-line"></div>
                                                         <div class="modal-header">
                                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                            <h4 class="modal-title">Delete</h4>
+                                                            <h4 class="modal-title" translate>Delete</h4>
                                                             <small class="font-bold"></small>
                                                         </div>
                                                         <div class="modal-body">
                                                             <form class="form-horizontal" role="form">
                                                                 <div class="form-group">
                                                                     <div class="col-sm-12  col-md-12">
-                                                                        <span>Want to delete ?</span>
+                                                                        <span translate>Want to delete?</span>
                                                                     </div>
                                                                 </div>
                                                             </form>
@@ -163,11 +163,11 @@
                                                                 <button type="button" class="btn btn-primary btn-xs "
                                                                         ng-click="deleteDataSet(dataSet, $index)"
                                                                         data-dismiss="modal">
-                                                                    <span class="fa fa-trash"></span> Yes
+                                                                    <span class="fa fa-trash"></span> <span translate>Yes</span>
                                                                 </button>
                                                                 <button type="button" class="btn btn-danger btn-xs "
                                                                         data-dismiss="modal">
-                                                                    <span class="fa fa-times"></span> No
+                                                                    <span class="fa fa-times"></span> <span translate>No</span>
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -186,29 +186,29 @@
                         <div class="panel-body">
                             <form class="col-md-12 form-horizontal">
                                 <div class="form-group">
-                                    <label>Name</label>
-                                    <input class="form-control" type="text" ng-model="dataSet.name" placeholder="Name">
-                                    <label>Data Source</label>
+                                    <label translate>Name</label>
+                                    <input class="form-control" type="text" ng-model="dataSet.name" placeholder="{{'Name'|translate}}">
+                                    <label translate>Data Source</label>
                                     <select class="form-control"
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id"
-                                            placeholder="Data Source"
+                                            placeholder="{{'Data Source'|translate}}"
                                             ng-value="dataSource.connectionString"
                                             ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId); selectXlsSheet(dataSet.dataSourceId); showPreviewChart = false;">
-                                        <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                        <option value="" selected="selected" ng-disabled="true" translate>Choose one</option>
                                     </select>
 
                                     <div ng-show="dataSetFlag">
-                                        <label>Report</label>
+                                        <label translate>Report</label>
                                         <select class="form-control" ng-model="dataSet.reportName" ng-change="clearSeg(dataSet); getTimeSegements(dataSet); refreshDataSet(dataSet)">
-                                            <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                            <option value="" selected="selected" ng-disabled="true" translate>Choose one</option>
                                             <option ng-repeat="reportPerformances in report track by reportPerformances.type" value="{{reportPerformances.type}}">
                                                 {{reportPerformances.name}}</option>
                                         </select>
                                         <!--<div ng-if="dataSet.dataSourceId.dataSourceType != 'autoMobiles'">-->
                                         <label ng-show="timeSegFlag">
-                                            <span ng-if="showLabelName == false;">Time Segments</span>
-                                            <span ng-if="showLabelName == true;">Level</span>
-                                            <span ng-show="semRushFlag">Level</span>
+                                            <span ng-if="showLabelName == false;" translate>Time Segments</span>
+                                            <span ng-if="showLabelName == true;" translate>Level</span>
+                                            <span ng-show="semRushFlag" translate>Level</span>
                                         </label>
                                         <select  ng-show="timeSegFlag" class="form-control" ng-model="dataSet.timeSegment"
                                                  ng-change="refreshDataSet(dataSet)"
@@ -216,15 +216,15 @@
                                         </select> 
                                         <!--</div>-->
                                         <label ng-show="productSegFlag" >
-                                            <span ng-if="showLabelName == false;">Product Segments</span>
-                                            <span ng-if="showLabelName == true;">Segment</span>
+                                            <span ng-if="showLabelName == false;" translate>Product Segments</span>
+                                            <span ng-if="showLabelName == true;" translate>Segment</span>
                                         </label>
                                         <select ng-if="showLabelName == true || showLabelName == false;"  ng-show="productSegFlag" class="form-control" ng-model="dataSet.productSegment"
                                                  ng-change="refreshDataSet(dataSet)"
                                                  ng-options="productSegments.name for productSegments in productSegment track by productSegments.type">
                                         </select>
                                         <label ng-show="semRushFlag" >
-                                            <span>Region</span>
+                                            <span translate>Region</span>
                                         </label>
                                         <select  ng-show="semRushFlag" class="form-control" ng-model="dataSet.productSegment"
                                                  ng-change="refreshDataSet(dataSet)"
@@ -232,14 +232,14 @@
                                         </select>
                                 <div ng-if="dataSet.dataSourceId.dataSourceType != 'semRush'">        
                                         <label ng-if="showLabelName == false;">
-                                            <span ng-show="nwStatusFlag">NetWork Type</span>                                            
+                                            <span ng-show="nwStatusFlag" translate>NetWork Type</span>                                            
                                         </label>
                                         <select ng-if="showLabelName == false;" ng-show="nwStatusFlag" class="form-control"
                                                 ng-change="refreshDataSet(dataSet)" 
                                                 ng-model="dataSet.networkType"
                                                 ng-options="network.name for network in networkTypes track by network.type">
                                         </select>
-                                        <label ng-if="showLabelName == true;">Frequency</label>
+                                        <label ng-if="showLabelName == true;" translate>Frequency</label>
                                         <select ng-if="showLabelName == true;" class="form-control"
                                                 ng-change="refreshDataSet(dataSet)" 
                                                 ng-model="dataSet.networkType"
@@ -256,12 +256,12 @@
                                 </div>
 
                                 <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
-                                    <label>Query</label>
-                                    <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
+                                    <label translate>Query</label>
+                                    <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="{{'Query'|translate}}"></textarea>
                                 </div>
 
                                 <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https' || dataSet.dataSourceId.dataSourceType === 'twitter'">
-                                    <label>File Url</label>
+                                    <label translate>File Url</label>
                                     <div>
                                         <input type="text" class="form-control" ng-model="dataSet.url">
                                     </div>
@@ -275,7 +275,7 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Publish</label>
+                                    <label translate>Publish</label>
                                     <div class="checkbox checkbox-slider--b">
                                         <label class="" for="field{{$index + 1}}">
                                             <input id="field{{$index + 1}}" type="checkbox"                                 
@@ -287,9 +287,9 @@
                                 </div>
 
                                 <div class="form-group pull-right">
-                                    <button class="btn btn-success" ng-click="previewDataSet(dataSet)">Preview</button>
-                                    <button class="btn btn-info" ng-click="saveDataSet()">Save</button>
-                                    <button class="btn btn-warning" ng-click="clearDataSet(dataSet)">Cancel</button>
+                                    <button class="btn btn-success" ng-click="previewDataSet(dataSet)" translate>Preview</button>
+                                    <button class="btn btn-info" ng-click="saveDataSet()" translate>Save</button>
+                                    <button class="btn btn-warning" ng-click="clearDataSet(dataSet)" translate>Cancel</button>
                                 </div>
                             </form>
                         </div>
@@ -299,7 +299,7 @@
                 <div ng-show="showPreviewChart" ng-if="previewData">
                     <div class="col-md-12">
                         <div class="hpanel">
-                            <div class="panel-heading">
+                            <div class="panel-heading" translate>
                                 Preview
                             </div>
                             <div class="">
@@ -324,11 +324,11 @@
                     <div class="hpanel">
                         <div class="panel-heading"></div>
                         <div class="panel-body">
-                            <label class="col-md-2">DataSet Name</label>
+                            <label class="col-md-2" translate>DataSet Name</label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" ng-model="joinDataSetColumn.joinDataSetName">
                             </div>
-                            <label class="col-md-2">JoinType</label>
+                            <label class="col-md-2" translate>JoinType</label>
                             <div class="col-md-4">
                                 <select class="form-control" ng-model="joinDataSetColumn.joinType" ng-change="selectJoinType(joinDataSetColumn)">
                                     <option ng-repeat="joinType in joinTypes" value="{{joinType.value}}">
@@ -342,7 +342,7 @@
                 <div class="col-md-12">
                     <div class="hpanel">                
                         <div class="panel-body">
-                            <label class="col-md-2">DataSet1</label>
+                            <label class="col-md-2" translate>DataSet1</label>
                             <div class="col-md-4">
                                 <select  class="form-control" ng-model="joinDataSetColumn.firstDataSet" ng-change="selectFirstDataSet(joinDataSetColumn)">
                                     <option ng-repeat="joinDataSet in dataSets" value="{{joinDataSet}}">{{joinDataSet.name}}</option>
@@ -350,7 +350,7 @@
                             </div>
 
 
-                            <label class="col-md-2">DataSet2</label>
+                            <label class="col-md-2" translate>DataSet2</label>
                             <div class="col-md-4">
                                 <select  class="form-control" ng-model="joinDataSetColumn.secondDataSet" ng-change="selectSecondDataSet(joinDataSetColumn)">
                                     <option ng-repeat="joinDataSet in dataSets" value="{{joinDataSet}}">{{joinDataSet.name}}</option>
@@ -421,17 +421,17 @@
 
                 <div class="col-md-12" ng-show="hideCondition">
                     <div class="hpanel">
-                        <div class="panel-heading">Condition</div>
+                        <div class="panel-heading" translate>Condition</div>
                         <div class="panel-body">
                             <div class="pull-right"><button class="btn btn-xs btn-success" ng-click="addJoinColumnList()"><i class="fa fa-plus"></i></button></div>
 
                             <table class="table table-bordered table-responsive table-scheduler" >
                                 <thead>
                                     <tr>
-                                        <th>
+                                        <th translate>
                                             DataSet1 Column
                                         </th>
-                                        <th>
+                                        <th translate>
                                             DataSet2 Column
                                         </th>
 
@@ -459,7 +459,7 @@
                                                 </select>
                                             </div>
                                         </td>
-                                        <td ng-if="operationType === 'union'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="dataSetColumn.columnName"></div></td>
+                                        <td ng-if="operationType === 'union'"><div><input type="text" placeholder="{{'columnName'|translate}}" class="form-control" ng-model="dataSetColumn.columnName"></div></td>
                                         <td>
                                             <div><span class="btn btn-default btn-xs" ng-click="removeJoinDataSetColumn($index, joinDataSetList[$index].id)"><i class="fa fa-trash"></i></span></div> 
                                         </td>
@@ -475,8 +475,8 @@
                         <div class="panel-body">
                             <div class="pull-right">
                                 <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
-                                <button class="btn btn-success" ng-disabled="!joinDataSetColumn" ng-click="saveJoinDataSet(joinDataSetColumn)">Save&Show Result</button>
-                                <button class="btn btn-default" ng-click="cancelJoinDataSet()">Cancel</button>
+                                <button class="btn btn-success" ng-disabled="!joinDataSetColumn" ng-click="saveJoinDataSet(joinDataSetColumn)" translate>Save&Show Result</button>
+                                <button class="btn btn-default" ng-click="cancelJoinDataSet()" translate>Cancel</button>
                             </div>
                         </div>
                     </div>
@@ -507,8 +507,8 @@
                             <div>
                                 <div>
                                     <!--                                <button class="btn btn-success" ng-click="previewCombinedDataSet()">Preview</button>-->
-                                    <button class="btn btn-success" ng-click="saveToDataSet(joinDataSetColumn)">Save</button>
-                                    <button class="btn btn-default" ng-click="cancelJoinDataSet()">Cancel</button>
+                                    <button class="btn btn-success" ng-click="saveToDataSet(joinDataSetColumn)" translate>Save</button>
+                                    <button class="btn btn-default" ng-click="cancelJoinDataSet()" translate>Cancel</button>
                                 </div>
                             </div>
                         </div>

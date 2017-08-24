@@ -6,7 +6,6 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,17 +15,13 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.hibernate.annotations.Type;
 
 /**
  *
- * @author duc-dev-04
+ * @author duc-dev-03
  */
 @Entity
 @Table(name = "agency")
@@ -36,25 +31,11 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "Agency.findById", query = "SELECT a FROM Agency a WHERE a.id = :id")
     , @NamedQuery(name = "Agency.findByAgencyName", query = "SELECT a FROM Agency a WHERE a.agencyName = :agencyName")
     , @NamedQuery(name = "Agency.findByDescription", query = "SELECT a FROM Agency a WHERE a.description = :description")
+    , @NamedQuery(name = "Agency.findByEmail", query = "SELECT a FROM Agency a WHERE a.email = :email")
     , @NamedQuery(name = "Agency.findByStatus", query = "SELECT a FROM Agency a WHERE a.status = :status")
-    , @NamedQuery(name = "Agency.findByEmail", query = "SELECT a FROM Agency a WHERE a.email = :email")})
+    , @NamedQuery(name = "Agency.findByAgencyDashiencePath", query = "SELECT a FROM Agency a WHERE a.agencyDashiencePath = :agencyDashiencePath")
+    , @NamedQuery(name = "Agency.findByAgencyLanguage", query = "SELECT a FROM Agency a WHERE a.agencyLanguage = :agencyLanguage")})
 public class Agency implements Serializable {
-
-    @Lob
-    @Column(name = "logo")
-    private byte[] logo;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<DashboardTemplate> dashboardTemplateCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<AgencyProduct> agencyProductCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<Account> accountCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<VbUser> vbUserCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<DataSet> dataSetCollection;
-    @OneToMany(mappedBy = "agencyId")
-    private Collection<DataSource> dataSourceCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -65,16 +46,25 @@ public class Agency implements Serializable {
     @Size(max = 255)
     @Column(name = "agency_name")
     private String agencyName;
-    @Size(max = 4096)
+    @Size(max = 255)
     @Column(name = "description")
     private String description;
-    @Size(max = 45)
-    @Column(name = "status")
-    private String status;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Size(max = 255)
     @Column(name = "email")
     private String email;
+    @Lob
+    @Column(name = "logo")
+    private byte[] logo;
+    @Size(max = 255)
+    @Column(name = "status")
+    private String status;
+    @Size(max = 255)
+    @Column(name = "agency_dashience_path")
+    private String agencyDashiencePath;
+    @Size(max = 45)
+    @Column(name = "agency_language")
+    private String agencyLanguage;
 
     public Agency() {
     }
@@ -107,14 +97,6 @@ public class Agency implements Serializable {
         this.description = description;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -123,6 +105,37 @@ public class Agency implements Serializable {
         this.email = email;
     }
 
+    public byte[] getLogo() {
+        return logo;
+    }
+
+    public void setLogo(byte[] logo) {
+        this.logo = logo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getAgencyDashiencePath() {
+        return agencyDashiencePath;
+    }
+
+    public void setAgencyDashiencePath(String agencyDashiencePath) {
+        this.agencyDashiencePath = agencyDashiencePath;
+    }
+
+    public String getAgencyLanguage() {
+        return agencyLanguage;
+    }
+
+    public void setAgencyLanguage(String agencyLanguage) {
+        this.agencyLanguage = agencyLanguage;
+    }
 
     @Override
     public int hashCode() {
@@ -146,77 +159,7 @@ public class Agency implements Serializable {
 
     @Override
     public String toString() {
-        return "Agency{" + "id=" + id + ", agencyName=" + agencyName + ", description=" + description + ", status=" + status + ", email=" + email + '}';
-    }
-
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<VbUser> getVbUserCollection() {
-        return vbUserCollection;
-    }
-
-    public void setVbUserCollection(Collection<VbUser> vbUserCollection) {
-        this.vbUserCollection = vbUserCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DataSet> getDataSetCollection() {
-        return dataSetCollection;
-    }
-
-    public void setDataSetCollection(Collection<DataSet> dataSetCollection) {
-        this.dataSetCollection = dataSetCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DataSource> getDataSourceCollection() {
-        return dataSourceCollection;
-    }
-
-    public void setDataSourceCollection(Collection<DataSource> dataSourceCollection) {
-        this.dataSourceCollection = dataSourceCollection;
-    }
-
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<DashboardTemplate> getDashboardTemplateCollection() {
-        return dashboardTemplateCollection;
-    }
-
-    public void setDashboardTemplateCollection(Collection<DashboardTemplate> dashboardTemplateCollection) {
-        this.dashboardTemplateCollection = dashboardTemplateCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<AgencyProduct> getAgencyProductCollection() {
-        return agencyProductCollection;
-    }
-
-    public void setAgencyProductCollection(Collection<AgencyProduct> agencyProductCollection) {
-        this.agencyProductCollection = agencyProductCollection;
-    }
-
-    @XmlTransient
-    @JsonIgnore
-    public Collection<Account> getAccountCollection() {
-        return accountCollection;
-    }
-
-    public void setAccountCollection(Collection<Account> accountCollection) {
-        this.accountCollection = accountCollection;
-    }
-
-    public byte[] getLogo() {
-        return logo;
-    }
-
-    public void setLogo(byte[] logo) {
-        this.logo = logo;
+        return "com.visumbu.vb.model.Agency[ id=" + id + " ]";
     }
     
 }

@@ -66,7 +66,9 @@ public class UserDao extends BaseDao {
 //        query.setParameter("userName", username);
         return query.list();
     }
-
+    
+    
+   
     public List<VbUser> findByUserName(String username) {
         
         Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId is null and userName = :userName");//.getNamedQuery("VbUser.findByUserName");

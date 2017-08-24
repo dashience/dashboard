@@ -35,7 +35,7 @@
                         <form ng-submit="submitForm()" name="adminForm">
                             <input type="text" placeholder="Username" title="Username" value="" name="username" id="username" class="logo" ng-model="login.username">
 
-                            <input type="password" title="Please enter your password" placeholder="Password" value="" name="password" id="password" class="key" ng-model="login.password">
+                            <input type="password" title="Password" placeholder="Password" value="" name="password" id="password" class="key" ng-model="login.password">
 
 
                             <input type="submit" value="Login" ng-click="authenticate(login)">
@@ -57,6 +57,7 @@
         <script src="static/lib/js/bootstrap.min.js"></script>
         <script src="static/lib/js/angular/angular.min.js"></script>
         <script src="static/lib/js/angular/angular-cookie.min.js"></script>
+        
         <script src="static/lib/js/angular/angular-local-storage.min.js"></script>
         <script src="static/scripts/config/login.js"></script>
     </body>

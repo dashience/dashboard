@@ -1,6 +1,7 @@
 var app = angular.module("loginApp", ['ngCookies', 'LocalStorageModule']);
 app.controller("LoginController", function ($scope, $http, $window, $cookies, localStorageService, $timeout) {
     $scope.showErrorMessage = false;
+        
     $scope.authenticate = function (login) {
         if (!$scope.adminForm.$valid) {
             return;
@@ -22,6 +23,8 @@ app.controller("LoginController", function ($scope, $http, $window, $cookies, lo
         });
         $scope.login = "";
     };
+    
+ 
 });
 
 
