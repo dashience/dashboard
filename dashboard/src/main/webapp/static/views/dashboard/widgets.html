@@ -264,7 +264,7 @@
         <div ng-if="widget.chartType == 'ticker'">
             <div class="col-sm-{{widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
-                    <div class="panel-tools">
+                    <div class="panel-tools ticker-icon">
                         <a title="Favorites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
                         <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                         <a class="refresh" ng-click="directiveTickerFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
@@ -278,6 +278,9 @@
                            data-keyboard="false"><i class="fa fa-pencil"></i>
                         </a>
                         <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
+                        <a ng-if="permission.downloadReport === true;" ng-click="downloadXLSByWidget(widget)" title="Download XLS">
+                             <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                        </a>
                         <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
                     </div>

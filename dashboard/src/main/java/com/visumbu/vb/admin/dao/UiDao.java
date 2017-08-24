@@ -942,8 +942,8 @@ public class UiDao extends BaseDao {
         query.setParameter("reportName", dataSetReportName);
         List<DataSourceSetting> list = query.list();
         return list;
-}
-    
+    }
+
     public List<DataSourceFilter> getDataSourceFilters(String dataSource, String dataSetReportName) {
         String queryStr = "SELECT d FROM DataSourceFilter d where d.dataSourceName = :dataSourceName and d.reportName = :reportName";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -959,11 +959,27 @@ public class UiDao extends BaseDao {
         query.setParameter("dataSourceName", dataSourceName);
         return query.list();
     }
-    
+
     public List getDataSetReportSegments(String dataSourceName, String reportName, String segmentName) {
         String queryStr = "SELECT distinct d. FROM DataSourceSetting d where d.dataSourceName = :dataSourceName";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSourceName", dataSourceName);
         return query.list();
+    }
+
+    public void deleteDerivedColumn(String fieldName, Integer widgetId) {
+        String queryStr = "DELETE from DataSetColumns d where d.fieldName = :fieldName and d.widgetId.id = :widgetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("fieldName", fieldName);
+        query.setParameter("widgetId", widgetId);
+        query.executeUpdate();
+    }
+
+    public void deleteWidgetColumn(String fieldName, Integer widgetId) {
+        String queryStr = "DELETE from WidgetColumn w where w.fieldName = :fieldName and w.widgetId.id = :widgetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("fieldName", fieldName);
+        query.setParameter("widgetId", widgetId);
+        query.executeUpdate();
     }
 }

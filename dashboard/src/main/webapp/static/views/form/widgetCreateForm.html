@@ -64,7 +64,7 @@
         width: 10%;
         color: #fff;
     }
-    .form-group {
+    .form-group .builderAnd{
         margin-bottom: 5px;
     }
     label {
@@ -319,8 +319,16 @@
     }
 
     .builder {
-        background : #ccc6;
+        background: #a3c185;
+        color: #fff;
+        font-weight: bold;
     }
+
+    .btn.btn-xs.btn-default.builderAnd.builder.disabled {
+        color: #8a8080;
+        font-weight: bold;
+    }
+
     .add-widget-title {
         padding: 5px 0px 0px 20px;
         font-size: 24px;
@@ -340,11 +348,18 @@
     }
     .editor{
         overflow: auto;
-        height: 391px;
-        width: 520px;
-        padding-left: 27px;
+        width: 97%;
+        padding-right: 5px !important;
+        padding-left: 22px !important;
+        background: none !important;
     }
-
+    .none .input-group-btn {
+        width: 0px;
+    }
+    .btn-default.none-btn.none-selected {
+        background-color: #3d464d;
+        color: #fff;
+    }
 </style>
 <div class="container">
     <div class="row main col-md-6">
@@ -524,6 +539,9 @@
                                 <span class="pull-right" ng-if="collectionField.expression">
                                     <a class="btn btn-default btn-xs" ng-click="editDerivedColumn(collectionField, widgetObj)">
                                         <i class="fa fa-pencil"></i>
+                                    </a>
+                                    <a class="btn btn-default btn-xs" ng-click="removeDerivedColumn(collectionField, widgetObj)">
+                                        <i class="fa fa-trash"></i>
                                     </a>
                                 </span>
                             </div>
@@ -763,13 +781,25 @@
                                     <button class="btn btn-default" type="button" translate>
                                         Custom</button>
                                 </span>
-                                <a class="form-control pull-right custom-daterange-box" custom-Widget-Date-Range ng-click="selectDateRangeName(widgetObj)" widget-Table-Date-Range="{{widgetObj}}" id="widgetDateRange">
+                                <a class="form-control pull-right custom-daterange-box" 
+                                   custom-Widget-Date-Range 
+                                   ng-click="selectDateRangeName(widgetObj)" 
+                                   widget-Table-Date-Range="{{widgetObj}}" 
+                                   id="widgetDateRange">
                                     <span class="date-border" 
                                           customStartDate="{{widgetObj.customStartDate}}" 
                                           customEndDate="{{widgetObj.customEndDate}}">
                                         {{widgetObj.customStartDate ? widgetObj.customStartDate : widgetStartDate| date: "MM/dd/yyyy"}} - {{widgetObj.customEndDate ? widgetObj.customEndDate : widgetEndDate| date: "MM/dd/yyyy"}}
                                     </span>
                                 </a> 
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group none">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default none-btn" ng-class="{'none-selected':(widgetObj.dateRangeName == 'None')}" type="button" ng-click="selectWidgetDuration('None', widgetObj);directiveDateFn()">
+                                        None</button>
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -896,7 +926,7 @@
                     </div>
                 </div>                
                 <div class="row" ng-if="chartTypeName === 'text'">
-                    <div class="panel-body editor" style="overflow: auto;height:350px;">
+                    <div class="panel-body editor">
                         <div>
                             <textarea ck-Editor ng-model="widgetObj.content" rows="10" cols="99"></textarea>
                         </div>  

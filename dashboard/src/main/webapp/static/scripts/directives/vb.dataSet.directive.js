@@ -370,22 +370,47 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
             }
             scope.format = function (column, value) {
+//                if (column.fieldType === "date") {
+//                    return value;
+//                }
+//                if (!value) {
+//                    return "-";
+//                }
+//                
+//                if (column.displayFormat) {
+//                    if (Number.isNaN(value)) {
+//                        console.log("NAN");
+//                        return "-";
+//                    }
+//                    if (column.displayFormat.indexOf("%") > -1) {
+//                        return d3.format(column.displayFormat)(value / 100);
+//                    }
+//                    return d3.format(column.displayFormat)(value);
+//                }
+//                return value;
+//                }
+                var strValue = value;
+                if (strValue.toString().indexOf(',') !== -1) {
+                    value = value.replace(/\,/g, '');
+                }
                 if (column.fieldType === "date") {
                     return value;
                 }
-                if (!value) {
-                    return "-";
+                if (column.fieldType === "string") {
+                    return value;
                 }
-                if (column.displayFormat) {
-                    if (Number.isNaN(value)) {
-                        return "-";
-                    }
+                if (column.displayFormat == null) {
+                    return value;
+                }
+                if (column && column.displayFormat) {
                     if (column.displayFormat.indexOf("%") > -1) {
                         return d3.format(column.displayFormat)(value / 100);
+                    } else if (column.displayFormat == 'H:M:S') {
+                        return formatBySecond(parseInt(value))
+                    } else {
+                        return d3.format(column.displayFormat)(value);
                     }
-                    return d3.format(column.displayFormat)(value);
                 }
-                return value;
             };
 //            var setTimeSegment, setProductSegment;
 //            if (dataSourcePath.timeSegment) {
@@ -450,13 +475,18 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         '&url=' + dataSourcePath.url +
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                     scope.dataSetColumns = [];
+                    if (!response) {
+                        scope.ajaxLoadingCompleted = true;
+                        scope.loadingTable = false;
+                        scope.showMessage = true;
+                        return;
+                    }
                     if (dataSourcePath.id == null) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
                         scope.dataSetColumns = response.columnDefs;
                         scope.getDataSetColumns({dataSetColumn: scope.dataSetColumns});
                     }
-                    console.log(response);
                     scope.tableColumns = response.columnDefs;
                     if (response.data == null || response.data.length == 0) {
                         scope.ajaxLoadingCompleted = true;
