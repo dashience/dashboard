@@ -1153,10 +1153,11 @@ public class ProxyController {
         // System.out.println("Pinterest Account ID -->" + accountIdStr);
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
-//        // System.out.println(account);
+        System.out.println(account);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        System.out.println("account Property ---> "+accountProperty);
         String accessToken = getAccountId(accountProperty, "pinterestAccessToken");
-//        
+        System.out.println("access Token  ---> "+accessToken);
 
         //get the acces token from settings
 //        List<Settings> pinterestAccessToken = settingsService.getProperty("pinterestAccessToken");
