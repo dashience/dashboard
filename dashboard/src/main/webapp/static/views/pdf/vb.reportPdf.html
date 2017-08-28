@@ -77,7 +77,13 @@
         margin-bottom: 10px;
         overflow: hidden;
     }
-
+    .sub-description{
+        border: 1px solid #eaeaea;
+        padding: 5px 0px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        overflow: hidden;
+    }
     .h-150 {
         min-height: 110px;
     }
@@ -125,6 +131,7 @@
         page-break-inside:avoid;
     }
     .description{
+        font-size: 16px;
         clear: both;
     }
     @media print  {
@@ -136,7 +143,8 @@
             color: #fff !important; 
         }
         .description{
-            color: #fff !important; 
+            color: #000 !important; 
+            font-size: 16px !important;
         }
         .pdf-subtitle-color{     
             background: transparent !important;
@@ -161,14 +169,14 @@
         <div class="header-pdf">        
             <img src="static/img/logos/dashience-logo.jpg" width="80"> &nbsp;
             <img src="{{userAccountLogo}}" width="100"> 
-            <!--            <img class="pull-right user-select-logo" src="{{pdfLogo}}" width="100"> -->
+            <!--<img class="pull-right user-select-logo" src="{{pdfLogo}}" width="100">--> 
         </div>
         <div class="sub-header">
             <div class="col-md-12">
 
                 <div class="section-block pull-left">
                     <h4 class="pdf-subtitle-color">{{reportPdfStartDate}} - {{reportPdfEndDate}}</h4>
-                    <h2><strong>{{userAccountName}}</strong></h2>
+                    <h2><strong>{{userAccountName}}</strong><strong ng-if="reportPdfTitle != null && reportPdfTitle.length != 0">{{" - " + reportPdfTitle}}</strong></h2>
                 </div>
 
                 <div class="pull-right">
@@ -182,18 +190,15 @@
             </div>
         </div>
 
-        <div class="head-title">
-            <!--            <h2 class="pdf-title-color">{{reportPdfTitle}}</h2>-->
-            <img class="pull-left col-md-1" src="{{pdfLogo}}" width="100"> 
-            <div class="pull-left col-md-10">
-                <h2 class="pdf-title-color"><span>{{reportPdfTitle}}</span></h2><br><p class="description">{{reportPdfDescription}}</p>                 
+        <div class="sub-description">
+            <div class="pull-left col-md-12">
+                <p class="description">{{reportPdfDescription}}</p>                 
             </div>
         </div> 
 
         <div class="content">
             <div class="row">                
                 <div class="pageBreak" ng-repeat="reportWidget in reportWidgets">
-
                     <div class="hpanel col-fixed-{{reportWidget.widgetId.width}} pageBreak" ng-if="reportWidget.widgetId.chartType == 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)" 
                              widget-Obj="{{reportWidget.widgetId}}"
