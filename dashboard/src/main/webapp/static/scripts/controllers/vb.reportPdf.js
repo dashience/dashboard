@@ -12,7 +12,6 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
         $translate.use(key);
     }
     
-    
     $http.get('admin/ui/getAccount/'+$stateParams.accountId).success(function (response) {
         console.log(response)
         response.forEach(function(val, key){
@@ -22,7 +21,9 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
     });
 
     $http.get("admin/report/" + $stateParams.reportId).success(function (response) {
+        console.log(response);
         $scope.reportPdfTitle = response.reportTitle;
+        $scope.reportPdfDescription = response.description
         $scope.pdfLogo = response.logo;        
     });
     

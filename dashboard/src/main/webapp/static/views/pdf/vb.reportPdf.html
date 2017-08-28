@@ -112,9 +112,11 @@
     .head-title {
         background: #555 !important;
         color: #fff;
-        min-height: 40px;
+        overflow: hidden;
         padding: 10px 10px;
         border-radius: 2px;
+        margin-bottom: 10px;
+        position: relative
     }
     .pageBreak{   
         page-break-inside:avoid;
@@ -122,15 +124,18 @@
     p{   
         page-break-inside:avoid;
     }
-    .user-select-logo{
-        margin-top: 20px;
+    .description{
+        clear: both;
     }
     @media print  {
         .pdfButton {
             display:none !important;
         }
-        .pdf-title-color{
+        .pdf-title-color span{
             background: transparent !important;
+            color: #fff !important; 
+        }
+        .description{
             color: #fff !important; 
         }
         .pdf-subtitle-color{     
@@ -156,14 +161,8 @@
         <div class="header-pdf">        
             <img src="static/img/logos/dashience-logo.jpg" width="80"> &nbsp;
             <img src="{{userAccountLogo}}" width="100"> 
-            <img class="pull-right user-select-logo" src="{{pdfLogo}}" width="100"> 
+            <!--            <img class="pull-right user-select-logo" src="{{pdfLogo}}" width="100"> -->
         </div>
-        <div class="head-title">
-            <h2 class="pdf-title-color">{{reportPdfTitle}}</h2>
-            <div class="pdfButton pull-right">
-                <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button>
-            </div>
-        </div>    
         <div class="sub-header">
             <div class="col-md-12">
 
@@ -174,11 +173,22 @@
 
                 <div class="pull-right">
                     <div class="section-right-block">                    
-                        <p class="pdf-subtitle-color"><span translate>Email</span>: info@dashience.com<br><span translate>Phone</span>: 773-446-7565</p>                    
+                        <p class="pdf-subtitle-color"><span translate>Email</span>: info@dashience.com<br><span translate>Phone</span>: 773-446-7565</p><br>
+                        <div class="pdfButton">
+                            <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button><br>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="head-title">
+            <!--            <h2 class="pdf-title-color">{{reportPdfTitle}}</h2>-->
+            <img class="pull-left col-md-1" src="{{pdfLogo}}" width="100"> 
+            <div class="pull-left col-md-10">
+                <h2 class="pdf-title-color"><span>{{reportPdfTitle}}</span></h2><br><p class="description">{{reportPdfDescription}}</p>                 
+            </div>
+        </div> 
 
         <div class="content">
             <div class="row">                
