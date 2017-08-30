@@ -18,6 +18,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.hibernate.annotations.Type;
 
 /**
  *
@@ -53,9 +54,9 @@ public class Agency implements Serializable {
     @Size(max = 255)
     @Column(name = "email")
     private String email;
-    @Lob
+   @Type(type = "org.hibernate.type.StringClobType")
     @Column(name = "logo")
-    private byte[] logo;
+    private String logo;
     @Size(max = 255)
     @Column(name = "status")
     private String status;
@@ -104,15 +105,14 @@ public class Agency implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
-
-    public byte[] getLogo() {
+    public String getLogo() {
         return logo;
     }
 
-    public void setLogo(byte[] logo) {
+    public void setLogo(String logo) {
         this.logo = logo;
     }
-
+    
     public String getStatus() {
         return status;
     }

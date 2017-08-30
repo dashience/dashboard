@@ -10,16 +10,19 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     
     
      $scope.agencyLanguage = localStorageService.get("agencyLanguage");
-    $scope.tempLan = localStorageService.get('agenLan');
-    console.log($scope.tempLan)
+     console.log($scope.agencyLanguage)
+//    $scope.tempLan = localStorageService.get('agenLan');
+//    console.log($scope.tempLan);
     $scope.lan = $stateParams.lan ? $stateParams.lan : $scope.agencyLanguage;
+    console.log($scope.lan);
     $stateParams.lan = $scope.lan;
+    console.log($stateParams.lan);
     changeLanguage($scope.lan);
 
 
    
     function changeLanguage(key) {
-        alert(key)
+//        alert(key)
         if ($scope.lan != 'en') {
             $scope.showLangBtn = 'en';
         } else {

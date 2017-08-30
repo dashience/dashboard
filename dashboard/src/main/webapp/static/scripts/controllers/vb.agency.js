@@ -1,4 +1,4 @@
-app.controller('AgencyController', function ($scope, $http) {
+app.controller('AgencyController', function ($scope, $http,$translate,$stateParams) {
 
     // currency-format
 //   $scope.getCurrencyDataFromServer = function() {
@@ -23,6 +23,23 @@ app.controller('AgencyController', function ($scope, $http) {
 //                alert("error!");
             });
 //    }; 
+
+
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");    
+    console.log($scope.agencyLanguage);
+    var lan = $scope.agencyLanguage;
+    console.log(lan);
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+
+     $scope.languages = [
+        {lanName: "English", lanType: 'en'},
+        {lanName: "Chinesh", lanType: 'cn'},
+        {lanName: "Spanish", lanType: "sp"}
+    ];
 
 
     //currency-format
@@ -59,6 +76,7 @@ app.controller('AgencyController', function ($scope, $http) {
     function getAgency() {
         $http.get('admin/user/agency').success(function (response) {
             $scope.agencies = response;
+            console.log($scope.agencies);
         });
     }
     getAgency();
@@ -92,17 +110,22 @@ app.controller('AgencyController', function ($scope, $http) {
     };
 
     $scope.saveAgency = function (agency) {
+        console.log(agency);
         if ($scope.agency.logo === "static/img/auto/auto-mobiles-logo.png") {
             $scope.agency.logo = "";
         }
         var data = {
-            id: agency.id,
+            id: agency.id ? agency.id :'',
             agencyName: agency.agencyName,
             email: agency.email,
             description: agency.description,
             status: agency.status,
+            agencyLanguage: agency.agencyLanguage ? agency.agencyLanguage.lanType : null,
             logo: $scope.agency.logo
         };
+        
+        console.log(data);
+        
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
             $scope.agencyById = data;
             console.log(response);
@@ -135,6 +158,7 @@ app.controller('AgencyController', function ($scope, $http) {
             agencyName: agency.agencyName,
             email: agency.email,
             description: agency.description,
+            agencyLanguage: agency.agencyLanguage,
             status: agency.status,
             logo: agency.logo ? agency.logo : "static/img/auto/auto-mobiles-logo.png"
         };

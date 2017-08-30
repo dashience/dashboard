@@ -116,7 +116,7 @@
 
 <div class="pull-right-container pull-right">
     <div class="btn-group"> 
-        <a ui-sref="index.report.reports({accountId: accountId, accountName: accountName, reportId: reportId, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> Back</a>
+        <a ui-sref="index.report.reports({accountId: accountId, accountName: accountName, reportId: reportId, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> <span translate>Back</span></a>
     </div>
     <div class="btn-group"> 
         <a style="cursor: pointer;" ng-href="#viewReportPdf/{{accountId}}/{{reportId}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 

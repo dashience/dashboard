@@ -115,6 +115,8 @@
                                             ng-options="dataSource.name for dataSource in searchDataSourceItems track by dataSource.id"
                                             ng-model="selectedItems">
                                     </select>
+                                    
+                                     
                                 </div></div>
                             <table class="table table-fixed">
                                 <thead>
@@ -324,7 +326,7 @@
                     <div class="hpanel">
                         <div class="panel-heading"></div>
                         <div class="panel-body">
-                            <label class="col-md-2" translate>DataSet Name</label>
+                            <label class="col-md-2" translate>Data Set Name</label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" ng-model="joinDataSetColumn.joinDataSetName">
                             </div>
