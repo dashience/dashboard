@@ -194,7 +194,7 @@
                                     <div>
                                         <div>
                                             <button class="drop btn btn-default" type="button">
-                                                <span id="customDateRangeName">{{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}</span>
+                                                <span id="customDateRangeName">{{scheduler.dateRangeName?scheduler.dateRangeName:("Select Date Duration"| translate)}}</span>
                                                 <span class="caret"></span></button>
                                             <ul class="dropdown-menu scheduler-list-style">
                                                 <li ng-click="selectDuration('Custom', scheduler)" >

@@ -236,5 +236,7 @@
     "Combination Type":"组合类型",
     "Save Color":"保存颜色",
     "Color Picker":"选色器",
-    "frequency":"频率"
+    "Frequency":"频率",
+    "Select Date Duration":"選擇日期持續時間",
+    "API Key":"API密鑰"
 }

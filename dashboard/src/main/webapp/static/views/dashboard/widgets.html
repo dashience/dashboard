@@ -619,13 +619,13 @@
                                     <div> 
                                         <a title="{{'Favorites' | translate}}" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
                                         <a ng-show="showCreateReport" title="{{'Report' | translate}}" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
-                                        <a ng-if="widget.chartType === 'line'" title="Refresh" class="{{'refresh'| translate}}" ng-click="reloadDirLineFn()"><i class="fa fa-repeat"></i></a>
-                                        <a ng-if="widget.chartType === 'bar'" title="Refresh" class="{{'refresh'| translate}}" ng-click="reloadDirBarFn()"><i class="fa fa-repeat"></i></a>
-                                        <a ng-if="widget.chartType === 'pie'" title="Refresh" class="{{'refresh'| translate}}" ng-click="reloadDirPieFn()"><i class="fa fa-repeat"></i></a>
-                                        <a ng-if="widget.chartType === 'area'" title="Refresh" class="{{'refresh'| translate}}" ng-click="reloadDirAreaFn()"><i class="fa fa-repeat"></i></a>
-                                        <a ng-if="widget.chartType === 'stackedbar'" title="Refresh" class="{{'refresh'| translate}}" ng-click="reloadDirStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
-                                        <a ng-if="widget.chartType === 'table'" title="Refresh" class="{{'refresh'| translate}}" ng-click="reloadDirTableFn()"><i class="fa fa-repeat"></i></a>
-                                        <a ng-if="widget.chartType === 'scatter'" title="Refresh" class="{{'refresh'| translate}}" ng-click="reloadDirScatterFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'line'" title="{{'Refresh' | translate}}" class="refresh" ng-click="reloadDirLineFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'bar'" title="{{'Refresh' | translate}}" class="refresh" ng-click="reloadDirBarFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'pie'" title="{{'Refresh' | translate}}" class="refresh" ng-click="reloadDirPieFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'area'" title="{{'Refresh' | translate}}" class="refresh" ng-click="reloadDirAreaFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'stackedbar'" title="{{'Refresh' | translate}}" class="refresh" ng-click="reloadDirStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'table'" title="{{'Refresh' | translate}}" class="refresh" ng-click="reloadDirTableFn()"><i class="fa fa-repeat"></i></a>
+                                        <a ng-if="widget.chartType === 'scatter'" title="{{'Refresh' | translate}}" class="refresh" ng-click="reloadDirScatterFn()"><i class="fa fa-repeat"></i></a>
                                         <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
                                         <a ng-if ="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="{{'Duplicate Widget' | translate}}"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
                                         <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" ng-click='setWidgetItems(widget)' class="edit" title="{{'Edit'| translate}}" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
@@ -825,7 +825,7 @@
                                 </div>
                             </div>
                             <div class="report-footer-btn">
-                                <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
+                                <button class="btn btn-success pull-left" ng-click="goReport()"><span translate>Goto</span> <span translate>Report</span></button>
                                 <button class="btn btn-success" ng-click="addWidgetToReport(widget); showReportList[widget.id] = false;" style="float: right" translate>Add</button>
                             </div>
                         </div>

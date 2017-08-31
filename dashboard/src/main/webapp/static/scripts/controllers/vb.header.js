@@ -7,10 +7,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.fullName = $cookies.getObject("fullname");
     $scope.productId = $stateParams.productId;
     $scope.selectTabID = $state;
-    
+//    alert('header '+localStorageService.get('agencyLanguage'));
     
      $scope.agencyLanguage = localStorageService.get("agencyLanguage");
-     console.log($scope.agencyLanguage)
+     console.log($scope.agencyLanguage);
 //    $scope.tempLan = localStorageService.get('agenLan');
 //    console.log($scope.tempLan);
     $scope.lan = $stateParams.lan ? $stateParams.lan : $scope.agencyLanguage;
@@ -109,10 +109,14 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $scope.loadNewUrl();
             return;
         }
+        var agencyLanguage=$scope.name.userId.agencyId.agencyLanguage;
         getAgencyProduct($scope.name.userId.agencyId.id);
+        
+        localStorageService.set('agencyLanguage',agencyLanguage);
         console.log($scope.name.userId.agencyId.agencyLanguage);
 //        changeAgencyLang($scope.name.userId.agencyId.agencyLanguage);
-        changeLanguage($scope.name.userId.agencyId.agencyLanguage);
+        changeLanguage(agencyLanguage);
+        
     });
 
     $scope.getAccountId = function (account) {

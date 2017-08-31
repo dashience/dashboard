@@ -376,7 +376,7 @@
                             <label class="col-sm-3 control-label" translate>ChartColor</label>
                             <div class="col-md-9">
                                 <div class="input-group colorText">
-                                    <input class="form-control chartColor" type="text" ng-model="chartColor.optionValue" placeholder="color with , seperate">
+                                    <input class="form-control chartColor" type="text" ng-model="chartColor.optionValue" placeholder="{{'color with , seperate' | translate}}">
                                     <a class="colorpicker" title="{{'Color Picker' | translate}}" ui-colorpicker ng-model="color" ng-change="selectChartColor(color,chartColor)"></a>
                                     <a class="input-group-addon btn-default btn-sm" title="Save Color" ng-click="saveChartColor(chartColor)"><i class="fa fa-save"></i></a>
                                 </div>

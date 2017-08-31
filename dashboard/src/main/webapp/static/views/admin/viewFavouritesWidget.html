@@ -285,8 +285,8 @@
                                     <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
                                         <p>
                                             {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
-                                            <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  More</a>
-                                            <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> Less </a>
+                                            <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true">  <span translate>More</span></a>
+                                            <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false"> <span translate>Less</span> </a>
                                         </p>
                                     </li>
                                 </ul>
@@ -316,7 +316,7 @@
                         </div>
                     </div>
                     <div class="report-footer-btn">
-                        <button class="btn btn-success pull-left" ng-click="goReport()"><span translate>Goto</span> <span>Report</span></button>
+                        <button class="btn btn-success pull-left" ng-click="goReport()"><span translate>Goto</span> <span translate>Report</span></button>
                         <button class="btn btn-success" ng-click="addWidgetToReport(favouritesWidget); showReportList[favouritesWidget.widgetId.id] = false;" style="float: right" translate>Add</button>
                     </div>
                 </div>

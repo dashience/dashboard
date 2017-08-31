@@ -1,7 +1,31 @@
-app.controller('ReportPdfController', function ($stateParams, $http, $scope, $filter) {
+app.controller('ReportPdfController', function ($stateParams, $http, $scope, $filter,localStorageService,$translate) {
 
     $scope.reportPdfStartDate = $filter('date')(new Date($stateParams.startDate), 'MMM dd yyyy');//$filter(new Date($stateParams.startDate, 'MM/dd/yyyy'));
     $scope.reportPdfEndDate = $filter('date')(new Date($stateParams.endDate), 'MMM dd yyyy'); //$filter(new Date($stateParams.endDate, 'MM/dd/yyyy'));
+
+
+     console.log(localStorageService.get('lan'));
+   
+    $scope.agencyLanguage=localStorageService.get('agencyLanguage');
+    
+    $scope.lan = $stateParams.lan ? $stateParams.lan : $scope.agencyLanguage;
+    console.log($scope.lan);
+    $stateParams.lan = $scope.lan;
+    console.log($stateParams.lan);
+    changeLanguage($scope.lan);
+
+
+   
+    function changeLanguage(key) {
+//        alert(key)
+        if ($scope.lan != 'en') {
+            $scope.showLangBtn = 'en';
+        } else {
+            var getAgencyLan = localStorageService.get('agenLan');
+            $scope.showLangBtn = getAgencyLan;
+        }
+        $translate.use(key);
+    }
 
     $http.get('admin/ui/getAccount/' + $stateParams.accountId).success(function (response) {
         console.log(response)
