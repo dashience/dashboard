@@ -55,7 +55,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.productID = $stateParams.productId;
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
-    $scope.widgetEndDate = $stateParams.endDate;
+    $scope.widgetStartDate = $stateParams.startDate;
+    $rootScope.tabStartDate = $stateParams.startDate;
+    $rootScope.tabEndDate = $stateParams.endDate;
+
     $scope.userId = $cookies.getObject("userId");
     $scope.templateId = $stateParams.templateId;
     $scope.widgetDataSetColumnsDefs = [];
@@ -68,7 +71,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     function changeLanguage(key) {
         $translate.use(key);
     }
-    
     
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;

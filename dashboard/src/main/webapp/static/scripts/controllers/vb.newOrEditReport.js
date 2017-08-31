@@ -85,8 +85,13 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         };
         $http({method: $scope.selectReportId ? 'PUT' : 'POST', url: 'admin/report/report', data: data}).success(function () {
             $stateParams.reportId = $scope.reports.id;
+            $scope.editReport = false;
         });
     };
+    
+    $scope.editReportData = function(){
+        $scope.editReport = true;
+    }
 
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
