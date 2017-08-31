@@ -968,11 +968,11 @@
             <div class="panel panel-default">
                 <div class="panel-heading btnAddon5">
                     <h3 class="panel-title">
-                        Color <button class="btn btn-success  pull-right" ng-click="addColors(widgetObj)"><i class="fa fa-plus"></i></button></h3>
+                        <span translate>Color</span> <button class="btn btn-success  pull-right" ng-click="addColors(widgetObj)"><i class="fa fa-plus"></i></button></h3>
                 </div>
                 <div class="container" ng-repeat="widgetColor in widgetObj.targetColors">
-                    Color: <ui-colorpicker ng-model="widgetColor.color"  style="width:40%;padding: 10px;height"></ui-colorpicker>
-                    Code: <input ng-model="widgetColor.color" ng-change="selectColorInPicker(widgetColor)"/>
+                    <span translate>Color</span>: <ui-colorpicker ng-model="widgetColor.color"  style="width:40%;padding: 10px;height"></ui-colorpicker>
+                    <span translate>Code</span>: <input ng-model="widgetColor.color" ng-change="selectColorInPicker(widgetColor)"/>
                     <!--<button class="btn btn-primary btn-xs" ng-click="editColorOption(targetColors)"><i class="fa fa-edit"></i></button>-->
                     <button class="btn btn-danger btn-xs" ng-click="deleteColorOption(widgetColor.color, $index)"><i class="fa fa-minus"></i></button>
                     <br/>

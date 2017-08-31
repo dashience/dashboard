@@ -78,6 +78,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showCreateReport = false;
     }
 
+
+
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
         $scope.templates = response;
         var template = "";
