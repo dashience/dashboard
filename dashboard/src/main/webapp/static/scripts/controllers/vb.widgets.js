@@ -256,8 +256,11 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             var range = {};
             $http.get(val.url).success(function (response) {
                 var getData = response.data;
+                if(!getData){
+                    return;
+                }
                 if (val.type == 'range') {
-                    range.min = getData[0].fieldName;
+                    range.min = getData[0]?getData[0].fieldName:"";
                     range.max = getData[getData.length - 1].fieldName;
                 } else {
                     range.min = "";

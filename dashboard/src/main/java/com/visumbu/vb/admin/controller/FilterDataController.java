@@ -141,7 +141,7 @@ public class FilterDataController extends BaseController {
             valueMap.put("query", Arrays.asList(query));
             valueMap.put("driver", Arrays.asList("com.mysql.jdbc.Driver"));
             valueMap.put("username", Arrays.asList("root"));
-            valueMap.put("password", Arrays.asList("test@123"));
+            valueMap.put("password", Arrays.asList(""));
             valueMap.put("connectionUrl", Arrays.asList("jdbc:mysql://localhost/retail_prod"));
 
             String data = Rest.getData(url, valueMap);
