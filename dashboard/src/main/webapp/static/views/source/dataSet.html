@@ -96,7 +96,7 @@
                     </a>
                 </li>
                 <li ng-if="permission.createJoinDataSet === true" ng-class="{ active: isSet(2) }">
-                    <a ng-click="setTab(2)"> Join DataSet
+                    <a ng-click="setTab(2)" translate> Join DataSet
                     </a>
                 </li>
             </ul>
@@ -208,7 +208,7 @@
                                     <label translate>Data Source</label>
                                     <select class="form-control"
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id"
-                                            placeholder="Data Source"
+                                            placeholder="{{'Data Source'|translate}}"
                                             ng-value="dataSource.connectionString"
                                             ng-model="dataSet.dataSourceId" ng-change="dataSetFlagValidation(dataSet.dataSourceId.dataSourceType); selectXlsSheet(dataSet.dataSourceId); showPreviewChart = false;">
                                         <option value="" ng-selected="selected" ng-disabled="enableMe">{{'Choose one'|translate}}</option>
@@ -223,8 +223,8 @@
                                         </select>
 
                                         <div ng-if="timeSegFlag == true || semRushFlag == true">
-                                            <label ng-if="timeSegFlag == true">Time Segments</label>
-                                            <label ng-if="semRushFlag == true">Level</label>
+                                            <label ng-if="timeSegFlag == true" translate>Time Segment</label>
+                                            <label ng-if="semRushFlag == true" translate>Level</label>
                                             <select class="form-control" ng-model="dataSet.timeSegment"
                                                      ng-change="refreshDataSet(dataSet)"
                                                      ng-options="timeSegments.name for timeSegments in timeSegment track by timeSegments.type">
@@ -232,15 +232,15 @@
                                         </div>
 
                                         <div ng-if="productSegFlag == true || semRushFlag == true">
-                                        <label ng-if="productSegFlag == true" >Product Segments</label>
-                                        <label ng-if="semRushFlag == true" >Region</label>
+                                        <label ng-if="productSegFlag == true" translate>Product Segments</label>
+                                        <label ng-if="semRushFlag == true" translate>Region</label>
                                         <select class="form-control" ng-model="dataSet.productSegment"
                                                  ng-change="refreshDataSet(dataSet)"
                                                  ng-options="productSegments.name for productSegments in productSegment track by productSegments.type">
                                         </select>
                                         </div>
 
-                                        <label ng-show="nwStatusFlag">Network Type</label>
+                                        <label ng-show="nwStatusFlag" translate>Network Type</label>
                                         <select ng-show="nwStatusFlag" class="form-control"
                                                 ng-change="refreshDataSet(dataSet)" 
                                                 ng-model="dataSet.networkType"
@@ -253,11 +253,11 @@
                                 <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType == 'sql'">
                                     <label translate>Query</label>
                                     <!--<textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query" ng-change='refreshDataSet(dataSet)'></textarea>-->
-                                    <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="Query"></textarea>
+                                    <textarea class="form-control" type="text" ng-model="dataSet.query" placeholder="{{'Query'|translate}}"></textarea>
                                 </div>
 
                                 <div class="form-group" ng-if="dataSet.dataSourceId.dataSourceType === 'https' || dataSet.dataSourceId.dataSourceType === 'twitter'">
-                                    <label>File Url</label>
+                                    <label translate>File Url</label>
                                     <div>
                                         <input type="text" class="form-control" ng-model="dataSet.url">
                                     </div>
@@ -295,7 +295,7 @@
                 <div ng-show="showPreviewChart" ng-if="previewData">
                     <div class="col-md-12">
                         <div class="hpanel">
-                            <div class="panel-heading">
+                            <div class="panel-heading" translate>
                                 Preview
                             </div>
                             <div class="">
@@ -320,11 +320,11 @@
                     <div class="hpanel">
                         <div class="panel-heading"></div>
                         <div class="panel-body">
-                            <label class="col-md-2">DataSet Name</label>
+                            <label class="col-md-2" translate>DataSet Name</label>
                             <div class="col-md-4">
                                 <input type="text" class="form-control" ng-model="joinDataSetColumn.joinDataSetName">
                             </div>
-                            <label class="col-md-2">JoinType</label>
+                            <label class="col-md-2" translate>JoinType</label>
                             <div class="col-md-4">
                                 <select class="form-control" ng-model="joinDataSetColumn.joinType" ng-change="selectJoinType(joinDataSetColumn)">
                                     <option ng-repeat="joinType in joinTypes" value="{{joinType.value}}">
@@ -338,7 +338,7 @@
                 <div class="col-md-12">
                     <div class="hpanel">                
                         <div class="panel-body">
-                            <label class="col-md-2">DataSet1</label>
+                            <label class="col-md-2" translate>DataSet1</label>
                             <div class="col-md-4">
                                 <select  class="form-control" ng-model="joinDataSetColumn.firstDataSet" ng-change="selectFirstDataSet(joinDataSetColumn)">
                                     <option ng-repeat="joinDataSet in dataSets" value="{{joinDataSet}}">{{joinDataSet.name}}</option>
@@ -346,7 +346,7 @@
                             </div>
 
 
-                            <label class="col-md-2">DataSet2</label>
+                            <label class="col-md-2" translate>DataSet2</label>
                             <div class="col-md-4">
                                 <select  class="form-control" ng-model="joinDataSetColumn.secondDataSet" ng-change="selectSecondDataSet(joinDataSetColumn)">
                                     <option ng-repeat="joinDataSet in dataSets" value="{{joinDataSet}}">{{joinDataSet.name}}</option>
@@ -417,17 +417,17 @@
 
                 <div class="col-md-12" ng-show="hideCondition">
                     <div class="hpanel">
-                        <div class="panel-heading">Condition</div>
+                        <div class="panel-heading" translate>Condition</div>
                         <div class="panel-body">
                             <div class="pull-right"><button class="btn btn-xs btn-success" ng-click="addJoinColumnList()"><i class="fa fa-plus"></i></button></div>
 
                             <table class="table table-bordered table-responsive table-scheduler" >
                                 <thead>
                                     <tr>
-                                        <th>
+                                        <th translate>
                                             DataSet1 Column
                                         </th>
-                                        <th>
+                                        <th translate>
                                             DataSet2 Column
                                         </th>
 
@@ -455,7 +455,7 @@
                                                 </select>
                                             </div>
                                         </td>
-                                        <td ng-if="operationType === 'union'"><div><input type="text" placeholder="columnName" class="form-control" ng-model="dataSetColumn.columnName"></div></td>
+                                        <td ng-if="operationType === 'union'"><div><input type="text" placeholder="{{'columnName'|translate}}" class="form-control" ng-model="dataSetColumn.columnName"></div></td>
                                         <td>
                                             <div><span class="btn btn-default btn-xs" ng-click="removeJoinDataSetColumn($index, joinDataSetList[$index].id)"><i class="fa fa-trash"></i></span></div> 
                                         </td>

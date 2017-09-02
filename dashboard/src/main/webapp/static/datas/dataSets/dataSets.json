@@ -494,8 +494,8 @@
                     "name": "Year"
                 },
                 {
-                    "type": "ga:dateHour",
-                    "name": "Hour of Week"
+                    "type": "ga:hour",
+                    "name": "Hour of Day"
                 },
                 {
                     "type": "ga:dayOfWeekName",
@@ -758,11 +758,11 @@
                     "name": "Year"
                 },
                 {
-                    "type": "ga:dayOfWeek",
+                    "type": "ga:dayOfWeekName",
                     "name": "Day of Week"
                 },
                 {
-                    "type": "ga:dateHour",
+                    "type": "ga:hour",
                     "name": "Hour of Day"
                 },
                 {
@@ -886,7 +886,7 @@
                     "name": "Year"
                 },
                 {
-                    "type": "ga:dayOfWeek",
+                    "type": "ga:dayOfWeekName",
                     "name": "Day of Week"
                 },
                 {

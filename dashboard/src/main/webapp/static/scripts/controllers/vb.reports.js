@@ -13,9 +13,8 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
         $scope.showSchedulerReport = false;
     }
 
-   
     $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
-    
+
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 

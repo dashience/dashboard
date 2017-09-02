@@ -368,6 +368,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "editWidget") {
             $state.go("index.editWidget", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 tabId: $stateParams.tabId,
@@ -377,6 +378,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "reports") {
             $state.go("index.report.reports", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 productId: $stateParams.productId,
@@ -386,6 +388,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "newOrEdit") {
             $state.go("index.report.newOrEdit", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 reportId: $stateParams.reportId,
@@ -394,6 +397,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "updateReportWidget") {
             $state.go("index.widgetEditByReport", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 reportId: $stateParams.reportId,
@@ -413,6 +417,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //        }
         else if ($scope.getCurrentPage() === "dataSource") {
             $state.go("index.dataSource", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
@@ -420,6 +425,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "dataSet") {
             $state.go("index.dataSet", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
@@ -427,6 +433,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "scheduler") {
             $state.go("index.schedulerIndex.scheduler", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
@@ -434,6 +441,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
             $state.go("index.schedulerIndex.editOrNewScheduler", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 schedulerId: $stateParams.schedulerId,
@@ -442,6 +450,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "user") {
             $state.go("index.user", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
@@ -449,6 +458,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "account") {
             $state.go("index.account", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
@@ -456,6 +466,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "agency") {
             $state.go("index.agency", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
@@ -463,6 +474,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "fieldSettings") {
             $state.go("index.fieldSettings", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
@@ -479,6 +491,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //        }
         else if ($scope.getCurrentPage() === "favourites") {
             $state.go("index.favourites", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
@@ -486,6 +499,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
             $state.go("index.viewFavouritesWidget", {
+                lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 productId: $stateParams.productId,
@@ -496,6 +510,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             });
         } else if ($scope.getCurrentPage() === "settings") {
             $state.go("index.settings", {
+                lan: $stateParams.lan,
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate
             });

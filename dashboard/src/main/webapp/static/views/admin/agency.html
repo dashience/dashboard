@@ -84,7 +84,7 @@
         <div class="panel-body header-title">
             <div id="hbreadcrumb" class="pull-right">
             </div>
-            <h2 class="font-bold m-b-xs ng-binding">
+            <h2 class="font-bold m-b-xs ng-binding" translate>
                 Agency
             </h2>               
         </div>
@@ -94,28 +94,28 @@
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
             <li ng-class="{ active: isSetAgency(1) }">
-                <a href ng-click="setTabAgency(1)"> Details</a>
+                <a href ng-click="setTabAgency(1)" translate> Details</a>
             </li>
             <li ng-class="{ active: isSetAgency(2) }">
-                <a href ng-click="setTabAgency(2)"> Licence
+                <a href ng-click="setTabAgency(2)" translate> Licence
                 </a>
             </li>
             <li ng-class="{ active: isSetAgency(3) }">
-                <a href ng-click="setTabAgency(3)"> User
+                <a href ng-click="setTabAgency(3)" translate> User
                 </a>
             </li>
             <li ng-class="{ active: isSetAgency(4) }">
-                <a href ng-click="setTabAgency(4)"> Product
+                <a href ng-click="setTabAgency(4)" translate> Product
                 </a>
             </li>
 
             <!--   currency-format-->
             <li ng-class="{ active: isSetAgency(5) }">
-                <a href ng-click="setTabAgency(5)"> Settings
+                <a href ng-click="setTabAgency(5)" translate> Settings
                 </a>
             </li>  
             <li ng-class="{ active: isSetAgency(6) }">
-                <a href ng-click="setTabAgency(6)"> Property
+                <a href ng-click="setTabAgency(6)" translate> Property
                 </a>
             </li>  
             <!--   currency-format-->
@@ -140,56 +140,56 @@
                                             <input id="file-input" type="file" ng-model-instant onchange="angular.element(this).scope().imageUpload(event)"/>
                                         </div>
                                         <div class="pull-right account-new">
-                                            <button class="btn btn-success" ng-click="addAgency()">New</button>
+                                            <button class="btn btn-success" ng-click="addAgency()" translate>New</button>
                                         </div>
                                     </div>
 
                                     <div class="form-group"> 
-                                        <label>Agency Name</label>
+                                        <label translate>Agency Name</label>
                                         <div>
-                                            <input type="text" class="form-control" ng-model="agency.agencyName" placeholder="Name">
+                                            <input type="text" class="form-control" ng-model="agency.agencyName" placeholder="{{'Name'|translate}}">
                                         </div>
                                     </div>
 
                                     <div class="form-group"> 
                                         <div class="row">
-                                            <label class="col-md-12">Dashience Domain Name</label>
+                                            <label class="col-md-12" translate>Domain Name</label>
                                             <div class="col-md-8"> 
 
-                                                <input type="text" name="domain" id="domain" class="form-control" ng-pattern="/^[a-zA-Z]*$/" ng-model="agency.agencyDashiencePath" placeholder="Domain Name">
-                                                <span class="text-danger"  ng-show="setAgency.domain.$error.pattern">
+                                                <input type="text" name="domain" id="domain" class="form-control" ng-pattern="/^[a-zA-Z]*$/" ng-model="agency.agencyDashiencePath" placeholder="{{'Domain Name'|translate}}">
+                                                <span class="text-danger"  ng-show="setAgency.domain.$error.pattern" translate>
                                                     Not a Valid Domain Name
                                                 </span>
                                             </div>
                                             <div class="col-md-4">
-                                                <span>.com</span>
+                                                <span>.<span translate>com<span></span>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Email</label>
+                                        <label translate>Email</label>
                                         <div>
-                                            <input type="email" class="form-control" ng-model="agency.email" placeholder="Email">
+                                            <input type="email" class="form-control" ng-model="agency.email" placeholder="{{'Email'|translate}}">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Language</label>
+                                        <label translate>Language</label>
                                         <div>                                            
                                             <select class="form-control" ng-model="agency.agencyLanguage" ng-options="language.lanName for language in languages"></select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label>Description</label>
+                                        <label translate>Description</label>
                                         <div>
-                                            <textarea class="form-control" ng-model="agency.description" placeholder="Description" rows="1" style="min-height: 100px;"></textarea>
+                                            <textarea class="form-control" ng-model="agency.description" placeholder="{{'Description'|translate}}" rows="1" style="min-height: 100px;"></textarea>
                                         </div>
                                     </div>
                                     <div class="form-group pull-right">
-                                        <button class="btn btn-info" ng-disabled="setAgency.domain.$error.pattern" ng-click="saveAgency(agency)">Save</button>
-                                        <button class="btn btn-warning" ng-click="clearAgency(agency)">Cancel</button>
+                                        <button class="btn btn-info" ng-disabled="myForm.domain.$error.pattern" ng-click="saveAgency(agency)" translate>Save</button>
+                                        <button class="btn btn-warning" ng-click="clearAgency(agency)" translate>Cancel</button>
                                     </div>
                                 </form>
                             </div>
@@ -198,43 +198,43 @@
                             <div class="col-md-12">
                                 <form class="form-horizontal">
                                     <div class="form-group">
-                                        <label>Number Of Tabs</label>
+                                        <label translate>Number Of Tabs</label>
                                         <div>
                                             <input class="form-control" type="text" ng-model="agencyLicence.maxNoTab">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Number Of Users</label>
+                                        <label translate>Number Of Users</label>
                                         <div>
                                             <input class="form-control" type="text" ng-model="agencyLicence.maxNoUser">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Number Of Clients</label>
+                                        <label translate>Number Of Clients</label>
                                         <div>
                                             <input class="form-control" type="text" ng-model="agencyLicence.maxNoClient">
                                         </div>
                                     </div>                                            
                                     <div class="form-group">
-                                        <label>Number Of Accounts</label>
+                                        <label translate>Number Of Accounts</label>
                                         <div>
                                             <input type="text" class="form-control" ng-model="agencyLicence.maxNoAccount">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Expiry Date</label>
+                                        <label translate>Expiry Date</label>
                                         <div>
                                             <input type="text" date-Picker class="form-control" ng-model="agencyLicence.expiryDate">
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label>Number Of Widgets Per Tabs</label>
+                                        <label translate>Number Of Widgets Per Tabs</label>
                                         <div>
                                             <input type="text" class="form-control" ng-model="agencyLicence.maxNoWidgetPerTab">
                                         </div>
                                     </div>
                                     <div class="form-group pull-right">
-                                        <button class="btn btn-info" ng-click="saveAgencyLicence(agencyLicence)">Save</button>
+                                        <button class="btn btn-info" ng-click="saveAgencyLicence(agencyLicence)" translate>Save</button>
                                         <!--<button class="btn btn-warning" ng-click="clearAgencyLicence(agencyLicence)">Cancel</button>-->
                                     </div>
                                 </form>
@@ -247,8 +247,8 @@
                                         <thead>
                                             <tr>
                                                 <!--<th class="col-xs-4">Account Name</th>-->
-                                                <th class="col-xs-6">User Name</th>
-                                                <th class="col-xs-4">Email</th>
+                                                <th class="col-xs-6" translate>User Name</th>
+                                                <th class="col-xs-4" translate>Email</th>
                                                 <th class="col-xs-2">
                                                     <button class="btn btn-success btn-xs" ng-click="addAgencyUser()"><i class="fa fa-plus"></i></button>
                                                 </th>
@@ -268,25 +268,25 @@
                                 <div class="col-md-12">
                                     <form class="form-horizontal">
                                         <div class="form-group">
-                                            <label>First Name</label>
-                                            <input class="form-control" type="text" ng-model="agencyUser.firstName" placeholder="First Name">
+                                            <label translate>First Name</label>
+                                            <input class="form-control" type="text" ng-model="agencyUser.firstName" placeholder="{{'First Name'|translate}}">
                                         </div>
                                         <div class="form-group">
-                                            <label>Last Name</label>
-                                            <input class="form-control" type="text" ng-model="agencyUser.lastName" placeholder="Last Name">
+                                            <label translate>Last Name</label>
+                                            <input class="form-control" type="text" ng-model="agencyUser.lastName" placeholder="{{'Last Name'|translate}}">
                                         </div>
                                         <div class="form-group">
-                                            <label>User Name</label>
-                                            <input class="form-control" type="text" ng-model="agencyUser.userName" placeholder="User Name">
+                                            <label translate>User Name</label>
+                                            <input class="form-control" type="text" ng-model="agencyUser.userName" placeholder="{{'User Name'|translate}}">
                                         </div>                                            
                                         <div class="form-group">
-                                            <label>Email</label>
-                                            <input type="email" class="form-control" ng-model="agencyUser.email" placeholder="Email">
+                                            <label translate>Email</label>
+                                            <input type="email" class="form-control" ng-model="agencyUser.email" placeholder="{{'Email'|translate}}">
                                         </div>
                                         <div class="form-group">
-                                            <label>Password</label>
+                                            <label translate>Password</label>
                                             <div class="input-group">
-                                                <input type="password" class="form-control" ng-model="agencyUser.password" id="password" name="password" placeholder="Password">
+                                                <input type="password" class="form-control" ng-model="agencyUser.password" id="password" name="password" placeholder="{{'Password'|translate}}">
                                                 <span class="input-group-addon">
                                                     <i show-password class="fa fa-eye-slash" style="cursor: pointer" aria-hidden="true"></i>
                                                 </span>
@@ -295,16 +295,16 @@
                                                                                                 <input type="password" class="form-control" ng-model="agencyUser.password" placeholder="Password">-->
                                         </div>
                                         <div class="form-group">
-                                            <label>Primary Phone</label>
-                                            <input type="text" class="form-control" ng-model="agencyUser.primaryPhone" placeholder="Primary Phone">
+                                            <label translate>Primary Phone</label>
+                                            <input type="text" class="form-control" ng-model="agencyUser.primaryPhone" placeholder="{{'Primary Phone'|translate}}">
                                         </div>
                                         <div class="form-group">
-                                            <label>Secondary Phone</label>
-                                            <input type="text" class="form-control" ng-model="agencyUser.secondaryPhone" placeholder="Secondary Phone">
+                                            <label translate>Secondary Phone</label>
+                                            <input type="text" class="form-control" ng-model="agencyUser.secondaryPhone" placeholder="{{'Secondary Phone'|translate}}">
                                         </div>
                                         <div class="form-group pull-right">
-                                            <button class="btn btn-info" ng-click="saveAgencyUser(agencyUser)">Save</button>
-                                            <button class="btn btn-warning" ng-click="clearAgencyUser(agencyUser)">Cancel</button>
+                                            <button class="btn btn-info" ng-click="saveAgencyUser(agencyUser)" translate>Save</button>
+                                            <button class="btn btn-warning" ng-click="clearAgencyUser(agencyUser)" translate>Cancel</button>
                                         </div>
                                     </form>
                                 </div>
@@ -318,8 +318,8 @@
                                         <thead>
                                             <tr>
                                                 <!--<th class="col-xs-4">Account Name</th>-->
-                                                <th class="col-xs-4">Icon</th>
-                                                <th class="col-xs-6">Product Name</th>
+                                                <th class="col-xs-4" translate>Icon</th>
+                                                <th class="col-xs-6" translate>Product Name</th>
                                                 <th class="col-xs-2">
                                                     <button class="btn btn-success btn-xs" ng-click="addAgencyProduct()"><i class="fa fa-plus"></i></button>
                                                 </th>
@@ -348,14 +348,14 @@
                                                                 <div class="color-line"></div>
                                                                 <div class="modal-header">
                                                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                                    <h4 class="modal-title">Delete</h4>
+                                                                    <h4 class="modal-title" translate>Delete</h4>
                                                                     <small class="font-bold"></small>
                                                                 </div>
                                                                 <div class="modal-body">
                                                                     <form class="form-horizontal" role="form">
                                                                         <div class="form-group">
                                                                             <div class="col-sm-12  col-md-12">
-                                                                                <span>Want to delete ?</span>
+                                                                                <span translate>Want to delete?</span>
                                                                             </div>
                                                                         </div>
                                                                     </form>
@@ -365,11 +365,11 @@
                                                                         <button type="button" class="btn btn-primary btn-xs " 
                                                                                 ng-click="deleteAgencyProduct(agencyProduct, $index)" 
                                                                                 data-dismiss="modal">
-                                                                            <span class="fa fa-trash"></span> Yes
+                                                                            <span class="fa fa-trash"></span> <span translate>Yes</span>
                                                                         </button>
                                                                         <button type="button" class="btn btn-danger btn-xs " 
                                                                                 data-dismiss="modal">
-                                                                            <span class="fa fa-times"></span> No
+                                                                            <span class="fa fa-times"></span> <span translate>No</span>
                                                                         </button>
                                                                     </div>
                                                                 </div>
@@ -395,7 +395,7 @@
                                             </div>
 
                                             <div class="pull-right account-new">
-                                                <button class="btn btn-success" ng-click="addAgencyProduct()">New</button>
+                                                <button class="btn btn-success" ng-click="addAgencyProduct()" translate>New</button>
                                             </div>
 
                                         </div>
@@ -403,14 +403,14 @@
                                             <span class="text-danger">{{productIconEmptyMessage}}</span>
                                         </div>
                                         <div class="form-group">
-                                            <label>Product Name</label>
+                                            <label translate>Product Name</label>
                                             <div>
-                                                <input type="text" class="form-control" ng-model="agencyProduct.productName" placeholder="Product Name">
+                                                <input type="text" class="form-control" ng-model="agencyProduct.productName" placeholder="{{'Product Name'| translate}}">
                                             </div>
                                         </div>
                                         <div class="form-group">
                                             <div class="col-md-6">
-                                                <label>Show Product</label>
+                                                <label translate>Show Product</label>
                                                 <div class="checkbox-slider--b">
                                                     <label class="col-sm-10" for="field{{agencyProduct.id}}">
                                                         <input id="field{{agencyProduct.id}}" type="checkbox" ng-model="agencyProduct.showProduct" value="1" />
@@ -420,7 +420,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <label>Select Template</label>
+                                                <label translate>Select Template</label>
                                                 <select class="form-control" 
                                                         ng-model="agencyProduct.templateId" 
                                                         ng-options="template.templateName for template in templates track by template.id">
@@ -431,8 +431,8 @@
                                             </div>
                                         </div>
                                         <div class="form-group pull-right">
-                                            <button class="btn btn-info" ng-click="saveAgencyProduct(agencyProduct)">Save</button>
-                                            <button class="btn btn-warning" ng-click="clearAgencyProduct(agencyProduct)">Cancel</button>
+                                            <button class="btn btn-info" ng-click="saveAgencyProduct(agencyProduct)" translate>Save</button>
+                                            <button class="btn btn-warning" ng-click="clearAgencyProduct(agencyProduct)" translate>Cancel</button>
                                         </div>
                                     </form>
                                 </div>
@@ -445,17 +445,17 @@
 
                                 <form class="form-horizontal">
                                     <div class="form-group" data-ng-init="getCurrencyDataFromServer()">
-                                        <label>Currency</label>
+                                        <label translate>Currency</label>
                                         <select class="form-control" ng-model="agencySetting.currencyId" ng-options="(currency.nation + ' - ' + currency.currencyCode) for currency in currencies track by currency.id"></select>
                                     </div>
                                     <div class="form-group">
-                                        <label>TimeZone</label>
+                                        <label translate>TimeZone</label>
                                         <select class="form-control" 
                                                 ng-model="agencySetting.timeZoneId" 
                                                 ng-options="(timezone.longName + ' - ' + timezone.shortDescription + '(' + timezone.description + ')' + ' - ' + timezone.relativeToGMT) for timezone in timezones track by timezone.id"></select>
                                     </div>
                                     <div class="form-group pull-right">
-                                        <button class="btn btn-info" ng-click="saveAgencySettings(agencySetting)">Save</button>
+                                        <button class="btn btn-info" ng-click="saveAgencySettings(agencySetting)" translate>Save</button>
                                     </div>
                                 </form>
                             </div> 
@@ -468,8 +468,8 @@
                                         <table class="table table-responsive table-fixed">
                                             <thead>
                                                 <tr>
-                                                    <th class="col-xs-4">Name</th>
-                                                    <th class="col-xs-5">Value</th>
+                                                    <th class="col-xs-4" translate>Name</th>
+                                                    <th class="col-xs-5" translate>Value</th>
                                                     <th class="col-xs-3">
                                                         <button class="btn btn-success btn-xs" ng-click="addAgencyProperties()"><i class="fa fa-plus"></i></button>
                                                     </th>
@@ -525,7 +525,7 @@
                 <div class="panel-body">
                     <div class="row">
                         <div class="data-search col-sm-12">
-                            <input type="text" class="form-control" ng-model="searchAgency" placeholder="Search...">
+                            <input type="text" class="form-control" ng-model="searchAgency" placeholder="{{'Search'|translate}}">
                         </div>
                         <!--  <div class="col-sm-4">
                                     <ui-select multiselect ng-model="agencyName" theme="select2" ng-disabled="disabled" on-select="searchAgencyDetails(agencyName)" style="min-width:225px;">
@@ -542,9 +542,9 @@
                     <table class="table table-responsive table-fixed">
                         <thead>
                             <tr>
-                                <th class="col-xs-3">Name</th>
-                                <th class="col-xs-4">Email</th>
-                                <th class="col-xs-4">Dashience Domain Name</th>
+                                <th class="col-xs-3" translate>Name</th>
+                                <th class="col-xs-4" translate>Email</th>
+                                <th class="col-xs-4" translate>Domain Name</th>
                                 <th class="col-xs-1"></th>
                             </tr>
                         </thead>
@@ -569,14 +569,14 @@
                                                 <div class="color-line"></div>
                                                 <div class="modal-header">
                                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title">Delete</h4>
+                                                    <h4 class="modal-title" translate>Delete</h4>
                                                     <small class="font-bold"></small>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form class="form-horizontal" role="form">
                                                         <div class="form-group">
                                                             <div class="col-sm-12  col-md-12">
-                                                                <span>Want to delete ?</span>
+                                                                <span translate>Want to delete?</span>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -586,11 +586,11 @@
                                                         <button type="button" class="btn btn-primary btn-xs " 
                                                                 ng-click="deleteAgency(agency, $index)" 
                                                                 data-dismiss="modal">
-                                                            <span class="fa fa-trash"></span> Yes
+                                                            <span class="fa fa-trash"></span> <span translate>Yes</span>
                                                         </button>
                                                         <button type="button" class="btn btn-danger btn-xs " 
                                                                 data-dismiss="modal">
-                                                            <span class="fa fa-times"></span> No
+                                                            <span class="fa fa-times"></span> <span translate>No</span>
                                                         </button>
                                                     </div>
                                                 </div>

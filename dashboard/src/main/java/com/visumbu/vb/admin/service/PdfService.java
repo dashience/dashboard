@@ -74,7 +74,7 @@ public class PdfService {
             String filename = pdfFilesPath + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + ".pdf";
             commandsList.add(filename);
             String command = pdfGeneratorCommand + " " + windowStatusCommand + " cover \"" + url + "\" " + filename;
-            System.out.println(command);
+            System.out.println("Url -----------------------------------> "+command);
             java.lang.Runtime rt = java.lang.Runtime.getRuntime();
             String[] commandToExecute = (String[])commandsList.toArray(new String[commandsList.size()]);
             java.lang.Process p = rt.exec(commandToExecute);

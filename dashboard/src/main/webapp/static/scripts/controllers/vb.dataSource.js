@@ -1,4 +1,4 @@
-app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$rootScope','$cookies','$translate', function ($scope, $stateParams, $http, $rootScope,$cookies,$translate) {
+app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$rootScope', '$cookies', '$translate', function ($scope, $stateParams, $http, $rootScope, $cookies, $translate) {
 //    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
         $scope.authenticateFlag = true;
         $http.get('static/datas/dataSources/dataSource.json').success(function (response) {
@@ -17,11 +17,14 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
-    function changeLanguage(key) {
-        $translate.use(key);
-    }
-        
-        
+        var lan = $scope.agencyLanguage;
+        changeLanguage(lan);
+
+        function changeLanguage(key) {
+            $translate.use(key);
+        }
+
+
 //        $scope.csvFileUpload = function (event) {
 //            var files = event.target.files;
 //            angular.forEach(files, function (value, key) {

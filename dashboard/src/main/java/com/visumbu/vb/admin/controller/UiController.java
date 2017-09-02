@@ -66,6 +66,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.eclipse.persistence.annotations.ReadOnly;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -724,7 +725,7 @@ public class UiController extends BaseController {
         VbUser user = userService.findByUsername(getUser(request));
         return uiService.createDashboardTemplate(dashboardTemplate, user, productId);
     }
-    
+
     @RequestMapping(value = "updateChartColor", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     UserPreferences addChartColor(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
@@ -745,7 +746,14 @@ public class UiController extends BaseController {
         VbUser user = userService.findByUsername(getUser(request));
         return uiService.getChartColorByUserId(user);
     }
-  
+
+    @RequestMapping(value = "getChartColorByUserId/{userId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    UserPreferences getChartColorByUserId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
+//        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.getChartColorById(userId);
+    }
+
     @RequestMapping(value = "getTemplateId/{accountId}/{productId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<DashboardTemplate> getTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId, @PathVariable Integer productId) {
@@ -803,11 +811,28 @@ public class UiController extends BaseController {
         return uiService.updateThemeSettings(userPreferences);
     }
 
-    @RequestMapping(value = "getThemeByUserId", method = RequestMethod.GET)
+    @RequestMapping(value = "getThemeByUserId", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     UserPreferences getThemeByUserId(HttpServletRequest request, HttpServletResponse response) {
         VbUser user = userService.findByUsername(getUser(request));
         return uiService.getThemeByUserId(user);
+    }
+
+    @RequestMapping(value = "deleteDerivedColumn/{widgetId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    void deleteDerivedColumn(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
+        String deleteColumns = request.getParameter("deleteColumns");
+        uiService.deleteDerivedColumn(deleteColumns, widgetId);
+    }
+
+    @RequestMapping(value = "dashboardTemplates/{productId}/{userId}/{agencyId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<DashboardTemplate> getTemplates(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId,@PathVariable Integer userId,@PathVariable Integer agencyId) {
+//        VbUser user = userService.findByUsername(getUser(request));
+//        Agency agency = user.getAgencyId();
+        AgencyProduct agencyProduct = uiService.getAgencyProductById(productId);
+//        Agency agency = agencyProduct.getAgencyId();
+        return uiService.getTemplates(userId, agencyId, agencyProduct);
     }
 
     @ExceptionHandler

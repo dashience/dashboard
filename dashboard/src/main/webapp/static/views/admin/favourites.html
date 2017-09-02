@@ -13,8 +13,8 @@
     <table class="table table-bordered">
         <thead>
             <tr>
-                <th>Sl.No</th>
-                <th>Tag Name</th>
+                <th translate>S.No</th>
+                <th translate>Tag Name</th>
                 <!--<th>Widget Name</th>-->
                 <th></th>
             </tr>
@@ -25,7 +25,7 @@
                 <td>{{favourite.tagName}} </td>
                 <!--                <td>{{favouritesWidget.widgetId.widgetTitle ? favouritesWidget.widgetId.widgetTitle:'-' }} </td>-->
                 <td>
-                    <a ui-sref="index.viewFavouritesWidget({accountId: accountId, accountName: accountName, favouriteId: favourite.id, favouriteName: favourite.tagName, startDate: startDate, endDate: endDate})"><i class="fa fa-eye"></i></a>
+                    <a ui-sref="index.viewFavouritesWidget({lan: agencyLanguage, accountId: accountId, accountName: accountName, favouriteId: favourite.id, favouriteName: favourite.tagName, startDate: startDate, endDate: endDate})"><i class="fa fa-eye"></i></a>
                 </td>
             </tr>
         </tbody>

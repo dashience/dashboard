@@ -71,6 +71,8 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
         $scope.agencyListName = agencyUserName;
     };
     $scope.saveUser = function (user) {
+        console.log("user-->");
+        console.log(user);
 //        var userData = {
 //            id: user.id,
 //            firstName: user.firstName,
@@ -85,7 +87,8 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
 //        if ($scope.checkAdmin === 'admin') {
 //            user.isAdmin = true;
 //        }
-        if (user.isAdmin === null) {
+
+        if (user.isAdmin === null || !user.isAdmin) {
             user.isAdmin = null;
         } else {
             user.isAdmin = true;

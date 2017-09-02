@@ -59,6 +59,8 @@ import org.springframework.stereotype.Repository;
 @Repository("uiDao")
 public class UiDao extends BaseDao {
 
+    
+
     public List<Dashboard> getDashboards(VbUser user) {
         String queryStr = "select d from Dashboard d where d.userId = :user";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -942,8 +944,8 @@ public class UiDao extends BaseDao {
         query.setParameter("reportName", dataSetReportName);
         List<DataSourceSetting> list = query.list();
         return list;
-}
-    
+    }
+
     public List<DataSourceFilter> getDataSourceFilters(String dataSource, String dataSetReportName) {
         String queryStr = "SELECT d FROM DataSourceFilter d where d.dataSourceName = :dataSourceName and d.reportName = :reportName";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -959,11 +961,43 @@ public class UiDao extends BaseDao {
         query.setParameter("dataSourceName", dataSourceName);
         return query.list();
     }
-    
+
     public List getDataSetReportSegments(String dataSourceName, String reportName, String segmentName) {
         String queryStr = "SELECT distinct d. FROM DataSourceSetting d where d.dataSourceName = :dataSourceName";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSourceName", dataSourceName);
+        return query.list();
+    }
+
+    public void deleteDerivedColumn(String fieldName, Integer widgetId) {
+        String queryStr = "DELETE from DataSetColumns d where d.fieldName = :fieldName and d.widgetId.id = :widgetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("fieldName", fieldName);
+        query.setParameter("widgetId", widgetId);
+        query.executeUpdate();
+    }
+
+    public void deleteWidgetColumn(String fieldName, Integer widgetId) {
+        String queryStr = "DELETE from WidgetColumn w where w.fieldName = :fieldName and w.widgetId.id = :widgetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("fieldName", fieldName);
+        query.setParameter("widgetId", widgetId);
+        query.executeUpdate();
+    }
+
+    public UserPreferences getChartColorById(Integer userId) {
+        String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId.id = :userId and u.optionName = 'Chart_Color_Options'";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", userId);
+        return (UserPreferences) query.uniqueResult();
+    }
+
+    public List<DashboardTemplate> getTemplates(Integer userId, Integer agencyId, AgencyProduct agencyProduct) {
+        String queryStr = "SELECT d from DashboardTemplate d where d.agencyId.id = :agencyId and d.agencyProductId = :agencyProduct and ( d.userId.id is null or d.userId.id = :userId or d.shared = 'Active') and (d.status IS NULL or d.status != 'Deleted')";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyProduct", agencyProduct);
+        query.setParameter("agencyId", agencyId);
+        query.setParameter("userId", userId);
         return query.list();
     }
 }

@@ -20,14 +20,14 @@
                                     ns-popover-timeout="1000" 
                                     ns-popover-hide-on-inside-click="false" 
                                     ns-popover-hide-on-outside-click="true" 
-                                    ns-popover-hide-on-button-click="true" ng-click="getTemplateId()">
+                                    ns-popover-hide-on-button-click="true" ng-click="getTemplateId()" translate>
                                 SaveAsTemplate
                             </button>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <ui-select ng-model="selectTemplate.selected" on-select="getTemplateBYId(selectTemplate.selected); setParamByTemplateId(selectTemplate.selected)" theme="selectize" style="width:180px;">
-                                    <ui-select-match placeholder="Select template...">{{$select.selected.templateName}}</ui-select-match>
+                                    <ui-select-match placeholder="{{'Select template'|translate}}">{{$select.selected.templateName}}</ui-select-match>
                                     <ui-select-choices repeat="template in templates | filter: $select.search">
                                         <span ng-bind-html="template.templateName | highlight: $select.search"></span>
                                     </ui-select-choices>
@@ -64,28 +64,28 @@
                                         <div class="color-line"></div>
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h4 class="modal-title">Delete</h4>
+                                            <h4 class="modal-title" translate>Delete</h4>
                                             <small class="font-bold"></small>
                                         </div>
                                         <div class="modal-body">
-                                            <span>Want to delete ?</span>
+                                            <span translate>Want to delete ?</span>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-primary btn-xs" ng-click="deleteTab($index, tab)" data-dismiss="modal"><span class="fa fa-save"></span> Yes</button>  
-                                            <button type="button" class="btn btn-danger btn-xs " data-dismiss="modal"><span class="fa fa-times"></span> No
+                                            <button type="button" class="btn btn-primary btn-xs" ng-click="deleteTab($index, tab)" data-dismiss="modal"><span class="fa fa-save"></span> <span translate>Yes</span></button>  
+                                            <button type="button" class="btn btn-danger btn-xs " data-dismiss="modal"><span class="fa fa-times"></span> <span translate>No</span>
                                             </button>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        <li ng-if="permission.addTab === true;" class="pull-left add-tab" data-toggle="modal" data-target="#tabModal"><i class="fa fa-plus-circle"></i> Add Tab</li> 
+                        <li ng-if="permission.addTab === true;" class="pull-left add-tab" data-toggle="modal" data-target="#tabModal"><i class="fa fa-plus-circle"></i> <span translate>Add Tab</span></li> 
                         <div class="modal fade hmodal-success" id="tabModal" tabindex="-1" role="dialog"  aria-hidden="true">
                             <div class="modal-dialog">
                                 <div class="modal-content">
                                     <div class="color-line"></div>
                                     <div class="modal-header">
                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title">TAB</h4>
+                                        <h4 class="modal-title" translate>TAB</h4>
                                         <small class="font-bold"></small>
                                     </div>
                                     <div class="modal-body">
@@ -94,7 +94,7 @@
                                             <div class="form-group">
                                                 <div class="col-sm-12  col-md-12">
                                                     <div class="col-sm-3 col-md-3">
-                                                        <label>Tab Name </label>
+                                                        <label translate>Tab Name </label>
                                                     </div>
                                                     <div class="col-sm-9 col-md-9">
                                                         <input type="text" ng-model="tab.tabName" class="form-control "/>
@@ -105,8 +105,8 @@
                                     </div>
                                     <div class="modal-footer">
                                         <div class="col-sm-12">
-                                            <button type="button" class="btn btn-primary btn-xs" ng-click="addTab(tab)" data-dismiss="modal"><span class="fa fa-trash"></span> Save</button>  
-                                            <button type="button" class="btn btn-danger btn-xs " data-dismiss="modal"><span class="fa fa-times"></span> Cancel
+                                            <button type="button" class="btn btn-primary btn-xs" ng-click="addTab(tab)" data-dismiss="modal"><span class="fa fa-trash"></span> <span translate>Save</span></button>  
+                                            <button type="button" class="btn btn-danger btn-xs " data-dismiss="modal"><span class="fa fa-times"></span> <span translate>Cancel</span>
                                             </button>
                                         </div>
                                     </div>

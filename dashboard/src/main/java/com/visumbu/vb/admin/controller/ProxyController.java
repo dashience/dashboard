@@ -166,7 +166,7 @@ public class ProxyController {
         }
     }
 
-private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest request, HttpServletResponse response) {
+    private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest request, HttpServletResponse response) {
         Map<String, String[]> parameterMap = request.getParameterMap();
         String joinDataSetIdStr = request.getParameter("joinDataSetId");
         String dataSourceId = request.getParameter("dataSourceId");
@@ -420,6 +420,30 @@ private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest 
 
             }
         }
+        String widgetIdStr = getFromMultiValueMap(valueMap, "widgetId");
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(valueMap, "endDate"));
+        Integer widgetIdInt = null;
+        if (widgetIdStr != null) {
+            try {
+                widgetIdInt = Integer.parseInt(widgetIdStr);
+                TabWidget widget = uiService.getWidgetById(widgetIdInt);
+                if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                    if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                        System.out.println("start Date ---> "+widget.getCustomStartDate());
+                        valueMap.put("startDate", Arrays.asList(widget.getCustomStartDate()));
+                        valueMap.put("endDate", Arrays.asList(widget.getCustomEndDate()));
+                    } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                        Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                        valueMap.put("startDate", Arrays.asList(DateUtils.dateToString(dateRange.get("startDate"), "MM/dd/yyyy")));
+                        valueMap.put("endDate", Arrays.asList(DateUtils.dateToString(dateRange.get("endDate"), "MM/dd/yyyy")));
+                    }
+                }
+
+            } catch (NumberFormatException e) {
+
+            }
+        }
+
         MultiValueMap<String, String> request1 = getRequest(dataSetIdFirst, valueMap);
         MultiValueMap<String, String> request2 = getRequest(dataSetIdSecond, valueMap);
         Map dataMap1 = getJoinDataSet(request1, request, response, dataSetIdFirst.getId());
@@ -488,7 +512,7 @@ private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest 
 
         // System.out.println("MAPPINGS " + mappings);
         List<Map<String, Object>> joinData = joinData(dataList1, dataList2, operationType, mappings);
-        System.out.println("join DAta ---> "+joinData);
+        System.out.println("join DAta ---> " + joinData);
         Map returnMap = new HashMap();
         returnMap.put("data", joinData);
         // System.out.println("JOINED DATA" + joinData);
@@ -549,12 +573,11 @@ private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest 
             List<Map<String, Object>> dataList = getBingData(request, httpRequest, response);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
-        } 
-//        else if (dataSourceType.equalsIgnoreCase("dataSetsql")) {
-//            returnMap = getDataSourceData(request, httpRequest, response);
-//            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
-//            returnMap.put("columnDefs", getColumnDefObject(data));
-//        }
+        } //        else if (dataSourceType.equalsIgnoreCase("dataSetsql")) {
+        //            returnMap = getDataSourceData(request, httpRequest, response);
+        //            List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+        //            returnMap.put("columnDefs", getColumnDefObject(data));
+        //        }
         else if (dataSourceType.equalsIgnoreCase("sql")) {
             returnMap = getSqlData(request, httpRequest, response);
             List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
@@ -989,6 +1012,9 @@ private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest 
                     if ((expressionValue.startsWith("'") && expressionValue.endsWith("'"))) {
                         Object expValue = expressionValue.substring(1, expressionValue.length() - 1);
                         returnMap.put(dataSetColumn.getFieldName(), expValue);
+                    } else if (expressionValue.equalsIgnoreCase("infinity")) {
+                        Object expValue = "-";
+                        returnMap.put(dataSetColumn.getFieldName(), expValue);
                     } else {
                         Object expValue = expressionValue;
                         returnMap.put(dataSetColumn.getFieldName(), expValue);
@@ -1127,17 +1153,17 @@ private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest 
         // System.out.println("Pinterest Account ID -->" + accountIdStr);
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
-//        // System.out.println(account);
-//        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-//        String accessToken = getAccountId(accountProperty, "pinterestAccessToken");
-//        
+        System.out.println(account);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        System.out.println("account Property ---> "+accountProperty);
+        String accessToken = getAccountId(accountProperty, "pinterestAccessToken");
+        System.out.println("access Token  ---> "+accessToken);
 
         //get the acces token from settings
-        List<Settings> pinterestAccessToken = settingsService.getProperty("pinterestAccessToken");
+//        List<Settings> pinterestAccessToken = settingsService.getProperty("pinterestAccessToken");
         // System.out.println("***************************");
         // System.out.println(pinterestAccessToken);
-        String accessToken = SettingsProperty.getSettingsProperty(pinterestAccessToken, "pinterestAccessToken");
-
+//        String accessToken = SettingsProperty.getSettingsProperty(pinterestAccessToken, "pinterestAccessToken");
         // System.out.println("Pinterst access token--->" + accessToken);
         if (accessToken == null) {
             // System.out.println("pinterest accesstoken data not found now...");

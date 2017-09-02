@@ -1,5 +1,16 @@
-app.controller('TagController', function ($scope, $http, $stateParams, $filter, $timeout) {
+app.controller('TagController', function ($scope, $http, $stateParams, $filter, $timeout,$translate) {
     $scope.tags = [];
+    
+    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+    
+    
     $scope.tagData = function () {
         $http.get('admin/tag').success(function (response) {
             $scope.tags = response;

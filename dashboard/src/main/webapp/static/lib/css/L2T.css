@@ -1781,6 +1781,9 @@ body {
     position: relative;
     z-index: 999;
 }
+.ticker-icon {
+    margin-top: 10px;
+}
 .hpanel .alert {
     margin-bottom: 0;
     border-radius: 0;

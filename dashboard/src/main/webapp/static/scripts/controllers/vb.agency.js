@@ -1,7 +1,5 @@
 app.controller('AgencyController', function ($scope, $http, $translate, $stateParams) {
-
-    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
-
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");    
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
@@ -302,6 +300,9 @@ app.controller('AgencyController', function ($scope, $http, $translate, $statePa
                 secondaryPhone: agencyUser.secondaryPhone,
                 agencyId: $scope.agencyById.id,
             };
+            
+            console.log("agency user data");
+            console.log(agencyUserData);
             $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
                 getAgencyLicence($scope.agencyById);
                 if (response.status == true) {

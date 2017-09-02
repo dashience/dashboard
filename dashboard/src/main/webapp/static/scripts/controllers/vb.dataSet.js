@@ -22,10 +22,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $translate.use(key);
     }
 
-
-
-
-
     $scope.joinTypes = [
         {name: 'Left', value: 'left'},
         {name: 'Right', value: 'right'},
@@ -96,7 +92,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
     }
     $scope.selectFirstDataSet = function (dataSet) {
-
         $scope.firstDataSet = JSON.parse(dataSet.firstDataSet);
         $scope.firstDataSetName = $scope.firstDataSet.name;
         $scope.dataSetIdFirst = $scope.firstDataSet.id;
@@ -104,7 +99,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.firstDataSetLoading = true;
         $scope.loadingResultCompleted = false;
         getPreviewDataSet($scope.firstDataSet, "dataSet1");
-
     };
     $scope.selectSecondDataSet = function (dataSet) {
         $scope.secondDataSet = JSON.parse(dataSet.secondDataSet);
@@ -125,7 +119,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.hideCondition = false;
     $scope.selectJoinType = function (joinDataSetColumn) {
         $scope.operationType = joinDataSetColumn.joinType;
-        console.log($scope.operationType);
         if (joinDataSetColumn.joinType != null) {
             $scope.hideCondition = true;
         }
@@ -135,10 +128,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSetColumnList.push({});
     };
     $scope.removeJoinDataSetColumn = function (index, conditionId) {
-        console.log(conditionId);
         $scope.dataSetColumnList.splice(index, 1);
         $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId + "/" + joinDataSetId}).success(function (response) {
-            console.log(response);
             $scope.joinDataSetList = response;
         });
     };
@@ -178,9 +169,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             operationType: joinDataSetColumn.joinType,
             conditionFields: $scope.dataSetColumnList
         };
-        console.log(data);
         $http({method: 'POST', url: 'admin/ui/joinDataSet', data: data}).success(function (response) {
-            console.log(response);
             $scope.joinDataSetList = response;
             joinDataSetId = response[0].joinDataSetId.id;
             $scope.joinDataSetNewName = response[0].joinDataSetId.dataSetName;
@@ -197,8 +186,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     $scope.errorHide = true;
                     $scope.errorMessage = "No Data Found";
                 }
-                console.log(response.columnDefs);
-                console.log(response.data);
             });
         });
     };
@@ -223,7 +210,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             userId: dataSet.userId
         };
         $http({method: 'POST', url: 'admin/ui/joinDataSource', data: joinDataSource}).success(function (response) {
-            console.log(response)
             dataSourceId = response.id;
 
             var joinDataSetList = {
@@ -838,8 +824,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type: 'ga:dateHour',
-                    name: 'Hour of Week'
+                    type: 'ga:hour',
+                    name: 'Hour of Day'
                 },
                 {
                     type: 'ga:dayOfWeekName',
@@ -1102,11 +1088,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type: 'ga:dayOfWeek',
+                    type: 'ga:dayOfWeekName',
                     name: 'Day of Week'
                 },
                 {
-                    type: 'ga:dateHour',
+                    type: 'ga:hour',
                     name: 'Hour of Day'
                 },
                 {
@@ -1230,7 +1216,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type: 'ga:dayOfWeek',
+                    type: 'ga:dayOfWeekName',
                     name: 'Day of Week'
                 },
                 {

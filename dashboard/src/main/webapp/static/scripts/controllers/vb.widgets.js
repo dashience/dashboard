@@ -40,7 +40,7 @@ function dateConvert(fromFormat, toFormat, value) {
     // return value;
 }
 
-app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval,$translate) {
+app.controller('WidgetController', function ($scope, $http, $stateParams, $timeout, $filter, $cookies, localStorageService, $rootScope, $state, $window, $interval, $translate) {
     $scope.dispHideBuilder = true;
     $scope.widgets = [];
     $scope.tags = [];
@@ -56,10 +56,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetTabId = $stateParams.tabId;
     $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetEndDate = $stateParams.endDate;
-    $scope.userId = $cookies.getObject("userId");
+//    $scope.userId = $cookies.getObject("userId");
+    $scope.userId = localStorageService.get("userId");
+    var agency=localStorageService.get("agencyId");
+    $scope.agencyId=agency.id;
     $scope.templateId = $stateParams.templateId;
     $scope.widgetDataSetColumnsDefs = [];
-    
+
     $scope.agencyLanguage = $stateParams.lan;//localStorageService.get("agencyLanguage");//$cookies.getObject("agencyLanguage");
 
     var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
@@ -68,7 +71,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     function changeLanguage(key) {
         $translate.use(key);
     }
-       
+
 
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
@@ -328,6 +331,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widgetObj.lastNmonths = "";
         } else {
             widgetObj.dateRangeName = dateRangeName;
+            widgetObj.customEndDate = "";
+            widgetObj.customStartDate = "";
             widgetObj.lastNdays = "";
             widgetObj.lastNweeks = "";
             widgetObj.lastNmonths = "";
@@ -388,7 +393,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
             $http.get("admin/tag/getAllFav/").success(function (favResponse) {
                 widgetItems.forEach(function (value, key) {
-                    favWidget = $.grep(favResponse, function (b) {
+                    var favWidget = $.grep(favResponse, function (b) {
                         return b.id === value.id;
                     });
                     if (favWidget.length > 0) {
@@ -473,7 +478,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             widget.selectAll = 0;
         }
-        if(widget.dateRangeName == "None"){
+        if (widget.dateRangeName == "None") {
             widget.customStartDate = "";
             widget.customEndDate = "";
         }
@@ -751,6 +756,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
 //                $scope.collectionFields = response.columnDefs;
 //            } else {
+            console.log(response.columnDefs);
             $scope.collectionFields = response.columnDefs;
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
 //            }
@@ -847,7 +853,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.selectedChartType = chartType.type;
         $scope.chartTypeName = chartType.type;
         $scope.showDateRange = false;
-        $scope.advanced=false;
+        $scope.advanced = false;
 //        $scope.xColumn = "";
 //        $scope.y1Column = "";
 //        $scope.selectPieChartXAxis = "";
@@ -889,7 +895,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
         $scope.showColor = false;
         $scope.hideSelectedColumn = false;
-        $scope.advanced=false;
+        $scope.advanced = false;
     };
 
     $scope.showFilterList = function () {
@@ -899,7 +905,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
         $scope.showColor = false;
-        $scope.advanced=false;
+        $scope.advanced = false;
         $scope.showSortBy = false;
     };
 
@@ -909,7 +915,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showPreviewChart = true;
         $scope.showColor = false;
         $scope.showDateRange = false;
-        $scope.advanced=false;
+        $scope.advanced = false;
     };
 
     $scope.showDateDurations = function () {
@@ -920,7 +926,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showColor = false;
         $scope.showPreviewChart = false;
-        $scope.advanced=false;
+        $scope.advanced = false;
     };
 
     $scope.showSortingColumn = function () {
@@ -931,7 +937,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showColor = false;
         $scope.showPreviewChart = false;
-        $scope.advanced=false;
+        $scope.advanced = false;
     };
 
     $scope.showColorList = function () {
@@ -942,11 +948,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
-        $scope.advanced=false;
+        $scope.advanced = false;
     };
-    $scope.advanced=false;
+    $scope.advanced = false;
     $scope.showAdvancedOptions = function () {
-        $scope.advanced=true;
+        $scope.advanced = true;
         $scope.showColor = false;
         $scope.showFilter = false;
         $scope.showSortBy = false;
@@ -965,7 +971,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColumnDefs = false;
         $scope.showDateRange = false;
         $scope.showColor = false;
-        $scope.advanced=false;
+        $scope.advanced = false;
         $scope.chartTypeName = null;
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
@@ -1266,6 +1272,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setFunnelFn = function (funnelFn) {
         $scope.directiveFunnelFn = funnelFn;
     };
+    $scope.setCustomDatePickerFn = function (customDateFn) {
+        $scope.directiveDateFn = customDateFn;
+    };
 
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
@@ -1556,6 +1565,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectPieChartY = function (widget, column) {
         $scope.dispHideBuilder = true;
+        if (!column) {
+            return;
+        }
         var exists = false;
         angular.forEach(widget.columns, function (value, key) {
             if (column.fieldName == value.fieldName) {
@@ -1619,6 +1631,42 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             };
             $scope.dataSetColumn = data;
         }
+    };
+    var deleteColumns = [];
+    $scope.removeDerivedColumn = function (obj, widgetObj) {
+        var checkColumnDef = obj.selectColumnDef;
+        if (checkColumnDef === 1) {
+            var data = {
+                derivedId: obj.id,
+                agregationFunction: obj.agregationFunction,
+                columnsButtons: obj.columnsButtons,
+                displayFormat: obj.displayFormat,
+                displayName: obj.displayName,
+                expression: obj.expression,
+                fieldName: obj.fieldName,
+                fieldType: obj.fieldType,
+                functionName: obj.functionName,
+                groupPriority: obj.groupPriority,
+                selectColumnDef: obj.selectColumnDef,
+                sortOrder: obj.sortOrder,
+                sortPriority: obj.sortPriority,
+                status: obj.status,
+                type: obj.type,
+                userId: obj.userId,
+                widgetId: obj.widgetId
+            };
+        }
+        console.log(data);
+        var index = $scope.collectionFields.indexOf(obj);
+        $scope.collectionFields.splice(index, 1);
+        if (data) {
+            var getIndex = widgetObj.columns.findIndex(x => x.fieldName == data.fieldName);
+            if (getIndex != -1) {
+                widgetObj.columns.splice(getIndex, 1);
+            }
+        }
+        deleteColumns.push({id: obj.id, fieldName: obj.fieldName});
+        console.log(deleteColumns);
     };
     //Save DerivedColumn
     $scope.saveDerivedColumn = function (dataSetColumn, widget) {
@@ -1896,7 +1944,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
         $scope.showSortBy = false;
         $scope.showColor = false;
-        $scope.advanced=false;
+        $scope.advanced = false;
     }
 
     $scope.save = function (widget) {
@@ -2020,6 +2068,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             chartColorOption: widgetColor
         };
         clearEditAllWidgetData();
+
+        var deleteColumnDef = deleteColumns.map(function (value, key) {
+            if (value) {
+                return value.fieldName;
+            }
+        }).join(',');
+        console.log(deleteColumnDef);
+        if (data.id) {
+            $http({method: 'DELETE', url: 'admin/ui/deleteDerivedColumn/' + data.id + '?deleteColumns=' + deleteColumnDef}).success(function (response) {
+            });
+        }
+        deleteColumns = [];
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             var widgetColors;
             var newWidgetResponse = response;
@@ -2124,6 +2184,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.cancel = function (widgetObj) {
         resetQueryBuilder();
         addColor = [];
+        deleteColumns = [];
         $('.showEditWidget').modal('hide');
         angular.forEach(setDefaultWidgetObj, function (val, key) {
             $scope.widgetObj.id = val.id;
@@ -2170,7 +2231,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.loadingColumnsGif = false;
         $scope.showColor = false;
         $scope.showDateRange = false;
-        $scope.advanced=false;
+        $scope.advanced = false;
         $scope.widgetObj.chartColorOption = "";
         $scope.widgetObj.targetColors = "";
         if ($scope.chartColorOptionsVal) {
@@ -2412,7 +2473,11 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
 //                    if (isNaN(value)) {
 //                        return "aa-";
 //                    }
-                    return dashboardFormat(column, value);
+                    var columnValue = dashboardFormat(column, value);
+                    if (columnValue == 'NaN') {
+                        columnValue = "-";
+                    }
+                    return columnValue;
                 }
                 return value;
             };
@@ -2421,7 +2486,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 var val = parseFloat(rating);
                 var size = val / 5 * 100;
                 return size + '%';
-            }
+            };
 
             function sortByDay(list, sortFields) {
                 var returnSortDay;
@@ -2850,7 +2915,11 @@ app.directive('tickerDirective', function ($http, $stateParams) {
 //                    if (isNaN(value)) {
 //                        return "-";
 //                    }
-                    return dashboardFormat(column, value);
+                    var columnValue = dashboardFormat(column, value);
+                    if (columnValue == 'NaN') {
+                        columnValue = "-";
+                    }
+                    return columnValue;
                 }
                 return value;
             };
@@ -3223,13 +3292,15 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             if (chartMaxRecord.maxRecord > 0) {
                                 chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
-                            xTicks = [xAxis.fieldName];
-                            xData = chartData.map(function (a) {
-                                xTicks.push(loopCount);
-                                loopCount++;
-                                return a[xAxis.fieldName];
-                            });
-                            columns.push(xTicks);
+                            if (xAxis) {
+                                xTicks = [xAxis.fieldName];
+                                xData = chartData.map(function (a) {
+                                    xTicks.push(loopCount);
+                                    loopCount++;
+                                    return a[xAxis.fieldName];
+                                });
+                                columns.push(xTicks);
+                            }
                             //yaxis mapping data
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
@@ -3899,14 +3970,15 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     }
                                 });
                             }
-
-                            xTicks = [xAxis.fieldName];
-                            xData = chartData.map(function (a) {
-                                xTicks.push(loopCount);
-                                loopCount++;
-                                return a[xAxis.fieldName];
-                            });
-                            columns.push(xTicks);
+                            if (xAxis) {
+                                xTicks = [xAxis.fieldName];
+                                xData = chartData.map(function (a) {
+                                    xTicks.push(loopCount);
+                                    loopCount++;
+                                    return a[xAxis.fieldName];
+                                });
+                                columns.push(xTicks);
+                            }
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
@@ -3940,7 +4012,11 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     label: {
                                         format: function (value, ratio, id) {
                                             var percentage = d3.format("%.2f")(ratio);
-                                            return  percentage + ", \n" + dashboardFormat(yAxisField, value);
+                                            var columnValue = dashboardFormat(yAxisField, value);
+                                            if (columnValue == 'NaN') {
+                                                columnValue = "-";
+                                            }
+                                            return  percentage + ", \n" + columnValue;
                                         }
                                     }
                                 },
@@ -3952,7 +4028,11 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     format: {
                                         value: function (value, ratio, id) {
                                             var percentage = d3.format("%.2f")(ratio);
-                                            return  percentage + ", \n" + dashboardFormat(yAxisField, value);
+                                            var columnValue = dashboardFormat(yAxisField, value);
+                                            if (columnValue == 'NaN') {
+                                                columnValue = "-";
+                                            }
+                                            return  percentage + ", \n" + columnValue;
                                         }
                                     }
                                 },
@@ -3976,7 +4056,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             });
                         }
                     });
-                }
+                };
                 scope.setPieChartFn({pieFn: scope.refreshPieChart});
                 scope.refreshPieChart();
             }
@@ -5272,7 +5352,6 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                         });
                     });
                 }
-                ;
                 scope.setFunnelFn({funnelFn: scope.refreshFunnel});
                 scope.refreshFunnel();
             }
@@ -5549,6 +5628,7 @@ app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
                         $('#widgetDateRange span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
                     }
             );
+
             $(".ranges ul").find("li").addClass("custom-pickers");
             $(".custom-pickers").click(function (e) {
                 $(".scheduler-list-style").hide();
