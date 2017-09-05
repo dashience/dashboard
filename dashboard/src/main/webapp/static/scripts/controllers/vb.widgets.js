@@ -286,7 +286,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 dashboardFilter.country = selectedFilter.Country;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.states= [];
+                $scope.states = [];
                 var request = $http.get('admin/filterData/getFilter/state?dashboardFilter=' + queryString).success(function (response) {
                     $scope.states = response.data;
                 });
@@ -297,7 +297,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.country = selectedFilter.Country;
                 dashboardFilter.state = selectedFilter.State;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                 $scope.cities = [];
+                $scope.cities = [];
                 var request = $http.get('admin/filterData/getFilter/city?dashboardFilter=' + queryString).success(function (response) {
                     $scope.cities = response.data;
                 });
@@ -358,7 +358,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.widgets.forEach(function (val, key) {
                 val.filterUrlParameter = allSelected;
             });
-            
+
             console.log(allSelected)
 //                $scope.selectItems = "";
             $timeout(function () {
@@ -2843,6 +2843,8 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     scope.loadingTable = false;
                     //  scope.getReturnDynamicFilter({dynamicFilterObj: response.filter})
                     if (!response.data) {
+                        scope.tableEmptyMessage = "No Data Found";
+                        scope.hideEmptyTable = true;
                         return;
                     }
                     var pdfData = {};
@@ -3252,13 +3254,15 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
                     scope.tickers = [];
                     scope.loadingTicker = false;
-                    if (response.length === 0) {
+                    if (!response.data) {
+                        scope.tickerEmptyMessage = "No Data Found";
+                        scope.hideEmptyTicker = true;
+                        return;
+                    }
+                    if (response.data === null || response.data.length === 0) {
                         scope.tickerEmptyMessage = "No Data Found";
                         scope.hideEmptyTicker = true;
                     } else {
-                        if (!response) {
-                            return;
-                        }
                         angular.forEach(tickerName, function (value, key) {
                             var tickerData = response.data;
                             var loopCount = 0;
@@ -3519,9 +3523,11 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
                         scope.loadingLine = false;
                         if (!response.data) {
+                            scope.lineEmptyMessage = "No Data Found";
+                            scope.hideEmptyLine = true;
                             return;
                         }
-                        if (response.data.length === 0) {
+                        if (response.data === null || response.data.length === 0) {
                             scope.lineEmptyMessage = "No Data Found";
                             scope.hideEmptyLine = true;
                         } else {
@@ -3871,10 +3877,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             '&url=' + barChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
                         scope.loadingBar = false;
-                        if (!response) {
+                        if (!response.data) {
+                            scope.barEmptyMessage = "No Data Found";
+                            scope.hideEmptyBar = true;
                             return;
                         }
-                        if (response.data.length === 0) {
+                        if (response.data == null || response.data.length === 0) {
                             scope.barEmptyMessage = "No Data Found";
                             scope.hideEmptyBar = true;
                         } else {
@@ -4211,10 +4219,12 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             '&url=' + pieChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(pieChartDataSource.query)).success(function (response) {
                         scope.loadingPie = false;
-                        if (!response) {
+                        if (!response.data) {
+                            scope.pieEmptyMessage = "No Data Found";
+                            scope.hideEmptyPie = true;
                             return;
                         }
-                        if (response.data.length === 0) {
+                        if (response.data === null || response.data.length === 0) {
                             scope.pieEmptyMessage = "No Data Found";
                             scope.hideEmptyPie = true;
                         } else {
@@ -4573,7 +4583,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
                         scope.loadingArea = false;
-                        if (response.data.length === 0) {
+                        if (!response.data) {
+                            scope.areaEmptyMessage = "No Data Found";
+                            scope.hideEmptyArea = true;
+                            return;
+                        }
+                        if (response.data === null || response.data.length === 0) {
                             scope.areaEmptyMessage = "No Data Found";
                             scope.hideEmptyArea = true;
                         } else {
@@ -4920,7 +4935,12 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             '&url=' + stackedBarChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(stackedBarChartDataSource.query)).success(function (response) {
                         scope.loadingStackedBar = false;
-                        if (response.data.length === 0) {
+                        if (!response.data) {
+                            scope.stackedBarEmptyMessage = "No Data Found";
+                            scope.hideEmptyStackedBar = true;
+                            return;
+                        }
+                        if (response.data === null || response.data.length === 0) {
                             scope.stackedBarEmptyMessage = "No Data Found";
                             scope.hideEmptyStackedBar = true;
                         } else {
@@ -5275,10 +5295,12 @@ app.directive('scatterChartDirective', function ($http, $filter, $stateParams, o
                             '&port=3306&schema=vb&query=' + encodeURI(scatterChartDataSource.query)).success(function (response) {
                         scope.loadingScatter = false;
                         if (!response.data) {
+                            scope.scatterEmptyMessage = "No Data Found";
+                            scope.hideEmptyScatter = true;
                             return;
                         }
-                        scope.getScatterWidgetObj({obj: response.data})
-                        if (response.data.length === 0) {
+                        scope.getScatterWidgetObj({obj: response.data});
+                        if (response.data === null || response.data.length === 0) {
                             scope.scatterEmptyMessage = "No Data Found";
                             scope.hideEmptyScatter = true;
                         } else {
@@ -5509,14 +5531,16 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             '&url=' + funnelDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(funnelDataSource.query)).success(function (response) {
                         scope.funnels = [];
-                        scope.loadingFunnel = false;
-                        if (response.data.length === 0) {
+                        scope.loadingFunnel = false;               
+                        if (!response.data) {
+                            scope.scatterEmptyMessage = "No Data Found";
+                            scope.hideEmptyScatter = true;
+                            return;
+                        }
+                        if (response.data === null || response.data.length === 0) {
                             scope.funnelEmptyMessage = "No Data Found";
                             scope.hideEmptyFunnel = true;
                         } else {
-                            if (!response) {
-                                return;
-                            }
                             angular.forEach(funnelName, function (value, key) {
                                 var funnelData = response.data;
                                 var loopCount = 0;

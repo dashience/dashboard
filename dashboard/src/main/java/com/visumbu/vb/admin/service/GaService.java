@@ -157,7 +157,9 @@ public class GaService {
         String filter = gaReport.getDefaultFilter();
         System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + filter);
         GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, filter);
+
         return getResponseAsMap(gaData);
+
     }
 
     public GetReportsResponse getGenericData(String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2, String metrics, String dimentions, String productSegments, String filter) {
@@ -346,6 +348,12 @@ public class GaService {
 
     public Map<String, List<Map<String, Object>>> getResponseAsMap(GetReportsResponse response) {
         Map returnMap = new HashMap();
+        System.out.println("response ----> " + response);
+        if (response == null) {
+            returnMap.put("columnDefs", null);
+            returnMap.put("data", null);
+            return returnMap;
+        }
 
         for (Report report : response.getReports()) {
             ColumnHeader header = report.getColumnHeader();

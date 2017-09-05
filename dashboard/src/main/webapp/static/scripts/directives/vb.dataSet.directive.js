@@ -11,6 +11,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
+                '<div class="message" ng-if="showMessage">No Data Found</div>' +
                 '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
                 '<button class="btn btn-warning btn-xs" title="Delete Derived Columns" ng-click="resetDataSetColumn()">Reset</button>' +
                 '<button class="btn btn-success btn-xs" title="Add Derived Column" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
@@ -385,7 +386,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         return "-";
                     }
                     if (column.displayFormat.indexOf("%") > -1) {
-                         return d3.format(column.displayFormat)(value / 100);
+                        return d3.format(column.displayFormat)(value / 100);
                     }
                     return d3.format(column.displayFormat)(value);
                 }
@@ -454,6 +455,12 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         '&url=' + dataSourcePath.url +
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                     scope.dataSetColumns = [];
+                    if (!response) {
+                        scope.ajaxLoadingCompleted = true;
+                        scope.loadingTable = false;
+                        scope.showMessage = true;
+                        return;
+                    }
                     if (dataSourcePath.id == null) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
@@ -461,7 +468,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         scope.getDataSetColumns({dataSetColumn: scope.dataSetColumns});
                     }
                     scope.tableColumns = response.columnDefs;
-                    scope.tableRows = response.data.slice(0, 5);
+                    if (response.data === null || response.data.length == 0) {
+                        scope.ajaxLoadingCompleted = true;
+                        scope.loadingTable = false;
+                        scope.showMessage = true;
+                        return;
+                    } else {
+                        scope.tableRows = response.data.slice(0, 5);
+                    }
                     function dayOfWeekAsString(dayIndex) {
                         return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
                     }
