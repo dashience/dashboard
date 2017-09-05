@@ -360,6 +360,13 @@
         background-color: #3d464d;
         color: #fff;
     }
+    
+    .combinationSelect{
+        margin-top: 5px !important;
+    }
+    .selectYaxis{
+         margin-top: 5px !important;
+    }
 </style>
 <div class="container">
     <div class="row main col-md-6">
@@ -384,19 +391,7 @@
                                     </a>
                                 </div>
                             </div>
-                            
-                            <div class="form-group widget-title">
-                                <label translate>Combination Type</label>
-                                <div class="chart">
-                                    <a class="btn chart-btn" ng-repeat="combinationType in combinationTypes track by combinationType.id" 
-                                       ng-click="selectCombinationChart(combinationType, widgetObj)"> 
-                                        <span class="previewChart" title="{{combinationType.name}}">
-                                            <i style="cursor: pointer" class="fa {{combinationType.icon}} typeChart" 
-                                               ng-class="{'selected': combinationType.type == (selectedCombinationType?selectedCombinationType:widgetObj.combinationType)}"></i> 
-                                        </span>
-                                    </a>
-                                </div>
-                            </div>
+  
                             <div class="form-group widget-title">
                                 <input type="checkbox" ng-checked="(widgetObj.allAccount == 1) || (widgetObj.allAccount == null)"
                                        ng-model="widgetObj.allAccount" ng-true-value="1" ng-false-value="0">
@@ -427,7 +422,7 @@
                                     <select class="form-control" 
                                             ng-model="widgetObj.dataSetId" 
                                             ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" 
-                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName,combinationTypeName)">
+                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName)">
                                     </select>
                                 </div>
                             </div>
@@ -435,7 +430,7 @@
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label translate>Time Segment</label>
                                     <select class="form-control m-b" ng-model="widgetObj.timeSegment" 
-                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName,combinationTypeName)"
+                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
                                             ng-options="timeSeg.name for timeSeg in timeSegments track by timeSeg.type">
                                     </select>
                                 </div>
@@ -443,7 +438,7 @@
                                     <label translate>Dimension</label>
                                     <select class="form-control" 
                                             ng-model="widgetObj.productSegment" 
-                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName,combinationTypeName)"
+                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
                                             ng-options="productSeg.name for productSeg in productSegments track by productSeg.type">
                                     </select>
                                 </div>
@@ -469,7 +464,7 @@
                 <div class="col-sm-6">
                     <div class="input-group"> <div class="add-widget-title" translate>Metrics</div>
                         <div class="box-pop">
-                            <div class="form-group widget-title col-sm-12" ng-show="((chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text' || (combinationTypeName ? combinationTypeName : widgetObj.combinationType) !== 'text')">
+                            <div class="form-group widget-title col-sm-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
                                 <button class="btn btn-default" 
                                         ng-click="showListOfColumns()" translate>
                                     Choose Columns
@@ -487,7 +482,7 @@
                                     Color
                                 </button>
                             </div>
-                            <div class="form-group widget-title col-sm-12" ng-show="((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || (combinationTypeName ? combinationTypeName : widgetObj.combinationType) !== 'text')">
+                            <div class="form-group widget-title col-sm-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'">
                                 <button class="btn btn-default" 
                                         ng-click="showEditor(chartTypeName, widgetObj)" translate>
                                     Show Editor
@@ -674,7 +669,7 @@
                             </ui-select>
                         </div>
                     </div>
-                    <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
+                    <div class="form-group selectYaxis" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
                             <label ng-if="hideSelectedColumn === false;" translate>Select Y2-Axis</label>
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y2Column" theme="bootstrap" 
@@ -688,7 +683,7 @@
                         </div>
                     </div>
                     
-                    <div class="col-md-12" ng-if="((combinationTypeName ? combinationTypeName : widgetObj.combinationType) == 'area' || (combinationTypeName ? combinationTypeName : widgetObj.chartType) == 'bar' || (combinationTypeName ? combinationTypeName : widgetObj.combinationType) == 'line')">
+                    <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination'">
                             <div class="panel-heading btnAddon5">
                                 <h3 class="panel-title" translate>
                                     Combination Type</h3>
@@ -697,13 +692,13 @@
                                 <div class="col-md-12">
                                     <div class='panel-body'>
                                         <ul class="list-unstyled" ng-repeat="combinationTypeName in widgetObj.columns">
-                                            <li ng-if="combinationTypeName.xAxis !=1">
+                                            <li ng-if="combinationTypeName.xAxis !=1" class="m-b-10">
                                                 <div class="col-sm-6">{{combinationTypeName.displayName}}</div>
-                                                <div class="col-sm-6">
+                                                <div class="col-sm-6 m-b-10">
                                                     <select ng-options="combinationChartType.value as combinationChartType.name for combinationChartType in combinationChartTypes"
-                                                            ng-model="combinationTypeName.combinationType" class="form-control">
+                                                            ng-model="combinationTypeName.combinationType" class="form-control combinationSelect">
                                                     </select>
-                                                </div><br><br/> 
+                                                </div> 
                                             </li>
                                         </ul>
                                     </div>                    
@@ -883,7 +878,7 @@
                          ticker-Columns="{{displayPreviewChart.columns}}">                     
                     </div>
                 </div>
-                <div ng-if="(chartTypeName === 'line' || combinationTypeName === 'line')">
+                <div ng-if="(chartTypeName === 'line')">
                     <div>
                         <div line-Chart-Source='{{displayPreviewChart.dataSetId}}' 
                              widget-Id="{{displayPreviewChart.id}}" 
@@ -893,7 +888,7 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="(chartTypeName === 'area' || combinationTypeName === 'area')">
+                <div ng-if="(chartTypeName === 'area' || chartTypeName === 'combination')">
                     <div>
                         <div area-Chart-Source='{{displayPreviewChart.dataSetId}}' 
                              widget-Id="{{displayPreviewChart.id}}" 
@@ -903,7 +898,7 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="(chartTypeName === 'bar' || combinationTypeName === 'bar')">
+                <div ng-if="chartTypeName === 'bar'">
                     <div>
                         <div bar-Chart-Directive 
                              bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 

@@ -439,7 +439,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body"  ng-if="widget.chartType === 'area'">
+                    <div class="panel-body"  ng-if="(widget.chartType === 'area' || widget.chartType === 'combination')">
                         <div>
                             <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
                                  area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
@@ -449,6 +449,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="panel-body" ng-if="widget.chartType === 'scatter'">
                         <div>
                             <div set-Scatter-Chart-Fn="setScatterChartFn(scatterFn)" 

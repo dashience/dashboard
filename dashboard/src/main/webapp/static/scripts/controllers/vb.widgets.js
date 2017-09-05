@@ -110,9 +110,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get('static/datas/imageUrl.json').success(function (response) {       //Popup- Select Chart-Type Json
         $scope.chartTypes = response;
     });
-    $http.get('static/datas/combinationImageUrl.json').success(function (response) {       //Popup- Select Chart-Type Json
-        $scope.combinationTypes = response;
-    });
+    
 
     $http.get('admin/tag').success(function (response) {
         $scope.tags = response;
@@ -358,9 +356,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.clearChartType = function () {
         $scope.widgetObj = {allAccount: 1, selectAll: 0};
         $scope.selectedChartType = "";
-        $scope.selectedCombinationType = "";
         $scope.chartTypeName = "";
-        $scope.combinationTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.textExpression = "";
         $scope.dataSetColumn.fieldType = "";
@@ -461,7 +457,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
     $scope.loadingColumnsGif = false;
     var setDefaultChartType;
-    var setDefaultCombinationType;
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
@@ -491,7 +486,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         setDefaultWidgetObj.push({
             chartType: widget.chartType,
-            combinationType: widget.combinationType,
             id: widget.id,
             columns: data,
             widgetTitle: widget.widgetTitle,
@@ -511,7 +505,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             accountId: widget.accountId ? widget.accountId.id : null
         });
         setDefaultChartType = widget.chartType;
-        setDefaultCombinationType = widget.combinationType;
         $scope.showDerived = false;
         if (!widget.accountId) {
             widget.allAccount = 1;
@@ -549,14 +542,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.y1Column.push(val);
                 }
             }
-             if (val.yAxis == 1) {
-                if (val.fieldName) {
-                    if (widget.combinationType == "pie") {
-                        $scope.selectPieChartYAxis = val;
-                    }
-                    $scope.y1Column.push(val);
-                }
-            }
+            
             if (val.yAxis == 2) {
                 if (val.fieldName) {
                     $scope.y2Column.push(val);
@@ -905,53 +891,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.hideSelectedColumn = false;
         }, 50);
     };
-    
-    
-    $scope.selectCombinationChart = function (combinationType, widget) {
-        addColor = [];
-        $scope.hideSelectedColumn = true;
-        $scope.showSortBy = false;
-        $scope.showColumnDefs = false;
-        $scope.showPreviewChart = false;
-        $scope.showFilter = false;
-        $scope.showColor = false;
-        $scope.selectedCombinationType = combinationType.type;
-        $scope.combinationTypeName = combinationType.type;
-        $scope.showDateRange = false;
-//        $scope.xColumn = "";
-//        $scope.y1Column = "";
-//        $scope.selectPieChartXAxis = "";
-//        $scope.selectPieChartYAxis = "";
-//        $scope.y2Column = "";
-//        $scope.tickerItem = "";
-//        $scope.funnelItem = "";
-//        $scope.widgetObj.dataSourceId = "";
-//        $scope.widgetObj.dataSetId = "";
-//        $scope.widgetObj.timeSegment = "";
-//        $scope.widgetObj.productSegment = "";
-//        $scope.widgetObj.networkType = "";
-        $scope.widgetObj.chartColorOption = "";
-        $scope.widgetObj.targetColors = "";
-        if ($scope.combinationTypeName) {
-            widget.columns = [];
-            $scope.collectionFields.forEach(function (value, k) {
-                var machField = $.grep(widget.columns, function (b) {
-                    return b.fieldName === value.fieldName;
-                });
-                if (machField.length > 0) {
-                    value.selectColumnDef = 1;
-                } else {
-                    value.selectColumnDef = 0;
-                }
-            });
-        }
-
-        $timeout(function () {
-            $scope.hideSelectedColumn = false;
-        }, 50);
-    };
-    
-    
+     
     $scope.showListOfColumns = function () {
         $scope.showSortBy = false;
         $scope.loadingColumnsGif = true;
@@ -973,9 +913,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showSortBy = false;
     };
 
-    $scope.showEditor = function (chartType, widget,combinationType) {
+    $scope.showEditor = function (chartType, widget) {
         $scope.chartTypeName = chartType ? chartType : widget.chartType;
-        $scope.combinationTypeName = combinationType ? combinationType : widget.combinationType;
         $scope.showSortBy = false;
         $scope.showPreviewChart = true;
         $scope.showColor = false;
@@ -1015,7 +954,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var firstPreviewAfterEdit = 1;
     $scope.showPreview = function (widgetObj, userChartColors) {
         var chartType = $scope.chartTypeName;
-        var combinationType = $scope.combinationTypeName;
         console.log(chartType);
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
@@ -1024,14 +962,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showDateRange = false;
         $scope.showColor = false;
         $scope.chartTypeName = null;
-        $scope.combinationTypeName = null;
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
-        $timeout(function () {
-            $scope.combinationTypeName = combinationType ? combinationType : widgetObj.combinationType;
-        }, 50);
-
+        
         var chartColors = userChartColors ? userChartColors.optionValue : null;
         if (firstPreviewAfterEdit == 1) {
             $scope.chartColorOptionsVal = widgetObj.chartColorOption;
@@ -1333,9 +1267,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
-        var expandchart = widget.combinationType;
+       
         widget.chartType = null;
-        widget.combinationType = null;
         if (widget.width == 3) {
             widget.width = widget.width + 1;
         } else if (widget.width == 4) {
@@ -1347,7 +1280,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         $timeout(function () {
             widget.chartType = expandchart;
-            widget.combinationType = expandchart;
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/editWidgetSize/' + widget.id + "?width=" + widget.width}).success(function (response) {
             });
         }, 50);
@@ -1355,8 +1287,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     $scope.reduceWidget = function (widget) {
         var expandchart = widget.chartType;
-        var expandchart = widget.combinationType;
-        widget.combinationType = null;
 
         if (widget.width == 12) {
             widget.width = widget.width - 4;
@@ -1370,7 +1300,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
         $timeout(function () {
             widget.chartType = expandchart;
-            widget.combinationType = expandchart;
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/editWidgetSize/' + widget.id + "?width=" + widget.width}).success(function (response) {
             });
         }, 50);
@@ -1985,15 +1914,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.previewTitle = "";
         $scope.widgetObj.chartType = "";
         $scope.selectedChartType = "";
-        $scope.widgetObj.combinationType = "";
-        $scope.selectedCombinationType = "";
         $scope.widgetObj.dataSourceId = "";
         $scope.widgetObj.dataSetId = "";
         $scope.widgetObj.timeSegment = "";
         $scope.widgetObj.productSegment = "";
         $scope.widgetObj.networkType = "";
         $scope.chartTypeName = "";
-        $scope.combinationTypeName = "";
         $scope.dataSetColumn.fieldName = "";
         $scope.dataSetColumn.textExpression = "";
         $scope.dataSetColumn.fieldType = "";
@@ -2043,16 +1969,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
             }
         }
-        if (widget.combinationType != 'text') {
-            try {
-                if ($('.query-builder').queryBuilder('getRules')) {
-                    $scope.jsonData = JSON.stringify($('.query-builder').queryBuilder('getRules'));
-                    $scope.queryFilter = $('.query-builder').queryBuilder('getSQL', false, true).sql;
-                }
-            } catch (e) {
-
-            }
-        }
+        
         try {
             $scope.customStartDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
             $scope.customEndDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
@@ -2119,15 +2036,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSetTypeId = 0;
         }
         
-        if (widget.combinationType != 'text') {
-            dataSourceTypeId = widget.dataSourceId ? widget.dataSourceId.id : null;
-            dataSourceObj = widget.dataSourceId;
-            dataSetTypeId = widget.dataSetId ? widget.dataSetId.id : null;
-            dataSetObj = widget.dataSetId;
-        } else {
-            dataSourceTypeId = 0;
-            dataSetTypeId = 0;
-        }
+        
 
         if (widget.allAccount === 1) {
             widget.accountId = null;
@@ -2137,7 +2046,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var data = {
             id: widget.id,
             chartType: $scope.chartTypeName ? $scope.chartTypeName : widget.chartType,
-            combinationType: $scope.combinationTypeName ? $scope.combinationTypeName : widget.combinationType,
             widgetTitle: widget.previewTitle,
             widgetColumns: widgetColumnsData,
             dataSourceId: dataSourceTypeId,
@@ -2241,13 +2149,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 tableColumns: $scope.derivedColumns
             };
             widget.chartType = "";
-            widget.combinationType = "";
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
                 $scope.chartTypeName = "";
-                $scope.combinationTypeName = "";
                 widget.id = data.id;
                 widget.chartType = data.chartType;
-                widget.combinationType = data.combinationType;
                 widget.chartColorOption = data.chartColorOption;
                 widget.widgetTitle = data.widgetTitle;
                 widget.dataSetId = dataSetObj;
@@ -2291,7 +2196,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.id = val.id;
             $scope.widgetObj.previewTitle = val.widgetTitle;
             $scope.widgetObj.chartType = val.chartType;
-            $scope.widgetObj.combinationType = val.combinationType;
             $scope.widgetObj.dataSourceId = val.dataSourceId;
             $scope.widgetObj.dataSetId = val.dataSetId;
             $scope.widgetObj.timeSegment = val.timeSegment;
@@ -2314,7 +2218,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnY2Axis = [];
         }
         $scope.chartTypeName = "";
-        $scope.combinationTypeName = "";
         $scope.xColumn = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
@@ -2328,7 +2231,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.dataSetColumn.displayFormat = "";
         $scope.showSortBy = false;
         $scope.selectedChartType = "";
-        $scope.selectedCombinationType = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
