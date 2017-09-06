@@ -631,7 +631,7 @@
             <div class="row metrics-bottom">
                 <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel')" ng-show="showColumnDefs">
                     <div class="form-group">
-                        <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
+                        <div class="col-md-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) != 'gauge')">
                             <label ng-if="hideSelectedColumn === false;" translate>Select X-Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="xColumn" 
@@ -660,7 +660,7 @@
 
                     </div>
 
-                    <div class="form-group" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie'">
+                    <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge')">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
                             <label ng-if="hideSelectedColumn === false;" translate>Select Y1-Axis</label>                            
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y1Column" theme="bootstrap" 
@@ -673,7 +673,7 @@
                             </ui-select>
                         </div>
                     </div>
-                    <div class="form-group selectYaxis" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
+                    <div class="form-group selectYaxis" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' ||(chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
                             <label ng-if="hideSelectedColumn === false;" translate>Select Y2-Axis</label>
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y2Column" theme="bootstrap" 
@@ -709,6 +709,16 @@
                                 </div>
                             </div>
                         </div>
+                    
+                    
+                    <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widget.chartType) == 'gauge'" >
+                        <label>Gauge</label>
+                        <select class="form-control"  ng-model="gaugeColumns" ng-options="collectionField.fieldName for collectionField in collectionFields track by collectionField.fieldName" 
+                                ng-change="gauge(widgetObj, gaugeColumns)">                
+                        </select>
+                       
+                    </div>    
+                    
                 </div>
             </div>
             <div class="row">
@@ -1081,6 +1091,17 @@
                         </div>
                     </div>
                 </div>
+                
+                <div ng-if="chartTypeName === 'gauge'">
+                    <div 
+                         gauge-Directive 
+                         gauge-Chart-Source="{{displayPreviewChart.dataSetId}}" 
+                         widget-Obj="{{displayPreviewChart}}" 
+                         widget-Id="{{displayPreviewChart.id}}" 
+                         widget-Columns="{{displayPreviewChart.columns}}">                     
+                    </div>
+                </div>
+                
                 <div class="list" ng-if="chartTypeName === 'table'" adjust-height>
                     <div class="table-responsive project-list">
                         <div id="changes-height" class="project-list">
