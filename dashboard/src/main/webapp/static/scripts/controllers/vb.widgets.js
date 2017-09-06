@@ -54,7 +54,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.accountName = $stateParams.accountName;
     $scope.productID = $stateParams.productId;
     $scope.widgetTabId = $stateParams.tabId;
-//    $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetStartDate = $stateParams.startDate;
     $rootScope.tabStartDate = $stateParams.startDate;
     $rootScope.tabEndDate = $stateParams.endDate;
@@ -466,7 +465,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
-//        $scope.dispHideBuilder = true;
+        $scope.dispHideBuilder = true;
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
 
@@ -592,6 +591,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     function columnHeaderDef(widget, y1Column, y2Column) {
+        $scope.hideSelectedColumn = true;
         $scope.afterLoadWidgetColumns = false;
         $scope.queryBuilderList = "";
         var dataSourcePassword;
@@ -1986,7 +1986,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColor = false;
         $scope.dispHideBuilder = true;
         $scope.queryBuilderList = "";
-        $scope.advanced = false;
+         $scope.advanced = false;
     }
 
     $scope.save = function (widget) {
