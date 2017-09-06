@@ -76,6 +76,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $translate.use(key);
     }
 
+
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {

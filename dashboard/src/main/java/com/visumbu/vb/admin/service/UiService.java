@@ -1471,4 +1471,12 @@ public class UiService {
             uiDao.deleteWidgetColumn(columnArray[i], widgetId);
         }
     }
+
+    public UserPreferences getChartColorById(Integer userId) {
+        return uiDao.getChartColorById(userId);
+    }
+
+    public List<DashboardTemplate> getTemplates(Integer userId, Integer agencyId, AgencyProduct agencyProduct) {
+       return uiDao.getTemplates(userId, agencyId, agencyProduct);
+    }
 }
