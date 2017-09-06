@@ -390,8 +390,10 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                return value;
 //                }
                 var strValue = value;
-                if (strValue.toString().indexOf(',') !== -1) {
-                    value = value.replace(/\,/g, '');
+                if (strValue) {
+                    if (strValue.toString().indexOf(',') !== -1) {
+                        value = value.replace(/\,/g, '');
+                    }
                 }
                 if (column.fieldType === "date") {
                     return value;
@@ -475,6 +477,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         '&url=' + dataSourcePath.url +
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                     scope.dataSetColumns = [];
+                    console.log(response.columnDefs);
+                    scope.getDataSetColumns({dataSetColumnDef: response.columnDefs});
                     if (!response) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
@@ -485,7 +489,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
                         scope.dataSetColumns = response.columnDefs;
-                        scope.getDataSetColumns({dataSetColumn: scope.dataSetColumns});
+                        scope.getDataSetColumns({dataSetColumnDef: scope.dataSetColumns});
                     }
                     scope.tableColumns = response.columnDefs;
                     if (response.data == null || response.data.length == 0) {

@@ -6,13 +6,71 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.tab = 1;
+    $scope.childTab = 3;
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
     };
+    $scope.setChildTab = function (newTab) {
+        $scope.childTab = newTab;
+    };
+
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
+    $scope.isChildSet = function (tabNum) {
+        return $scope.childTab === tabNum;
+    };
 
+
+    $scope.dataTypes = [
+        {name: "None"},
+        {name: "String"},
+        {name: "Number"},
+        {name: "Date"},
+        {name: "Day"}
+    ];
+    $scope.formats = [
+        {name: "None"},
+        {name: "Currency"},
+        {name: "Integer"},
+        {name: "Percentage"},
+        {name: "Decimal1"},
+        {name: "Decimal2"},
+        {name: "Time"},
+        {name: "Star Rating"},
+        {name: "Date"}  
+    ];
+    $scope.selectAggregations = [
+        {name: "None"},
+        {name: "SUM"},
+        {name: "CTR"},
+        {name: "CPC"},
+        {name: "CPCS"},
+        {name: "CPS"},
+        {name: "CPA"},
+        {name: "CPAS"},
+        {name: "Avg"},
+        {name: "Count"},
+        {name: "Min"},
+        {name: "Max"},
+        {name: "CPL"},
+        {name: "CPLC"},
+        {name: "CPComment"},
+        {name: "CPostE"},
+        {name: "CPageE"},
+        {name: "CPP"},
+        {name: "CPR"}
+    ];
+
+    $scope.catagorys = [
+        {name: "Metrics"}, {name: "Dimension"}
+    ];
+    
+    $scope.deleteField = function (index) {
+        $scope.columnsHeaderDefs.splice(index, 1);
+    };
+    
+    
     $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
     var lan = $scope.agencyLanguage;
@@ -107,7 +165,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.secondDataSetLoadingCompleted = false;
         $scope.secondDataSetLoading = true;
         $scope.loadingResultCompleted = false;
-        getPreviewDataSet($scope.secondDataSet, "dataSet2");
+        getbDataSet($scope.secondDataSet, "dataSet2");
     };
     $scope.selectFirstDataSetColumn = function (dataSetColumn) {
         if ($scope.operationType == 'union' || $scope.operationType == 'intersection') {
@@ -4335,6 +4393,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     function getItems() {
         $http.get('admin/ui/dataSet').success(function (response) {
             $scope.dataSets = response;
+            console.log($scope.dataSets);
         });
     }
     getItems();
@@ -4359,8 +4418,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.columnsHeaderDefs = [];
-    $scope.getDataSetColDefs = function (dataSetColumn) {
-        $scope.columnsHeaderDefs = dataSetColumn;
+    console.log($scope.columnsHeaderDefs);
+    $scope.getDataSetColDefs = function (getDataSetColDefs) {
+//        alert("test")
+        $scope.columnsHeaderDefs = getDataSetColDefs;
+        console.log($scope.columnsHeaderDefs)
     };
 
     $scope.saveDataSet = function () {
@@ -4433,7 +4495,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 publish = true;
             }
         }
-        ;
+
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -4545,6 +4607,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.previewDataSet = function (dataSet) {
         $scope.showPreviewChart = true;
         $scope.previewData = dataSet;
+        console.log($scope.previewData);
         $scope.previewData = null;
         $timeout(function () {
             $scope.previewData = dataSet;
@@ -4588,5 +4651,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.showPreviewChart = false;
         $scope.previewData = null;
     };
-});
 
+//    $scope.getDataSetColDefs = function(dataSetColumn){alert(1)
+//        console.log(dataSetColumn);
+//    }
+//    
+});
