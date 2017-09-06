@@ -13,7 +13,7 @@
         </init-param>
         <init-param>
             <param-name>dashience-domain</param-name>
-            <param-value>raghul.com:8084/dashboard</param-value>
+            <param-value>sabari.com:8084/dashboard</param-value>
         </init-param>
     </filter>
     <filter-mapping>
