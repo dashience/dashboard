@@ -245,7 +245,7 @@
             <a class="refresh" ng-click="pageRefresh()"><i class="fa fa-repeat"></i> <span translate>Refresh Data</span></a>
         </div>
         <div class="btn-group" ng-if="permission.downloadReport === true;">
-            <a class="refresh" ng-href="#viewPdf/{{agencyLanguage}}/{{accountId}}/{{accountName}}/{{productID}}/{{templateId}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> <span translate>Print</span></a>
+            <a class="refresh" ng-href="#viewPdf/{{agencyLanguage}}/{{agencyId}}/{{accountId}}/{{accountName}}/{{productID}}/{{templateId}}/{{userId}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> <span translate>Print</span></a>
         </div>
         <div class="btn-group dropdown" ng-if="(permission.addWidget === true) && (templateUserId === userId)">
             <a class="dropdown-toggle" type="button" data-toggle="dropdown">
