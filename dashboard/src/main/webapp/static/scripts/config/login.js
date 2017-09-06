@@ -37,6 +37,8 @@ app.controller("LoginController", function ($scope, $http, $window, $cookies, lo
                 $cookies.putObject("fullname", response.username);
                 $cookies.putObject("username", response.username);
                 localStorageService.set("permission", response.permission);
+                localStorageService.set("userId", response.id);
+                localStorageService.set("agencyId", response.agencyId);
                 $cookies.putObject("isAdmin", response.isAdmin);
                 $cookies.putObject("agencyId", response.agencyId);
 //                $location.path('index.dashboard');
