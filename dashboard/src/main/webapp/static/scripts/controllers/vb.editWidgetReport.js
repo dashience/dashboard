@@ -118,6 +118,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         {name: 'Min', value: "min"},
         {name: 'Max', value: "max"}
     ];
+    $scope.combinationChartTypes="";
     $scope.combinationChartTypes = [
         {name: 'None', value: ""},
         {name: 'Line Chart', value: "line"},

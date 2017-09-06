@@ -8,14 +8,13 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.tempStartDate = $stateParams.startDate;
     $scope.tempEndDate = $stateParams.endDate;
     $scope.agencyLanguage = $stateParams.lan;
-    
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
     function changeLanguage(key) {
         $translate.use(key);
     }
-    
+
     //get Templates
     $scope.selectTemplate = {};
     $scope.getAllTemplate = function () {
@@ -215,6 +214,8 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
             $stateParams.tabId = "";
             $scope.tabs.push({id: response.id, tabName: tab.tabName, tabClose: true});
             $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
+            $stateParams.startDate = $rootScope.tabStartDate;
+            $stateParams.endDate = $rootScope.tabEndDate;
             $state.go("index.dashboard.widget", {
                 lan: $stateParams.lan,
                 accountId: $stateParams.accountId,
@@ -234,7 +235,8 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
                 $scope.loadTab = false;
                 $scope.tabs = response;
                 $stateParams.tabId = $scope.tabs[$scope.tabs.length - 1].id;
-
+                $stateParams.startDate = $rootScope.tabStartDate;
+                $stateParams.endDate = $rootScope.tabEndDate;
                 $state.go("index.dashboard.widget", {
                     lan: $stateParams.lan,
                     accountId: $stateParams.accountId,

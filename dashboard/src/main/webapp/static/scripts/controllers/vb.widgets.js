@@ -54,7 +54,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.accountName = $stateParams.accountName;
     $scope.productID = $stateParams.productId;
     $scope.widgetTabId = $stateParams.tabId;
+//    $scope.widgetStartDate = $stateParams.startDate;
     $scope.widgetStartDate = $stateParams.startDate;
+    $rootScope.tabStartDate = $stateParams.startDate;
+    $rootScope.tabEndDate = $stateParams.endDate;
+
+    $scope.userId = $cookies.getObject("userId");
     $scope.widgetEndDate = $stateParams.endDate;
 //    $scope.userId = $cookies.getObject("userId");
     $scope.userId = localStorageService.get("userId");
@@ -78,6 +83,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     } else {
         $scope.showCreateReport = false;
     }
+
+
 
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
         $scope.templates = response;
@@ -109,6 +116,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get('static/datas/imageUrl.json').success(function (response) {       //Popup- Select Chart-Type Json
         $scope.chartTypes = response;
     });
+    
 
     $http.get('admin/tag').success(function (response) {
         $scope.tags = response;
@@ -523,9 +531,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.tickerItem = [];
         $scope.groupingFields = [];
         $scope.funnelItem = [];
+
+
         angular.forEach(widget.columns, function (val, key) {
             if (val.xAxis == 1) {
                 $scope.xColumn = val;
+                console.log($scope.xColumn);
                 $scope.selectPieChartXAxis = val;
                 $scope.selectX1Axis(widget, val);
             }
@@ -537,6 +548,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.y1Column.push(val);
                 }
             }
+            
             if (val.yAxis == 2) {
                 if (val.fieldName) {
                     $scope.y2Column.push(val);
@@ -886,6 +898,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.hideSelectedColumn = false;
         }, 50);
     };
+     
     $scope.showListOfColumns = function () {
         $scope.showSortBy = false;
         $scope.loadingColumnsGif = true;
@@ -965,6 +978,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var firstPreviewAfterEdit = 1;
     $scope.showPreview = function (widgetObj, userChartColors) {
         var chartType = $scope.chartTypeName;
+        console.log(chartType);
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
         $scope.showSortBy = false;
@@ -976,7 +990,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
-
+        
         var chartColors = userChartColors ? userChartColors.optionValue : null;
         if (firstPreviewAfterEdit == 1) {
             $scope.chartColorOptionsVal = widgetObj.chartColorOption;
@@ -1278,6 +1292,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
+       
         widget.chartType = null;
         if (widget.width == 3) {
             widget.width = widget.width + 1;
@@ -1297,7 +1312,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     $scope.reduceWidget = function (widget) {
         var expandchart = widget.chartType;
-        widget.chartType = null;
 
         if (widget.width == 12) {
             widget.width = widget.width - 4;
@@ -1335,24 +1349,32 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.selectX1Axis = function (widgetObj, column) {
         $scope.dispHideBuilder = true;
         var exists = false;
+        
         angular.forEach(widgetObj.columns, function (value, key) {
+            if(!(value.xAxis==1&&value.yAxis==1&&value.yAxis==2)){
+                value="";
+            }
             if (column.fieldName === value.fieldName) {
                 exists = true;
                 value.xAxis = 1;
+                value.yAxis="";
             } else {
                 value.xAxis = null;
             }
+            
         });
         if (exists === false) {
             column.xAxis = 1;
             widgetObj.columns.push(column);
+            
+            console.log(widgetObj.columns);
         }
         $timeout(function () {
             $scope.queryBuilderList = widgetObj;
             resetQueryBuilder();
         }, 50);
     };
-    $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
+    $scope.selectY1Axis = function (widget, y1data, chartTypeName,combinationTypeName) {
         $scope.dispHideBuilder = true;
         angular.forEach($scope.columnY2Axis, function (val, key) {
             angular.forEach(y1data, function (value, key) {
@@ -1552,6 +1574,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (exists == false) {
             column.xAxis = 1;
             widget.columns.push(column);
+            console.log(widget.columns);
             $timeout(function () {
                 $scope.queryBuilderList = widget;
                 resetQueryBuilder();
@@ -1948,6 +1971,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.save = function (widget) {
+
+        console.log(widget);
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -1970,6 +1995,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
             }
         }
+        
         try {
             $scope.customStartDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
             $scope.customEndDate = widget.dateRangeName == "Custom" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
@@ -2018,6 +2044,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             };
             widgetColumnsData.push(columnData);
         });
+
+        console.log(widgetColumnsData);
+
+
         var dataSourceTypeId;
         var dataSetTypeId;
         var dataSourceObj;
@@ -2031,6 +2061,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourceTypeId = 0;
             dataSetTypeId = 0;
         }
+        
+        
 
         if (widget.allAccount === 1) {
             widget.accountId = null;
@@ -3448,6 +3480,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
                 }
                 if (value.combinationType) {
+                    console.log(value.fieldName + " --- " + value.combinationType);
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
             });
@@ -3525,6 +3558,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             };
 
             function maximumRecord(maxValue, list) {
+//                alert(maxValue.maxRecord)
                 var maxData;
                 if (maxValue.maxRecord > 0) {
                     maxData = list.slice(0, maxValue.maxRecord);

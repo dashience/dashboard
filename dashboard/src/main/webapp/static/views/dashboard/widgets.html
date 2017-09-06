@@ -394,7 +394,7 @@
                                 <a ng-if="widget.chartType === 'scatter'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
                                 <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
                                 <a ng-if ="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="{{'Duplicate Widget' | translate}}"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
-                                <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" ng-click='setWidgetItems(widget)' class="edit" title="{{'Delete'| translate}}" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
+                                <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" ng-click='setWidgetItems(widget)' class="edit" title="{{'Edit'| translate}}" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
                                 <!--<a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil">test</i></a>-->
                                 <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}" title="{{'Delete'| translate}}"><i class="fa fa-times"></i></a>
                                 <a ng-if="permission.downloadReport === true;" ng-click="downloadXLSByWidget(widget)" title="{{'Download XLS'| translate}}">
@@ -439,7 +439,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body"  ng-if="widget.chartType === 'area'">
+                    <div class="panel-body"  ng-if="(widget.chartType === 'area' || widget.chartType === 'combination')">
                         <div>
                             <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
                                  area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
@@ -449,6 +449,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="panel-body" ng-if="widget.chartType === 'scatter'">
                         <div>
                             <div set-Scatter-Chart-Fn="setScatterChartFn(scatterFn)" 
@@ -585,7 +586,7 @@
                         </div>
                     </div>
                     <div class="report-footer-btn">
-                        <button class="btn btn-success pull-left" ng-click="goReport()"><span translate>Goto<span> <span translate>Report</span></button>
+                        <button class="btn btn-success pull-left" ng-click="goReport()"><span translate>Goto</span> <span translate>Report</span></button>
                         <button class="btn btn-success" ng-click="addWidgetToReport(widget); showReportList[widget.id] = false;" style="float: right" translate>Add</button>
                     </div>
                 </div>
