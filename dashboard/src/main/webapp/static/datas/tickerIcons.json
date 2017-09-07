@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "name": "stats-bars",
+        "icon": "fa fa-signal"
+    },
+    {
+        "id": 2,
+        "name": "car",
+        "icon": "fa fa-car"
+    },
+    {
+        "id": 3,
+        "name": "clock",
+        "icon": "fa fa-clock-o"
+    },
+    {
+        "id": 4,
+        "name": "search",
+        "icon": "fa fa-search"
+    },    
+    {
+        "id": 5,
+        "name": "star",
+        "icon": "fa fa-star"
+    },
+    {
+        "id": 6,
+        "name": "thumbs-up",
+        "icon": "fa fa-thumbs-up"
+    }
+]

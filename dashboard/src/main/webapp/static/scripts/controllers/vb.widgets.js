@@ -84,6 +84,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 
 
+    $http.get('static/datas/tickerIcons.json').success(function (response) {       //Popup- Select Chart-Type Json
+        $scope.chartIcons = response;
+    });
+    
+    $scope.selectIcon = function (widgetObj,selectIcon) {
+        widgetObj.icon = selectIcon.icon;
+    };
+    
+    $scope.findChartIcon = function (iconName) {
+        if (!iconName) {
+            return;
+        }
+        var selectedIconName;
+        $scope.chartIcons.forEach(function (val, k) {
+            if (val.icon == iconName) {
+                selectedIconName = val.name;
+            }
+        });
+        return selectedIconName;
+    };
+
+
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
         $scope.templates = response;
         var template = "";
@@ -506,7 +528,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
-            accountId: widget.accountId ? widget.accountId.id : null
+            accountId: widget.accountId ? widget.accountId.id : null,
+            icon:widget.icon
         });
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
@@ -1529,6 +1552,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         }
         $scope.tickerItem = widgetObj.columns;
+        console.log($scope.tickerItem);
 //        $timeout(function () {
 //            $scope.queryBuilderList = widgetObj;
 //            resetQueryBuilder();
@@ -2023,6 +2047,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.save = function (widget) {
+        
+        console.log(widget)
+        
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2088,7 +2115,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 search: value.search,
                 groupField: value.groupField,
                 combinationType: value.combinationType,
-                derivedId: value.derivedId
+                derivedId: value.derivedId                
             };
             widgetColumnsData.push(columnData);
         });
@@ -2138,7 +2165,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             productSegment: widget.productSegment ? widget.productSegment.type : null,
             networkType: widget.networkType ? widget.networkType.type : null,
             createdBy: widget.createdBy,
-            chartColorOption: widgetColor
+            chartColorOption: widgetColor,
+            icon:widget.icon
         };
         clearEditAllWidgetData();
 
@@ -2147,12 +2175,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 return value.fieldName;
             }
         }).join(',');
-        console.log(deleteColumnDef);
         if (data.id) {
             $http({method: 'DELETE', url: 'admin/ui/deleteDerivedColumn/' + data.id + '?deleteColumns=' + deleteColumnDef}).success(function (response) {
             });
         }
         deleteColumns = [];
+        console.log(data)
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             var widgetColors;
             var newWidgetResponse = response;
@@ -2179,7 +2207,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         fieldName: val.fieldName,
                         status: val.status,
                         fieldType: val.fieldType,
-                        displayName: val.displayName
+                        displayName: val.displayName,
+                        icon:val.icon
                     };
                     $scope.columnHeaderColuction.push(collectionFieldDefs);
                 });
@@ -2240,7 +2269,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widget.queryFilter = data.queryFilter;
                 data.dataSourceId = dataSourceObj;
                 data.dataSetId = dataSetObj;
-                widget.chartColors = widgetColors;
+                widget.icon = data.icon;
+                 widget.icon = widgetColors;
                 widget = data;
                 if (!data.id) {
                     $scope.widgets.unshift(newWidgetResponse);
@@ -2936,11 +2966,14 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 '<div class="stats-title pull-left">' +
                 '<h4>{{tickerTitleName}}</h4>' +
                 '</div>' +
+                
                 '<div class="stats-icon pull-right">' +
 //                        '<i class="pe-7s-share fa-4x"></i>' +
                 '</div>' +
                 '<div class="m-t-xl">' +
-                '<h3 class="m-b-xs text-success">{{firstLevelTicker.totalValue}}</h3>' +
+                '<h3 class="m-b-xs text-success">{{firstLevelTicker.totalValue}}'+
+                '<div class="icon pull-right" ng-hide="hideEmptyTicker"><i class="{{selectedChartIcon}}" aria-hidden="true"></i></div>' +
+                '</h3>' +
                 '<span class="font-bold no-margins">' +
 //                            '{{firstLevelTicker.tickerTitle}}' +
                 '</span>' +
@@ -2979,7 +3012,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 if (!value) {
                     return;
                 }
-                tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
+                tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat,icon:value.icon});
             });
 
             var format = function (column, value) {
@@ -2999,6 +3032,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 return value;
             };
 
+            scope.selectedChartIcon = getWidgetObj.icon;
             var setData = [];
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
@@ -5753,7 +5787,7 @@ app.service('stats', function ($filter) {
                 // Need Sum of balance/sum of age
                 var conversionsColumn = $filter('filter')(this.grid.columns, {displayName: 'Conversions'})[0];
                 var costColumn = $filter('filter')(this.grid.columns, {displayName: 'Cost'})[0];
-                conversionsColumn.updateAggregationValue();
+                conversionsColumn.putAggregationValue();
                 costColumn.updateAggregationValue();
                 var aggregatedConversions = conversionsColumn.aggregationValue;
                 var aggregatedCost = costColumn.aggregationValue;
