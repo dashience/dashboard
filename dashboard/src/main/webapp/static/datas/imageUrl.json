@@ -60,5 +60,11 @@
         "type": "scatter",
         "name": "Scatter",
         "icon": "fa-ellipsis-h"
-   }
+   },
+   {
+        "id": 13,
+        "type": "combination",
+        "name": "Combination Chart",
+        "icon": "fa-braille"
+    }
 ]
