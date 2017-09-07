@@ -112,8 +112,9 @@ public class Rest {
             if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
                 System.out.println(urlString);
                 System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
-                throw new RuntimeException("Failed : HTTP error code : "
-                        + conn.getResponseCode());
+                return null;
+//                throw new RuntimeException("Failed : HTTP error code : "
+//                        + conn.getResponseCode());
             } else {
                 System.out.println(urlString);
                 System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
