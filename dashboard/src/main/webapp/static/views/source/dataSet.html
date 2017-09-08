@@ -299,12 +299,11 @@
                         <div class="col-sm-12">
                             <ul class="nav nav-tabs">
                                 <li  ng-class="{ active: isChildSet(3) }" >
-                                    <a href ng-click="setChildTab(3)" translate> Preview
-                                    </a>
+                                    <a href ng-click="setChildTab(3)" translate> Preview</a>
                                 </li>
                                 <li  ng-class="{ active: isChildSet(4) }">
-                                    <a ng-click="setChildTab(4)" translate> Field Settings
-                                    </a>
+                                    <a ng-click="setChildTab(4)" ng-if="columnHeaderByDataSetId.id" translate> Field Settings</a>
+                                    <a style="cursor:  not-allowed" ng-if="!columnHeaderByDataSetId.id" translate> Field Settings</a>
                                 </li>
                             </ul>
                         </div>
@@ -341,19 +340,11 @@
                 <div class="tab-content" ng-show="isChildSet(4)">
                     <section class="content">
                         <div class="row">
-
-
                             <div>
                                 <div class="col-md-12">
                                     <div class="hpanel">
                                         <div class="" ng-show="showPreviewChart" ng-if="previewData">
-
-                                            <!--                                            <div ng-repeat="columnsHeaderDef in columnsHeaderDefs">
-                                                                                            {{columnsHeaderDef.fieldName}}
-                                                                                        </div>-->
-
                                             <div>
-
                                                 <table class="table table-bordered table-responsive table-scheduler">
                                                     <thead>
                                                         <tr>
@@ -364,7 +355,7 @@
                                                                 Display Name
                                                             </th>
                                                             <th translate>
-                                                                Catagory
+                                                                Category
                                                             </th>
                                                             <th translate>
                                                                 Data Type
@@ -374,13 +365,11 @@
                                                             </th>
                                                             <th translate>
                                                                 Display Format
-                                                            </th>
-                                                            
-                                                            <th translate>
+                                                            </th>                                                            
+<!--                                                            <th translate>
                                                                 Aggregation Function
-                                                            </th>
-                                                             
-
+                                                            </th> -->
+                                                            <th></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -395,22 +384,20 @@
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <div ng-hide="columnsHeaderDef.isEdit">{{columnsHeaderDef.catagory}}</div> 
+                                                                <div ng-hide="columnsHeaderDef.isEdit">{{columnsHeaderDef.category}}</div> 
                                                                 <div ng-show="columnsHeaderDef.isEdit">
-                                                                    <select class="form-control" ng-model="columnsHeaderDef.catagory">
-                                                                        <option ng-repeat="catagory in catagorys">
-                                                                            {{catagory.name}}
-                                                                        </option>
+                                                                    <select class="form-control" 
+                                                                            ng-model="columnsHeaderDef.category" 
+                                                                            ng-options="category.value as category.name for category in categories">
                                                                     </select>
                                                                 </div>
                                                             </td>
                                                             <td>
                                                                 <div ng-hide="columnsHeaderDef.isEdit">{{columnsHeaderDef.dataType}}</div> 
                                                                 <div ng-show="columnsHeaderDef.isEdit">
-                                                                    <select class="form-control" ng-model="columnsHeaderDef.dataType">
-                                                                        <option ng-repeat="dataType in dataTypes">
-                                                                            {{dataType.name}}
-                                                                        </option>
+                                                                    <select class="form-control" 
+                                                                            ng-model="columnsHeaderDef.dataType" 
+                                                                            ng-options="fieldType.value as fieldType.name for fieldType in fieldTypes">
                                                                     </select>
                                                                 </div>
                                                             </td>
@@ -423,17 +410,14 @@
                                                             <td>
                                                                 <div ng-hide="columnsHeaderDef.isEdit">{{columnsHeaderDef.displayFormat}}</div>
                                                                 <div ng-show="columnsHeaderDef.isEdit">
-                                                                    <select class="form-control" ng-model="columnsHeaderDef.displayFormat">
-                                                                        <option ng-repeat="format in formats">
-                                                                            {{format.name}}
-                                                                        </option>
+                                                                    <select class="form-control" 
+                                                                            ng-model="columnsHeaderDef.displayFormat" 
+                                                                            ng-options="format.value as format.name for format in formats">
                                                                     </select>
-                                                                    <!--<input type="text" ng-model="field.displayFormat" class="form-control">-->
                                                                 </div>
-                                                            </td>
+                                                            </td>                                                           
                                                             
-                                                            
-                                                            <td>
+<!--                                                            <td>
                                                                 <div ng-hide="columnsHeaderDef.isEdit">{{columnsHeaderDef.agregationFunction}}</div> 
                                                                 <div ng-show="columnsHeaderDef.isEdit">
                                                                     <select class="form-control" ng-model="columnsHeaderDef.agregationFunction">
@@ -442,9 +426,7 @@
                                                                         </option>
                                                                     </select>
                                                                 </div>
-                                                            </td>
-                                                            
-                                                            
+                                                            </td>-->
                                                             
                                                             <td>
                                                                 <div ng-hide="columnsHeaderDef.isEdit">
@@ -456,7 +438,7 @@
                                                                     </button>
                                                                 </div>
                                                                 <div ng-show="columnsHeaderDef.isEdit">
-                                                                    <button class="btn btn-default btn-xs" ng-click="columnsHeaderDef.isEdit = false;">
+                                                                    <button class="btn btn-default btn-xs" ng-click="saveDataSetFieldSettings(columnsHeaderDef); columnsHeaderDef.isEdit = false;">
                                                                         <i class="fa fa-save"></i>
                                                                     </button>
                                                                     <button class="btn btn-default btn-xs" data-toggle="modal">
@@ -465,27 +447,20 @@
                                                                 </div>
                                                             </td>
                                                         </tr>
-
-
-                                                        <!--</tr>-->
                                                     </tbody>
                                                 </table>
-
-
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </section>
                 </div>
-
-
             </div>
         </section>
     </div>
+    
     <div class="tab-content" ng-show="isSet(2)">
         <section class="content">
             <div class="row">

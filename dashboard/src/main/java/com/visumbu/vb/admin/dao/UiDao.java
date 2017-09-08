@@ -59,6 +59,8 @@ import org.springframework.stereotype.Repository;
 @Repository("uiDao")
 public class UiDao extends BaseDao {
 
+    
+
     public List<Dashboard> getDashboards(VbUser user) {
         String queryStr = "select d from Dashboard d where d.userId = :user";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -981,5 +983,21 @@ public class UiDao extends BaseDao {
         query.setParameter("fieldName", fieldName);
         query.setParameter("widgetId", widgetId);
         query.executeUpdate();
+    }
+
+    public UserPreferences getChartColorById(Integer userId) {
+        String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId.id = :userId and u.optionName = 'Chart_Color_Options'";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("userId", userId);
+        return (UserPreferences) query.uniqueResult();
+    }
+
+    public List<DashboardTemplate> getTemplates(Integer userId, Integer agencyId, AgencyProduct agencyProduct) {
+        String queryStr = "SELECT d from DashboardTemplate d where d.agencyId.id = :agencyId and d.agencyProductId = :agencyProduct and ( d.userId.id is null or d.userId.id = :userId or d.shared = 'Active') and (d.status IS NULL or d.status != 'Deleted')";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyProduct", agencyProduct);
+        query.setParameter("agencyId", agencyId);
+        query.setParameter("userId", userId);
+        return query.list();
     }
 }
