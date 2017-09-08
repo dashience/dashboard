@@ -2270,7 +2270,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 data.dataSourceId = dataSourceObj;
                 data.dataSetId = dataSetObj;
                 widget.icon = data.icon;
-                 widget.icon = widgetColors;
                 widget = data;
                 if (!data.id) {
                     $scope.widgets.unshift(newWidgetResponse);
