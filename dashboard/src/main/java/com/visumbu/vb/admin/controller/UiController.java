@@ -471,6 +471,13 @@ public class UiController extends BaseController {
         VbUser user = userService.findByUsername(getUser(request));
         return uiService.createWidgetColumn(dataSetColumnBean, user, widgetId);
     }
+    
+    @RequestMapping(value = "createDataSetColumnByDataSet", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DataSetColumns createDataSetColumnByDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSetColumnBean dataSetColumnBean) {
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.createDataSetColumnByDataSet(dataSetColumnBean, user);
+    }
 
     @RequestMapping(value = "dataSetFormulaColumns/{dataSetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody

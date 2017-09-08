@@ -39,6 +39,7 @@ public class WidgetColumnBean {
     private String groupField;
     private String combinationType;
     private Integer derivedId;
+    private String category;
     
 
     public Integer getId() {
@@ -265,9 +266,17 @@ public class WidgetColumnBean {
         this.derivedId = derivedId;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
-        return "WidgetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", xAxis=" + xAxis + ", yAxis=" + yAxis + ", yAxisLabel=" + yAxisLabel + ", xAxisLabel=" + xAxisLabel + ", displayName=" + displayName + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", groupPriority=" + groupPriority + ", agregationFunction=" + agregationFunction + ", functionParameters=" + functionParameters + ", fieldType=" + fieldType + ", expression=" + expression + ", baseFieldName=" + baseFieldName + ", fieldGenerationFunction=" + fieldGenerationFunction + ", fieldGenerationFields=" + fieldGenerationFields + ", remarks=" + remarks + ", displayFormat=" + displayFormat + ", width=" + width + ", wrapText=" + wrapText + ", alignment=" + alignment + ", columnHide=" + columnHide + ", search=" + search + ", groupField=" + groupField + ", combinationType=" + combinationType + ", derivedId=" + derivedId + '}';
+        return "WidgetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", xAxis=" + xAxis + ", yAxis=" + yAxis + ", yAxisLabel=" + yAxisLabel + ", xAxisLabel=" + xAxisLabel + ", displayName=" + displayName + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", groupPriority=" + groupPriority + ", agregationFunction=" + agregationFunction + ", functionParameters=" + functionParameters + ", fieldType=" + fieldType + ", expression=" + expression + ", baseFieldName=" + baseFieldName + ", fieldGenerationFunction=" + fieldGenerationFunction + ", fieldGenerationFields=" + fieldGenerationFields + ", remarks=" + remarks + ", displayFormat=" + displayFormat + ", width=" + width + ", wrapText=" + wrapText + ", alignment=" + alignment + ", columnHide=" + columnHide + ", search=" + search + ", groupField=" + groupField + ", combinationType=" + combinationType + ", derivedId=" + derivedId + ", category=" + category + '}';
     }
 
 }

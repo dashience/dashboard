@@ -246,7 +246,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'area'">
+                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'area' || reportWidget.widgetId.chartType === 'combination'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
                                      area-Chart-Directive 

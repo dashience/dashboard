@@ -27,6 +27,7 @@ public class ColumnDef {
     private String functionName;
     private String expression;
     private String status;
+    private String category;
     private VbUser userId;
     private TabWidget widgetId;
 
@@ -207,6 +208,14 @@ public class ColumnDef {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     public VbUser getUserId() {

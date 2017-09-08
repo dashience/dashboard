@@ -360,12 +360,12 @@
         background-color: #3d464d;
         color: #fff;
     }
-    
+
     .combinationSelect{
         margin-top: 5px !important;
     }
     .selectYaxis{
-         margin-top: 5px !important;
+        margin-top: 5px !important;
     }
 </style>
 <div class="container">
@@ -391,7 +391,7 @@
                                     </a>
                                 </div>
                             </div>
-  
+
                             <div class="form-group widget-title">
                                 <input type="checkbox" ng-checked="(widgetObj.allAccount == 1) || (widgetObj.allAccount == null)"
                                        ng-model="widgetObj.allAccount" ng-true-value="1" ng-false-value="0">
@@ -687,29 +687,29 @@
                             </ui-select>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination'">
-                            <div class="panel-heading btnAddon5">
-                                <h3 class="panel-title" translate>
-                                    Combination Type</h3>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class='panel-body'>
-                                        <ul class="list-unstyled" ng-repeat="combinationTypeName in widgetObj.columns">
-                                            <li ng-if="combinationTypeName.xAxis !=1" class="m-b-10">
-                                                <div class="col-sm-6">{{combinationTypeName.displayName}}</div>
-                                                <div class="col-sm-6 m-b-10">
-                                                    <select ng-options="combinationChartType.value as combinationChartType.name for combinationChartType in combinationChartTypes"
-                                                            ng-model="combinationTypeName.combinationType" class="form-control combinationSelect">
-                                                    </select>
-                                                </div> 
-                                            </li>
-                                        </ul>
-                                    </div>                    
-                                </div>
+                        <div class="panel-heading btnAddon5">
+                            <h3 class="panel-title" translate>
+                                Combination Type</h3>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class='panel-body'>
+                                    <ul class="list-unstyled" ng-repeat="combinationTypeName in widgetObj.columns">
+                                        <li ng-if="combinationTypeName.xAxis != 1" class="m-b-10">
+                                            <div class="col-sm-6">{{combinationTypeName.displayName}}</div>
+                                            <div class="col-sm-6 m-b-10">
+                                                <select ng-options="combinationChartType.value as combinationChartType.name for combinationChartType in combinationChartTypes"
+                                                        ng-model="combinationTypeName.combinationType" class="form-control combinationSelect">
+                                                </select>
+                                            </div> 
+                                        </li>
+                                    </ul>
+                                </div>                    
                             </div>
                         </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -759,13 +759,19 @@
                         <div class="panel-tools"> </div>
                         Column Fields </div>
                     <div class="panel-body">
+                        
+                        <div class="checkbox" >
+                            <input for="#tableFooter" type="checkbox" ng-model="widgetObj.tableFooter" ng-checked="widgetObj.tableFooter == 1" />
+                            <label id="tableFooter"> Table Footer </label>
+                        </div>
+                        
                         <div class="box-body table-responsive no-padding">
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
                                         <td>Field Name</td>
                                         <td>Display Name</td>
-                                        <!--<td ng-if="(widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) === 'table' && (widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'ticker'">Aggregation Function</td>-->
+                                        <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'">Aggregation Function</td>
                                         <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'">Group Priority</td>
                                         <!--<td ng-if="(widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'table' && (widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'ticker'">X-Axis</td>-->
                                         <!--                                        <td ng-if="(widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'table' && (widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'ticker'">Y-Axis</td>
@@ -782,11 +788,6 @@
                                     <tr ng-repeat="currentColumn in widgetObj.columns">
                                         <td>
                                             <div> {{currentColumn.fieldName}}</div>
-                                            <!--                                            <div ng-show="currentColumn.isEdit">
-                                                                                            <select ng-model="currentColumn.fieldName" class="form-control" ng-change="dispName(currentColumn)">
-                                                                                                <option ng-repeat="collectionField in collectionFields" value="{{collectionField.fieldName}}">{{collectionField.displayName}}</option>
-                                                                                            </select>
-                                                                                        </div>-->
                                         </td>
                                         <td>
                                             <div ng-hide="currentColumn.isEdit"> {{currentColumn.displayName}}</div>
@@ -794,14 +795,15 @@
                                                 <input type="text" class="form-control" ng-model="currentColumn.displayName">
                                             </div>
                                         </td>
-                                        <!--                                        <td data-as-sortable-item-handle ng-if="(widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.widgetChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker'">
-                                                                                    <div ng-hide="currentColumn.isEdit"> {{currentColumn.agregationFunction}}</div>
-                                                                                    <div ng-show="currentColumn.isEdit">
-                                                                                        <select ng-model="currentColumn.agregationFunction" class="form-control">
-                                                                                            <option ng-repeat="selectAggregation in selectAggregations" value="{{selectAggregation.value}}">{{selectAggregation.name}}</option>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </td>-->
+                                        <!--<td>Test</td>-->
+                                        <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'">
+                                            <div ng-hide="currentColumn.isEdit"> {{currentColumn.agregationFunction}}</div>
+                                            <div ng-show="currentColumn.isEdit">
+                                                <select ng-model="currentColumn.agregationFunction" class="form-control">
+                                                    <option ng-repeat="selectAggregation in selectAggregations" value="{{selectAggregation.value}}">{{selectAggregation.name}}</option>
+                                                </select>
+                                            </div>
+                                        </td>
                                         <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'">
                                             <div ng-hide="currentColumn.isEdit"> {{currentColumn.groupPriority}}</div>
                                             <div ng-show="currentColumn.isEdit">

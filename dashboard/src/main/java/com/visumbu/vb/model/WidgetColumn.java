@@ -130,6 +130,10 @@ public class WidgetColumn implements Serializable {
     @Column(name = "derived_id")
     private Integer derivedId;
     
+    @Size(max = 32)
+    @Column(name = "category")
+    private String category;
+    
     @Size(max = 128)
     @Column(name = "group_field")
     private String groupField;
@@ -356,6 +360,14 @@ public class WidgetColumn implements Serializable {
     public void setDerivedId(Integer derivedId) {
         this.derivedId = derivedId;
     } 
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
     
     @XmlTransient
     @JsonIgnore
