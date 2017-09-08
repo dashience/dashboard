@@ -325,7 +325,7 @@
                 </h3>
             </div>
             <div class="panel-body">
-                <div class="row">
+<!--                <div class="row">
                     <div class="">
                         <ul class="field-wrap">
                             <li ng-repeat="selectedOption in selectedOptions">     
@@ -333,51 +333,140 @@
                             </li>
                         </ul>
                     </div>
-                </div>
-                <div>
-
-                    <div ng-repeat="filterObj in filterObjs| orderBy: 'orderBy'">
-                        <div ng-if="filterObj.type == 'dropdown'">
-                            <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">{{filterObj.displayName}}</label>
-                            <div class="dropdown">
-                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-                                    <span class="dateRange-Title">{{getSelctionCount(filterObj.data)}} Selected</span>
-                                    <span class="caret dateRange-Title-Icon"></span>
-                                </button>
-                                <!--{{filterObj.data}}-->
-                                <ul class="dropdown-menu filters">  
-                                    <div class="form-group">
-                                        <div class="has-feedback">
-                                            <input type="text" class="form-control" ng-model="searchBrands.$" placeholder="Search"/>
-                                            <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                                        </div>
+                </div>-->
+                <div>                    
+                    <div>
+                        <label>State</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(states)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters filters-city">  
+                                <div class="form-group">
+                                    <div class="has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchState.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
                                     </div>
-                                    <li ng-repeat="list in filterObj.data">
-                                        <input type="checkbox" class="inputCheckbox" fieldname="{{filterObj.fieldName}}" 
-                                               fieldvalue="{{list.fieldName}}" ng-model="list.status" 
-                                               ng-click="updateFilter(filterObj)">
-                                        <span ng-bind-html="(list.displayName?list.displayName:'-') | highlight:searchBrands.$"></span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div ng-if="filterObj.type == 'range'">
-                            <div ng-if="filterObj.min?filterObj.min:filterObj.max">
-                                <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">
-                                    {{filterObj.displayName}} ({{search.min}} to {{search.max}} {{setMinMax(filterObj, search)}})
-                                    <span ng-watch="event.generatePercent(search)"></span>
-                                </label>
-                                <slider-range 
-                                    min="{{filterObj.min}}"
-                                    steps="1" 
-                                    max="{{filterObj.max}}" 
-                                    value-min="search.min" 
-                                    value-max="search.max" 
-                                    ng-click="findSearchRange(search, filterObj); myModel = search">                                                  
-                                </slider-range>
-                            </div>
+                                </div>
+                                <li ng-repeat="state in states|filter:searchState">
+                                    <input type="checkbox" fieldname="State" 
+                                           fieldvalue="{{state.fieldName}}" class="inputCheckbox" 
+                                           ng-model="state.status" ng-click="updateFilter('city')">
+                                    <span ng-bind-html="state.displayName | highlight:searchState.$"></span>
+                                </li>
+                            </ul>
                         </div>
                     </div>
+
+                    <div>
+                        <label>City</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(cities)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters filters-city">  
+                                <div class="form-group">
+                                    <div class="has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchCity.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <li ng-repeat="city in cities|filter:searchCity">
+                                    <input type="checkbox" fieldname="City" 
+                                           fieldvalue="{{city.fieldName}}" class="inputCheckbox" 
+                                           ng-model="city.status" ng-click="updateFilter('none')">
+                                    <span ng-bind-html="city.displayName | highlight:searchCity.$"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label>Store</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(stores)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters filters-city">  
+                                <div class="form-group">
+                                    <div class="has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchStore.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <li ng-repeat="store in stores|filter:searchStore">
+                                    <input type="checkbox" fieldname="Store" 
+                                           fieldvalue="{{store.fieldName}}" class="inputCheckbox" 
+                                           ng-model="store.status" ng-click="updateFilter('none')">
+                                    <span ng-bind-html="store.displayName | highlight:searchStore.$"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div ng-if="maxRange">
+                        <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;"></label>Sale
+                        <!--Sale ({{search.salesMin}} to {{search.salesMax}} {{setYearsMinMax(search.minRange, search.maxRange)}})-->
+                        <div class="row">   
+                            <span class="col-md-5"><input style="width: 55px; padding: 2px !important;" type="text" class="form-control" ng-model="search.salesMin"></span>
+                            <span class="col-md-1">to</span>
+                            <span class="col-md-5"><input style="width: 55px; padding: 2px !important;" type="text" class="form-control" ng-model="search.salesMax"></span>
+                        </div>
+                        <slider-range min="{{minRange}}" steps="1" max="{{maxRange}}" value-min="search.salesMin" value-max="search.salesMax" ng-click="findSearchRange(search, 'Sale')"></slider-range>
+                    </div>
+
+
+
+
+
+
+
+
+                    <!--                    <div ng-repeat="filterObj in filterObjs| orderBy: 'orderBy'">
+                                            <div ng-if="filterObj.type == 'dropdown'">
+                                                <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">{{filterObj.displayName}}</label>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                                        <span class="dateRange-Title">{{getSelctionCount(filterObj.data)}} Selected</span>
+                                                        <span class="caret dateRange-Title-Icon"></span>
+                                                    </button>
+                                                    {{filterObj.data}}
+                                                    <ul class="dropdown-menu filters">  
+                                                        <div class="form-group">
+                                                            <div class="has-feedback">
+                                                                <input type="text" class="form-control" ng-model="searchBrands.$" placeholder="Search"/>
+                                                                <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                                            </div>
+                                                        </div>
+                                                        <li ng-repeat="list in filterObj.data">
+                                                            <input type="checkbox" class="inputCheckbox" fieldname="{{filterObj.fieldName}}" 
+                                                                   fieldvalue="{{list.fieldName}}" ng-model="list.status" 
+                                                                   ng-click="updateFilter(filterObj)">
+                                                            <span ng-bind-html="(list.displayName?list.displayName:'-') | highlight:searchBrands.$"></span>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <div ng-if="filterObj.type == 'range'">
+                                                <div ng-if="filterObj.min?filterObj.min:filterObj.max">
+                                                    <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;">
+                                                        {{filterObj.displayName}} ({{search.min}} to {{search.max}} {{setMinMax(filterObj, search)}})
+                                                        <span ng-watch="event.generatePercent(search)"></span>
+                                                    </label>
+                                                    <slider-range 
+                                                        min="{{filterObj.min}}"
+                                                        steps="1" 
+                                                        max="{{filterObj.max}}" 
+                                                        value-min="search.min" 
+                                                        value-max="search.max" 
+                                                        ng-click="findSearchRange(search, filterObj); myModel = search">                                                  
+                                                    </slider-range>
+                                                </div>
+                                            </div>
+                                        </div>-->
                     <!--                    <div>
                                             <label>Brand</label>
                                             <div class="dropdown">
