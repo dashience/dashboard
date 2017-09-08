@@ -28,5 +28,10 @@
         "id": 6,
         "name": "thumbs-up",
         "icon": "fa fa-thumbs-up"
+    },
+    {
+        "id": 7,
+        "name": "None",
+        "icon": ""
     }
 ]

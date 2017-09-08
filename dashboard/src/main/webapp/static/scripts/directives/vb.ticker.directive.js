@@ -13,7 +13,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
 //                        '<i class="pe-7s-share fa-4x"></i>' +
                 '</div>' +
                 '<div class="m-t-xl">' +
-                '<h3 class="m-b-xs text-success">{{firstLevelTicker.totalValue}}'+
+                '<h3 class="m-b-xs text-success" style="color:{{colorName}};">{{firstLevelTicker.totalValue}}'+
                 '<div class="icon pull-right" ng-hide="hideEmptyTicker"><i class="{{selectedChartIcon}}" aria-hidden="true"></i></div>' +
                 '</h3>' +
                 '<span class="font-bold no-margins">' +
@@ -40,7 +40,8 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             tickerId: '@',
             tickerColumns: '@',
             tickerTitleName: '@',
-            widgetObj: '@'
+            widgetObj: '@',
+            defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
             if (!scope.widgetObj) {
@@ -88,7 +89,21 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             } else {
                 dataSourcePassword = '';
             }
+            
+            
+            var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
+//                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                var widgetChartColors;
+                if (getWidgetObj.chartColorOption) {
+                    widgetChartColors = getWidgetObj.chartColorOption.split(',');
+                }
+                var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
+                var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
 
+                console.log(defaultColors);
+                 console.log(chartColors[0]);
+                 scope.colorName=chartColors[0];
+                 
             var getWidgetObj = JSON.parse(scope.widgetObj);
             var setProductSegment;
             var setTimeSegment;

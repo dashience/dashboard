@@ -632,7 +632,7 @@
             <div class="row metrics-bottom">
                 <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel')" ng-show="showColumnDefs">
                     <div class="form-group">
-                        <div class="col-md-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) != 'gauge')">
+                        <div class="col-md-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie')">
                             <label ng-if="hideSelectedColumn === false;" translate>Select X-Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="xColumn" 
@@ -711,14 +711,14 @@
                         </div>
                     </div>
 
-
-                    <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widget.chartType) == 'gauge'" >
+                    <div class="col-sm-12">
+                    <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge'">
                         <label>Gauge</label>
                         <select class="form-control"  ng-model="gaugeColumns" ng-options="collectionField.fieldName for collectionField in collectionFields track by collectionField.fieldName" 
                                 ng-change="gauge(widgetObj, gaugeColumns)">                
                         </select>
-
                     </div>    
+                    </div>
 
                 </div>
             </div>
@@ -749,8 +749,8 @@
                             </button>
                             <ul class="dropdown-menu">
                                 <li class="ticker-icon" ng-repeat="chartIcon in chartIcons" ng-click="selectIcon(widgetObj,chartIcon)">
-                                    <i class="{{chartIcon.icon}}"></i> 
-                                    <span ng-bind-html="chartIcon.name"></span>
+                                    <i class="{{chartIcon.icon}} col-sm-2"></i> 
+                                    <span class="col-sm-4" ng-bind-html="chartIcon.name"></span><br>
                                 </li>
                             </ul>
                         </div>
