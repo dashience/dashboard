@@ -220,6 +220,19 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         return d3.format(column)(value);
     };
 
+    $scope.getSelctionCount = function (checkboxCollection, type) {
+        var count = 0;
+        if (!checkboxCollection) {
+            return;
+        }
+        checkboxCollection.forEach(function (value, key) {
+            if (value.status) {
+                count++;
+            }
+        });
+        return count;
+    };
+
     $scope.getAllSelected = function () {
         var allSelected = {};
         $scope.reloadAllDirective = false;
@@ -236,10 +249,10 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
         return allSelected;
     };
-    
+
     function dispAllFilter(filterItems) {
         $scope.selectItems = [];
-        angular.forEach(filterItems, function (value, key) {            
+        angular.forEach(filterItems, function (value, key) {
             if (key == "State") {
                 for (var i = 0; i <= value.length; i++) {
                     if (value[i]) {
@@ -335,20 +348,20 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             console.log(allSelected)
 //                $scope.selectItems = "";
             $timeout(function () {
-                 dispAllFilter(allSelected);
+                dispAllFilter(allSelected);
                 $scope.reloadAllDirective = true;
             }, 50);
         });
     };
 
     $scope.updateFilter("state,city,store,sale");
-    
+
     $scope.deleteFilterItem = function (index, obj) {
         var allSelected = {};
         var reloadType;
         $scope.reloadAllDirective = false;
         $scope.selectItems.splice(index, 1);
-        
+
         if (obj.type == "State") {
             angular.forEach($scope.states, function (val, key) {
                 if (val.fieldName == obj.name) {
@@ -391,11 +404,10 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.updateFilter(reloadType);
         }, 500);
     };
-    
+
     $scope.findSearchRange = function (list, type) {
-        $scope.saleMinSelected = list.salesMin;
-        $scope.saleMaxSelected = list.salesMax;
-        
+        $scope.saleMinSelected = list ? list.salesMin : 0;
+        $scope.saleMaxSelected = list ? list.salesMax : 100000;
         var allSelected = {};
         var filtersArray = type.split(",");
         $('.inputCheckbox:checked').each(function (key, value) {
@@ -414,7 +426,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                     allSelected[fieldName] = [];
                 }
                 allSelected[fieldName].push($scope.saleMinSelected, $scope.saleMaxSelected)
-            }           
+            }
         });
         $scope.reloadAllDirective = false;
         $scope.widgets.forEach(function (val, key) {
@@ -424,7 +436,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.reloadAllDirective = true;
         }, 500);
     };
-  
+
 
 //-------------------------------End-Filter-------------------------------------
 

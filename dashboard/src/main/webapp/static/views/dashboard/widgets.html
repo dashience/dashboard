@@ -411,9 +411,13 @@
                         <label class="unSelectTest" unselectable="on" onselectstart="return false;" onmousedown="return false;"></label>Sale
                         <!--Sale ({{search.salesMin}} to {{search.salesMax}} {{setYearsMinMax(search.minRange, search.maxRange)}})-->
                         <div class="row">   
-                            <span class="col-md-5"><input style="width: 55px; padding: 2px !important;" type="text" class="form-control" ng-model="search.salesMin"></span>
+                            <span class="col-md-5">
+                                <input style="width: 55px; padding: 2px !important;" type="text" class="form-control" ng-model="search.salesMin" ng-model-options="{ debounce: 1000 }" ng-change="findSearchRange(search, 'Sale')">
+                            </span>
                             <span class="col-md-1">to</span>
-                            <span class="col-md-5"><input style="width: 55px; padding: 2px !important;" type="text" class="form-control" ng-model="search.salesMax"></span>
+                            <span class="col-md-5">
+                                <input style="width: 55px; padding: 2px !important;" type="text" class="form-control" ng-model="search.salesMax" ng-model-options="{ debounce: 1000 }" ng-change="findSearchRange(search, 'Sale')">
+                            </span>
                         </div>
                         <slider-range min="{{minRange}}" steps="1" max="{{maxRange}}" value-min="search.salesMin" value-max="search.salesMax" ng-click="findSearchRange(search, 'Sale')"></slider-range>
                     </div>
