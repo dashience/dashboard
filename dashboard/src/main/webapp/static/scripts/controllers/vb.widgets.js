@@ -366,6 +366,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             angular.forEach($scope.states, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
+                    reloadType = "city,store";
                 }
             });
         }
@@ -373,7 +374,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             angular.forEach($scope.cities, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
-                    reloadType = "city,store";
                 }
             });
         }
@@ -381,7 +381,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             angular.forEach($scope.stores, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
-                    reloadType = "store";
+                    //reloadType = "store";
                 }
             });
         }
