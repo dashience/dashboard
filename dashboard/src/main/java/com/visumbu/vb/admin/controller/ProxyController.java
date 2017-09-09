@@ -659,7 +659,9 @@ public class ProxyController {
         dataList = (List<Map<String, Object>>) returnMap.get("data");
         returnMap.put("columnDefs", getColumnDefObject(dataList));
         List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");
-
+        System.out.println(columnDefs);
+        System.out.println("Column Defs====");
+        System.out.println(dataList);
         returnMap.put("data", formatData(dataList, columnDefs));
         return returnMap;
     }
@@ -2991,7 +2993,7 @@ public class ProxyController {
                 List<Object> value = (List<Object>) entry.getValue();
                 List<String> innerQuery = new ArrayList<>();
                 System.out.println("TEST KEY ===> " + key);
-                if (key.equalsIgnoreCase("kilometer") || key.equalsIgnoreCase("price") || key.equalsIgnoreCase("yearOfRegistration")) {
+                if (key.equalsIgnoreCase("sale") || key.equalsIgnoreCase("price") || key.equalsIgnoreCase("yearOfRegistration")) {
                     String firstValue = null;
                     String lastValue = null;
                     for (Iterator<Object> iterator = value.iterator(); iterator.hasNext();) {
@@ -3001,6 +3003,7 @@ public class ProxyController {
                         }
                         lastValue = valueString;
                     }
+                    innerQuery.add(key + " is NULL ");
                     innerQuery.add(key + " between " + firstValue + " and " + lastValue);
                 } else {
                     for (Iterator<Object> iterator = value.iterator(); iterator.hasNext();) {
