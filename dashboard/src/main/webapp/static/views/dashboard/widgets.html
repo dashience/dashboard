@@ -382,9 +382,33 @@
                             </ul>
                         </div>
                     </div>
+                    
+                    <div>
+                        <label>Brand</label>
+                        <div class="dropdown">
+                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                <span class="dateRange-Title">{{getSelctionCount(brands)}} Selected</span>
+                                <span class="caret dateRange-Title-Icon"></span>
+                            </button>
+                            <ul class="dropdown-menu filters filters-city">  
+                                <div class="form-group">
+                                    <div class="has-feedback">
+                                        <input type="text" class="form-control" ng-model="searchBrand.$" placeholder="Search"/>
+                                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                                    </div>
+                                </div>
+                                <li ng-repeat="brand in brands|filter:searchBrand">
+                                    <input type="checkbox" fieldname="Brand" 
+                                           fieldvalue="{{brand.fieldName}}" class="inputCheckbox" 
+                                           ng-model="brand.status" ng-click="updateFilter('none')">
+                                    <span ng-bind-html="(brand.displayName?brand.displayName:'-') | highlight:searchBrand.$"></span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
 
                     <div>
-                        <label>Store</label>
+                        <label>Store Location</label>
                         <div class="dropdown">
                             <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
                                 <span class="dateRange-Title">{{getSelctionCount(stores)}} Selected</span>

@@ -69,13 +69,13 @@ public class FilterDataController extends BaseController {
         } else if (dataType.equalsIgnoreCase("city")) {
             query = "select distinct city as fieldName,  city as displayName from members_decrypted ";
         } else if (dataType.equalsIgnoreCase("store")) {
-            query = "select id as fieldName,  location as displayName from store ";
+            query = "select id as fieldName,  location as displayName from store where location is not null";
         } else if (dataType.equalsIgnoreCase("category")) {
             query = "select distinct category as fieldName,  category as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("subCategory")) {
             query = "select distinct sub_category as fieldName,  sub_category as displayName from skyzone_center_edge ";
         } else if (dataType.equalsIgnoreCase("brand")) {
-            query = "select distinct brand as fieldName,  brand as displayName from auto ";
+            query = "select distinct brand as fieldName,  brand as displayName from store ";
         } else if (dataType.equalsIgnoreCase("model")) {
             query = "select distinct model as fieldName,  model as displayName from auto ";
         } else if (dataType.equalsIgnoreCase("yearOfRegistration")) {

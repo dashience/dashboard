@@ -267,6 +267,13 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                     }
                 }
             }
+            if (key == "Brand") {
+                for (var i = 0; i <= value.length; i++) {
+                    if (value[i]) {
+                        $scope.selectItems.push({type: "Brand", name: value[i]});
+                    }
+                }
+            }
             if (key == "Store") {
                 for (var i = 0; i <= value.length; i++) {
                     if (value[i]) {
@@ -317,6 +324,18 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 });
                 allRequests.push(request);
             }
+            if (value == "brand") {
+                //dashboardFilter.salesType = selectedFilter.SalesType;
+                //dashboardFilter.country = selectedFilter.Country;
+                //dashboardFilter.state = selectedFilter.State;
+                //dashboardFilter.city = selectedFilter.City;
+                // var queryString = encodeURI(JSON.stringify(dashboardFilter));
+                $scope.brands = [];
+                var request = $http.get('admin/filterData/getFilter/brand').success(function (response) {
+                    $scope.brands = response.data;
+                });
+                allRequests.push(request);
+            }
             if (value == "sale") {
                 $scope.sale = [];
                 // var request = $http.get('admin/filterData/getFilter/sale').success(function (response) {
@@ -354,7 +373,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         });
     };
 
-    $scope.updateFilter("state,city,store,sale");
+    $scope.updateFilter("state,city,store,sale,brand");
 
     $scope.deleteFilterItem = function (index, obj) {
         var allSelected = {};
@@ -374,6 +393,14 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             angular.forEach($scope.cities, function (val, key) {
                 if (val.fieldName == obj.name) {
                     val.status = false;
+                }
+            });
+        }
+        if (obj.type == "Brand") {
+            angular.forEach($scope.brands, function (val, key) {
+                if (val.fieldName == obj.name) {
+                    val.status = false;
+                    //reloadType = "store";
                 }
             });
         }
