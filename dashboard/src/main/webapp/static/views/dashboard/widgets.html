@@ -463,7 +463,7 @@
                     </div>
                     <div class="list" ng-if="widget.chartType === 'table'" adjust-height>
                         <div class="table-responsive project-list">
-                            <div id="changes-height" class="project-list">
+<!--                            <div id="changes-height" class="project-list">
                                 <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
                                      dynamic-Table pdf-function="addToPdf(test)" 
                                      dynamic-Table-Source="{{widget.dataSetId}}" 
@@ -472,7 +472,8 @@
                                      table-Footer="{{widget.tableFooter}}" 
                                      widget-Columns="{{widget.columns}}">                                         
                                 </div>
-                            </div>
+                            </div>-->
+                            <div compare-Range-Table></div>
                         </div>
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'text'">
