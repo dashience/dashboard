@@ -43,6 +43,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 
 
+    $http.get('static/datas/tickerIcons.json').success(function (response) {       //Popup- Select Chart-Type Json
+        $scope.chartIcons = response;
+    });
+    
+    $scope.selectIcon = function (widgetObj,selectIcon) {
+        widgetObj.icon = selectIcon.icon;
+    };
+    
+    $scope.findChartIcon = function (iconName) {
+        if (!iconName) {
+            return;
+        }
+        var selectedIconName;
+        $scope.chartIcons.forEach(function (val, k) {
+            if (val.icon == iconName) {
+                selectedIconName = val.name;
+            }
+        });
+        return selectedIconName;
+    };
+
+
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
         $scope.templates = response;
         var template = "";
@@ -337,6 +359,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.loadingColumnsGif = false;
         $scope.showDateRange = false;
         $scope.showSortBy = false;
+        $scope.showGaugeColumns=true;
     };
 
     $scope.firstSortableOptions = {
@@ -465,7 +488,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNweeks: widget.lastNweeks,
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
-            accountId: widget.accountId ? widget.accountId.id : null
+            accountId: widget.accountId ? widget.accountId.id : null,
+            icon:widget.icon
         });
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
@@ -1246,6 +1270,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setBarChartFn = function (barFn) {
         $scope.directiveBarFn = barFn;
     };
+    $scope.setGaugeChartFn = function (gaugeFn) {
+        $scope.directiveGaugeFn = gaugeFn;
+    };
     $scope.setPieChartFn = function (pieFn) {
         $scope.directivePieFn = pieFn;
     };
@@ -1482,6 +1509,38 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         }
         $scope.tickerItem = widgetObj.columns;
+        console.log($scope.tickerItem);
+//        $timeout(function () {
+//            $scope.queryBuilderList = widgetObj;
+//            resetQueryBuilder();
+//        }, 50);
+    };
+    
+    
+    $scope.gauge = function (widgetObj, gaugeColumns) {
+        $scope.dispHideBuilder = true;
+        var newColumns = [];
+        console.log(gaugeColumns);
+        
+        if (gaugeColumns.length === 0) {
+            widgetObj.columns = "";
+        } else {
+            console.log(gaugeColumns)
+            console.log($scope.collectionFields);
+//            angular.forEach(gaugeColumns, function (value,key) {
+//                console.log(value);
+            angular.forEach($scope.collectionFields, function (val, header) {
+                console.log($scope.collectionFields);
+                console.log(val.fieldName);
+                if (val.fieldName === gaugeColumns.fieldName) {
+                    val.displayFormat = gaugeColumns.displayFormat;
+                    newColumns.push(val);
+                }
+            });
+            widgetObj.columns = newColumns;
+//            });
+        }
+        $scope.gaugeColumns = widgetObj.columns;
 //        $timeout(function () {
 //            $scope.queryBuilderList = widgetObj;
 //            resetQueryBuilder();
@@ -1943,6 +2002,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.save = function (widget) {
+        
+        console.log(widget)
+        
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2059,7 +2121,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             productSegment: widget.productSegment ? widget.productSegment.type : null,
             networkType: widget.networkType ? widget.networkType.type : null,
             createdBy: widget.createdBy,
-            chartColorOption: widgetColor
+            chartColorOption: widgetColor,
+            icon:widget.icon
         };
         clearEditAllWidgetData();
 
@@ -2068,12 +2131,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 return value.fieldName;
             }
         }).join(',');
-        console.log(deleteColumnDef);
         if (data.id) {
             $http({method: 'DELETE', url: 'admin/ui/deleteDerivedColumn/' + data.id + '?deleteColumns=' + deleteColumnDef}).success(function (response) {
             });
         }
         deleteColumns = [];
+        console.log(data)
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             var widgetColors;
             var newWidgetResponse = response;
@@ -2100,7 +2163,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         fieldName: val.fieldName,
                         status: val.status,
                         fieldType: val.fieldType,
-                        displayName: val.displayName
+                        displayName: val.displayName,
+                        icon:val.icon
                     };
                     $scope.columnHeaderColuction.push(collectionFieldDefs);
                 });
@@ -2162,7 +2226,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widget.queryFilter = data.queryFilter;
                 data.dataSourceId = dataSourceObj;
                 data.dataSetId = dataSetObj;
-                widget.chartColors = widgetColors;
+                widget.icon = data.icon;
                 widget = data;
                 if (!data.id) {
                     $scope.widgets.unshift(newWidgetResponse);
@@ -2244,6 +2308,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     };
 });
+
 
 app.directive('uiColorpicker', function () {
     return {
@@ -2402,7 +2467,7 @@ app.service('stats', function ($filter) {
                 // Need Sum of balance/sum of age
                 var conversionsColumn = $filter('filter')(this.grid.columns, {displayName: 'Conversions'})[0];
                 var costColumn = $filter('filter')(this.grid.columns, {displayName: 'Cost'})[0];
-                conversionsColumn.updateAggregationValue();
+                conversionsColumn.putAggregationValue();
                 costColumn.updateAggregationValue();
                 var aggregatedConversions = conversionsColumn.aggregationValue;
                 var aggregatedCost = costColumn.aggregationValue;

@@ -66,5 +66,12 @@
         "type": "combination",
         "name": "Combination Chart",
         "icon": "fa-braille"
+    },
+    {
+        "id": 14,
+        "url": "static/img/icons/gauge.png",
+        "type": "gauge",
+        "name": "Gauge",
+        "icon": "fa-clock-o"
     }
 ]

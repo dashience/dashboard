@@ -329,6 +329,7 @@ public class UiService {
         tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
         tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
         tabWidget.setChartColorOption(tabWidgetBean.getChartColorOption());
+        tabWidget.setIcon(tabWidgetBean.getIcon());
 //        tabWidget.setCustomStartDate(tabWidgetBean.getCustomStartDate());
 //        tabWidget.setCustomEndDate(tabWidgetBean.getCustomEndDate());
 //        tabWidget.setLastNdays(tabWidgetBean.getLastNdays());
@@ -446,6 +447,7 @@ public class UiService {
         tabWidget.setProductSegment(tabWidgetBean.getProductSegment());
         tabWidget.setNetworkType(tabWidgetBean.getNetworkType());
         tabWidget.setChartColorOption(tabWidgetBean.getChartColorOption());
+        tabWidget.setIcon(tabWidgetBean.getIcon());
         TabWidget savedTabWidget = uiDao.saveTabWidget(tabWidget);
         id = savedTabWidget.getId();
         System.out.println("new Widget Id ---> " + id);
