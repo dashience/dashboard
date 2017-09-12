@@ -274,6 +274,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         {name: 'Bar Chart', value: "bar"}
 
     ];
+    
+   
+//    $scope.combinationTypeName = {};
+//    $scope.combinationTypeName.combinationType= 'area';
+    
     $scope.gridLine = [
         {name: 'Yes', value: "Yes"},
         {name: 'No', value: "No"}

@@ -367,6 +367,9 @@
     .selectYaxis{
         margin-top: 5px !important;
     }
+    .y2Axis{
+        margin-bottom: 10px;
+    }
 </style>
 <div class="container">
     <div class="row main col-md-6">
@@ -640,7 +643,7 @@
                                     ng-change="selectX1Axis(widgetObj, xColumn)">
                             </select>
                         </div>
-                        <div class="col-md-12" ng-show="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie'">
+                        <div class="col-md-12" ng-show="((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination')">
                             <label ng-if="hideSelectedColumn === false;" translate>Select X Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartXAxis" 
@@ -674,8 +677,8 @@
                             </ui-select>
                         </div>
                     </div>
-                    <div class="form-group selectYaxis" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')">
-                        <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
+                    <div class="form-group selectYaxis" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')" >
+                        <div class="col-md-12 y2Axis" ng-if="afterLoadWidgetColumns == true">
                             <label ng-if="hideSelectedColumn === false;" translate>Select Y2-Axis</label>
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y2Column" theme="bootstrap" 
                                        on-select="selectY2Axis(widgetObj, y2Column, chartTypeName)" 
@@ -688,7 +691,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination'">
+                    <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination'" >
                         <div class="panel-heading btnAddon5">
                             <h3 class="panel-title" translate>
                                 Combination Type</h3>
@@ -696,11 +699,12 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class='panel-body'>
+                                   
                                     <ul class="list-unstyled" ng-repeat="combinationTypeName in widgetObj.columns">
                                         <li ng-if="combinationTypeName.xAxis != 1" class="m-b-10">
                                             <div class="col-sm-6">{{combinationTypeName.displayName}}</div>
                                             <div class="col-sm-6 m-b-10">
-                                                <select ng-options="combinationChartType.value as combinationChartType.name for combinationChartType in combinationChartTypes"
+                                                <select ng-options="combinationChartType.value as combinationChartType.name for combinationChartType in combinationChartTypes "
                                                         ng-model="combinationTypeName.combinationType" class="form-control combinationSelect">
                                                 </select>
                                             </div> 
