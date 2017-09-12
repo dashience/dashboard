@@ -65,13 +65,13 @@
         "id": 13,
         "type": "combination",
         "name": "Combination Chart",
-        "icon": "fa-braille"
+        "icon": "fa-industry"
     },
     {
         "id": 14,
         "url": "static/img/icons/gauge.png",
         "type": "gauge",
         "name": "Gauge",
-        "icon": "fa-dashboard"
+        "icon": "fa-tachometer"
     }
 ]
