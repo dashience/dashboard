@@ -358,13 +358,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
+         $scope.gaugeColumns = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
         $scope.loadingColumnsGif = false;
         $scope.showDateRange = false;
         $scope.showSortBy = false;
-        $scope.showGaugeColumns=true;
+        $scope.showGaugeColumns=false;
     };
 
     $scope.firstSortableOptions = {
@@ -517,7 +518,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.tickerItem = [];
         $scope.groupingFields = [];
         $scope.funnelItem = [];
-
+$scope.gaugeColumns = [];
 
         angular.forEach(widget.columns, function (val, key) {
             if (val.xAxis == 1) {
@@ -547,6 +548,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
             if (widget.chartType === 'funnel') {
                 $scope.funnelItem.push(val);
+            }
+            if (widget.chartType === 'gauge') {
+                $scope.gaugeColumns.push(val);
             }
         });
         tableDef(widget, $scope.y1Column, $scope.y2Column);
@@ -725,6 +729,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
+        $scope.gaugeColumns = "";
         getSegments(widget);
         widget.jsonData = null;
         widget.queryFilter = null;
@@ -796,6 +801,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
+         $scope.gaugeColumns = "";
         $http.get('admin/ui/dataSet/publishDataSet').success(function (response) {
             $scope.dataSets = [];
             angular.forEach(response, function (value, key) {
@@ -1275,7 +1281,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setBarChartFn = function (barFn) {
         $scope.directiveBarFn = barFn;
     };
-    $scope.setGaugeChartFn = function (gaugeFn) {
+    $scope.setGaugeFn = function (gaugeFn) {
         $scope.directiveGaugeFn = gaugeFn;
     };
     $scope.setPieChartFn = function (pieFn) {
@@ -2281,6 +2287,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.xColumn = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
+        $scope.gaugeColumns = "";
         $scope.y1Column = "";
         $scope.y2Column = "";
         $scope.selectPieChartYAxis = "";

@@ -1,7 +1,7 @@
 app.directive('gaugeDirective', function ($http, $stateParams) {
     return{
         restrict: 'AE',
-        template: '<div ng-show="loadingGauge" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
+        template: '<div ng-show="loadingGauge" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" img width="40"></div>' +
                 '<div ng-hide="loadingGauge" class="panel panel-default relative pnl-aln">' +
                 '<div class="m-b-10" ng-hide="hideEmptyGauge">' +
                 '<span>{{gaugeTitle}}</span><br>' +
@@ -10,14 +10,15 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
                 '<div ng-show="hideEmptyGauge">{{gaugeEmptyMessage}}</div>' +
                 '</div>',
         scope: {
-            setGaugeChartFn: '&',
+            setGaugeFn: '&',
             getSelectedFilterItem: '&',
-            gaugeChartSource: '@',
-            gaugeChartId: '@',
-            widgetColumns: '@',
+            gaugeSource: '@',
+            gaugeId: '@',
+            gaugeColumns: '@',
             loadingGauge: '&',
             widgetObj: '@',
             defaultChartColor: '@'
+           
         },
         link: function (scope, element, attr) {
 
@@ -32,7 +33,7 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
             scope.loadingGauge = true;
 
 //            console.log(scope.widgetColumns);
-            var gaugeColumnsObj = JSON.parse(scope.widgetColumns);
+            var gaugeColumnsObj = JSON.parse(scope.gaugeColumns);
             var fieldName = gaugeColumnsObj[0].fieldName;
             console.log(fieldName);
 
@@ -42,13 +43,13 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
             var data = [];
 
 
-            var gaugeChartDataSource = JSON.parse(scope.gaugeChartSource);
-            if (scope.gaugeChartSource) {
+            var gaugeDataSource = JSON.parse(scope.gaugeSource);
+            if (scope.gaugeSource) {
                 var url = "admin/proxy/getData?";
 
                 var dataSourcePassword;
-                if (gaugeChartDataSource.dataSourceId.password) {
-                    dataSourcePassword = gaugeChartDataSource.dataSourceId.password;
+                if (gaugeDataSource.dataSourceId.password) {
+                    dataSourcePassword = gaugeDataSource.dataSourceId.password;
                 } else {
                     dataSourcePassword = '';
                 }
@@ -95,23 +96,23 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
 
 
 //             scope.refreshGaugeChart = function () {
-                $http.get(url + 'connectionUrl=' + gaugeChartDataSource.dataSourceId.connectionString +
-                        "&dataSetId=" + gaugeChartDataSource.id +
+                $http.get(url + 'connectionUrl=' + gaugeDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + gaugeDataSource.id +
                         "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
-                        "&userId=" + (gaugeChartDataSource.userId ? gaugeChartDataSource.userId.id : null) +
-                        "&driver=" + gaugeChartDataSource.dataSourceId.sqlDriver +
+                        "&userId=" + (gaugeDataSource.userId ? gaugeDataSource.userId.id : null) +
+                        "&driver=" + gaugeDataSource.dataSourceId.sqlDriver +
                         "&productSegment=" + setProductSegment +
                         "&timeSegment=" + setTimeSegment +
                         "&networkType=" + setNetworkType +
                         "&dashboardFilter=" + encodeURI(dashboardFilter) +
                         "&startDate=" + $stateParams.startDate +
                         "&endDate=" + $stateParams.endDate +
-                        '&username=' + gaugeChartDataSource.dataSourceId.userName +
-                        "&dataSetReportName=" + gaugeChartDataSource.reportName +
+                        '&username=' + gaugeDataSource.dataSourceId.userName +
+                        "&dataSetReportName=" + gaugeDataSource.reportName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.widgetId +
-                        '&url=' + gaugeChartDataSource.url +
-                        '&port=3306&schema=vb&query=' + encodeURI(gaugeChartDataSource.query)).success(function (response) {
+                        '&url=' + gaugeDataSource.url +
+                        '&port=3306&schema=vb&query=' + encodeURI(gaugeDataSource.query)).success(function (response) {
 
                     scope.loadingGauge = false;
 

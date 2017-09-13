@@ -340,9 +340,9 @@
     .metrics-bottom {
         margin-bottom: 20px;
     }
-/*    .sp-replacer {
-        width:10% !important;
-    }*/
+    /*    .sp-replacer {
+            width:10% !important;
+        }*/
     .sp-preview {
         width: 89px !important;
     }
@@ -702,13 +702,13 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class='panel-body'>
-                                    
+
                                     <ul class="list-unstyled" ng-repeat="combinationTypeName in widgetObj.columns">
                                         <li ng-if="combinationTypeName.xAxis != 1">
                                             <div class="col-sm-6">{{combinationTypeName.displayName}}</div>
-                                            
+
                                             <div class="col-sm-6">
-                                                <select ng-options="combinationChartType.value as combinationChartType.name for combinationChartType in combinationChartTypes "
+                                                <select ng-options="combinationChartType.value as combinationChartType.name for combinationChartType in combinationChartTypes"
                                                         ng-model="combinationTypeName.combinationType" class="form-control combinationSelect">
                                                 </select>
                                             </div> 
@@ -720,12 +720,12 @@
                     </div>
 
                     <div class="col-sm-12">
-                    <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge'">
-                        <label>Gauge</label>
-                        <select class="form-control"  ng-model="gaugeColumns" ng-options="collectionField.fieldName for collectionField in collectionFields track by collectionField.fieldName" 
-                                ng-change="gauge(widgetObj, gaugeColumns)">                
-                        </select>
-                    </div>    
+                        <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge'">
+                            <label>Gauge</label>
+                            <select class="form-control"  ng-model="gaugeColumns" ng-options="collectionField.fieldName for collectionField in collectionFields track by collectionField.fieldName" 
+                                    ng-change="gauge(widgetObj, gaugeColumns)">                
+                            </select>
+                        </div>    
                     </div>
 
                 </div>
@@ -746,28 +746,28 @@
                         </div>
                     </div>
                     <div class="col-sm-6">
-                    <div class="form-group">
-                        <label>Icon</label>
-                        <div class="dropdown">
-                            <button class="btn btn-default dropdown-toggle dateDuration-Box" type="button" data-toggle="dropdown">
-                                <span class="dateRange-Title">
-                                    <i class="{{widgetObj.icon}}"></i> {{findChartIcon(widgetObj.icon) ? findChartIcon(widgetObj.icon) : "Select Icon"}}
-                                </span>
-                                <span class="caret dateRange-Title-Icon"></span>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li class="ticker-icon" ng-repeat="chartIcon in chartIcons" ng-click="selectIcon(widgetObj,chartIcon)">
-                                    <i class="{{chartIcon.icon}} col-sm-2"></i> 
-                                    <span class="col-sm-4" ng-bind-html="chartIcon.name"></span><br>
-                                </li>
-                            </ul>
+                        <div class="form-group">
+                            <label>Icon</label>
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle dateDuration-Box" type="button" data-toggle="dropdown">
+                                    <span class="dateRange-Title">
+                                        <i class="{{widgetObj.icon}}"></i> {{findChartIcon(widgetObj.icon) ? findChartIcon(widgetObj.icon) : "Select Icon"}}
+                                    </span>
+                                    <span class="caret dateRange-Title-Icon"></span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li class="ticker-icon" ng-repeat="chartIcon in chartIcons" ng-click="selectIcon(widgetObj, chartIcon)">
+                                        <i class="{{chartIcon.icon}} col-sm-2"></i> 
+                                        <span class="col-sm-4" ng-bind-html="chartIcon.name"></span><br>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                    </div>
-<!--                    <div class="form-group">
-                        <label>Theme</label>
-                        <ui-colorpicker ng-model="themeColor"  style="width:100%;display:block;"></ui-colorpicker>
-                    </div>-->
+                    <!--                    <div class="form-group">
+                                            <label>Theme</label>
+                                            <ui-colorpicker ng-model="themeColor"  style="width:100%;display:block;"></ui-colorpicker>
+                                        </div>-->
                 </div>
                 <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel'" ng-show="showColumnDefs">
                     <div class="form-group">
@@ -800,12 +800,12 @@
                         <div class="panel-tools"> </div>
                         Column Fields </div>
                     <div class="panel-body">
-                        
+
                         <div class="checkbox columnField">
                             <input for="#tableFooter" type="checkbox" ng-model="widgetObj.tableFooter" ng-checked="widgetObj.tableFooter == 1" />
                             <label id="tableFooter"> Table Footer </label>
                         </div>
-                        
+
                         <div class="box-body table-responsive no-padding">
                             <table class="table table-bordered table-hover">
                                 <thead>
@@ -822,7 +822,7 @@
                                         <!--<td ng-if="(widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) === 'table' && (widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'ticker'">Column Hide</td>-->
                                         <!--                                        <td ng-if="(widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) === 'table' && (widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'ticker'">Search</td>
                                                                                 <td><button class="btn btn-info" ng-click="addColumns(widgetObj)"><i class="fa fa-plus"></i></button></td>-->
-                                        <td></td>
+                                        <td>Action</td>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -906,16 +906,18 @@
                                                                                 </td>-->
                                         <!--<td data-as-sortable-item-handle ng-if="(setPreviewChartType ? setPreviewChartType : editChartType) === 'table' && (setPreviewChartType ? setPreviewChartType : editChartType) !== 'ticker'"><input type="checkbox" ng-model="currentColumn.search"></td>-->
                                         <td>
-                                            <div ng-show="currentColumn.isEdit">
-                                                <button class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = false"><i class="fa fa-save"></i></button>
-                                                <button class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = false"><i class="fa fa-close"></i></button>
-                                                <button class="btn btn-default btn-xs" ng-click="deleteColumn(widget.columns, $index)"><i class="fa fa-trash"></i></button>
-                                            </div>
+                                            <span class="input-group-btn">
+                                                <div ng-show="currentColumn.isEdit">
+                                                    <span class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = false"><i class="fa fa-save"></i></span>
+                                                    <span class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = false"><i class="fa fa-close"></i></span>
+                                                    <span class="btn btn-default btn-xs" ng-click="deleteColumn(widget.columns, $index)"><i class="fa fa-trash"></i></span>
+                                                </div>
 
-                                            <div ng-hide="currentColumn.isEdit">
-                                                <button class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = true"><i class="fa fa-pencil"></i></button>
-                                                <button class="btn btn-default btn-xs" ng-click="deleteColumn(widget.columns, $index)"><i class="fa fa-trash"></i></button>
-                                            </div>
+                                                <div ng-hide="currentColumn.isEdit">
+                                                    <span class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = true"><i class="fa fa-pencil"></i></span>
+                                                    <span class="btn btn-default btn-xs" ng-click="deleteColumn(widget.columns, $index)"><i class="fa fa-trash"></i></span>
+                                                </div>
+                                            </span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1129,10 +1131,10 @@
                 <div ng-if="chartTypeName === 'gauge'">
                     <div 
                         gauge-Directive 
-                        gauge-Chart-Source="{{displayPreviewChart.dataSetId}}" 
+                        gauge-Source="{{displayPreviewChart.dataSetId}}" 
                         widget-Obj="{{displayPreviewChart}}" 
-                        widget-Id="{{displayPreviewChart.id}}" 
-                        widget-Columns="{{displayPreviewChart.columns}}">                     
+                        gauge-Id="{{displayPreviewChart.id}}" 
+                        gauge-Columns="{{displayPreviewChart.columns}}">                     
                     </div>
                 </div>
 

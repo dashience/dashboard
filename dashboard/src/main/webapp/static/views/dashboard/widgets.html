@@ -279,7 +279,7 @@
                         </a>
                         <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
                         <a ng-if="permission.downloadReport === true;" ng-click="downloadXLSByWidget(widget)" title="Download XLS">
-                            <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                             <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                         </a>
                         <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
@@ -293,8 +293,8 @@
                          ticker-Columns="{{widget.columns}}" 
                         default-chart-color="{{defaultChartColor}}">
                              
-                    </div>
                 </div>
+            </div>
             </div>
             <div id="delete{{widget.id}}" class="modal">
                 <div class="modal-dialog">
@@ -459,7 +459,7 @@
                             </div>
                         </div>
                     </div>
-
+                    
                     <div class="panel-body" ng-if="widget.chartType === 'scatter'">
                         <div>
                             <div set-Scatter-Chart-Fn="setScatterChartFn(scatterFn)" 
@@ -514,17 +514,17 @@
                     </div>
 
                     <div class="panel-body" ng-if="widget.chartType === 'gauge'">
-                        <div set-gauge-Chart-Fn="setGaugeChartFn(gaugeChartFn)"
+                        <div set-gauge-Fn="setGaugeFn(gaugeFn)"
                              gauge-Directive 
                              get-Selected-Filter-Item="getChartFilterItems(filterBy)"
-                             gauge-Chart-Source="{{widget.dataSetId}}" 
+                             gauge-Source="{{widget.dataSetId}}" 
                              widget-Obj="{{widget}}"  
                              gauge-Id="{{widget.id}}"
-                             widget-Columns="{{widget.columns}}"
+                             gauge-Columns="{{widget.columns}}"
                              default-chart-color="{{defaultChartColor}}">
-                        </div>
-                    </div>
-
+                </div>
+            </div>  
+                    
                
                 </div>
             </div>  
