@@ -291,8 +291,7 @@
                          ticker-Title-Name="{{widget.widgetTitle}}" 
                          ticker-Id="{{widget.id}}" 
                          ticker-Columns="{{widget.columns}}" 
-                        default-chart-color="{{defaultChartColor}}">
-                             
+                        default-chart-color="{{defaultChartColor}}">                             
                 </div>
             </div>
             </div>
@@ -516,7 +515,6 @@
                     <div class="panel-body" ng-if="widget.chartType === 'gauge'">
                         <div set-gauge-Fn="setGaugeFn(gaugeFn)"
                              gauge-Directive 
-                             get-Selected-Filter-Item="getChartFilterItems(filterBy)"
                              gauge-Source="{{widget.dataSetId}}" 
                              widget-Obj="{{widget}}"  
                              gauge-Id="{{widget.id}}"

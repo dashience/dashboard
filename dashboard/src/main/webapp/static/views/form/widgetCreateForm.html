@@ -722,8 +722,8 @@
                     <div class="col-sm-12">
                         <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge'">
                             <label>Gauge</label>
-                            <select class="form-control"  ng-model="gaugeColumns" ng-options="collectionField.fieldName for collectionField in collectionFields track by collectionField.fieldName" 
-                                    ng-change="gauge(widgetObj, gaugeColumns)">                
+                            <select class="form-control"  ng-model="gaugeItem" ng-options="collectionField.fieldName for collectionField in collectionFields track by collectionField.fieldName" 
+                                    ng-change="gauge(widgetObj, gaugeItem)">                
                             </select>
                         </div>    
                     </div>
@@ -1034,7 +1034,7 @@
                                 <div class="col-sm-6">
                                     {{column.displayName}}
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="col-sm-6" style="margin-bottom:10px !important;">
                                     <select style="height:28px; font-size: 11px;  padding: 0px 12px;" ng-model='column.sortOrder' ng-change="setChartFormat(widget, columnList)" class='form-control'>
                                         <option ng-repeat='sort in sorting' value='{{sort.value}}'>{{sort.name}}</option>
                                     </select>

@@ -46,11 +46,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get('static/datas/tickerIcons.json').success(function (response) {       //Popup- Select Chart-Type Json
         $scope.chartIcons = response;
     });
-    
-    $scope.selectIcon = function (widgetObj,selectIcon) {
+
+    $scope.selectIcon = function (widgetObj, selectIcon) {
         widgetObj.icon = selectIcon.icon;
     };
-    
+
     $scope.findChartIcon = function (iconName) {
         if (!iconName) {
             return;
@@ -273,12 +273,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         {name: 'Area Chart', value: "area"},
         {name: 'Bar Chart', value: "bar"}
     ];
-   
+
 //   $scope.combinationType="area";
 //    $scope.combinationTypeName = {};
 //    $scope.combinationTypeName={combinationType:'area'}
 //    console.log("Test:",$scope.combinationTypeName.combinationType);
-    
+
     $scope.gridLine = [
         {name: 'Yes', value: "Yes"},
         {name: 'No', value: "No"}
@@ -358,14 +358,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
-         $scope.gaugeColumns = "";
+        $scope.gaugeItem = "";
         $scope.showPreviewChart = false;
         $scope.showColumnDefs = false;
         $scope.showFilter = false;
         $scope.loadingColumnsGif = false;
         $scope.showDateRange = false;
         $scope.showSortBy = false;
-        $scope.showGaugeColumns=false;
+
     };
 
     $scope.firstSortableOptions = {
@@ -495,7 +495,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
             accountId: widget.accountId ? widget.accountId.id : null,
-            icon:widget.icon
+            icon: widget.icon
         });
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
@@ -517,8 +517,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = [];
         $scope.tickerItem = [];
         $scope.groupingFields = [];
-        $scope.funnelItem = [];
-$scope.gaugeColumns = [];
+        $scope.funnelItem = []
+         $scope.gaugeItem = [];
 
         angular.forEach(widget.columns, function (val, key) {
             if (val.xAxis == 1) {
@@ -547,12 +547,19 @@ $scope.gaugeColumns = [];
                 $scope.tickerItem.push(val);
             }
             if (widget.chartType === 'funnel') {
+//                alert("funnel");
                 $scope.funnelItem.push(val);
+                console.log($scope.funnelItem);
             }
             if (widget.chartType === 'gauge') {
-                $scope.gaugeColumns.push(val);
+//                alert("gauge")
+                $scope.gaugeItem.push(val);
+                console.log($scope.gaugeItem);
             }
+
         });
+
+
         tableDef(widget, $scope.y1Column, $scope.y2Column);
 //        $timeout(function () {
 //            $scope.queryBuilderList = widget;
@@ -729,7 +736,7 @@ $scope.gaugeColumns = [];
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
-        $scope.gaugeColumns = "";
+        $scope.gaugeItem = "";
         getSegments(widget);
         widget.jsonData = null;
         widget.queryFilter = null;
@@ -801,7 +808,7 @@ $scope.gaugeColumns = [];
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
-         $scope.gaugeColumns = "";
+        $scope.gaugeItem = "";
         $http.get('admin/ui/dataSet/publishDataSet').success(function (response) {
             $scope.dataSets = [];
             angular.forEach(response, function (value, key) {
@@ -1526,32 +1533,32 @@ $scope.gaugeColumns = [];
 //            resetQueryBuilder();
 //        }, 50);
     };
-    
-    
-    $scope.gauge = function (widgetObj, gaugeColumns) {
+
+
+    $scope.gauge = function (widgetObj, gaugeItem) {
         $scope.dispHideBuilder = true;
         var newColumns = [];
-        console.log(gaugeColumns);
-        
-        if (gaugeColumns.length === 0) {
+        console.log(gaugeItem);
+
+        if (gaugeItem.length === 0) {
             widgetObj.columns = "";
         } else {
-            console.log(gaugeColumns)
+            console.log(gaugeItem)
             console.log($scope.collectionFields);
-//            angular.forEach(gaugeColumns, function (value,key) {
+//            angular.forEach(gaugeItem, function (value,key) {
 //                console.log(value);
             angular.forEach($scope.collectionFields, function (val, header) {
                 console.log($scope.collectionFields);
                 console.log(val.fieldName);
-                if (val.fieldName === gaugeColumns.fieldName) {
-                    val.displayFormat = gaugeColumns.displayFormat;
+                if (val.fieldName === gaugeItem.fieldName) {
+                    val.displayFormat = gaugeItem.displayFormat;
                     newColumns.push(val);
                 }
             });
             widgetObj.columns = newColumns;
 //            });
         }
-        $scope.gaugeColumns = widgetObj.columns;
+        $scope.gaugeItem = widgetObj.columns;
 //        $timeout(function () {
 //            $scope.queryBuilderList = widgetObj;
 //            resetQueryBuilder();
@@ -2013,9 +2020,9 @@ $scope.gaugeColumns = [];
     }
 
     $scope.save = function (widget) {
-        
+
         console.log(widget)
-        
+
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2133,7 +2140,7 @@ $scope.gaugeColumns = [];
             networkType: widget.networkType ? widget.networkType.type : null,
             createdBy: widget.createdBy,
             chartColorOption: widgetColor,
-            icon:widget.icon
+            icon: widget.icon
         };
         clearEditAllWidgetData();
 
@@ -2175,7 +2182,7 @@ $scope.gaugeColumns = [];
                         status: val.status,
                         fieldType: val.fieldType,
                         displayName: val.displayName,
-                        icon:val.icon
+                        icon: val.icon
                     };
                     $scope.columnHeaderColuction.push(collectionFieldDefs);
                 });
@@ -2287,7 +2294,7 @@ $scope.gaugeColumns = [];
         $scope.xColumn = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
-        $scope.gaugeColumns = "";
+        $scope.gaugeItem = "";
         $scope.y1Column = "";
         $scope.y2Column = "";
         $scope.selectPieChartYAxis = "";

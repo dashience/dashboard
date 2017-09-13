@@ -21,15 +21,6 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
            
         },
         link: function (scope, element, attr) {
-
-//            console.log(scope.setGaugeChartFn);
-//            console.log(scope.getSelectedFilterItem);
-//            console.log(scope.gaugeChartSource);
-//            console.log(scope.widgetColumns);
-//            console.log(scope.widgetObj);
-//            var gaugeName;
-
-
             scope.loadingGauge = true;
 
 //            console.log(scope.widgetColumns);
