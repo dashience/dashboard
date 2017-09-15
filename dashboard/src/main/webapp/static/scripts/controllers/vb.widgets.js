@@ -1172,7 +1172,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.widgetDuplicate = function (widgetData) {
-         var dialog = bootbox.dialog({
+        var dialog = bootbox.dialog({
             title: '<h4>Duplicate Widget</h4>',
             message: '<center><img src="static/img/logos/loader.gif" width="50"></center>',
             closeButton: false,
@@ -1185,7 +1185,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     }
                 }
             }});
-        
+
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
                 response["tags"] = dataTag[0];
@@ -1195,8 +1195,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         dialog.find('.bootbox-body').html('<center>Duplicate Widget Added Bottom of the Page</center>');
                     }, 3000);
                 });
-                });
             });
+        });
     };
 
     $scope.pageRefresh = function () {          //Page Refresh
@@ -1628,6 +1628,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         var exists = false;
         angular.forEach(widget.columns, function (value, key) {
+            if (!(value.xAxis == 1 && value.yAxis == 1 && value.yAxis == 2)) {
+                value = "";
+            }
             if (column.fieldName == value.fieldName) {
                 exists = true;
                 value.xAxis = 1;
@@ -1644,114 +1647,114 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            }, 50);
         }
 //        $timeout(function () {
-            //            $scope.queryBuilderList = widget;
-            //            resetQueryBuilder();
-            //        }, 50);
+        //            $scope.queryBuilderList = widget;
+        //            resetQueryBuilder();
+        //        }, 50);
     };
 
-        $scope.selectPieChartY = function (widget, column) {
+    $scope.selectPieChartY = function (widget, column) {
 //        $scope.dispHideBuilder = true;
-            if (!column) {
-                return;
+        if (!column) {
+            return;
+        }
+        var exists = false;
+        angular.forEach(widget.columns, function (value, key) {
+            if (column.fieldName == value.fieldName) {
+                exists = true;
+                value.yAxis = 1;
+            } else {
+                value.yAxis = null;
             }
-            var exists = false;
-            angular.forEach(widget.columns, function (value, key) {
-                if (column.fieldName == value.fieldName) {
-                    exists = true;
-                    value.yAxis = 1;
-                } else {
-                    value.yAxis = null;
-                }
-            });
-            if (exists == false) {
-                column.yAxis = 1;
+        });
+        if (exists == false) {
+            column.yAxis = 1;
 
-                widget.columns.push(column);
+            widget.columns.push(column);
 //            $timeout(function () {
 //                $scope.queryBuilderList = widget;
-                //                resetQueryBuilder();
-                //            }, 50);
-            }
-            //        $timeout(function () {
-            //            $scope.queryBuilderList = widget;
-            //            resetQueryBuilder();
-            //        }, 50);
-        };
-
-        function resetQueryBuilder() {
-            $scope.dispHideBuilder = false;
+            //                resetQueryBuilder();
+            //            }, 50);
         }
-        ;
-        //Derived Column
+        //        $timeout(function () {
+        //            $scope.queryBuilderList = widget;
+        //            resetQueryBuilder();
+        //        }, 50);
+    };
+
+    function resetQueryBuilder() {
+        $scope.dispHideBuilder = false;
+    }
+    ;
+    //Derived Column
+    $scope.showDerived = false;
+    $scope.dataSetColumn = {};
+    $scope.addDerived = function () {
+        $scope.dataSetColumn = {};
+        $scope.showDerived = true;
+    };
+    $scope.cancelDerivedColumn = function (dataSetColumn) {
+        $scope.showDerived = false;
+        $scope.dataSetColumn = "";
+    };
+    //Edit Derived
+    $scope.editDerivedColumn = function (collectionField, widgetObj) {
         $scope.showDerived = false;
         $scope.dataSetColumn = {};
-        $scope.addDerived = function () {
-            $scope.dataSetColumn = {};
+        if (collectionField.userId != null) {
             $scope.showDerived = true;
-        };
-        $scope.cancelDerivedColumn = function (dataSetColumn) {
-            $scope.showDerived = false;
-            $scope.dataSetColumn = "";
-        };
-        //Edit Derived
-        $scope.editDerivedColumn = function (collectionField, widgetObj) {
-            $scope.showDerived = false;
-            $scope.dataSetColumn = {};
-            if (collectionField.userId != null) {
-                $scope.showDerived = true;
-                var data = {
-                    agregationFunction: collectionField.agregationFunction,
-                    functionName: collectionField.functionName,
-                    groupPriority: collectionField.groupPriority,
-                    id: collectionField.id,
-                    sortOrder: collectionField.sortOrder,
-                    sortPriority: collectionField.sortPriority,
-                    status: collectionField.status,
+            var data = {
+                agregationFunction: collectionField.agregationFunction,
+                functionName: collectionField.functionName,
+                groupPriority: collectionField.groupPriority,
+                id: collectionField.id,
+                sortOrder: collectionField.sortOrder,
+                sortPriority: collectionField.sortPriority,
+                status: collectionField.status,
                 textExpression: collectionField.expression,
                 fieldType: collectionField.fieldType,
-                    fieldName: collectionField.fieldName,
-                    displayName: collectionField.displayName,
-                    userId: collectionField.userId,
-                    displayFormat: collectionField.displayFormat,
-                    widgetId: widgetObj.id
-                };
-                $scope.dataSetColumn = data;
-            }
-        };
-        var deleteColumns = [];
-        $scope.removeDerivedColumn = function (obj, widgetObj) {
-            var checkColumnDef = obj.selectColumnDef;
-            if (checkColumnDef === 1) {
-                var data = {
-                    derivedId: obj.id,
-                    agregationFunction: obj.agregationFunction,
-                    columnsButtons: obj.columnsButtons,
-                    displayFormat: obj.displayFormat,
-                    displayName: obj.displayName,
-                    expression: obj.expression,
-                    fieldName: obj.fieldName,
-                    fieldType: obj.fieldType,
-                    functionName: obj.functionName,
-                    groupPriority: obj.groupPriority,
-                    selectColumnDef: obj.selectColumnDef,
-                    sortOrder: obj.sortOrder,
-                    sortPriority: obj.sortPriority,
-                    status: obj.status,
-                    type: obj.type,
+                fieldName: collectionField.fieldName,
+                displayName: collectionField.displayName,
+                userId: collectionField.userId,
+                displayFormat: collectionField.displayFormat,
+                widgetId: widgetObj.id
+            };
+            $scope.dataSetColumn = data;
+        }
+    };
+    var deleteColumns = [];
+    $scope.removeDerivedColumn = function (obj, widgetObj) {
+        var checkColumnDef = obj.selectColumnDef;
+        if (checkColumnDef === 1) {
+            var data = {
+                derivedId: obj.id,
+                agregationFunction: obj.agregationFunction,
+                columnsButtons: obj.columnsButtons,
+                displayFormat: obj.displayFormat,
+                displayName: obj.displayName,
+                expression: obj.expression,
+                fieldName: obj.fieldName,
+                fieldType: obj.fieldType,
+                functionName: obj.functionName,
+                groupPriority: obj.groupPriority,
+                selectColumnDef: obj.selectColumnDef,
+                sortOrder: obj.sortOrder,
+                sortPriority: obj.sortPriority,
+                status: obj.status,
+                type: obj.type,
                 userId: obj.userId,
                 widgetId: obj.widgetId
-                };
+            };
+        }
+        var index = $scope.collectionFields.indexOf(obj);
+        $scope.collectionFields.splice(index, 1);
+        if (data) {
+            var getIndex = widgetObj.columns.findIndex(x => x.fieldName == data.fieldName);
+            if (getIndex != -1) {
+                widgetObj.columns.splice(getIndex, 1);
             }
-            var index = $scope.collectionFields.indexOf(obj);
-            $scope.collectionFields.splice(index, 1);
-            if (data) {
-                var getIndex = widgetObj.columns.findIndex(x => x.fieldName == data.fieldName);
-                if (getIndex != -1) {
-                    widgetObj.columns.splice(getIndex, 1);
-                }
-            }
-            deleteColumns.push({id: obj.id, fieldName: obj.fieldName});
-        };
+        }
+        deleteColumns.push({id: obj.id, fieldName: obj.fieldName});
+    };
     //Save DerivedColumn
     $scope.saveDerivedColumn = function (dataSetColumn, widget) {
         $scope.collectionField = {};
