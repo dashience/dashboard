@@ -266,6 +266,7 @@ public class ProxyController {
             returnMap.put("data", returnDataMap);
         }
         Map dataMap = new HashMap<>();
+        updateColumnDefFromDataSet((List<ColumnDef>)returnMap.get("columnDefs"), dataSetIdInt);
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
 
         if (fieldsOnly != null) {
@@ -2467,6 +2468,18 @@ public class ProxyController {
         return null;
     }
 
+    private List<ColumnDef> updateColumnDefFromDataSet(List<ColumnDef> columnDefs, Integer dataSetId) {
+        for (Iterator<ColumnDef> iterator = columnDefs.iterator(); iterator.hasNext();) {
+            ColumnDef columnDef = iterator.next();
+            DataSetColumns dataSetColumn = uiService.getDataSetColumnByDataSet(dataSetId, columnDef.getFieldName());
+            if(dataSetColumn != null) {
+                columnDef.setDisplayFormat(dataSetColumn.getDisplayFormat());
+                columnDef.setDisplayFormat(dataSetColumn.getFieldType());
+            }
+        }
+        return columnDefs;
+    }
+    
     private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         log.debug("Calling of getColumnDef function in ProxyController class");
         List<ColumnDef> columnDefs = new ArrayList<>();

@@ -730,6 +730,18 @@ public class UiDao extends BaseDao {
         return tabWidget;
     }
 
+    public DataSetColumns getDataSetColumnByDatasetId(Integer dataSetId, String fieldName) {
+        String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :id and d.fieldName = :fieldName";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("id", dataSetId);
+        query.setParameter("fieldName", fieldName);
+        List<DataSetColumns> dataSetColumns = query.list();
+        if (dataSetColumns != null && dataSetColumns.size() > 0) {
+            DataSetColumns dataSetColumn = dataSetColumns.get(0);
+        }
+        return null;
+    }
+
     public List getDataSetColumnByDatasetId(Integer dataSetId) {
         String queryStr = "SELECT d FROM DataSetColumns d where d.dataSetId.id = :id";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -941,7 +953,7 @@ public class UiDao extends BaseDao {
         List<DataSourceSetting> list = query.list();
         return list;
     }
-    
+
     public List<DataSourceFilter> getDataSourceFilters(String dataSource, String dataSetReportName) {
         String queryStr = "SELECT d FROM DataSourceFilter d where d.dataSourceName = :dataSourceName and d.reportName = :reportName";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -957,7 +969,7 @@ public class UiDao extends BaseDao {
         query.setParameter("dataSourceName", dataSourceName);
         return query.list();
     }
-    
+
     public List getDataSetReportSegments(String dataSourceName, String reportName, String segmentName) {
         String queryStr = "SELECT distinct d. FROM DataSourceSetting d where d.dataSourceName = :dataSourceName";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);

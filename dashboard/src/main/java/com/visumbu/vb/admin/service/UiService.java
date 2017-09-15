@@ -1463,4 +1463,8 @@ public class UiService {
         }
         return returnProp;
     }
+
+    public DataSetColumns getDataSetColumnByDataSet(Integer dataSetId, String fieldName) {
+        return uiDao.getDataSetColumnByDatasetId(dataSetId, fieldName);
+    }
 }

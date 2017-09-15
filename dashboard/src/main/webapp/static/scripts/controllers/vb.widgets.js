@@ -926,7 +926,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.collectionFields = response.columnDefs;
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
             var getWidgetColumns = widget.columns;
-
             $scope.collectionFields.forEach(function (value, k) {
                 var machField = $.grep(getWidgetColumns, function (b) {
                     return b.fieldName === value.fieldName;
@@ -3139,7 +3138,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
 //                }
 //                return value;
 //            };
-            scope.format = function (column, value) {
+            scope.format = function (column, value) {                
+                console.log(column)
+                console.log(value)
                 if (!value) {
                     return "-";
                 }
