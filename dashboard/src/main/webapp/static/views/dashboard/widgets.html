@@ -407,6 +407,7 @@
                                 <a ng-show="showCreateReport" title="{{'Report'| translate}}" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                                 <a ng-if="widget.chartType === 'line'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'bar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                 <a ng-if="widget.chartType === 'horizontalBar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'pie'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'area'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'stackedbar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
@@ -451,6 +452,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="panel-body" ng-if="widget.chartType === 'horizontalBar'">
+                        <div>
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}"
+                                 is-Horizontal-Bar="{{widget.isHorizontalBar}}">                                     
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="panel-body" ng-if="widget.chartType === 'pie'">
                         <div>
                             <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
@@ -535,6 +548,7 @@
                              default-chart-color="{{defaultChartColor}}">
                         </div>
                     </div>  
+                    
 
 
                 </div>

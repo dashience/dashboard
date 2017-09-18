@@ -646,7 +646,7 @@
                                     ng-change="selectX1Axis(widgetObj, xColumn)">
                             </select>
                         </div>
-                        <div class="col-md-12" ng-show="((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination')">
+                        <div class="col-md-12" ng-show="((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination'|| (chartTypeName ? chartTypeName : widgetObj.chartType) == 'bar'|| (chartTypeName ? chartTypeName : widgetObj.chartType) == 'horizontalBar')">
                             <label ng-if="hideSelectedColumn === false;" translate>Select X Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartXAxis" 
@@ -1078,13 +1078,25 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="chartTypeName === 'bar'">
+                <div ng-if="chartTypeName === 'bar' && displayPreviewChart.isHorizontalBar===false;">
                     <div>
                         <div bar-Chart-Directive 
                              bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
-                             widget-Obj="{{displayPreviewChart}}">                         
+                             widget-Obj="{{displayPreviewChart}}"
+                             is-Horizontal-Bar="{{displayPreviewChart.isHorizontalBar}}">                         
+                        </div>
+                    </div>
+                </div>                
+                <div ng-if="chartTypeName === 'horizontalBar' && displayPreviewChart.isHorizontalBar===true;">
+                    <div>
+                        <div bar-Chart-Directive 
+                             bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 
+                             widget-Id="{{displayPreviewChart.id}}" 
+                             widget-Columns="{{displayPreviewChart.columns}}" 
+                             widget-Obj="{{displayPreviewChart}}"
+                             is-Horizontal-Bar="{{displayPreviewChart.isHorizontalBar}}">                         
                         </div>
                     </div>
                 </div>

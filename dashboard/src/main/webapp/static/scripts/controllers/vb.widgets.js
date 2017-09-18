@@ -405,6 +405,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
                 widgetItems.forEach(function (value, key) {
                     value.chartColors = widgetColors;
+                    if (value.chartType == 'horizontalBar') {
+                        value.isHorizontalBar = true;
+                    } else {
+                        value.isHorizontalBar = false;
+                    }
                 });
                 $scope.widgets = widgetItems;
             });
@@ -871,7 +876,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
 
-    $scope.selectChart = function (chartType, widget) {
+    $scope.selectChart = function (chartType, widgetObj) {
         addColor = [];
         $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
@@ -883,24 +888,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.chartTypeName = chartType.type;
         $scope.showDateRange = false;
         $scope.advanced = false;
-//        $scope.xColumn = "";
-//        $scope.y1Column = "";
-//        $scope.selectPieChartXAxis = "";
-//        $scope.selectPieChartYAxis = "";
-//        $scope.y2Column = "";
-//        $scope.tickerItem = "";
-//        $scope.funnelItem = "";
-//        $scope.widgetObj.dataSourceId = "";
-//        $scope.widgetObj.dataSetId = "";
-//        $scope.widgetObj.timeSegment = "";
-//        $scope.widgetObj.productSegment = "";
-//        $scope.widgetObj.networkType = "";
+
+        if (chartType.type === 'horizontalBar') {
+            widgetObj.isHorizontalBar = true;
+        } else {
+            widgetObj.isHorizontalBar = false;
+        }
         $scope.widgetObj.chartColorOption = "";
         $scope.widgetObj.targetColors = "";
         if ($scope.chartTypeName) {
-            widget.columns = [];
+            widgetObj.columns = [];
             $scope.collectionFields.forEach(function (value, k) {
-                var machField = $.grep(widget.columns, function (b) {
+                var machField = $.grep(widgetObj.columns, function (b) {
                     return b.fieldName === value.fieldName;
                 });
                 if (machField.length > 0) {
@@ -1004,6 +1003,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.showColor = false;
         $scope.advanced = false;
         $scope.chartTypeName = null;
+        
+        
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
@@ -2037,9 +2038,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.save = function (widget) {
-
-        console.log(widget)
-
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2160,7 +2158,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             icon: widget.icon
         };
         clearEditAllWidgetData();
-
         var deleteColumnDef = deleteColumns.map(function (value, key) {
             if (value) {
                 return value.fieldName;
@@ -2262,7 +2259,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 data.dataSourceId = dataSourceObj;
                 data.dataSetId = dataSetObj;
                 widget.icon = data.icon;
+
                 widget = data;
+                if (widget.chartType === 'horizontalBar') {
+                    newWidgetResponse.isHorizontalBar = true;
+                } else {
+                    newWidgetResponse.isHorizontalBar = false;
+                }
                 if (!data.id) {
                     $scope.widgets.unshift(newWidgetResponse);
                 }
