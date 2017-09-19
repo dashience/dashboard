@@ -195,10 +195,10 @@ public class ApiUtils {
                 new GaReport("frequencyReport", "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:avgSessionDuration,avgSessionDuration",
                         "ga:sessionCount", null));
         gaReports.put("goalsReport",
-                new GaReport("goalsReport", "ga:sessions,sessions;ga:bounceRate,bounceRate;ga:percentNewSessions,percentNewSessions;ga:avgTimeOnPage,avgTimeOnPage;ga:goal1Completions,goals1;ga:goal2Completions,goals2;ga:goal3Completions,goals3;ga:goal4Completions,goals4;ga:goal5Completions,goals5;ga:goal6Completions,goals6",
+                new GaReport("goalsReport", "ga:sessions,sessions;ga:bounceRate,bounceRate;ga:percentNewSessions,percentNewSessions;ga:avgTimeOnPage,avgTimeOnPage;ga:goal7Completions,goals7;ga:goal8Completions,goals8;ga:goal9Completions,goals9;ga:goal10Completions,goals10;ga:goal11Completions,goals11;ga:goal12Completions,goals12",
                         null, null));
         gaReports.put("pageGoalsReport",
-                new GaReport("pageGoalsReport", "ga:sessions,sessions;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:goal1Completions,goals1;ga:goal2Completions,goals2;ga:goal3Completions,goals3;ga:goal4Completions,goals4;ga:goal5Completions,goals5;ga:goal6Completions,goals6",
+                new GaReport("pageGoalsReport", "ga:sessions,sessions;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:goal7Completions,goals7;ga:goal8Completions,goals8;ga:goal9Completions,goals9;ga:goal10Completions,goals10;ga:goal11Completions,goals11;ga:goal12Completions,goals12",
                         "ga:pagePath", null));
         gaReports.put("eventsReport",
                 new GaReport("eventsReport", "ga:totalEvents,totalEvents;ga:uniqueEvents,uniqueEvents;ga:eventValue,eventValue;ga:avgEventValue,avgEventValue", "ga:eventCategory", null));

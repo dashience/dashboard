@@ -1133,6 +1133,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Week'
                 },
                 {
+                    type: 'ga:dayOfWeek',
+                    name: 'Day of Week'
+                },                {
                     type: 'ga:YearMonth',
                     name: 'Month'
                 },
