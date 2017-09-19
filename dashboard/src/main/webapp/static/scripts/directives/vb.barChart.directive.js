@@ -10,7 +10,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             barChartId: '@',
             widgetColumns: '@',
             widgetObj: '@',
-            defaultChartColor: '@'
+            defaultChartColor: '@',
+            isHorizontalBar: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -292,6 +293,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             } else {
                                 gridLine = false;
                             }
+                            
+                            try {
+                                var isRotate = JSON.parse(scope.isHorizontalBar);
+                            } catch (exception) {
+                            }
+                            
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
@@ -313,6 +320,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 },
                                 tooltip: {show: false},
                                 axis: {
+                                    rotated: isRotate,
                                     x: {
                                         tick: {
                                             format: function (x) {

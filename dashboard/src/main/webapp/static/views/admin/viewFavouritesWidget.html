@@ -207,10 +207,11 @@
                             <a ng-if="favouritesWidget.widgetId.width != 12" ng-click="expandWidget(favouritesWidget.widgetId)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
                         </div>
                         <span class="{{favouritesWidget.widgetId.icon}}"></span> 
-                        <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle}}</span>
+                        <!--<span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle}}</span>-->
+                         <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle?favouritesWidget.widgetId.widgetTitle:'Widget'}}</span>
                     </div>
                     <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'line'">
-                        <div set-Line-Chart-Fn="setLineChartFn(lineFn
+                        <div set-Line-Chart-Fn="setLineChartFn(lineFn)"
                              line-Chart-Directive 
                              line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}"
                              widget-Id="{{favouritesWidget.widgetId.id}}"
@@ -230,7 +231,7 @@
                     <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'pie'">
                         <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{favouritesWidget.widgetId.dataSetId}}' widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
                     </div> 
-                    <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'area'">
+                    <div class="box-body" ng-if="(favouritesWidget.widgetId.chartType === 'area' || favouritesWidget.widgetId.chartType === 'combination')">
                         <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
                     </div> 
                     <div class="box-body"  ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'">
@@ -264,6 +265,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="box-body list" ng-if="favouritesWidget.widgetId.chartType === 'table'" adjust-height>
                         <div class="table-responsive project-list">
                             <div id="changes-height" class="project-list">

@@ -290,6 +290,16 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="hpanel col-fixed-{{widget.width}} pageBreak" ng-if="widget.chartType == 'gauge'">
+                        <div set-Gauge-Fn="setGaugeFn(gaugeFn)" 
+                             gauge-Directive 
+                             widget-Obj="{{widget}}"
+                             gauge-Source="{{widget.dataSetId}}" 
+                             gauge-Title-Name="{{widget.widgetTitle}}" 
+                             gauge-Id="{{widget.id}}" 
+                             gauge-Columns="{{widget.columns}}">
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>

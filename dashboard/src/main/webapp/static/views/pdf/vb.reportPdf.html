@@ -137,6 +137,7 @@
     @media print  {
         .pdfButton {
             display:none !important;
+            margin-top: -20px !important;
         }
         .pdf-title-color span{
             background: transparent !important;
@@ -160,6 +161,7 @@
     @media screen {
         .pdfButton {
             display:block;
+            margin-top: -20px !important;
         }
     }
 </style>
@@ -306,6 +308,15 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="hpanel col-fixed-{{reportWidget.widgetId.width}} pageBreak" ng-if="reportWidget.widgetId.chartType == 'gauge'">
+                        <div set-Gauge-Fn="setGaugeFn(gaugeFn)" 
+                             widget-Obj="{{reportWidget.widgetId}}"
+                             gauge-Directive gauge-Source="{{reportWidget.widgetId.dataSetId}}" 
+                             gauge-Title-Name="{{reportWidget.widgetId.widgetTitle}}" 
+                             gauge-Id="{{reportWidget.widgetId.id}}" 
+                             gauge-Columns="{{reportWidget.widgetId.columns}}">                                 
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
