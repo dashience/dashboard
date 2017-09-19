@@ -546,7 +546,7 @@
                                 <input type="checkbox" ng-model="collectionField.selectColumnDef" 
                                        ng-true-value="1" ng-false-value="0" ng-click="selectColumnItem(collectionField, widgetObj)">
                                 <label for="checkbox1" ng-class="{'selected':(collectionField.expression)}">
-                                    <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.displayName}}</a>
+                                    <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.displayName}} - {{collectionField.category}}</a>
                                 </label>
                                 <span class="pull-right" ng-if="collectionField.expression">
                                     <a class="btn btn-default btn-xs" ng-click="editDerivedColumn(collectionField, widgetObj)">
@@ -780,8 +780,11 @@
             <div ng-show="afterLoadWidgetColumns" class="form-group button-ok">
                 <!--<div ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'" ng-show="afterLoadWidgetColumns" class="form-group button-ok">-->
                 <button class="btn btn-default" ng-click="addDerived()" translate>Add Column</button>
-                <label ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'"><input type="checkbox" ng-checked="(widgetObj.selectAll == 1) || (widgetObj.selectAll == null)"
-                                                                                                       ng-model="widgetObj.selectAll" ng-true-value="1" ng-false-value="0" ng-click="selectAllColumns(collectionFields, widgetObj)" translate>
+                <label ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'table'">
+                    <input type="checkbox" 
+                           ng-checked="(widgetObj.selectAll == 1) || (widgetObj.selectAll == null)"
+                           ng-model="widgetObj.selectAll" ng-true-value="1" ng-false-value="0" 
+                           ng-click="selectAllColumns(collectionFields, widgetObj)" translate>
                     Select All</label>
             </div>
         </div>

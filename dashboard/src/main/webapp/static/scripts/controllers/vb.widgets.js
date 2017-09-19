@@ -46,11 +46,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get('static/datas/tickerIcons.json').success(function (response) {       //Popup- Select Chart-Type Json
         $scope.chartIcons = response;
     });
-    
-    $scope.selectIcon = function (widgetObj,selectIcon) {
+
+    $scope.selectIcon = function (widgetObj, selectIcon) {
         widgetObj.icon = selectIcon.icon;
     };
-    
+
     $scope.findChartIcon = function (iconName) {
         if (!iconName) {
             return;
@@ -359,7 +359,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.loadingColumnsGif = false;
         $scope.showDateRange = false;
         $scope.showSortBy = false;
-        $scope.showGaugeColumns=true;
+        $scope.showGaugeColumns = true;
     };
 
     $scope.firstSortableOptions = {
@@ -489,7 +489,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             lastNmonths: widget.lastNmonths,
             lastNyears: widget.lastNyears,
             accountId: widget.accountId ? widget.accountId.id : null,
-            icon:widget.icon
+            icon: widget.icon
         });
         setDefaultChartType = widget.chartType;
         $scope.showDerived = false;
@@ -1049,7 +1049,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         status: obj.status,
                         type: obj.type,
                         userId: obj.userId,
-                        widgetId: obj.widgetId
+                        widgetId: obj.widgetId,
+                        category: obj.category
                     };
                     widget.columns.push(data);
                 }
@@ -1088,7 +1089,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 status: obj.status,
                 type: obj.type,
                 userId: obj.userId,
-                widgetId: obj.widgetId
+                widgetId: obj.widgetId,
+                category: obj.category
             };
             widget.columns.push(data);
         } else {
@@ -1315,6 +1317,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.reduceWidget = function (widget) {
         var expandchart = widget.chartType;
 
+        widget.chartType = null;
         if (widget.width == 12) {
             widget.width = widget.width - 4;
         } else if (widget.width == 8) {
@@ -1515,13 +1518,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            resetQueryBuilder();
 //        }, 50);
     };
-    
-    
+
+
     $scope.gauge = function (widgetObj, gaugeColumns) {
         $scope.dispHideBuilder = true;
         var newColumns = [];
         console.log(gaugeColumns);
-        
+
         if (gaugeColumns.length === 0) {
             widgetObj.columns = "";
         } else {
@@ -1552,7 +1555,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 // Funnel Format
     $scope.funnel = function (widget, column) {
-//        $scope.dispHideBuilder = true;
         var exists = false;
         if (column.length == 0) {
             widget.columns = "";
@@ -2002,9 +2004,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.save = function (widget) {
-        
-        console.log(widget)
-        
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2038,6 +2037,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         widget.directUrl = widget.previewUrl ? widget.previewUrl : widget.directUrl;
         var widgetColumnsData = [];
+        console.log(widget.columns)
         angular.forEach(widget.columns, function (value, key) {
             var hideColumn = value.columnHide;
             if (value.groupPriority > 0) {
@@ -2075,6 +2075,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             };
             widgetColumnsData.push(columnData);
         });
+
         var dataSourceTypeId;
         var dataSetTypeId;
         var dataSourceObj;
@@ -2093,6 +2094,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             widget.accountId = parseInt($stateParams.accountId);
         }
+
+
+        console.log(widgetColumnsData)
+
         var data = {
             id: widget.id,
             chartType: $scope.chartTypeName ? $scope.chartTypeName : widget.chartType,
@@ -2122,7 +2127,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             networkType: widget.networkType ? widget.networkType.type : null,
             createdBy: widget.createdBy,
             chartColorOption: widgetColor,
-            icon:widget.icon
+            icon: widget.icon
         };
         clearEditAllWidgetData();
 
@@ -2136,7 +2141,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         }
         deleteColumns = [];
-        console.log(data)
         $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + $stateParams.tabId, data: data}).success(function (response) {
             var widgetColors;
             var newWidgetResponse = response;
@@ -2144,7 +2148,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widgetColors = $scope.userChartColors.optionValue.split(',');
             }
             response.chartColors = widgetColors;
-            // if()
             if (!data.id) {
                 $scope.columnHeaderColuction = [];
                 $scope.widgetDataSetColumnsDefs.forEach(function (val, key) {
@@ -2164,7 +2167,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         status: val.status,
                         fieldType: val.fieldType,
                         displayName: val.displayName,
-                        icon:val.icon
+                        icon: val.icon
                     };
                     $scope.columnHeaderColuction.push(collectionFieldDefs);
                 });

@@ -410,7 +410,7 @@
                                 <a ng-if="permission.downloadReport === true;" ng-click="downloadXLSByWidget(widget)" title="{{'Download XLS'| translate}}">
                                     <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 </a>
-                                <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="{{'Resize-Right'| translate}}"><i class="fa fa-chevron-left"></i></a>
+                                <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="{{'Resize-Left'| translate}}"><i class="fa fa-chevron-left"></i></a>
                                 <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="{{'Resize-Right'| translate}}"><i class="fa fa-chevron-right"></i></a>
                             </div>
                         </div>
@@ -483,7 +483,16 @@
                                      widget-Columns="{{widget.columns}}">                                         
                                 </div>
                             </div>-->
-                            <div compare-Range-Table></div>
+                            <!--<div compare-Range-Table></div>-->
+                             <div id="changes-height" class="project-list">
+                                <div compare-Range-Table 
+                                     compare-Table-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}" 
+                                     widget-Obj="{{widget}}" 
+                                     table-Footer="{{widget.tableFooter}}" 
+                                     widget-Columns="{{widget.columns}}">                                         
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'text'">
