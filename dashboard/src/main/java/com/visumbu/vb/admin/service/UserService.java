@@ -403,4 +403,5 @@ public class UserService {
     public AgencyProperty deleteAgencyPropertyId(Integer agencyPropertyId) {
         return userDao.deleteAgencyPropertyId(agencyPropertyId);
     }
+
 }

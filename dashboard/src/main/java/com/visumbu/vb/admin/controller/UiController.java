@@ -607,11 +607,33 @@ public class UiController extends BaseController {
         return uiService.getUserAccountByUser(user);
     }
 
-    @RequestMapping(value = "userAccount/{userId}", method = RequestMethod.GET, produces = "application/json")
+    //Get user account total
+    @RequestMapping(value="userAccountTotal/{userId}",method=RequestMethod.GET,produces="application/json")
     public @ResponseBody
-    List getUserAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
-        return uiService.getUserAccountById(userId);
+    Long userAccountTotal(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId){
+        return uiService.getUserAccountCountById(userId);
     }
+    
+    
+//    @RequestMapping(value = "userAccount/{userId}", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    List getUserAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
+//        Integer count=10;
+//        Integer pageId=1;
+//        Integer start=(pageId-1)*count;
+//        return uiService.getUserAccountById(userId,start);
+//    }
+    
+    //sabari code
+    
+    @RequestMapping(value = "userAccount/{userId}/{pageId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getUserAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId, @PathVariable Integer pageId) {
+        Integer count=10;
+        Integer start=(pageId-1)*count;
+        return uiService.getUserAccountById(userId,start);
+    }
+    
 
     @RequestMapping(value = "userAccount/{userAccountId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody

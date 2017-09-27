@@ -278,9 +278,9 @@ public class ProxyController {
 
     private List<ColumnDef> updateDataSetColumnId(List<ColumnDef> columnDefObject, Integer userId, Integer dataSetId, Integer widgetId) {
         List<ColumnDef> columnDef = new ArrayList<>();
-//        if (columnDefObject == null) {
-//            return null;
-//        }
+        if (columnDefObject == null) {
+            return null;
+        }
         for (Iterator<ColumnDef> iterator = columnDefObject.iterator(); iterator.hasNext();) {
             ColumnDef column = iterator.next();
             DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId, widgetId);
@@ -1923,6 +1923,7 @@ public class ProxyController {
                     twitterOauthToken, twitterOauthSignature, twitterOauthNonce, twitterOauthConsumerKey, startDate, endDate, timeSegment, productSegment);
             return twitterReport;
         } catch (NumberFormatException ex) {
+            System.out.println("Twitter Cache Exception ...");
             return null;
         }
     }

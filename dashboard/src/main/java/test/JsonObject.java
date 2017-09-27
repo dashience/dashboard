@@ -21,8 +21,8 @@ import org.json.simple.JSONObject;
 public class JsonObject {
 
     public static void main(String args[]) {
-        
-        printResult();
+        getObject();
+//        printResult();
     }
     
     public static String printObject(){
@@ -88,6 +88,8 @@ public class JsonObject {
         object.put("name", "Ducima analytics");
         object.put("Type", "Technology");
         object.put("Salary", "50000");
+        
+        System.out.println(object);
         return object;
     }
 }

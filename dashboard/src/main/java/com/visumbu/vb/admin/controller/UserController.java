@@ -481,6 +481,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "userAccount/{accountId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getUserAccountById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId) {
+
         return userService.getUserAccountById(accountId);
     }
 

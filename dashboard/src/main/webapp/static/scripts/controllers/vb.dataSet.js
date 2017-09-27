@@ -256,6 +256,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     ];
     $scope.dataSetFlagValidation = function (dataSource)
     {
+//        alert("Souce -->" + dataSource);
         $scope.reportSelected = true;
         $scope.enableMe = true;
         $scope.dataSet.reportName = "";
@@ -315,6 +316,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
             $scope.semRushFlag = false;
+        } else if (dataSource === "twitter")
+        {
+            $scope.report = $scope.twitterPerformance;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "bing")
         {
             $scope.report = $scope.bingPerformance;
@@ -351,6 +360,36 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             type: 'pagePerformance',
             name: 'Page Performance',
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }, {
+            type: "screenName",
+            name: 'Screen Name',
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }, {
+            type: "userTimeLine",
+            name: 'User Performance Metrics',
             timeSegments: [
                 {
                     type: 'none',

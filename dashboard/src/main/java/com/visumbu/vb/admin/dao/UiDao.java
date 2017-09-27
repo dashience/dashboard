@@ -593,9 +593,9 @@ public class UiDao extends BaseDao {
         return null;
     }
 
-    public List<UserAccount> getUserAccountById(Integer userId) {
+    public List<UserAccount> getUserAccountById(Integer userId,Integer startPosition) {
         String queryStr = "select d from UserAccount d where d.userId.id = :userId";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr).setFirstResult(startPosition).setMaxResults(10);
         query.setParameter("userId", userId);
         return query.list();
     }
@@ -981,5 +981,18 @@ public class UiDao extends BaseDao {
         query.setParameter("fieldName", fieldName);
         query.setParameter("widgetId", widgetId);
         query.executeUpdate();
+    }
+
+    public Long getUserAccountCountById(Integer userId) {
+        String Query="select count(u) from UserAccount u where u.userId.id="+userId;
+        Query query=sessionFactory.getCurrentSession().createQuery(Query);
+        Long total=(Long) query.list().get(0);
+        return total;
+    }
+
+    public Integer getMinimumPageNo(Integer userId) {
+        String Query="select min(u.id) from UserAccount u where u.userId.id="+userId;
+        Query query=sessionFactory.getCurrentSession().createQuery(Query);
+        return (Integer)query.list().get(0);
     }
 }

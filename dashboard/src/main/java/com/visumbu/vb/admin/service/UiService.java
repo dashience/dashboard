@@ -808,8 +808,8 @@ public class UiService {
         return uiDao.getUserAccountByUser(user);
     }
 
-    public List<UserAccount> getUserAccountById(Integer userId) {
-        return uiDao.getUserAccountById(userId);
+    public List<UserAccount> getUserAccountById(Integer userId,Integer startPosition) {
+        return uiDao.getUserAccountById(userId,startPosition);
     }
 
     public UserAccount deleteUserAccount(Integer userAccountId) {
@@ -1470,5 +1470,13 @@ public class UiService {
             uiDao.deleteDerivedColumn(columnArray[i], widgetId);
             uiDao.deleteWidgetColumn(columnArray[i], widgetId);
         }
+    }
+
+    public Long getUserAccountCountById(Integer userId) {
+        return uiDao.getUserAccountCountById(userId);
+    }
+
+    public Integer getMinimumPageNo(Integer userId) {
+      return uiDao.getMinimumPageNo(userId);
     }
 }

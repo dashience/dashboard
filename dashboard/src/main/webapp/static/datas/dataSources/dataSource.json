@@ -37,6 +37,10 @@
             "name": "Pinterest"
         },
         {
+            "type": "twitter",
+            "name": "Twitter"
+        },
+        {
             "type": "linkedin",
             "name": "LinkedIn"
         },

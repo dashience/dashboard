@@ -118,7 +118,8 @@
 
                         </div>
                         <div ng-show="isSetUser(2)" class="license">
-                            <table class="table table-responsive table-fixed">
+                            
+                          <table class="table table-responsive table-fixed">
                                 <thead>
                                     <tr>
                                         <th class="col-xs-9" translate>Account Name</th>                                                
@@ -128,8 +129,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="accountUser-Table" ng-repeat="userAccount in userAccounts" ng-class="{'selectedTableRow':$index == selectedtUserAccount}" ng-click="setUserAccountRow($index)">
-                                        <td class="col-xs-9">
+                                    <tr data-dir-paginate="userAccount in userAccounts| filter: searchAccount|itemsPerPage:10:'userAccountPagedItems'" current-page="currentPage"  data-pagination-id="userAccountPagedItems" ng-class="{'selectedTableRow':$index == selectedRow}">
+                                         <td class="col-xs-9">
                                             <div ng-hide="userAccount.isEdit">{{userAccount.accountId.accountName}}</div>
                                             <div ng-show="userAccount.isEdit">
                                                 <ui-select ng-model="userAccount.accountId" theme="select2" ng-disabled="disabled">
@@ -182,6 +183,45 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <dir-pagination-controls data-pagination-id="userAccountPagedItems" data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>
+                         
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                            
+                                               <!--<dir-pagination-controls data-pagination-id="myPagedItemss" max-size="10" data-template-url="static/views/reports/pagination.tpl.html"></dir-pagination-controls>-->
+                            <!-- pagination  starts -->
+<!--                            <ul class="pagination" ng-show="pagination">
+                                <li class="prev">
+                                    <a href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li ng-click="getUserAccountByPageId($index + 1)" 
+                                    ng-repeat="i in getNumber(paginationLength) track by $index">
+                                    <span>{{$index + 1}}</span></li>
+                            </ul>-->
+                            <!-- pagination ends -->
+
 
                         </div>
                         <div ng-show="isSetUser(3)" class="license">
@@ -249,14 +289,14 @@
                                 <th class="col-xs-2" translate>Agency Name</th>
                                 <th class="col-xs-2" translate>User Name</th>
                                 <th class="col-xs-3" translate>Email</th>
-                                <!--                                        <th class="col-xs-2">Primary Phone</th>-->
+                                <!--<th class="col-xs-2">Primary Phone</th>-->
                                 <th class="col-xs-1"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <!--<tr ng-show="user.users.length <= 0"><td colspan="5" style="text-align:center;">Loading new data!!</td></tr>-->
-                            <tr class="accountUser-Table" data-dir-paginate="user in users | filter: searchUser|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedUser}">
-                                <!--<tr class="accountUser-Table" data-dir-paginate="user in users|filter: searchUser|filter:agencyListName.agencyName|itemsPerPage:10:'myPagedItems'"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedUser}">-->
+                            <!--<tr class="accountUser-Table" ng-repeat="user in users | filter: searchUser"  ng-class="{'selectedTableRow':$index == selectedUser}">-->
+                                <tr class="accountUser-Table" data-dir-paginate="user in users |filter: searchUser| filter:agencyListName.agencyName|itemsPerPage:10"  data-pagination-id="myPagedItems" ng-class="{'selectedTableRow':$index == selectedUser}">
 
                                 <!--<tr dir-paginate="user in users | itemsPerPage:2" ng-class="{'selectedTableRow':$index == selectedUser}">-->
                                 <td class="col-xs-2" ng-click="editUser(user, $index)">{{user.firstName? user.firstName:'-'}}</td>

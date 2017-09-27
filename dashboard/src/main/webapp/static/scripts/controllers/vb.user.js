@@ -2,7 +2,6 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
     $scope.permission = localStorageService.get("permission");
     $scope.checkAdmin = $cookies.getObject("isAdmin");
     $scope.users = [];
-
     //Tabs
     $scope.tab = 1;
 
@@ -29,7 +28,6 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
         var newArr = [],
                 origLen = origArr.length,
                 found, x, y;
-
         for (x = 0; x < origLen; x++) {
             found = undefined;
             for (y = 0; y < newArr.length; y++) {
@@ -60,7 +58,6 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
                 $scope.userAgency = unique($scope.userAgencyDetails);
             });
         });
-
         $http.get('admin/user/account').success(function (response) {
             $scope.accounts = response;
         });
@@ -157,9 +154,29 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
         $scope.clearUser();
     };
 
-    function getUserAccount(user) {
-        $http.get('admin/ui/userAccount/' + user.id).success(function (response) {
+    $scope.pagination = false;
+    $scope.getUserAccountByPageId = function (pageId) {
+        $http.get('admin/ui/userAccount/' + $scope.usersAccount.id + "/" + pageId).success(function (response) {
             $scope.userAccounts = response;
+        });
+    };
+    $scope.getNumber = function (num) {
+        return new Array(num);
+    };
+    $scope.currentPage = 1;
+    function getUserAccount(user) {
+        var pageId = 1;
+        $scope.usersAccount = user;
+        $http.get('admin/ui/userAccountTotal/' + user.id).success(function (response) {
+            $scope.pagination = true;
+            $scope.paginationLimit = 10;
+            //calculation code starts
+            $scope.getCount = response;
+            $scope.paginationLength = Math.round(response / $scope.paginationLimit);
+        });
+        $http.get('admin/ui/userAccount/' + user.id + "/" + pageId).success(function (response) {
+            $scope.userAccounts = response;
+            console.log(response);
         });
         $http.get('admin/ui/userPermission/' + user.id).success(function (response) {
             $scope.allPermissions = true;
@@ -171,9 +188,7 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
                 });
                 checkAllPermission(user);
             });
-
         });
-
     }
 
     $scope.hasPermission = function (permission) {
@@ -320,7 +335,6 @@ app.controller('UserController', function ($scope, $http, localStorageService, $
             if (type === 'individualPermission') {
                 //check all permissions is set for the user. If set active all permisssions toggle to true else set to false
                 checkAllPermission($scope.userId);
-
             }
         });
     };
