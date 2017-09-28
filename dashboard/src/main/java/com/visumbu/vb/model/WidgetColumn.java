@@ -57,7 +57,13 @@ public class WidgetColumn implements Serializable {
     private Integer id;
     @Size(max = 1024)
     @Column(name = "field_name")
-    private String fieldName;    
+    private String fieldName;
+    @Column(name = "is_location")
+    private Boolean isLocation;
+    @Column(name = "is_latitude")
+    private Boolean isLatitude;
+    @Column(name = "is_longitude")
+    private Boolean isLongitude;
     @Size(max = 128)
     @Column(name = "x_axis")
     private String xAxis;
@@ -69,7 +75,7 @@ public class WidgetColumn implements Serializable {
     private String yAxisLabel;
     @Size(max = 128)
     @Column(name = "x_axis_label")
-    private String xAxisLabel;    
+    private String xAxisLabel;
     @Size(max = 1024)
     @Column(name = "display_name")
     private String displayName;
@@ -129,11 +135,11 @@ public class WidgetColumn implements Serializable {
     private String combinationType;
     @Column(name = "derived_id")
     private Integer derivedId;
-    
+
     @Size(max = 32)
     @Column(name = "category")
     private String category;
-    
+
     @Size(max = 128)
     @Column(name = "group_field")
     private String groupField;
@@ -192,7 +198,7 @@ public class WidgetColumn implements Serializable {
     public void setxAxisLabel(String xAxisLabel) {
         this.xAxisLabel = xAxisLabel;
     }
-    
+
     public String getDisplayName() {
         return displayName;
     }
@@ -256,7 +262,7 @@ public class WidgetColumn implements Serializable {
     public void setExpression(String expression) {
         this.expression = expression;
     }
-    
+
     public String getBaseFieldName() {
         return baseFieldName;
     }
@@ -312,7 +318,7 @@ public class WidgetColumn implements Serializable {
     public void setWrapText(String wrapText) {
         this.wrapText = wrapText;
     }
-    
+
     public String getAlignment() {
         return alignment;
     }
@@ -359,7 +365,7 @@ public class WidgetColumn implements Serializable {
 
     public void setDerivedId(Integer derivedId) {
         this.derivedId = derivedId;
-    } 
+    }
 
     public String getCategory() {
         return category;
@@ -368,7 +374,31 @@ public class WidgetColumn implements Serializable {
     public void setCategory(String category) {
         this.category = category;
     }
-    
+
+    public Boolean getIsLocation() {
+        return isLocation;
+    }
+
+    public void setIsLocation(Boolean isLocation) {
+        this.isLocation = isLocation;
+    }
+
+    public Boolean getIsLatitude() {
+        return isLatitude;
+    }
+
+    public void setIsLatitude(Boolean isLatitude) {
+        this.isLatitude = isLatitude;
+    }
+
+    public Boolean getIsLongitude() {
+        return isLongitude;
+    }
+
+    public void setIsLongitude(Boolean isLongitude) {
+        this.isLongitude = isLongitude;
+    }
+
     @XmlTransient
     @JsonIgnore
     public TabWidget getWidgetId() {

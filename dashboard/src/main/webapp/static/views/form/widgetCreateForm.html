@@ -646,7 +646,7 @@
                                     ng-change="selectX1Axis(widgetObj, xColumn)">
                             </select>
                         </div>
-                        <div class="col-md-12" ng-show="((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination'|| (chartTypeName ? chartTypeName : widgetObj.chartType) == 'bar'|| (chartTypeName ? chartTypeName : widgetObj.chartType) == 'horizontalBar')">
+                        <div class="col-md-12" ng-show="((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'bar' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'horizontalBar')">
                             <label ng-if="hideSelectedColumn === false;" translate>Select X Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartXAxis" 
@@ -667,7 +667,7 @@
 
                     </div>
 
-                    <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge')">
+                    <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'map')">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
                             <label ng-if="hideSelectedColumn === false;" translate>Select Y1-Axis</label>                            
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y1Column" theme="bootstrap" 
@@ -680,7 +680,7 @@
                             </ui-select>
                         </div>
                     </div>
-                    <div class="form-group selectYaxis" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')" >
+                    <div class="form-group selectYaxis" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'map' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'stackedbar')" >
                         <div class="col-md-12 y2Axis" ng-if="afterLoadWidgetColumns == true">
                             <label ng-if="hideSelectedColumn === false;" translate>Select Y2-Axis</label>
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y2Column" theme="bootstrap" 
@@ -718,6 +718,46 @@
                             </div>
                         </div>
                     </div>
+
+
+                    <div class="col-md-12" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'map'" >
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label ng-if="hideSelectedColumn === false;" translate>Location</label>
+                                <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                        class="form-control" ng-model="location" 
+                                        ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                        ng-change="selectLocation(widgetObj, location)">
+                                </select>
+                            </div>
+                        </div>
+
+                       <div class="form-group">
+                            <div class="col-md-12">
+                                <label ng-if="hideSelectedColumn === false;" translate>Latitude</label>
+                                <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                        class="form-control" ng-model="latitude" 
+                                        ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                        ng-change="selectLatitude(widgetObj, latitude)">
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label ng-if="hideSelectedColumn === false;" translate>Longitude</label>
+                                <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
+                                        class="form-control" ng-model="longitude" 
+                                        ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                        ng-change="selectLongitude(widgetObj, longitude)">
+                                </select>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
 
                     <div class="col-sm-12">
                         <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge'">
@@ -1078,7 +1118,7 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="chartTypeName === 'bar' && displayPreviewChart.isHorizontalBar===false;">
+                <div ng-if="chartTypeName === 'bar' && displayPreviewChart.isHorizontalBar === false;">
                     <div>
                         <div bar-Chart-Directive 
                              bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 
@@ -1089,7 +1129,7 @@
                         </div>
                     </div>
                 </div>                
-                <div ng-if="chartTypeName === 'horizontalBar' && displayPreviewChart.isHorizontalBar===true;">
+                <div ng-if="chartTypeName === 'horizontalBar' && displayPreviewChart.isHorizontalBar === true;">
                     <div>
                         <div bar-Chart-Directive 
                              bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 
@@ -1138,6 +1178,15 @@
                              funnel-Columns="{{displayPreviewChart.columns}}">
                         </div>
                     </div>
+                </div>
+
+                <div ng-if="chartTypeName === 'map'">
+                    <div map-Directive 
+                         map-City="{{cities}}"
+                         widget-Columns="{{displayPreviewChart.columns}}"
+                         map-Source="{{displayPreviewChart.dataSetId}}"
+                         widget-Obj="{{displayPreviewChart}}">                     
+                    </div> 
                 </div>
 
                 <div ng-if="chartTypeName === 'gauge'">

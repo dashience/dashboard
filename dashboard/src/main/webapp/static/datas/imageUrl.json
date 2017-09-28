@@ -79,5 +79,12 @@
         "type": "gauge",
         "name": "Gauge",
         "icon": "fa-tachometer"
+    },
+    {
+        "id": 14,
+        "url": "static/img/icons/map.png",
+        "type": "map",
+        "name": "Map",
+        "icon": "fa-location-arrow"
     }
 ]
