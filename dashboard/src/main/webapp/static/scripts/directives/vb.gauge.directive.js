@@ -1,7 +1,7 @@
 app.directive('gaugeDirective', function ($http, $stateParams) {
     return{
         restrict: 'AE',
-        template: '<div ng-show="loadingGauge" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
+        template: '<div ng-show="loadingGauge" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-hide="loadingGauge" class="panel panel-default relative pnl-aln">' +
                 '<div class="m-b-10" ng-hide="hideEmptyGauge">' +
                 '<span>{{gaugeTitle}}</span><br>' +
@@ -12,9 +12,9 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
         scope: {
             setGaugeChartFn: '&',
             getSelectedFilterItem: '&',
-            gaugeChartSource: '@',
+            gaugeSource: '@',
             gaugeChartId: '@',
-            widgetColumns: '@',
+            gaugeColumns: '@',
             loadingGauge: '&',
             widgetObj: '@',
             defaultChartColor: '@'
@@ -31,8 +31,8 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
 
             scope.loadingGauge = true;
 
-//            console.log(scope.widgetColumns);
-            var gaugeColumnsObj = JSON.parse(scope.widgetColumns);
+            console.log(scope.gaugeColumns);
+            var gaugeColumnsObj = JSON.parse(scope.gaugeColumns);
             var fieldName = gaugeColumnsObj[0].fieldName;
             console.log(fieldName);
 
@@ -42,8 +42,8 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
             var data = [];
 
 
-            var gaugeChartDataSource = JSON.parse(scope.gaugeChartSource);
-            if (scope.gaugeChartSource) {
+            var gaugeChartDataSource = JSON.parse(scope.gaugeSource);
+            if (scope.gaugeSource) {
                 var url = "admin/proxy/getData?";
 
                 var dataSourcePassword;

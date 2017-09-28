@@ -235,7 +235,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             var sortingObj;
                             var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj)
+                            console.log(chartMaxRecord);
                             var chartData;// = response.data;
+                            console.log(sortFields);
                             if (sortFields.length > 0) {
                                 angular.forEach(sortFields, function (value, key) {
                                     if (value.fieldType != 'day') {
@@ -251,7 +253,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
                                             } else if (value.sortOrder === 'desc') {
-                                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                                                return dateOrders.indexOf(item[value.fieldName]) * -1;
                                             }
                                         });
                                         if (chartMaxRecord.maxRecord) {
@@ -270,6 +272,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 }
                             }
                             xTicks = [xAxis.fieldName];
+                            console.log(chartData)
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;

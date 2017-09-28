@@ -208,7 +208,7 @@
                         </div>
                         <span class="{{favouritesWidget.widgetId.icon}}"></span> 
                         <!--<span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle}}</span>-->
-                         <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle?favouritesWidget.widgetId.widgetTitle:'Widget'}}</span>
+                        <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle?favouritesWidget.widgetId.widgetTitle:'Widget'}}</span>
                     </div>
                     <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'line'">
                         <div set-Line-Chart-Fn="setLineChartFn(lineFn)"
@@ -265,7 +265,16 @@
                             </div>
                         </div>
                     </div>
-                    
+
+                    <div class="panel-body" ng-if="favouritesWidget.widgetId.chartType === 'gauge'">
+                        <div>
+                            <div gauge-Directive 
+                                 gauge-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                                 widget-Obj="{{favouritesWidget.widgetId}}" 
+                                 gauge-Id="{{favouritesWidget.widgetId.id}}" 
+                                 gauge-Columns="{{favouritesWidget.widgetId.columns}}"></div>
+                        </div>
+                    </div>
                     <div class="box-body list" ng-if="favouritesWidget.widgetId.chartType === 'table'" adjust-height>
                         <div class="table-responsive project-list">
                             <div id="changes-height" class="project-list">

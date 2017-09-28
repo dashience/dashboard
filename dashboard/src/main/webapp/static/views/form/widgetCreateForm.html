@@ -638,7 +638,7 @@
             <div class="row metrics-bottom">
                 <div class="col-sm-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel')" ng-show="showColumnDefs">
                     <div class="form-group">
-                        <div class="col-md-12" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie')">
+                        <div class="col-md-12" ng-if="!(((chartTypeName ? chartTypeName : widgetObj.chartType) != 'pie') || (chartTypeName ? chartTypeName : widgetObj.chartType) != 'scatter')">
                             <label ng-if="hideSelectedColumn === false;" translate>Select X-Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="xColumn" 
@@ -646,7 +646,7 @@
                                     ng-change="selectX1Axis(widgetObj, xColumn)">
                             </select>
                         </div>
-                        <div class="col-md-12" ng-show="((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination'|| (chartTypeName ? chartTypeName : widgetObj.chartType) == 'bar'|| (chartTypeName ? chartTypeName : widgetObj.chartType) == 'horizontalBar')">
+                        <div class="col-md-12" ng-show="((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'combination' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'bar' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'horizontalBar')">
                             <label ng-if="hideSelectedColumn === false;" translate>Select X Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartXAxis" 
@@ -667,7 +667,7 @@
 
                     </div>
 
-                    <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge')">
+                    <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie')">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
                             <label ng-if="hideSelectedColumn === false;" translate>Select Y1-Axis</label>                            
                             <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="y1Column" theme="bootstrap" 
@@ -798,13 +798,13 @@
         </div>
         <div class="row"  ng-if="advanced == true;">
             <div class="col-sm-12">
-                <div class="hpanel">
-                    <div class="panel-heading">
-                        <div class="panel-tools"> </div>
-                        Column Fields </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading btnAddon5">
+                        <div class="panel-title"> 
+                            Column Fields </div></div>
                     <div class="panel-body">
 
-                        <div class="checkbox columnField">
+                        <div class="checkbox columnField" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'">
                             <input for="#tableFooter" type="checkbox" ng-model="widgetObj.tableFooter" ng-checked="widgetObj.tableFooter == 1" />
                             <label id="tableFooter"> Table Footer </label>
                         </div>
@@ -895,7 +895,7 @@
                                             <div ng-hide="currentColumn.isEdit"> {{currentColumn.alignment}}</div>
                                             <div ng-show="currentColumn.isEdit">
                                                 <select ng-model="currentColumn.alignment" class="form-control">
-                                                    <option ng-repeat="alignment in alignments" value="{{alignment.name}}">{{alignment.name}}</option>
+                                                    <option ng-repeat="alignment in alignments" value="{{alignment.value}}">{{alignment.name}}</option>
                                                 </select>
                                             </div>
                                         </td>
@@ -1015,7 +1015,7 @@
                         <div class="col-md-6">
                             <div class="input-group none">
                                 <span class="input-group-btn">
-                                    <button class="btn btn-default none-btn" ng-class="{'none-selected':(widgetObj.dateRangeName == 'None')}" type="button" ng-click="selectWidgetDuration('None', widgetObj);directiveDateFn()">
+                                    <button class="btn btn-default none-btn" ng-class="{'none-selected':(widgetObj.dateRangeName == 'None')}" type="button" ng-click="selectWidgetDuration('None', widgetObj); directiveDateFn()">
                                         None</button>
                                 </span>
                             </div>
@@ -1081,7 +1081,7 @@
                         </div>
                     </div>
                 </div>
-                <div ng-if="chartTypeName === 'bar' && displayPreviewChart.isHorizontalBar===false;">
+                <div ng-if="chartTypeName === 'bar' && displayPreviewChart.isHorizontalBar === false;">
                     <div>
                         <div bar-Chart-Directive 
                              bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 
@@ -1092,7 +1092,7 @@
                         </div>
                     </div>
                 </div>                
-                <div ng-if="chartTypeName === 'horizontalBar' && displayPreviewChart.isHorizontalBar===true;">
+                <div ng-if="chartTypeName === 'horizontalBar' && displayPreviewChart.isHorizontalBar === true;">
                     <div>
                         <div bar-Chart-Directive 
                              bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 

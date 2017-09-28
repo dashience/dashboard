@@ -993,6 +993,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     var firstPreviewAfterEdit = 1;
     $scope.showPreview = function (widgetObj, userChartColors) {
+        console.log(widgetObj);
         var chartType = $scope.chartTypeName;
         console.log(chartType);
         $scope.showPreviewChart = true;
@@ -1412,7 +1413,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        }, 50);
     };
     $scope.selectY1Axis = function (widget, y1data, chartTypeName, combinationTypeName) {
+        console.log(widget)
+        console.log(chartTypeName);
         //        $scope.dispHideBuilder = true;
+        if(chartTypeName==="combination"||widget.chartType==="combination"){
+            console.log(y1data);
+            angular.forEach(y1data, function (value, key) {
+                value.combinationType='area';
+            });
+        }
         angular.forEach($scope.columnY2Axis, function (val, key) {
             angular.forEach(y1data, function (value, key) {
                 if (val.fieldName === value.fieldName) {
@@ -1452,8 +1461,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     };
 
-    $scope.selectY2Axis = function (widget, y2data) {
+    $scope.selectY2Axis = function (widget, y2data,chartTypeName) {
         //        $scope.dispHideBuilder = true;
+        if(chartTypeName==="combination"||widget.chartType==="combination"){
+            console.log(y2data);
+            angular.forEach(y2data, function (value, key) {
+                value.combinationType='line';
+            });
+        }
         angular.forEach($scope.columnY1Axis, function (val, key) {
             angular.forEach(y2data, function (value, key) {
                 if (val.fieldName === value.fieldName) {
@@ -2040,6 +2055,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.save = function (widget) {
+        console.log(widget);
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";

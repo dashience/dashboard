@@ -21,8 +21,8 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 ' Group' +
                 '</th>' +
                 '<th ng-repeat="col in columns" ng-if="col.columnHide == null">' + //Display Fields Header Names and Sorting Icons
-                '<div ng-click="initData(col)" class="">{{col.displayName}}' +
-//                '<div ng-click="initData(col)" class="text-{{col.alignment}}">{{col.displayName}}' +
+//                '<div ng-click="initData(col)" class="">{{col.displayName}}' +
+                '<div ng-click="initData(col)" class="text-{{col.alignment}}">{{col.displayName}}' +
                 '<i ng-if="col.sortOrder==\'asc\'" class="fa fa-sort-asc"></i>' +
                 '<i ng-if="col.sortOrder==\'desc\'" class="fa fa-sort-desc"></i>' +
                 '</div>' +
@@ -91,6 +91,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 return;
             }
             var widgetData = JSON.parse(scope.widgetObj);
+            console.log(widgetData);
             scope.bindSearch = function (search) {
                 scope.searchData = search.col;
             };
@@ -200,7 +201,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         if (value.sortOrder === 'asc') {
                             return dateOrders.indexOf(item[value.fieldName]);
                         } else if (value.sortOrder === 'desc') {
-                            return dateOrders.indexOf(item[value.fieldName] * -1);
+                            return dateOrders.indexOf(item[value.fieldName]) * -1;
                         }
                     });
                 });
@@ -307,7 +308,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                                 responseData = scope.orderData(responseData, sortFields);
 
                             } else {
-                                responseData = sortByDay(responseData, sortFields)//                                
+                                responseData = sortByDay(responseData, sortFields)//   
                             }
                         });
                         if (widgetData.maxRecord > 0) {
@@ -394,6 +395,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     if (isNaN(list[i][fieldname])) {
 
                     } else {
+                        
                         sum = sum + Number(list[i][fieldname]);
                     }
                 }
