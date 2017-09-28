@@ -389,7 +389,15 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                }
 //                return value;
 //                }
+
+                console.log("columns i --->");
+                console.log(column);
+                console.log("value -->");
+                console.log(value);
                 var strValue = value;
+                if(strValue==null) {
+                    strValue="";
+                }
                 if (strValue.toString().indexOf(',') !== -1) {
                     value = value.replace(/\,/g, '');
                 }

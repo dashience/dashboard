@@ -56,8 +56,8 @@ public class Twitter_1 {
         returnMap.put("columnDef", columnDefObject);
         returnMap.put("data", twitterData);
          */
-//        String screenName = getScreeName();
-        String userTimeLineMetrics = getUserTimeLineMetrics();
+        String screenName = getScreeName();
+//        String userTimeLineMetrics = getUserTimeLineMetrics();
 
 //        List<Map<String,Object>> twitterGenericMetrics=getPagePerformance();
     }
