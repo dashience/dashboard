@@ -355,7 +355,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
-            $scope.semRushFlag = false;
+        } else if (dataSource === "twitter")
+        {
+            $scope.report = $scope.twitterPerformance;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+        } else if (dataSource === "googlePlus")
+        {
+            $scope.report = $scope.googlePlusPerformance;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+
         } else if (dataSource === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
@@ -407,6 +419,36 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             type: 'pagePerformance',
             name: 'Page Performance',
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }, {
+            type: 'screenName',
+            name: 'Screen Name',
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }, {
+            type: 'userTimeLine',
+            name: 'User Performance Metrics',
             timeSegments: [
                 {
                     type: 'none',
@@ -3953,6 +3995,26 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 },
             ]
         }
+    ];
+
+
+    $scope.googlePlusPerformance = [
+        {
+            type: 'activityPerformance',
+            name: 'User Activity Performance',
+            timeSegments: [
+                {
+                    name: "None",
+                    type: "none"
+                }
+            ],
+            productSegments: [
+                {
+                    name: "None",
+                    type: "none"
+                }
+            ]
+        },
     ];
 
     $scope.getTimeSegements = function (dataSet) {

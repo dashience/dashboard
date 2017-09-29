@@ -472,6 +472,69 @@
                 }
             ]
         }],
+    "twitter": [{
+            "type": "pagePerformance",
+            "name": "Page Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "screenName",
+            "name": "Screen Name",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "userTimeLine",
+            "name": "User Performance Metrics",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }],
+
+    "googlePlus": [{
+            "type": "activityPerformance",
+            "name": "Activity Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }],
     "analytics": [
         {
             "type": "overallPerformance",
