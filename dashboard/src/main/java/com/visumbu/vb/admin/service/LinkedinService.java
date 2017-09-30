@@ -55,18 +55,18 @@ public class LinkedinService {
     @Autowired
     private SettingsDao settingsDao;
 
-    public List<Map<String, Object>> get(Long accountId, String dataSetReportName, Date startDate, Date endDate,
+    public List<Map<String, Object>> get(Long accountId,String linkedinAccessToken, String dataSetReportName, Date startDate, Date endDate,
             String aggregation, String productSegment) {
 
         //get thea access token from settings
-        List<Settings> linkedinAccessToken = settingsDao.getProperty("linkedinAccessToken");
-        String accessToken = SettingsProperty.getSettingsProperty(linkedinAccessToken, "linkedinAccessToken");
+//        List<Settings> linkedinAccessToken = settingsDao.getProperty("linkedinAccessToken");
+//        String accessToken = SettingsProperty.getSettingsProperty(linkedinAccessToken, "linkedinAccessToken");
 
         System.out.println("Linkedin AccountId-->" + accountId);
         System.out.println("Linkedin Report Name--->" + dataSetReportName);
         if (dataSetReportName.equalsIgnoreCase("organic")) {
             System.out.println("inside linkediin orgainc");
-            return getOrganicData(accessToken, accountId, startDate, endDate, aggregation, productSegment);
+            return getOrganicData(linkedinAccessToken, accountId, startDate, endDate, aggregation, productSegment);
         }
 
         return null;

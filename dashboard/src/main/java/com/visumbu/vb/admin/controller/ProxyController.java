@@ -2048,10 +2048,13 @@ public class ProxyController {
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String linkedinAccountId = getAccountId(accountProperty, "linkedinAccountId");
+        String linkedinAccessToken=getAccountId(accountProperty, "linkedinAccessToken");
+        
+        
         try {
             Long linkedInaccountId = Long.parseLong(linkedinAccountId);
 
-            List<Map<String, Object>> data = linkedinService.get(linkedInaccountId, dataSetReportName,
+            List<Map<String, Object>> data = linkedinService.get(linkedInaccountId,linkedinAccessToken,dataSetReportName,
                     startDate, endDate, timeSegment, productSegment);
             log.debug(data);
             Map returnMap = new HashMap();

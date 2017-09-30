@@ -410,8 +410,18 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         {
             type: 'organic',
             name: 'Organic Report',
-            timeSegments: [],
-            productSegments: []
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
         }
     ];
 
