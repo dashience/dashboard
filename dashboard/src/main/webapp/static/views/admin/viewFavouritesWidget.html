@@ -152,7 +152,7 @@
                         <a title="{{'Favorites'|translate}}" ng-click="toggleFavourite(favouritesWidget, $index)">
                             <i class="fa fa-heart" ng-class="{'red':favouritesWidget.widgetId.isFav, 'black': !favouritesWidget.widgetId.isFav}"></i>
                         </a>
-                        <a title="{{'Report'|translate}}" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>
+                        <!--<a title="{{'Report'|translate}}" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>-->
 
                         <a ng-if="favouritesWidget.widgetId.width != 3" ng-click="reduceWidget(favouritesWidget.widgetId)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="favouritesWidget.widgetId.width != 12" ng-click="expandWidget(favouritesWidget.widgetId)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
@@ -173,7 +173,7 @@
                 <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="favouritesWidget">
                     <div class="panel-heading">
                         <div class="panel-tools">
-                            <a title="Favorites" ng-click="toggleFavourite(favouritesWidget, $index)">
+                            <a title="{{'Favorites'|translate}}" ng-click="toggleFavourite(favouritesWidget, $index)">
                                 <i class="fa fa-heart" ng-class="{'red':favouritesWidget.widgetId.isFav, 'black': !favouritesWidget.widgetId.isFav}"></i>
                             </a>
                             <a ng-if="favouritesWidget.widgetId.chartType === 'line'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
@@ -183,7 +183,7 @@
                             <a ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
                             <a ng-if="favouritesWidget.widgetId.chartType === 'table'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
                             <a ng-if="favouritesWidget.widgetId.chartType === 'scatter'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
-                            <a title="{{'Report'|translate}}" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>
+                            <!--<a title="{{'Report'|translate}}" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>-->
                             <!--                        <a class="edit" ui-sref="index.editWidget({accountId: accountId, accountName: accountName, productId: 0, tabId: favouritesWidget.widgetId.tabId.id, widgetId: favouritesWidget.widgetId.id, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i></a>-->
                             <!--<a class="closebox" data-toggle="modal" data-target="#delete{{favouritesWidget.widget.id.tab.id}}" title="Delete"><i class="fa fa-times"></i></a>-->
                             <!--                        <div id="delete{{favouritesWidget.id}}" class="modal">
@@ -273,6 +273,17 @@
                                  widget-Obj="{{favouritesWidget.widgetId}}" 
                                  gauge-Id="{{favouritesWidget.widgetId.id}}" 
                                  gauge-Columns="{{favouritesWidget.widgetId.columns}}"></div>
+                        </div>
+                    </div>
+                    <div class="panel-body" ng-if="favouritesWidget.widgetId.chartType === 'horizontalBar'">
+                        <div>
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                                 widget-Id="{{favouritesWidget.widgetId.id}}" 
+                                 widget-Columns="{{favouritesWidget.widgetId.columns}}" 
+                                 widget-Obj="{{favouritesWidget.widgetId}}" default-chart-color="{{defaultChartColor}}"
+                                 is-Horizontal-Bar="{{favouritesWidget.widgetId.isHorizontalBar}}"> {{favouritesWidget.widgetId.isHorizontalBar}}                                    
+                            </div>
                         </div>
                     </div>
                     <div class="box-body list" ng-if="favouritesWidget.widgetId.chartType === 'table'" adjust-height>

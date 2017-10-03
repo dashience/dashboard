@@ -164,7 +164,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.secondDataSetLoadingCompleted = false;
         $scope.secondDataSetLoading = true;
         $scope.loadingResultCompleted = false;
-        getbDataSet($scope.secondDataSet, "dataSet2");
+        getPreviewDataSet($scope.secondDataSet, "dataSet2");
     };
     $scope.selectFirstDataSetColumn = function (dataSetColumn) {
         if ($scope.operationType == 'union' || $scope.operationType == 'intersection') {

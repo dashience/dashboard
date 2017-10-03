@@ -289,6 +289,15 @@
                                 </div>
                             </div>
                         </div>
+                         <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'gauge'">
+                        <div>
+                            <div gauge-Directive 
+                                 gauge-Source="{{favPdfWidget.widgetId.dataSetId}}" 
+                                 widget-Obj="{{favPdfWidget.widgetId}}" 
+                                 gauge-Id="{{favPdfWidget.widgetId.id}}" 
+                                 gauge-Columns="{{favPdfWidget.widgetId.columns}}"></div>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>

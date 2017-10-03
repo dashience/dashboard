@@ -300,6 +300,17 @@
                              gauge-Columns="{{widget.columns}}">
                         </div>
                     </div>
+                        <div class="hpanel col-fixed-{{widget.width}} pageBreak" ng-if="widget.chartType === 'horizontalBar'">
+                        <div>
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}"
+                                 is-Horizontal-Bar="{{widget.isHorizontalBar}}">                                     
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>

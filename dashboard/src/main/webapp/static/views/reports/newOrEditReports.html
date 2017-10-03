@@ -177,7 +177,7 @@
             <div class="col-sm-{{reportWidget.widgetId.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="reportWidget">
                     <div class="panel-tools ticker-icon">
-                        <a class="closebox" data-toggle="modal" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
+                        <a class="closebox" data-toggle="modal" title="{{'Delete'|translate}}" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
                         <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
                     </div>
@@ -265,6 +265,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'gauge'">
+                        <div set-gauge-Fn="setGaugeFn(gaugeFn)"
+                             gauge-Directive 
+                             gauge-Source="{{reportWidget.widgetId.dataSetId}}" 
+                             widget-Obj="{{reportWidget.widgetId}}"  
+                             gauge-Id="{{reportWidget.widgetId.id}}"
+                             gauge-Columns="{{reportWidget.widgetId.columns}}"
+                             default-chart-color="{{defaultChartColor}}">
+                        </div>
+                    </div>  
                     <div class="box-body list" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
                         <div class="table-responsive project-list">
                             <div id="changes-height" class="project-list">

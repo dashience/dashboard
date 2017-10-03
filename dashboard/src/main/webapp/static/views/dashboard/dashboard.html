@@ -71,9 +71,9 @@
                                     <div class="input-group">
                                         <input type="text" ng-model="template.templateName"  class="form-control text-field-manage">
                                         <span class="input-group-btn manage-button">
-                                            <a class="btn btn-default btn-xs" ng-click="saveTemplate(template);"><i class="fa fa-floppy-o" aria-hidden="true"></i>
+                                            <a class="btn btn-default btn-xs" ng-click="saveTemplate(template);" title="{{'Save'| translate}}"><i class="fa fa-floppy-o" aria-hidden="true"></i>
                                             </a>
-                                            <a class="btn btn-default btn-xs" data-toggle="modal" data-target="#myModal" ng-click="getUserTemplate()">
+                                            <a class="btn btn-default btn-xs" title="{{'Share'| translate}}" data-toggle="modal" data-target="#myModal" ng-click="getUserTemplate()">
                                                 <i class="fa fa-share-alt" aria-hidden="true"></i>
                                             </a>
                                         </span>

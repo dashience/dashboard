@@ -489,6 +489,10 @@ public class UiService {
                 widgetColumn.setGroupField(widgetColumnBean.getGroupField());
                 widgetColumn.setCombinationType(widgetColumnBean.getCombinationType());
                 widgetColumn.setCategory(widgetColumnBean.getCategory());
+                widgetColumn.setIsLocation(widgetColumnBean.getIsLocation());
+                widgetColumn.setIsLatitude(widgetColumnBean.getIsLatitude());
+                widgetColumn.setIsLongitude(widgetColumnBean.getIsLongitude());
+                
                 Integer columnHide = null;
                 if (widgetColumnBean.getGroupPriority() != null && widgetColumnBean.getGroupPriority() != 0) {
                     columnHide = 1;
