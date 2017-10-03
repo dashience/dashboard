@@ -5,36 +5,19 @@
  */
 package com.visumbu.vb.admin.service;
 
-import com.visumbu.vb.admin.controller.EnliventController;
-import static com.visumbu.vb.admin.controller.EnliventController.getColumnDefObject;
 import com.visumbu.vb.admin.dao.SettingsDao;
-import com.visumbu.vb.bean.ColumnDef;
-import com.visumbu.vb.model.Settings;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import org.springframework.stereotype.Service;
-
-import com.visumbu.vb.utils.ApiUtils;
+import com.visumbu.vb.bean.LinkedInPostType;
 import com.visumbu.vb.utils.DateUtils;
-import com.visumbu.vb.utils.JsonSimpleUtils;
 //import com.visumbu.vb.utils.ExampleConfig;
 import com.visumbu.vb.utils.Rest;
-import com.visumbu.vb.utils.SettingsProperty;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -55,89 +38,400 @@ public class LinkedinService {
     @Autowired
     private SettingsDao settingsDao;
 
-    public List<Map<String, Object>> get(Long accountId,String linkedinAccessToken, String dataSetReportName, Date startDate, Date endDate,
-            String aggregation, String productSegment) {
+    public List<Map<String, Object>> get(String oauthAccesToken, String dataSetReportName,
+            Date startDate, Date endDate, String aggregation, String productSegment, Long companyId) {
 
         //get thea access token from settings
 //        List<Settings> linkedinAccessToken = settingsDao.getProperty("linkedinAccessToken");
 //        String accessToken = SettingsProperty.getSettingsProperty(linkedinAccessToken, "linkedinAccessToken");
+        if (dataSetReportName.equalsIgnoreCase("companyProfile")) {
+            return getCompanyProfile(oauthAccesToken, companyId);
+        }
 
-        System.out.println("Linkedin AccountId-->" + accountId);
-        System.out.println("Linkedin Report Name--->" + dataSetReportName);
-        if (dataSetReportName.equalsIgnoreCase("organic")) {
-            System.out.println("inside linkediin orgainc");
-            return getOrganicData(linkedinAccessToken, accountId, startDate, endDate, aggregation, productSegment);
+        if (dataSetReportName.equalsIgnoreCase("pagePerformance")) {
+            return getPagePerfomanceByMonth(oauthAccesToken, companyId);
+        }
+
+        if (dataSetReportName.equalsIgnoreCase("pageFollowersPerformance")) {
+            return getPageFollowersPerformance(oauthAccesToken, companyId, aggregation, productSegment, startDate, endDate);
+        }
+
+        if (dataSetReportName.equalsIgnoreCase("postPerformance")) {
+            return getPostPerformance(oauthAccesToken, companyId, aggregation, productSegment);
         }
 
         return null;
     }
 
-    private List<Map<String, Object>> getOrganicData(String accessToken, Long accountId, Date startDate, Date endDate,
-            String aggregation, String productSegment) {
+    public static List<Map<String, Object>> getPageFollowersPerformance(String oauthAccessToken, Long companyId,
+            String timeSegment, String productSegment, Date startDate, Date endDate) {
+
         try {
+            String segment = null;
 
-            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
+            String url = "https://api.linkedin.com/v1/companies/" + companyId + "/company-statistics?"
+                    + "oauth2_access_token=" + oauthAccessToken + "&format=json";
 
-            Long timeStamp = DateUtils.dateToTimeStamp(endDateStr);
+            MultiValueMap<String, String> valueMap = null;
+            String data = Rest.getData(url, valueMap);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject object = (JSONObject) jsonObj;
 
-            if (accountId != null) {
-                String url = "https://api.linkedin.com/v1/companies/" + accountId + "/"
-                        + "historical-status-update-statistics:(time,like-count,impression-count,click-count,engagement)?"
-                        + "oauth2_access_token=" + accessToken
-                        + "&time-granularity=day&start-timestamp=" + timeStamp + "&format=json";
-                MultiValueMap<String, String> valueMap = null;
-                String data = Rest.getData(url, valueMap);
-                JSONParser parser = new JSONParser();
-                Object jsonObj = parser.parse(data);
-                JSONObject json = (JSONObject) jsonObj;
-                Map<String, Object> jsonToMap = JsonSimpleUtils.jsonToMap(json);
-                System.out.println(jsonToMap.get("_total"));
-                List<Map<String, Object>> linkedInData = new ArrayList<>();
+            if (timeSegment.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("overall")) {
+                return getOverallPageFollowers(oauthAccessToken, companyId);
+            }
+            if (timeSegment.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("country")) {
+                segment = "countries";
+                return getSegmentsData(object, segment);
+            }
+
+            if (timeSegment.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("regions")) {
+                segment = "regions";
+                return getSegmentsData(object, segment);
+            }
+
+            if (timeSegment.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("jobFunction")) {
+                segment = "functions";
+                return getSegmentsData(object, segment);
+            }
+
+            if (timeSegment.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("seniorities")) {
+                segment = "seniorities";
+                return getSegmentsData(object, segment);
+            }
+
+            if (timeSegment.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("industries")) {
+                segment = "industries";
+                return getSegmentsData(object, segment);
+            }
+
+            if (timeSegment.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("companySize")) {
+                segment = "companySizes";
+                return getSegmentsData(object, segment);
+            }
+
+            if (timeSegment.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("employmentStatus")) {
+                List<Map<String, Object>> returnMap = new ArrayList<>();
+                Map employementStatus = new HashMap();
+                employementStatus.put("employee_count", (long) ((Map) object.get("followStatistics")).get("employeeCount"));
+                employementStatus.put("non_employee_count", (long) ((Map) object.get("followStatistics")).get("nonEmployeeCount"));
+                returnMap.add(employementStatus);
+                return returnMap;
+            }
+
+            //historical page followers for both organic and paid
+            if (!timeSegment.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("historicalPageFollowers")) {
                 try {
-                    List<Map<String, Object>> myData = (List<Map<String, Object>>) jsonToMap.get("values");
 
-                    List<Map<String, String>> dataValueList = new ArrayList();
-                    for (Iterator<Map<String, Object>> iterator = myData.iterator(); iterator.hasNext();) {
-                        Map<String, Object> twitterMapData = new HashMap<>();
-                        Map<String, Object> mapData = iterator.next();
-                        twitterMapData.put("clickCount", mapData.get("clickCount") + "");
-                        twitterMapData.put("engagement", mapData.get("engagement") + "");
-                        twitterMapData.put("likeCount", mapData.get("likeCount") + "");
-                        System.out.println(mapData.get("time"));
-                        Timestamp timestamp = new Timestamp((long) mapData.get("time"));
-                        Date date = new Date(timestamp.getTime());
-                        DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss");
-                        TimeZone obj = TimeZone.getTimeZone("CST");
-                        formatter.setTimeZone(obj);
-                        System.out.println("***************** Time**********");
-//                System.out.println(date);
-                        twitterMapData.put("time", formatter.format(date));
-                        twitterMapData.put("impressionCount", mapData.get("impressionCount") + "");
+                    String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
+                    String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
 
-                        linkedInData.add(twitterMapData);
+                    long startTime = DateUtils.dateToTimeStamp(startDateStr);
+                    long endTime = DateUtils.dateToTimeStamp(endDateStr);
+
+                    String granularity = timeSegment;
+//                String url = "https://api.linkedin.com/v1/companies/" + companyId + "/historical-follow-statistics?"
+//                        + "oauth2_access_token=" + oauthAccessToken + "&time-granularity=" + granularity
+//                        + "&start-timestamp=1493596800000&end-timestamp=1504224000000&format=json";
+
+                    String historicUrl = "https://api.linkedin.com/v1/companies/" + companyId + "/historical-follow-statistics?"
+                            + "oauth2_access_token=" + oauthAccessToken + "&time-granularity=" + granularity
+                            + "&start-timestamp=" + startTime + "&end-timestamp=" + endTime + "&format=json";
+
+               
+                    System.out.println("Historic data -->");
+                    System.out.println(historicUrl);
+                    
+                    
+                    MultiValueMap<String, String> valueMapData = null;
+                    String historicData = Rest.getData(historicUrl, valueMapData);
+                    
+                    System.out.println(historicData);
+                    
+
+                    JSONParser parserData = new JSONParser();
+                    Object objectData = parserData.parse(historicData);
+                    JSONObject jsonObjData = (JSONObject) objectData;
+
+                    List<Map<String, Object>> returnMap = new ArrayList<>();
+
+                    List<Map<String, Object>> values = (List<Map<String, Object>>) jsonObjData.get("values");
+                    for (Iterator<Map<String, Object>> iterator = values.iterator(); iterator.hasNext();) {
+                        Map<String, Object> next = iterator.next();
+                        Map pageFollowers = new HashMap();
+                        pageFollowers.put("organic_followers_count", next.get("organicFollowerCount"));
+                        pageFollowers.put("paid_followers_count", next.get("paidFollowerCount"));
+                        pageFollowers.put("time", next.get("time"));
+                        returnMap.add(pageFollowers);
 
                     }
-
-//                    System.out.println(linkedInData);
-//                    List<ColumnDef> columnDefObject = getColumnDefObject(linkedInData);
-//
-////            List<ColumnDef> columnDefObject = getColumnDefObject(myData);
-//                    Map returnMap = new HashMap();
-//                    returnMap.put("columnDefs", columnDefObject);
-//                    returnMap.put("data", linkedInData);
-//                    dataValueList.add(returnMap);
-                    return linkedInData;
-                } catch (NullPointerException e) {
-                    Logger.getLogger(EnliventController.class.getName()).log(Level.SEVERE, null, e);
-                    return null;
+                    return returnMap;
+                } catch (ParseException ex) {
+                    Logger.getLogger(LinkedinService.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            } else {
-                return null;
             }
-        } catch (Exception ex) {
+
             return null;
+        } catch (ParseException ex) {
+            Logger.getLogger(LinkedinService.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
+    }
+
+    public static List<Map<String, Object>> getOverallPageFollowers(String oauthAccesToken, Long companyId) {
+
+        try {
+            String url = "https://api.linkedin.com/v1/companies/" + companyId + "/company-statistics?"
+                    + "oauth2_access_token=" + oauthAccesToken + "&format=json";
+
+            MultiValueMap<String, String> valueMap = null;
+            String data = Rest.getData(url, valueMap);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject object = (JSONObject) jsonObj;
+
+            List<Map<String, Object>> returnMap = new ArrayList<>();
+
+            Map<String, Object> followStatistics = (Map) object.get("followStatistics");
+
+            Map<String, Object> followersMetrics = new HashMap<>();
+            followersMetrics.put("total_followers", followStatistics.get("count"));
+            followersMetrics.put("country_followers", ((Map) followStatistics.get("countries")).get("_total"));
+            followersMetrics.put("jobfunction_followers", ((Map) followStatistics.get("functions")).get("_total"));
+            followersMetrics.put("industries_followers", ((Map) followStatistics.get("industries")).get("_total"));
+            followersMetrics.put("region_followers", ((Map) followStatistics.get("regions")).get("_total"));
+            followersMetrics.put("seniorities_followers", ((Map) followStatistics.get("seniorities")).get("_total"));
+            followersMetrics.put("company_size_followers", ((Map) followStatistics.get("companySizes")).get("_total"));
+            followersMetrics.put("employee_count", followStatistics.get("employeeCount"));
+            followersMetrics.put("nonemployee_count", followStatistics.get("nonEmployeeCount"));
+            returnMap.add(followersMetrics);
+
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(LinkedinService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> getPagePerfomanceByMonth(String oauthAccessToken, Long CompanyId) {
+
+        try {
+            String url = "https://api.linkedin.com/v1/companies/" + CompanyId + "/company-statistics?"
+                    + "oauth2_access_token=" + oauthAccessToken + "&format=json";
+            MultiValueMap<String, String> valueMap = null;
+            String data = Rest.getData(url, valueMap);
+
+            List<Map<String, Object>> returnMap = new ArrayList<>();
+            JSONParser parser = new JSONParser();
+            Object object = parser.parse(data);
+            JSONObject jsonObj = (JSONObject) object;
+
+            Map viewByMonth = (Map) ((Map) (jsonObj.get("statusUpdateStatistics"))).get("viewsByMonth");
+
+            List<Map<String, Object>> values = (List<Map<String, Object>>) viewByMonth.get("values");
+            for (Iterator<Map<String, Object>> iterator = values.iterator(); iterator.hasNext();) {
+                Map<String, Object> next = iterator.next();
+                Map pageViews = new HashMap();
+                pageViews.put("month", ((Map) next.get("date")).get("month"));
+                pageViews.put("year", ((Map) next.get("date")).get("year"));
+                pageViews.put("clicks", next.get("clicks"));
+                pageViews.put("likes", next.get("likes"));
+                pageViews.put("comments", next.get("comments"));
+                pageViews.put("shares", next.get("shares"));
+                pageViews.put("impressions", next.get("impressions"));
+                pageViews.put("engagements", next.get("engagement"));
+                returnMap.add(pageViews);
+            }
+            System.out.println("getPageViewsByMonth--->");
+            System.out.println(returnMap);
+
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(LinkedinService.class.getName()).log(Level.SEVERE, null, ex);
+
+        }
+        return null;
+
+    }
+
+    public static List<Map<String, Object>> getPostPerformance(String oauthAccessToken, Long companyId,
+            String timeSgement, String productSegment) {
+        if (productSegment.equalsIgnoreCase("overall")) {
+            return getOverallPostMetrics(oauthAccessToken, companyId);
+
+        } else if (productSegment.equalsIgnoreCase("recentPosts")) {
+            return getRecentPosts(oauthAccessToken, companyId);
+
+        } else if (productSegment.equalsIgnoreCase("postType")) {
+            return getPostPerformanceByPostType(oauthAccessToken, companyId);
+        }
+        return null;
+
+    }
+
+    public static List<Map<String, Object>> getPostPerformanceByPostType(String oauthAccessToken, Long companyId) {
+        try {
+            long likesCount = 0;
+            String[] postType = {"status-update", "job-posting"};
+            Map postMetrics = new HashMap();
+            List<Map<String, Object>> returnMap = new ArrayList<>();
+            for (String string : postType) {
+
+                String url = "https://api.linkedin.com/v1/companies/" + companyId + "/updates?oauth2_access_token=" + oauthAccessToken
+                        + "&event-type=" + string + "&format=json";
+
+                MultiValueMap<String, String> valueMap = null;
+                String data = Rest.getData(url, valueMap);
+
+                JSONParser parser = new JSONParser();
+                Object object = parser.parse(data);
+                JSONObject jsonObj = (JSONObject) object;
+
+                long totalEvents = (long) jsonObj.get("_total");
+                postMetrics.put(string, totalEvents);
+
+            }
+            returnMap.add(postMetrics);
+
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(LinkedinService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> getRecentPosts(String oauthAccessToken, Long companyId) {
+
+        try {
+            String url = "https://api.linkedin.com/v1/companies/" + companyId + "/updates?oauth2_access_token=" + oauthAccessToken
+                    + "&format=json";
+
+            MultiValueMap<String, String> valueMap = null;
+            String data = Rest.getData(url, valueMap);
+
+            List<Map<String, Object>> returnMap = new ArrayList<>();
+            JSONParser parser = new JSONParser();
+            Object object = parser.parse(data);
+            JSONObject jsonObj = (JSONObject) object;
+
+            List<Map<String, Object>> values = (List<Map<String, Object>>) jsonObj.get("values");
+            for (Iterator<Map<String, Object>> iterator = values.iterator(); iterator.hasNext();) {
+                Map<String, Object> next = iterator.next();
+                Map postMetrics = new HashMap();
+                postMetrics.put("post", ((Map) ((Map) ((Map) next.get("updateContent")).get("companyStatusUpdate")).get("share")).get("comment"));
+                postMetrics.put("total_likes", next.get("numLikes"));
+                postMetrics.put("total_comments", ((Map) next.get("updateComments")).get("_total"));
+                postMetrics.put("timestamp", next.get("timestamp"));
+                returnMap.add(postMetrics);
+            }
+            System.out.println("Recent posts-->");
+            System.out.println(returnMap);
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(LinkedinService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> getOverallPostMetrics(String oauthAccessToken, Long companyId) {
+
+        try {
+            long likesCount = 0;
+            String url = "https://api.linkedin.com/v1/companies/" + companyId + "/updates?oauth2_access_token=" + oauthAccessToken
+                    + "&format=json";
+
+            MultiValueMap<String, String> valueMap = null;
+            String data = Rest.getData(url, valueMap);
+
+            List<Map<String, Object>> returnMap = new ArrayList<>();
+            JSONParser parser = new JSONParser();
+            Object object = parser.parse(data);
+            JSONObject jsonObj = (JSONObject) object;
+
+            long totalEvents = (long) jsonObj.get("_total");
+
+            List<Map<String, Object>> jsonArray = (List<Map<String, Object>>) jsonObj.get("values");
+            for (Iterator<Map<String, Object>> iterator = jsonArray.iterator(); iterator.hasNext();) {
+                Map<String, Object> next = iterator.next();
+                likesCount = likesCount + (long) next.get("numLikes");
+            }
+
+            Map eventMetrics = new HashMap();
+            eventMetrics.put("total_events", totalEvents);
+            eventMetrics.put("total_event_likes", likesCount);
+
+            returnMap.add(eventMetrics);
+
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(LinkedinService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> getCompanyProfile(String oauthAccessToken, Long companyId) {
+
+        try {
+            String url = "https://api.linkedin.com/v1/companies/" + companyId + "?oauth2_access_token=" + oauthAccessToken + ""
+                    + "&format=json";
+            MultiValueMap<String, String> valueMap = null;
+            String data = Rest.getData(url, valueMap);
+
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject json = (JSONObject) jsonObj;
+
+            List<Map<String, Object>> returnMap = new ArrayList<>();
+
+            Map companyMetrics = new HashMap();
+            companyMetrics.put("company_name", json.get("name"));
+
+            returnMap.add(companyMetrics);
+
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(LinkedinService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> getSegmentsData(JSONObject object, String segment) {
+
+        List<Map<String, Object>> returnMap = new ArrayList<>();
+        Map segmentData = new HashMap();
+        Map<String, Object> segments = (Map) ((Map) object.get("followStatistics")).get(segment);
+        List<Map<String, Object>> values = (List<Map<String, Object>>) segments.get("values");
+        for (Iterator<Map<String, Object>> iterator = values.iterator(); iterator.hasNext();) {
+            Map<String, Object> next = iterator.next();
+            segmentData.put(next.get("entryKey"), next.get("entryValue"));
+        }
+        returnMap.add(segmentData);
+        if (!segment.equalsIgnoreCase("regions")) {
+            return compareData(returnMap, segment);
+        } else {
+            return returnMap;
+        }
+
+    }
+
+    public static List<Map<String, Object>> compareData(List<Map<String, Object>> returnMap, String segment) {
+        Map<String, Object> postType = LinkedInPostType.getPostType(segment);
+        Map mapping = new HashMap();
+        List<Map<String, Object>> map = new ArrayList<>();
+
+        for (Iterator<Map<String, Object>> iterator = returnMap.iterator(); iterator.hasNext();) {
+            Map<String, Object> next = iterator.next();
+            for (Map.Entry<String, Object> entry : next.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                if (postType.containsKey(key)) {
+                    mapping.put(postType.get(key), value);
+                }
+            }
+        }
+        map.add(mapping);
+        return map;
     }
 
 }

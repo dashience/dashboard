@@ -408,8 +408,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
     $scope.linkedinPerformance = [
         {
-            type: 'organic',
-            name: 'Organic Report',
+            type: 'companyProfile',
+            name: 'Company Profile',
             timeSegments: [
                 {
                     type: 'none',
@@ -418,6 +418,90 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ],
             productSegments: [
                 {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }, {
+            type: 'pagePerformance',
+            name: 'Page Performance',
+            timeSegments: [
+                {
+                    type: 'month',
+                    name: 'Month'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }, {
+            type: 'postPerformance',
+            name: 'Post Performance',
+            timeSegments: [
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'overall',
+                    name: 'Over All'
+                }, {
+                    type: 'recentPosts',
+                    name: 'Recent Posts'
+                }, {
+                    type: 'postType',
+                    name: 'Post Type'
+                }
+            ]
+        }, {
+            type: 'pageFollowersPerformance',
+            name: 'Page Followers Performance Report',
+            timeSegments: [
+                {
+                    type: 'day',
+                    name: 'Day'
+                }, {
+                    type: 'month',
+                    name: 'Month'
+                }, {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'overall',
+                    name: 'Over All'
+                }, {
+                    type: 'country',
+                    name: 'Country'
+                }, {
+                    type: 'regions',
+                    name: 'Regions'
+                }, {
+                    type: 'jobFunction',
+                    name: 'Job Function'
+                }, {
+                    type: 'seniorities',
+                    name: 'Seniority'
+                }, {
+                    type: 'industries',
+                    name: 'Industry'
+                }, {
+                    type: 'companySize',
+                    name: 'Company Size'
+                }, {
+                    type: 'employmentStatus',
+                    name: 'Employment Status'
+                }, {
+                    type: 'historicalPageFollowers',
+                    name: 'Historical Followers'
+                }, {
                     type: 'none',
                     name: 'None'
                 }
@@ -4037,14 +4121,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegment = $scope.instagramPerformance[index].productSegments;
             $scope.nwStatusFlag = true;
         }
-//        if ($scope.dataSet.dataSourceId.dataSourceType == "facebook")
-//        {
-//            var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
-//            $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
-//            $scope.productSegment = $scope.facebookPerformance[index].productSegments;
-//            $scope.nwStatusFlag = false;
-//        }
-
         if ($scope.dataSet.dataSourceId.dataSourceType === "twitter") {
             var index = getIndex($scope.dataSet.reportName, $scope.twitterPerformance);
             $scope.timeSegment = $scope.twitterPerformance[index].timeSegments;
@@ -4056,7 +4132,75 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSet.productSegment = {name: 'None', type: 'none'};
         }
 
-        if ($scope.dataSet.dataSourceId.dataSourceType == "facebook") {
+        if ($scope.dataSet.dataSourceId.dataSourceType === "linkedin") {
+            var index = getIndex($scope.dataSet.reportName, $scope.linkedinPerformance);
+            $scope.timeSegment = $scope.linkedinPerformance[index].timeSegments;
+            $scope.productSegment = $scope.linkedinPerformance[index].productSegments;
+
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
+
+            if ($scope.dataSet.reportName === 'companyProfile') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            
+            if ($scope.dataSet.reportName === 'pagePerformance') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'Month', type: 'month'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            
+            if ($scope.dataSet.reportName === 'postPerformance') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'Over All', type: 'overall'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            
+            
+            if ($scope.dataSet.reportName === 'pageFollowersPerformance') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'Day', type: 'day'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'Historical Followers', type: 'historicalPageFollowers'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            
+
+
+
+        }
+
+        if ($scope.dataSet.dataSourceId.dataSourceType === "facebook") {
             var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
             $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
@@ -4328,15 +4472,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 getProductSegment(productList, productSegmentName)
             }
         }
-        if ($scope.dataSet.dataSourceId.dataSourceType == "linkedin")
-        {
-            var index = getIndex($scope.dataSet.reportName, $scope.linkedinPerformance);
-            $scope.timeSegment = $scope.linkedinPerformance[index].timeSegments;
-            $scope.productSegment = $scope.linkedinPerformance[index].productSegments;
-            $scope.nwStatusFlag = false;
-            $scope.timeSegFlag = false;
-            $scope.productSegFlag = false;
-        }
+//        if ($scope.dataSet.dataSourceId.dataSourceType == "linkedin")
+//        {
+//            var index = getIndex($scope.dataSet.reportName, $scope.linkedinPerformance);
+//            $scope.timeSegment = $scope.linkedinPerformance[index].timeSegments;
+//            $scope.productSegment = $scope.linkedinPerformance[index].productSegments;
+//            $scope.nwStatusFlag = false;
+//            $scope.timeSegFlag = false;
+//            $scope.productSegFlag = false;
+//        }
         if ($scope.dataSet.dataSourceId.dataSourceType == "pinterest")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.pinterestPerformance);
@@ -4632,9 +4776,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             } else if (dataSet.dataSourceId.dataSourceType === "linkedin")
             {
                 $scope.report = $scope.linkedinPerformance;
-                $scope.getTimeSegements();
+                $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.timeSegFlag = true;
+                $scope.productSegFlag = true;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "semRush")
             {
                 $scope.report = $scope.semRush;

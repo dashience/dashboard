@@ -2047,15 +2047,15 @@ public class ProxyController {
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String linkedinAccountId = getAccountId(accountProperty, "linkedinAccountId");
         String linkedinAccessToken=getAccountId(accountProperty, "linkedinAccessToken");
+        String linkedinCompanyId=getAccountId(accountProperty, "linkedinCompanyId");
         
         
         try {
-            Long linkedInaccountId = Long.parseLong(linkedinAccountId);
+            Long companyId=Long.parseLong(linkedinCompanyId);
 
-            List<Map<String, Object>> data = linkedinService.get(linkedInaccountId,linkedinAccessToken,dataSetReportName,
-                    startDate, endDate, timeSegment, productSegment);
+            List<Map<String, Object>> data = linkedinService.get(linkedinAccessToken,
+                    dataSetReportName,startDate, endDate, timeSegment, productSegment,companyId);
             log.debug(data);
             Map returnMap = new HashMap();
             List<ColumnDef> columnDefs = getColumnDefObject(data);

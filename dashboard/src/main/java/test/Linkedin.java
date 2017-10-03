@@ -15,6 +15,7 @@ import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.JsonUtils;
 import com.visumbu.vb.utils.Rest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,8 +24,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.util.MultiValueMap;
+import com.visumbu.vb.bean.LinkedInPostType;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class Linkedin {
+
+    @Autowired
+    private LinkedInPostType linkedInPostType;
 
     public static void main(String args[]) throws ParseException {
 
@@ -36,7 +42,7 @@ public class Linkedin {
 
         String eventType = "status-update";//job-posting or new-product or status-update
 
-        String segment = "regions";
+        String segment = "seniority";
 
         String granularity = "day";
         // old url:  String url = "https://api.linkedin.com/v1/companies/10671978/historical-status-update-statistics:(time,like-count,impression-count,click-count,engagement)?oauth2_access_token=AQVrr3w94F9NPdypSkVL_mY1hpRBlbg0DjsAymBxVnIvKw91gdapkEZt-hIUdzC34AZfgShbH17iWw0ef8VtT7gSKQsQ8mtPt2d9w_soy5FnKJaZgSHiT-Ug9MnzmB3fjlR2_tc6OoGmgeaMEuAHV3Yvnb-gzRg2TC4Aez2pUNR9jiv5WWM&time-granularity=day&start-timestamp=1466899200000&format=json";
@@ -61,25 +67,24 @@ public class Linkedin {
 //        System.out.println(returnMap);
         // System.out.println(data);
 
-//        List<Map<String, Object>> companyProfile = getCompanyProfile(oauthAccesToken, companyId);
-//        List<Map<String, Object>> followersBySegments = getFollowersBySegments(oauthAccesToken, segment, companyId);
-//        List<Map<String, Object>> events = getEventsMetrics(oauthAccesToken, companyId, eventType);
-//        List<Map<String, Object>> companyLikesByEvent = getCompanyLikesByEvent(oauthAccesToken, updateKey);
-//        List<Map<String, Object>> companySharesByEvent = getCompanySharesByEvent(oauthAccesToken, updateKey, companyId);
+        List<Map<String, Object>> companyProfile = getCompanyProfile(oauthAccesToken, companyId);
+        List<Map<String, Object>> followersBySegments = getFollowersBySegments(oauthAccesToken, segment, companyId);
+        List<Map<String, Object>> events = getEventsMetrics(oauthAccesToken, companyId, eventType);
+        List<Map<String, Object>> companyLikesByEvent = getCompanyLikesByEvent(oauthAccesToken, updateKey);
+        List<Map<String, Object>> companySharesByEvent = getCompanySharesByEvent(oauthAccesToken, updateKey, companyId);
         List<Map<String, Object>> historicalPageFollowers = gethistoricalPageFollowers(oauthAccesToken, companyId, granularity);//need to be done
         List<Map<String, Object>> pageViewsByMonth = getPageViewsByMonth(oauthAccesToken, companyId);
-        List<Map<String,Object>> recentPosts=getRecentPosts(oauthAccesToken, companyId);
+        List<Map<String, Object>> recentPosts = getRecentPosts(oauthAccesToken, companyId);
     }
-    
-    public static List<Map<String,Object>> getRecentPosts(String oauthAccessToken,Long companyId) throws ParseException {
-        
+
+    public static List<Map<String, Object>> getRecentPosts(String oauthAccessToken, Long companyId) throws ParseException {
+
         /*
             Things to be done :
         --------------------------
         Need to convert timestamp to date format while displaying eaching post 
         
-        */
-        
+         */
         String url = "https://api.linkedin.com/v1/companies/" + companyId + "/updates?oauth2_access_token=" + oauthAccessToken
                 + "&format=json";
 
@@ -90,14 +95,14 @@ public class Linkedin {
         JSONParser parser = new JSONParser();
         Object object = parser.parse(data);
         JSONObject jsonObj = (JSONObject) object;
-        
-        List<Map<String,Object>> values=(List<Map<String,Object>>)jsonObj.get("values");
+
+        List<Map<String, Object>> values = (List<Map<String, Object>>) jsonObj.get("values");
         for (Iterator<Map<String, Object>> iterator = values.iterator(); iterator.hasNext();) {
             Map<String, Object> next = iterator.next();
-            Map postMetrics=new HashMap();
-            postMetrics.put("post", ((Map)((Map)((Map)next.get("updateContent")).get("companyStatusUpdate")).get("share")).get("comment"));
-            postMetrics.put("total_likes",next.get("numLikes"));
-            postMetrics.put("total_comments", ((Map)next.get("updateComments")).get("_total"));
+            Map postMetrics = new HashMap();
+            postMetrics.put("post", ((Map) ((Map) ((Map) next.get("updateContent")).get("companyStatusUpdate")).get("share")).get("comment"));
+            postMetrics.put("total_likes", next.get("numLikes"));
+            postMetrics.put("total_comments", ((Map) next.get("updateComments")).get("_total"));
             postMetrics.put("timestamp", next.get("timestamp"));
             returnMap.add(postMetrics);
         }
@@ -253,19 +258,19 @@ public class Linkedin {
         JSONParser parser = new JSONParser();
         Object object = parser.parse(data);
         JSONObject jsonObj = (JSONObject) object;
-        
-        List<Map<String,Object>> returnMap=new ArrayList<>();
-        
-        List<Map<String,Object>> values=(List<Map<String,Object>>)jsonObj.get("values");
+
+        List<Map<String, Object>> returnMap = new ArrayList<>();
+
+        List<Map<String, Object>> values = (List<Map<String, Object>>) jsonObj.get("values");
         for (Iterator<Map<String, Object>> iterator = values.iterator(); iterator.hasNext();) {
             Map<String, Object> next = iterator.next();
-            Map pageFollowers=new HashMap();
-            pageFollowers.put("organic_followers_count",next.get("organicFollowerCount"));
-            pageFollowers.put("paid_followers_count",next.get("paidFollowerCount"));
-            pageFollowers.put("time",next.get("time"));
+            Map pageFollowers = new HashMap();
+            pageFollowers.put("organic_followers_count", next.get("organicFollowerCount"));
+            pageFollowers.put("paid_followers_count", next.get("paidFollowerCount"));
+            pageFollowers.put("time", next.get("time"));
             returnMap.add(pageFollowers);
         }
-        
+
         System.out.println("Historical page followers by month or day");
         System.out.println(returnMap);
 
@@ -323,16 +328,20 @@ public class Linkedin {
     public static List<Map<String, Object>> getSegmentsData(JSONObject object, String segment) {
 
         List<Map<String, Object>> returnMap = new ArrayList<>();
+        Map segmentData = new HashMap();
         Map<String, Object> segments = (Map) ((Map) object.get("followStatistics")).get(segment);
         List<Map<String, Object>> values = (List<Map<String, Object>>) segments.get("values");
         for (Iterator<Map<String, Object>> iterator = values.iterator(); iterator.hasNext();) {
             Map<String, Object> next = iterator.next();
-            Map segmentData = new HashMap();
             segmentData.put(next.get("entryKey"), next.get("entryValue"));
-            returnMap.add(segmentData);
         }
-        return returnMap;
+        returnMap.add(segmentData);
 
+        if (!segment.equalsIgnoreCase("regions")) {
+            return compareData(returnMap, segment);
+        } else {
+            return returnMap;
+        }
     }
 
     public static List<Map<String, Object>> getFollowersCount(String oauthAccesToken, Long companyId) throws ParseException {
@@ -358,7 +367,8 @@ public class Linkedin {
         followersMetrics.put("region_followers", ((Map) followStatistics.get("regions")).get("_total"));
         followersMetrics.put("seniorities_followers", ((Map) followStatistics.get("seniorities")).get("_total"));
         followersMetrics.put("company_size_followers", ((Map) followStatistics.get("companySizes")).get("_total"));
-
+        followersMetrics.put("employee_count", followStatistics.get("employeeCount"));
+        followersMetrics.put("nonemployee_count", followStatistics.get("nonEmployeeCount"));
         returnMap.add(followersMetrics);
 
         return returnMap;
@@ -379,6 +389,27 @@ public class Linkedin {
             return columnDefs;
         }
         return columnDefs;
+    }
+
+    public static List<Map<String, Object>> compareData(List<Map<String, Object>> returnMap, String segment) {
+
+        Map<String, Object> postType = LinkedInPostType.getPostType(segment);
+
+        Map mapping = new HashMap();
+        List<Map<String, Object>> map = new ArrayList<>();
+
+        for (Iterator<Map<String, Object>> iterator = returnMap.iterator(); iterator.hasNext();) {
+            Map<String, Object> next = iterator.next();
+            for (Map.Entry<String, Object> entry : next.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                if (postType.containsKey(key)) {
+                    mapping.put(postType.get(key), value);
+                }
+            }
+        }
+        map.add(mapping);
+        return map;
     }
 
 }
