@@ -54,6 +54,7 @@ import com.visumbu.vb.utils.XlsDataSet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -2219,8 +2220,8 @@ public class ProxyController {
         String gPlusApiKey = getAccountId(accountProperty, "googlePlusApiKey");
 
         try {
-            Double gPlusAccountId = Double.parseDouble(googlePlusAccountId);
-            List<Map<String, Object>> gPlusReport = googlePlusService.get(gPlusAccountId, gPlusApiKey, dataSetReportName);
+//            long gPlusAccountId = Long.parseLong(googlePlusAccountId);
+            List<Map<String, Object>> gPlusReport = googlePlusService.get(googlePlusAccountId, gPlusApiKey, dataSetReportName);
             return gPlusReport;
         } catch (NumberFormatException e) {
             System.out.println("Exception occured");

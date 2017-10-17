@@ -59,7 +59,6 @@ public class LinkedInPostType {
 
     private static Map<String, Object> getJobFunctions() {
         Map<String, Object> jobFunctions = new HashMap<>();
-
         jobFunctions.put("1", "Accounting");
         jobFunctions.put("2", "Administrative");
         jobFunctions.put("3", "Arts and Design");
@@ -86,7 +85,6 @@ public class LinkedInPostType {
         jobFunctions.put("24", "Rersearch");
         jobFunctions.put("25", "Sales");
         jobFunctions.put("26", "Support");
-
         return jobFunctions;
 
     }

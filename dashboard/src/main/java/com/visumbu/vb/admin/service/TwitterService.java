@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
@@ -47,45 +48,44 @@ public class TwitterService {
         }
 
         if (reportName.equalsIgnoreCase("screenName")) {
-            return getScreenName(twitterOauthConsumerKey,twitterOauthToken);
+            return getScreenName(twitterOauthConsumerKey, twitterOauthToken);
         }
 
         if (reportName.equalsIgnoreCase("userTimeLine")) {
-            return getUserTimeLineMetrics(twitterAccountId, twitterScreenName, twitterOauthConsumerKey,twitterOauthToken);
+            return getUserTimeLineMetrics(twitterAccountId, twitterScreenName, twitterOauthConsumerKey, twitterOauthToken);
         }
         return null;
     }
 
-    private List<Map<String, Object>> getScreenName(String twitterOauthConsumerKey,String twitterOauthToken) {
+    private List<Map<String, Object>> getScreenName(String twitterOauthConsumerKey, String twitterOauthToken) {
 
-//        String url = "https://api.twitter.com/1.1/account/settings.json?oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_token=780021988039335936-vO7cttPuJ84WByUjEGFySScV1BVGsW5&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1506527941&oauth_nonce=-400194625&oauth_version=1.0&oauth_signature=qDZoWATd7XwCuXuMNzNxZHPGAog%3D";
+//      String url = "https://api.twitter.com/1.1/account/settings.json?oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_token=780021988039335936-vO7cttPuJ84WByUjEGFySScV1BVGsW5&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1506527941&oauth_nonce=-400194625&oauth_version=1.0&oauth_signature=qDZoWATd7XwCuXuMNzNxZHPGAog%3D";
+        String url = "https://api.twitter.com/1.1/account/settings.json?"
+                + "oauth_consumer_key=" + twitterOauthConsumerKey
+                + "&oauth_token=" + twitterOauthToken
+                + "&oauth_version=1.0"
+                + "&oauth_signature_method=HMAC-SHA1"
+                + "&oauth_timestamp=1506581828"
+                + "&oauth_nonce=3040783463"
+                + "&oauth_signature=jUVxUsFTyDFKgxXJpFVbo4bA5Kw%3D";
 
-         String url="https://api.twitter.com/1.1/account/settings.json?"
-                 + "oauth_consumer_key="+twitterOauthConsumerKey
-                 + "&oauth_token="+twitterOauthToken
-                 + "&oauth_version=1.0"
-                 + "&oauth_signature_method=HMAC-SHA1"
-                 + "&oauth_timestamp=1506581828"
-                 + "&oauth_nonce=3040783463"
-                 +"&oauth_signature=jUVxUsFTyDFKgxXJpFVbo4bA5Kw%3D";
-         
-         System.out.println("page performance url is -->"+url);
+        System.out.println("page performance url is -->" + url);
 
         MultiValueMap<String, String> valueMap = null;
         String data = Rest.getData(url, valueMap);
 
         JSONParser parser = new JSONParser();
-        JSONObject jsonObject = null;
+        JSONObject jsonObject = new JSONObject();
         try {
             jsonObject = (JSONObject) parser.parse(data);
         } catch (ParseException ex) {
             Logger.getLogger(TwitterService.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String screenName = (String) jsonObject.get("screen_name");
+        String screenName = jsonObject.get("screen_name") + "";
         List<Map<String, Object>> returnMap = new ArrayList<>();
-        Map<String, Object> object = new HashMap<>();
-        object.put("screen_name", screenName);
-        returnMap.add(object);
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("screen_name", screenName);
+        returnMap.add(dataMap);
         return returnMap;
     }
 
@@ -106,13 +106,13 @@ public class TwitterService {
                     + "&oauth_nonce=639233318"
                     + "&oauth_version=1.0"
                     + "&oauth_signature=A0UDgr6PHQWZhvP2DMmbiE4Iak0%3D";
+            
+            System.out.println("Twitter Url =====> "+twitterUrl);
 
             String twitterData = Rest.getData(twitterUrl);
             JSONParser parser = new JSONParser();
-            Object object = new Object();
-            JSONArray jsonArray = new JSONArray();
-            object = parser.parse(twitterData);
-            jsonArray = (JSONArray) object;
+            Object object = parser.parse(twitterData);
+            JSONArray jsonArray = (JSONArray) object;
 
             if (twitterUrl == null) {
                 return null;
@@ -141,19 +141,18 @@ public class TwitterService {
         return null;
     }
 
-    private List<Map<String, Object>> getUserTimeLineMetrics(String accountId,String screenName,String twitterOauthConsumerKey,String twitterOauthToken) {
+    private List<Map<String, Object>> getUserTimeLineMetrics(String accountId, String screenName, String twitterOauthConsumerKey, String twitterOauthToken) {
         int ownTweet = 0, retweet = 0;
         long ownTweetLikes = 0, retweetLikes = 0;
 //        String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=SivanesanGovind&user_id=2526475147&oauth_consumer_key=FH0z2IiKd46IHVrftBXhyyGjY&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1506528376&oauth_nonce=EwlN94AhGNf&oauth_version=1.0&oauth_token=2526475147-SJeXiGSn6P9Fg1N4AZtACrzdANEz0y9wQ32pncu&oauth_signature=3zFPKetFk6O0Hzyo5ClCVksLW5Q%3D";
 
-
-        String url="https://api.twitter.com/1.1/statuses/user_timeline.json?"
-                +"screen_name="+screenName
-                + "&user_id="+accountId
-                + "&oauth_consumer_key="+twitterOauthConsumerKey
-                + "&oauth_token="+twitterOauthToken
+        String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?"
+                + "screen_name=" + screenName
+                + "&user_id=" + accountId
+                + "&oauth_consumer_key=" + twitterOauthConsumerKey
+                + "&oauth_token=" + twitterOauthToken
                 + "&oauth_signature_method=HMAC-SHA1"
-                + "&oauth_timestamp=1506580666"
+                + "&oauth_timestamp=1507703028"
                 + "&oauth_nonce=-354022460"
                 + "&oauth_version=1.0"
                 + "&oauth_signature=N53NJDoLRwZUZd7iKKAK53xGx1g%3D";
@@ -169,26 +168,24 @@ public class TwitterService {
         }
 
         for (Iterator iterator = jsonArray.iterator(); iterator.hasNext();) {
-            JSONObject next = (JSONObject) iterator.next();
+            JSONObject jsonObject = (JSONObject) iterator.next();
 
-            if ((boolean) next.get("is_quote_status")) {
+            if ((boolean) jsonObject.get("is_quote_status")) {
                 retweet = retweet + 1;
-                retweetLikes = retweetLikes + (long) next.get("favorite_count");
+                retweetLikes = retweetLikes + (long) jsonObject.get("favorite_count");
             } else {
                 ownTweet = ownTweet + 1;
-                ownTweetLikes = ownTweetLikes + (long) next.get("favorite_count");
+                ownTweetLikes = ownTweetLikes + (long) jsonObject.get("favorite_count");
             }
         }
         List<Map<String, Object>> returnMap = new ArrayList<>();
-        Map dataMap = new HashMap();
+        Map<String, Object> dataMap = new HashMap();
         dataMap.put("own_tweets", ownTweet);
         dataMap.put("own_tweet_likes", ownTweetLikes);
         dataMap.put("retweets", retweet);
         dataMap.put("retweet_likes", retweetLikes);
         returnMap.add(dataMap);
-        
         return returnMap;
     }
 
 }
-
