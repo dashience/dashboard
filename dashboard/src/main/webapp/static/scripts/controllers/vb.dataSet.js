@@ -6,12 +6,69 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.tab = 1;
+    $scope.childTab = 3;
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
     };
+    $scope.setChildTab = function (newTab) {
+        $scope.childTab = newTab;
+    };
+
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
+    $scope.isChildSet = function (tabNum) {
+        return $scope.childTab === tabNum;
+    };
+
+    $scope.selectAggregations = [
+        {name: 'None', value: ""},
+        {name: 'Sum', value: "sum"},
+        {name: 'CTR', value: "ctr"},
+        {name: 'CPC', value: "cpc"},
+        {name: 'CPCS', value: "cpcs"},
+        {name: 'CPS', value: "cps"},
+        {name: 'CPA', value: "cpa"},
+        {name: 'CPAS', value: "cpas"},
+        {name: 'Avg', value: "avg"},
+        {name: 'Count', value: "count"},
+        {name: 'Min', value: "min"},
+        {name: 'Max', value: "max"},
+        {name: 'CPL', value: "cpl"},
+        {name: 'CPLC', value: "cplc"},
+        {name: 'CPComment', value: "cpcomment"},
+        {name: 'CPostE', value: "cposte"},
+        {name: 'CPageE', value: "cpagee"},
+        {name: 'CPP', value: "cpp"},
+        {name: 'CPR', value: "cpr"}
+    ];
+    $scope.fieldTypes = [
+        {name: 'None', value: ''},
+        {name: 'String', value: 'string'},
+        {name: 'Number', value: 'number'},
+        {name: 'Date', value: 'date'},
+        {name: 'Day', value: 'day'}
+    ];
+    $scope.formats = [
+        {name: "None", value: ''},
+        {name: "Currency", value: '$,.2f'},
+        {name: "Integer", value: ',.0f'},
+        {name: "Percentage", value: ',.2%'},
+        {name: "Decimal1", value: ',.1f'},
+        {name: "Decimal2", value: ',.2f'},
+        {name: "Time", value: 'H:M:S'},
+        {name: "Star Rating", value: 'starRating'},
+        {name: "Date", value: 'MM-dd-yyyy'}
+    ];
+    $scope.categories = [
+        {name: "Metrics", value: "metrics"},
+        {name: "Dimension", value: "dimension"}
+    ];
+
+    $scope.deleteField = function (index) {
+        $scope.columnsHeaderDefs.splice(index, 1);
+    };
+
 
     $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
@@ -287,7 +344,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else if (dataSource === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
-            console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
@@ -3929,9 +3985,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
 
         if ($scope.dataSet.dataSourceId.dataSourceType == "facebook") {
-            console.log($scope.facebookPerformance);
-            console.log($scope.dataSet.reportName);
-
             var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
             $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
@@ -4359,8 +4412,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.columnsHeaderDefs = [];
-    $scope.getDataSetColDefs = function (dataSetColumn) {
-        $scope.columnsHeaderDefs = dataSetColumn;
+    $scope.getDataSetColDefs = function (getDataSetColDefs) {
+        $scope.columnsHeaderDefs = "";
+        $scope.columnsHeaderDefs = getDataSetColDefs;
     };
 
     $scope.saveDataSet = function () {
@@ -4375,14 +4429,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else {
             dataSetList.productSegment = null;
         }
-        console.log(dataSetList);
         if (dataSetList.networkType != null) {
             dataSetList.networkType = dataSetList.networkType.type;
         } else {
             dataSetList.networkType = null;
         }
         var dataSet = dataSetList;
-        console.log(dataSet);
         if (dataSet.dataSourceId != null) {
             dataSet.dataSourceId = dataSet.dataSourceId.id;
         } else {
@@ -4390,6 +4442,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
         $scope.nwStatusFlag = true;
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
+//            $scope.columnHeaderByDataSetId = response;
             var getDataSetId = response.id;
             var data = $scope.columnsHeaderDefs;
             console.log(data);
@@ -4404,6 +4457,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.showPreviewChart = false;
         $scope.previewData = null;
         $scope.dataSetFlag = false;
+        $scope.columnHeaderByDataSetId = "";
     };
 
 //    $scope.savePublishDataSet = function(dataSet){
@@ -4420,9 +4474,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
     $scope.clearTable = function () {
         $scope.dataSet = "";
+        $scope.columnHeaderByDataSetId = "";
     };
     $scope.editDataSet = function (dataSet) {
+        $scope.columnHeaderByDataSetId = dataSet;
         $scope.nwStatusFlag = true;
+        $scope.childTab = 3;
         var joinDataSetId = null;
         var publish = false;
         if (dataSet.joinDataSetId != null) {
@@ -4433,7 +4490,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 publish = true;
             }
         }
-        ;
+
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -4449,7 +4506,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             joinDataSetId: joinDataSetId,
             publish: publish
         };
-        console.log(data);
         $scope.dataSet = data;
         var dataSource = null;
         var dataSourceType = null;
@@ -4573,6 +4629,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.previewData = null;
         $scope.selectedRow = null;
         $scope.dataSetFlag = false;
+        $scope.columnHeaderByDataSetId = "";
+        $scope.childTab = 3;
     };
     $scope.deleteDataSet = function (dataSet, index) {
         $http({method: 'DELETE', url: 'admin/ui/dataSet/' + dataSet.id}).success(function (response) {
@@ -4581,6 +4639,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         });
         $scope.clearDataSet(dataSet);
         $scope.selectedRow = null;
+        $scope.columnHeaderByDataSetId = "";
     };
     $scope.selectedRow = null;
     $scope.setClickedRow = function (index) {
@@ -4588,5 +4647,37 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.showPreviewChart = false;
         $scope.previewData = null;
     };
-});
 
+    $scope.saveDataSetFieldSettings = function (columnHeader) {
+        var dataSetId = $scope.columnHeaderByDataSetId
+        var data = {
+            id: columnHeader.id,
+            fieldName: columnHeader.fieldName,
+            displayName: columnHeader.displayName,
+            dataSetId: dataSetId ? dataSetId.id : '',
+            category: columnHeader.category,
+            dataFormat: columnHeader.dataFormat,
+            displayFormat: columnHeader.displayFormat,
+            expression: columnHeader.expression,
+            fieldType: columnHeader.fieldType,
+            functionName: columnHeader.functionName,
+            groupPriority: columnHeader.groupPriority,
+            sortOrder: columnHeader.sortOrder,
+            sortPriority: columnHeader.sortPriority,
+            status: columnHeader.status,
+            userId: columnHeader.userId,
+            widgetId: columnHeader.widgetId
+        };
+
+        console.log(data)
+
+        $http({method: 'POST', url: "admin/ui/createDataSetColumnByDataSet", data: data}).success(function (response) {
+            console.log(response)
+        })
+    }
+
+//    $scope.getDataSetColDefs = function(dataSetColumn){alert(1)
+//        console.log(dataSetColumn);
+//    }
+//    
+});

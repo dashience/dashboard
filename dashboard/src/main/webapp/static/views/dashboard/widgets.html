@@ -239,6 +239,8 @@
         margin-right: 0px;
     }
 </style>
+
+
 <div class="row add-widget">
     <div class="pull-right-container pull-right">
         <div class="btn-group">
@@ -260,31 +262,49 @@
 </div>
 <div ng-show="loading" class="text-center"><img src="static/img/logos/loader.gif" width="100"></div>
 <div>
+    
+    
+ 
+<!--    
+    <div ng-show="show">
+        <div class="loading"><img src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" width="20" height="20" />LOADING...</div>
+    </div>
+    
+    
+    -->
     <div ng-repeat="widget in widgets">
         <div ng-if="widget.chartType == 'ticker'">
             <div class="col-sm-{{widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
                     <div class="panel-tools ticker-icon">
-                        <a title="Favorites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
-                        <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
-                        <a class="refresh" ng-click="directiveTickerFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
+                        <a title="{{'Favorites'|translate}}" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
+                        <a ng-show="showCreateReport" title="{{'Report'|translate}}" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
+                        <a class="refresh" ng-click="directiveTickerFn()" title="{{'Refresh'|translate}}"><i class="fa fa-repeat"></i></a>
+                        <a ng-if="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="{{'Duplicate Widget'|translate}}"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
                         <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" 
                            ng-click='setWidgetItems(widget)' 
-                           class="edit" title="Edit" 
+                           class="edit" title="{{'Edit'|translate}}" 
                            data-toggle="modal" 
                            data-target="#editWidget" 
                            data-backdrop="static" 
                            data-keyboard="false"><i class="fa fa-pencil"></i>
                         </a>
-                        <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
-                        <a ng-if="permission.downloadReport === true;" ng-click="downloadXLSByWidget(widget)" title="Download XLS">
-                             <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                        <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" title="{{'Delete'|translate}}" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
+                        <a ng-if="permission.downloadReport === true;" ng-click="downloadXLSByWidget(widget)" title="{{'Download XLS'|translate}}">
+                            <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                         </a>
-                        <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                        <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
+                        <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
+                        <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
                     </div>
-                    <div set-Ticker-Fn="setTickerFn(tickerFn)" widget-Obj="{{widget}}" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
+                    <div set-Ticker-Fn="setTickerFn(tickerFn)"
+                         widget-Obj="{{widget}}" 
+                         ticker-Directive 
+                         ticker-Source="{{widget.dataSetId}}" 
+                         ticker-Title-Name="{{widget.widgetTitle}}" 
+                         ticker-Id="{{widget.id}}" 
+                         ticker-Columns="{{widget.columns}}" 
+                         default-chart-color="{{defaultChartColor}}">                             
+                    </div>
                 </div>
             </div>
             <div id="delete{{widget.id}}" class="modal">
@@ -292,7 +312,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <strong translate>Delete</strong>
-                            <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                            <strong><button class="close" data-dismiss="modal" title='Close' translate>&times;</button></strong>
                         </div>
                         <div class="modal-body">
                             <span translate>Want to delete?</span>
@@ -387,20 +407,24 @@
                                 <a ng-show="showCreateReport" title="{{'Report'| translate}}" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                                 <a ng-if="widget.chartType === 'line'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'bar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                 <a ng-if="widget.chartType === 'horizontalBar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'pie'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'area'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'stackedbar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'table'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'scatter'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'gauge'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveGaugeFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'map'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveMapFn()"><i class="fa fa-repeat"></i></a>
                                 <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
-                                <a ng-if ="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="{{'Duplicate Widget' | translate}}"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
+                                <a ng-if ="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate});" title="{{'Duplicate Widget'| translate}}"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
+
                                 <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" ng-click='setWidgetItems(widget)' class="edit" title="{{'Edit'| translate}}" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
                                 <!--<a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil">test</i></a>-->
                                 <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}" title="{{'Delete'| translate}}"><i class="fa fa-times"></i></a>
                                 <a ng-if="permission.downloadReport === true;" ng-click="downloadXLSByWidget(widget)" title="{{'Download XLS'| translate}}">
                                     <i class="fa fa-file-excel-o" aria-hidden="true"></i>
                                 </a>
-                                <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="{{'Resize-Right'| translate}}"><i class="fa fa-chevron-left"></i></a>
+                                <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="{{'Resize-Left'| translate}}"><i class="fa fa-chevron-left"></i></a>
                                 <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="{{'Resize-Right'| translate}}"><i class="fa fa-chevron-right"></i></a>
                             </div>
                         </div>
@@ -429,6 +453,18 @@
                             </div>
                         </div>
                     </div>
+                    <div class="panel-body" ng-if="widget.chartType === 'horizontalBar'">
+                        <div>
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}"
+                                 is-Horizontal-Bar="{{widget.isHorizontalBar}}">                                     
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="panel-body" ng-if="widget.chartType === 'pie'">
                         <div>
                             <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
@@ -449,7 +485,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="panel-body" ng-if="widget.chartType === 'scatter'">
                         <div>
                             <div set-Scatter-Chart-Fn="setScatterChartFn(scatterFn)" 
@@ -473,6 +509,16 @@
                                      widget-Columns="{{widget.columns}}">                                         
                                 </div>
                             </div>
+                            <!--<div compare-Range-Table></div>-->
+<!--                             <div id="changes-height" class="project-list">
+                                <div compare-Range-Table 
+                                     compare-Table-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}" 
+                                     widget-Obj="{{widget}}" 
+                                     table-Footer="{{widget.tableFooter}}" 
+                                     widget-Columns="{{widget.columns}}">                                         
+                                </div>
+                            </div>-->
                         </div>
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'text'">
@@ -501,6 +547,26 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="panel-body" ng-if="widget.chartType === 'gauge'">
+                        <div set-gauge-Fn="setGaugeFn(gaugeFn)"
+                             gauge-Directive 
+                             gauge-Source="{{widget.dataSetId}}" 
+                             widget-Obj="{{widget}}"  
+                             gauge-Id="{{widget.id}}"
+                             gauge-Columns="{{widget.columns}}"
+                             default-chart-color="{{defaultChartColor}}">
+                        </div>
+                    </div>  
+                    
+                    <div class='panel-body' ng-if="widget.chartType === 'map'">
+                        <div map-Directive 
+                             map-City="{{cities}}"
+                             map-Source="{{widget.dataSetId}}"
+                             widget-Columns="{{widget.columns}}">                     
+                        </div> 
+                    </div>
+                    
                 </div>
             </div>  
 
@@ -509,7 +575,7 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <strong translate>Delete</strong>
-                            <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                            <strong><button class="close" data-dismiss="modal" title="Close" translate>&times;</button></strong>
                         </div>
                         <div class="modal-body">
                             <span translate>Want to delete?</span>

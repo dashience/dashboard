@@ -43,8 +43,11 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
                 $scope.favouritesWidgets = widgetItems;
             }).error(function () {
                 $scope.favouritesWidgets = widgetItems;
+                
             });
+            console.log($scope.favouritesWidgets);
         });
+        
     });
 
     $scope.toggleFavourite = function (favouritesWidget, index) {

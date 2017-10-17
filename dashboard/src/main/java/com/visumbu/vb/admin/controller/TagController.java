@@ -78,14 +78,12 @@ public class TagController extends BaseController {
     List getWidgetTag(HttpServletRequest request, HttpServletResponse response) {
         return tagService.getWidgetTag();
     }
-    
+
 //    @RequestMapping(value = "widgetTag/{tagId}", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    List getWidgetTagById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tagId) {
 //        return tagService.getWidgetTagById(tagId);
 //    }
-    
-    
     @RequestMapping(value = "widgetTag/{tagName}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getWidgetTagByName(HttpServletRequest request, HttpServletResponse response, @PathVariable String tagName) {
@@ -130,7 +128,7 @@ public class TagController extends BaseController {
         VbUser user = userService.findByUsername(username);
         return tagService.getAllFav(user);
     }
-    
+
     @RequestMapping(value = "favWidgetUpdateOrder/{favId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object updateFavWidgetOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer favId) {

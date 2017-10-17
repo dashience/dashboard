@@ -226,7 +226,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak"  ng-if="widget.chartType === 'area'">
+                        <div class="panel-body pageBreak"  ng-if="widget.chartType === 'area' || widget.chartType === 'combination'">
                             <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" 
                                      area-Chart-Directive 
@@ -290,6 +290,27 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="hpanel col-fixed-{{widget.width}} pageBreak" ng-if="widget.chartType == 'gauge'">
+                        <div set-Gauge-Fn="setGaugeFn(gaugeFn)" 
+                             gauge-Directive 
+                             widget-Obj="{{widget}}"
+                             gauge-Source="{{widget.dataSetId}}" 
+                             gauge-Title-Name="{{widget.widgetTitle}}" 
+                             gauge-Id="{{widget.id}}" 
+                             gauge-Columns="{{widget.columns}}">
+                        </div>
+                    </div>
+                        <div class="hpanel col-fixed-{{widget.width}} pageBreak" ng-if="widget.chartType === 'horizontalBar'">
+                        <div>
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}"
+                                 is-Horizontal-Bar="{{widget.isHorizontalBar}}">                                     
+                            </div>
+                        </div>
+                    </div>
                     </div>
                 </div>
             </div>

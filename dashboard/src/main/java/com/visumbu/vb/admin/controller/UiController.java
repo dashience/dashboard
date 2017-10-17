@@ -471,6 +471,13 @@ public class UiController extends BaseController {
         VbUser user = userService.findByUsername(getUser(request));
         return uiService.createWidgetColumn(dataSetColumnBean, user, widgetId);
     }
+    
+    @RequestMapping(value = "createDataSetColumnByDataSet", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DataSetColumns createDataSetColumnByDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSetColumnBean dataSetColumnBean) {
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.createDataSetColumnByDataSet(dataSetColumnBean, user);
+    }
 
     @RequestMapping(value = "dataSetFormulaColumns/{dataSetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody
@@ -747,6 +754,13 @@ public class UiController extends BaseController {
         return uiService.getChartColorByUserId(user);
     }
 
+    @RequestMapping(value = "getChartColorByUserId/{userId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    UserPreferences getChartColorByUserId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
+//        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.getChartColorById(userId);
+    }
+
     @RequestMapping(value = "getTemplateId/{accountId}/{productId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<DashboardTemplate> getTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId, @PathVariable Integer productId) {
@@ -816,6 +830,16 @@ public class UiController extends BaseController {
     void deleteDerivedColumn(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
         String deleteColumns = request.getParameter("deleteColumns");
         uiService.deleteDerivedColumn(deleteColumns, widgetId);
+    }
+
+    @RequestMapping(value = "dashboardTemplates/{productId}/{userId}/{agencyId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<DashboardTemplate> getTemplates(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId,@PathVariable Integer userId,@PathVariable Integer agencyId) {
+//        VbUser user = userService.findByUsername(getUser(request));
+//        Agency agency = user.getAgencyId();
+        AgencyProduct agencyProduct = uiService.getAgencyProductById(productId);
+//        Agency agency = agencyProduct.getAgencyId();
+        return uiService.getTemplates(userId, agencyId, agencyProduct);
     }
 
     @ExceptionHandler

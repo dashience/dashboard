@@ -39,6 +39,10 @@ public class WidgetColumnBean {
     private String groupField;
     private String combinationType;
     private Integer derivedId;
+    private String category;
+    private Boolean isLocation;
+    private Boolean isLatitude;
+    private Boolean isLongitude;
     
 
     public Integer getId() {
@@ -265,9 +269,42 @@ public class WidgetColumnBean {
         this.derivedId = derivedId;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public Boolean getIsLocation() {
+        return isLocation;
+    }
+
+    public void setIsLocation(Boolean isLocation) {
+        this.isLocation = isLocation;
+    }
+
+    public Boolean getIsLatitude() {
+        return isLatitude;
+    }
+
+    public void setIsLatitude(Boolean isLatitude) {
+        this.isLatitude = isLatitude;
+    }
+
+    public Boolean getIsLongitude() {
+        return isLongitude;
+    }
+
+    public void setIsLongitude(Boolean isLongitude) {
+        this.isLongitude = isLongitude;
+    }
+    
+
     @Override
     public String toString() {
-        return "WidgetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", xAxis=" + xAxis + ", yAxis=" + yAxis + ", yAxisLabel=" + yAxisLabel + ", xAxisLabel=" + xAxisLabel + ", displayName=" + displayName + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", groupPriority=" + groupPriority + ", agregationFunction=" + agregationFunction + ", functionParameters=" + functionParameters + ", fieldType=" + fieldType + ", expression=" + expression + ", baseFieldName=" + baseFieldName + ", fieldGenerationFunction=" + fieldGenerationFunction + ", fieldGenerationFields=" + fieldGenerationFields + ", remarks=" + remarks + ", displayFormat=" + displayFormat + ", width=" + width + ", wrapText=" + wrapText + ", alignment=" + alignment + ", columnHide=" + columnHide + ", search=" + search + ", groupField=" + groupField + ", combinationType=" + combinationType + ", derivedId=" + derivedId + '}';
+        return "WidgetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", type=" + type + ", xAxis=" + xAxis + ", yAxis=" + yAxis + ", yAxisLabel=" + yAxisLabel + ", xAxisLabel=" + xAxisLabel + ", displayName=" + displayName + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", groupPriority=" + groupPriority + ", agregationFunction=" + agregationFunction + ", functionParameters=" + functionParameters + ", fieldType=" + fieldType + ", expression=" + expression + ", baseFieldName=" + baseFieldName + ", fieldGenerationFunction=" + fieldGenerationFunction + ", fieldGenerationFields=" + fieldGenerationFields + ", remarks=" + remarks + ", displayFormat=" + displayFormat + ", width=" + width + ", wrapText=" + wrapText + ", alignment=" + alignment + ", columnHide=" + columnHide + ", search=" + search + ", groupField=" + groupField + ", combinationType=" + combinationType + ", derivedId=" + derivedId + ", category=" + category + '}';
     }
 
 }

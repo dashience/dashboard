@@ -37,6 +37,7 @@ public class DataSetColumnBean {
     private Integer dataSetId;
     private Integer sortPriority;
     private String agregationFunction;
+    private String Category;
     private Integer groupPriority;
     private String sortOrder;
     private List<DataSetColumnBean> tableColumns;
@@ -259,9 +260,17 @@ public class DataSetColumnBean {
         this.widgetId = widgetId;
     }
 
+    public String getCategory() {
+        return Category;
+    }
+
+    public void setCategory(String Category) {
+        this.Category = Category;
+    }
+
     @Override
     public String toString() {
-        return "DatasetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", type=" + type + ", status=" + status + ", expression=" + expression + ", functionName=" + functionName + ", columnName=" + columnName + ", baseField=" + baseField + ", displayFormat=" + displayFormat + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", dataSetId=" + dataSetId + ", sortPriority=" + sortPriority + ", tableColumns=" + tableColumns + '}';
+        return "DataSetColumnBean{" + "id=" + id + ", fieldName=" + fieldName + ", displayName=" + displayName + ", fieldType=" + fieldType + ", type=" + type + ", status=" + status + ", expression=" + expression + ", functionName=" + functionName + ", columnName=" + columnName + ", baseField=" + baseField + ", dataFormat=" + dataFormat + ", displayFormat=" + displayFormat + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", dataSetId=" + dataSetId + ", sortPriority=" + sortPriority + ", agregationFunction=" + agregationFunction + ", Category=" + Category + ", groupPriority=" + groupPriority + ", sortOrder=" + sortOrder + ", tableColumns=" + tableColumns + ", userId=" + userId + ", widgetId=" + widgetId + '}';
     }
 
 }
