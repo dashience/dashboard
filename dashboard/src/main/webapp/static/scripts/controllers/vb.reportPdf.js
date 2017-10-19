@@ -37,6 +37,11 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
             }
             widgetItems.forEach(function (value, key) {
                 value.widgetId.chartColors = widgetColors;
+                if (value.widgetId.chartType == 'horizontalBar') {
+                    value.widgetId.isHorizontalBar = true;
+                } else {
+                    value.widgetId.isHorizontalBar = false;
+                }
             });
             $scope.reportWidgets = widgetItems;
         }).error(function () {

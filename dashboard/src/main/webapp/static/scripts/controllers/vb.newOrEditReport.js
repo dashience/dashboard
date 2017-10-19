@@ -1,4 +1,4 @@
-app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout,$cookies,$translate) {
+app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout, $cookies, $translate) {
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -6,7 +6,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.reportWidgets = [];
-    
+
     $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
@@ -41,7 +41,14 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 widgetColors = response.optionValue.split(',');
             }
             widgetItems.forEach(function (value, key) {
+                console.log(value);
                 value.widgetId.chartColors = widgetColors;
+                if (value.widgetId.chartType == 'horizontalBar') {
+                    value.widgetId.isHorizontalBar = true;
+                } else {
+                    value.widgetId.isHorizontalBar = false;
+                }
+                console.log(value);
             });
             $scope.reportWidgets = widgetItems;
         }).error(function () {
@@ -88,8 +95,8 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             $scope.editReport = false;
         });
     };
-    
-    $scope.editReportData = function(){
+
+    $scope.editReportData = function () {
         $scope.editReport = true;
     }
 
