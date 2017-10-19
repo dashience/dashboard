@@ -12,6 +12,12 @@
         "icon": "fa-bar-chart"
     },
     {
+        "id": 3,
+        "type": "horizontalBar",
+        "name": "Horizontal Bar Chart",
+        "icon": "fa-bar-chart"
+    },
+    {
         "id": 4,
         "type": "line",
         "name": "Line Chart",
@@ -62,11 +68,16 @@
         "icon": "fa-ellipsis-h"
     },
     {
+        "id": 12,
+        "type": "combination",
+        "name": "Combination Chart",
+        "icon": "fa-industry"
+    },
+    {
         "id": 13,
         "url": "static/img/icons/gauge.png",
         "type": "gauge",
         "name": "Gauge",
         "icon": "fa-tachometer"
     }
-
 ]
