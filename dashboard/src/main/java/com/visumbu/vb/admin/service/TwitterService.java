@@ -12,6 +12,7 @@ import com.visumbu.vb.utils.JsonSimpleUtils;
 //import com.visumbu.vb.utils.ExampleConfig;
 import com.visumbu.vb.utils.Rest;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +39,8 @@ import org.springframework.util.MultiValueMap;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class TwitterService {
 
+    public final String BASE_URL = "https://api.twitter.com/1.1/";
+
     public List<Map<String, Object>> get(String reportName, String twitterAccountId, String twitterScreenName,
             String twitterOauthToken, String twitterOauthSignature, String twitterOauthNonce, String twitterOauthConsumerKey,
             Date startDate, Date endDate, String timeSegment, String productSegment) {
@@ -59,19 +62,17 @@ public class TwitterService {
 
     private List<Map<String, Object>> getScreenName(String twitterOauthConsumerKey, String twitterOauthToken) {
 
-//      String url = "https://api.twitter.com/1.1/account/settings.json?oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_token=780021988039335936-vO7cttPuJ84WByUjEGFySScV1BVGsW5&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1506527941&oauth_nonce=-400194625&oauth_version=1.0&oauth_signature=qDZoWATd7XwCuXuMNzNxZHPGAog%3D";
-        String url = "https://api.twitter.com/1.1/account/settings.json?"
-                + "oauth_consumer_key=" + twitterOauthConsumerKey
-                + "&oauth_token=" + twitterOauthToken
-                + "&oauth_version=1.0"
-                + "&oauth_signature_method=HMAC-SHA1"
-                + "&oauth_timestamp=1506581828"
-                + "&oauth_nonce=3040783463"
-                + "&oauth_signature=jUVxUsFTyDFKgxXJpFVbo4bA5Kw%3D";
+        String url = BASE_URL + "account/settings.json";
 
-        System.out.println("page performance url is -->" + url);
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        valueMap.put("oauth_consumer_key", Arrays.asList(twitterOauthConsumerKey));
+        valueMap.put("oauth_token", Arrays.asList(twitterOauthToken));
+        valueMap.put("oauth_version", Arrays.asList("1.0"));
+        valueMap.put("oauth_signature_method", Arrays.asList("HMAC-SHA1"));
+        valueMap.put("oauth_timestamp", Arrays.asList("1506581828"));
+        valueMap.put("oauth_nonce", Arrays.asList("3040783463"));
+        valueMap.put("oauth_signature", Arrays.asList("jUVxUsFTyDFKgxXJpFVbo4bA5Kw%3D"));
 
-        MultiValueMap<String, String> valueMap = null;
         String data = Rest.getData(url, valueMap);
 
         JSONParser parser = new JSONParser();
@@ -96,20 +97,23 @@ public class TwitterService {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
             Long timeStamp = dateToTimeStamp(endDateStr);//to be added in feature 
-            String twitterUrl = "https://api.twitter.com/1.1/users/lookup.json?"
-                    + "screen_name=" + twitterScreenName
-                    + "&user_id=" + twitterAccountId
-                    + "&oauth_consumer_key=" + twitterOauthConsumerKey
-                    + "&oauth_token=" + twitterOauthToken
-                    + "&oauth_signature_method=HMAC-SHA1"
-                    + "&oauth_timestamp=1506582705"
-                    + "&oauth_nonce=639233318"
-                    + "&oauth_version=1.0"
-                    + "&oauth_signature=A0UDgr6PHQWZhvP2DMmbiE4Iak0%3D";
-            
-            System.out.println("Twitter Url =====> "+twitterUrl);
 
-            String twitterData = Rest.getData(twitterUrl);
+            String twitterUrl = BASE_URL + "users/lookup.json";
+
+            System.out.println("Twitter Url =====> " + twitterUrl);
+
+            MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+            valueMap.put("screen_name", Arrays.asList(twitterScreenName));
+            valueMap.put("user_id", Arrays.asList(twitterAccountId));
+            valueMap.put("oauth_consumer_key", Arrays.asList(twitterOauthConsumerKey));
+            valueMap.put("oauth_token", Arrays.asList(twitterOauthToken));
+            valueMap.put("oauth_version", Arrays.asList("1.0"));
+            valueMap.put("oauth_signature_method", Arrays.asList("HMAC-SHA1"));
+            valueMap.put("oauth_timestamp", Arrays.asList("1506582705"));
+            valueMap.put("oauth_nonce", Arrays.asList("639233318"));
+            valueMap.put("oauth_signature", Arrays.asList("A0UDgr6PHQWZhvP2DMmbiE4Iak0%3D"));
+
+            String twitterData = Rest.getData(twitterUrl, valueMap);
             JSONParser parser = new JSONParser();
             Object object = parser.parse(twitterData);
             JSONArray jsonArray = (JSONArray) object;
@@ -141,22 +145,23 @@ public class TwitterService {
         return null;
     }
 
-    private List<Map<String, Object>> getUserTimeLineMetrics(String accountId, String screenName, String twitterOauthConsumerKey, String twitterOauthToken) {
+    private List<Map<String, Object>> getUserTimeLineMetrics(String twitterAccountId, String twitterScreenName, String twitterOauthConsumerKey, String twitterOauthToken) {
         int ownTweet = 0, retweet = 0;
         long ownTweetLikes = 0, retweetLikes = 0;
-//        String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=SivanesanGovind&user_id=2526475147&oauth_consumer_key=FH0z2IiKd46IHVrftBXhyyGjY&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1506528376&oauth_nonce=EwlN94AhGNf&oauth_version=1.0&oauth_token=2526475147-SJeXiGSn6P9Fg1N4AZtACrzdANEz0y9wQ32pncu&oauth_signature=3zFPKetFk6O0Hzyo5ClCVksLW5Q%3D";
 
-        String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?"
-                + "screen_name=" + screenName
-                + "&user_id=" + accountId
-                + "&oauth_consumer_key=" + twitterOauthConsumerKey
-                + "&oauth_token=" + twitterOauthToken
-                + "&oauth_signature_method=HMAC-SHA1"
-                + "&oauth_timestamp=1507703028"
-                + "&oauth_nonce=-354022460"
-                + "&oauth_version=1.0"
-                + "&oauth_signature=N53NJDoLRwZUZd7iKKAK53xGx1g%3D";
-        MultiValueMap<String, String> valueMap = null;
+        String url = BASE_URL + "statuses/user_timeline.json";
+
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        valueMap.put("screen_name", Arrays.asList(twitterScreenName));
+        valueMap.put("user_id", Arrays.asList(twitterAccountId));
+        valueMap.put("oauth_consumer_key", Arrays.asList(twitterOauthConsumerKey));
+        valueMap.put("oauth_token", Arrays.asList(twitterOauthToken));
+        valueMap.put("oauth_version", Arrays.asList("1.0"));
+        valueMap.put("oauth_signature_method", Arrays.asList("HMAC-SHA1"));
+        valueMap.put("oauth_timestamp", Arrays.asList("1507703028"));
+        valueMap.put("oauth_nonce", Arrays.asList("354022460"));
+        valueMap.put("oauth_signature", Arrays.asList("N53NJDoLRwZUZd7iKKAK53xGx1g%3D"));
+
         String data = Rest.getData(url, valueMap);
 
         JSONParser parser = new JSONParser();

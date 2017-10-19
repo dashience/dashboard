@@ -30,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.LinkedMultiValueMap;
 
 import org.springframework.util.MultiValueMap;
 
@@ -38,6 +39,9 @@ import org.springframework.util.MultiValueMap;
 
 public class GooglePlusService {
 
+    
+    public final String BASE_URL = "https://www.googleapis.com/plus/v1/people/";
+    
     public List<Map<String, Object>> get(String gPlusAccountId, String pPlusApiKey, String reportName) {
         if (reportName.equalsIgnoreCase("activityPerformance")) {
             return activityMetrics(gPlusAccountId, pPlusApiKey);
@@ -45,14 +49,14 @@ public class GooglePlusService {
         return null;
     }
 
-    public List<Map<String, Object>> activityMetrics(String gPlusAccountId, String pPlusApiKey) {
+    public List<Map<String, Object>> activityMetrics(String gPlusAccountId, String gPlusApiKey) {
         try {
             long replies = 0, plusoners = 0, resharers = 0;
-            String url = "https://www.googleapis.com/plus/v1/people/"
-                    + gPlusAccountId
-                    + "/activities/public?key=" + pPlusApiKey;
+            
+            String url=BASE_URL+gPlusAccountId+"/activities/public";
 
-            MultiValueMap<String, String> valueMap = null;
+            MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+            valueMap.put("key", Arrays.asList(gPlusApiKey));
             String data = Rest.getData(url, valueMap);
             JSONParser parser = new JSONParser();
             Object object = parser.parse(data);

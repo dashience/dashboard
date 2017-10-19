@@ -478,22 +478,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: 'overall',
                     name: 'Over All'
                 }, {
-                    type: 'country',
-                    name: 'Country'
+                    type: 'countries',
+                    name: 'Countries'
                 }, {
                     type: 'regions',
                     name: 'Regions'
                 }, {
-                    type: 'jobFunction',
+                    type: 'functions',
                     name: 'Job Function'
                 }, {
                     type: 'seniorities',
-                    name: 'Seniority'
+                    name: 'Seniorities'
                 }, {
                     type: 'industries',
-                    name: 'Industry'
+                    name: 'Industries'
                 }, {
-                    type: 'companySize',
+                    type: 'companySizes',
                     name: 'Company Size'
                 }, {
                     type: 'employmentStatus',
