@@ -15,7 +15,7 @@
         "id": 3,
         "type": "horizontalBar",
         "name": "Horizontal Bar Chart",
-        "icon": "fa-bar-chart"
+        "icon": "fa-bar-chart fa-rotate-90"
     },
     {
         "id": 4,
