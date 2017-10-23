@@ -153,8 +153,6 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
                 return maxData;
             }
-            console.log(scope.pieChartSource);
-            console.log(typeof (scope.pieChartSource));
             var pieChartDataSource = JSON.parse(scope.pieChartSource);
             if (scope.pieChartSource) {
                 var url = "admin/proxy/getData?";
@@ -225,20 +223,20 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             scope.hideEmptyPie = true;
                             return;
                         }
-                        if (response.data.length === 0) {
+                        if (response.data == null  || response.data.length === 0) {
                             scope.pieEmptyMessage = "No Data Found";
                             scope.hideEmptyPie = true;
                         } else {
                             var loopCount = 0;
                             var sortingObj;
-                            var chartMaxRecord = JSON.parse(scope.widgetObj)
+                            var chartMaxRecord = JSON.parse(scope.widgetObj);
                             var chartData = response.data;
                             if (sortFields.length > 0) {
                                 angular.forEach(sortFields, function (value, key) {
                                     if (value.fieldType != 'day') {
                                         sortingObj = scope.orderData(chartData, sortFields);
                                         if (chartMaxRecord.maxRecord) {
-                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj);
                                         } else {
                                             chartData = sortingObj;
                                         }
@@ -252,7 +250,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                             }
                                         });
                                         if (chartMaxRecord.maxRecord) {
-                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj);
                                         } else {
                                             chartData = sortingObj;
                                         }
@@ -293,7 +291,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                 data: {
                                     json: [data],
                                     keys: {
-                                        value: xData,
+                                        value: xData
                                     },
                                     type: 'pie'
                                 },

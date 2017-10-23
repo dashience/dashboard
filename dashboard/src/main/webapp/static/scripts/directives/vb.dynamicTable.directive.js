@@ -151,6 +151,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             };
             scope.columns = [];
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
+                console.log(value);
                 scope.columns.push(value);
             });
 
@@ -207,8 +208,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 });
                 return returnSortDay;
             }
-
-
 
             var groupByFields = []; // ['device', 'campaignName'];
             var aggreagtionList = [];

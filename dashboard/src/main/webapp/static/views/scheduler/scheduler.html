@@ -89,6 +89,7 @@
                                             <tr>
                                                 <th translate>S.No</th>
                                                 <th translate>Scheduler Name</th>
+                                                <th translate>Scheduler Date</th>
                                                 <th translate>Start Time</th>
                                                 <th translate>End Time</th>
                                                 <th translate>To</th>
@@ -97,9 +98,11 @@
                                             </tr>                                            
                                         </thead>
                                         <tbody>
-                                            <tr ng-repeat="history in schedularHistoryDetails | limitTo:-10 | orderBy: '-executedDate'">
-                                                <td>{{$index+1}}</td>
+                                            <!--<tr ng-repeat="history in schedularHistoryDetails| limitTo:-10 | orderBy: '-executedDate'">-->
+                                            <tr ng-repeat="history in schedularHistoryDetails| limitTo:-10">
+                                                <td>{{$index + 1}}</td>
                                                 <td>{{history.schedulerName}}</td>
+                                                <td>{{history.executedDate}}</td>
                                                 <td>{{history.executionStartTime}}</td>
                                                 <td>{{history.executionEndTime}}</td>
                                                 <td>{{history.emailId}}</td>

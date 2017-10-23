@@ -414,7 +414,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'none',
                     name: 'None'
-        }
+                }
             ],
             productSegments: [
                 {
@@ -532,7 +532,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'none',
                     name: 'None'
-        }
+                }
             ],
             productSegments: [
                 {
@@ -4162,7 +4162,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     getProductSegment(productList, productSegmentName);
                 }
             }
-            
+
             if ($scope.dataSet.reportName === 'pagePerformance') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'Month', type: 'month'};
@@ -4175,7 +4175,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     getProductSegment(productList, productSegmentName);
                 }
             }
-            
+
             if ($scope.dataSet.reportName === 'postPerformance') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
@@ -4188,8 +4188,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     getProductSegment(productList, productSegmentName);
                 }
             }
-            
-            
+
+
             if ($scope.dataSet.reportName === 'pageFollowersPerformance') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'Day', type: 'day'};
@@ -4202,7 +4202,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     getProductSegment(productList, productSegmentName);
                 }
             }
-            
+
 
 
 
@@ -4876,7 +4876,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     };
 
     $scope.saveDataSetFieldSettings = function (columnHeader) {
-        var dataSetId = $scope.columnHeaderByDataSetId
+        var dataSetId = $scope.columnHeaderByDataSetId;
         var data = {
             id: columnHeader.id,
             fieldName: columnHeader.fieldName,
@@ -4896,12 +4896,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             widgetId: columnHeader.widgetId
         };
 
-        console.log(data)
-
         $http({method: 'POST', url: "admin/ui/createDataSetColumnByDataSet", data: data}).success(function (response) {
-            console.log(response)
-        })
-    }
+            console.log(response);
+        });
+    };
 
 //    $scope.getDataSetColDefs = function(dataSetColumn){alert(1)
 //        console.log(dataSetColumn);

@@ -14,33 +14,26 @@ import com.visumbu.vb.admin.service.GooglePlusService;
 import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
 import com.visumbu.vb.admin.service.SemrushService;
-import static com.visumbu.vb.admin.service.SemrushService.API_KEY;
 import com.visumbu.vb.admin.service.SettingsService;
 import com.visumbu.vb.admin.service.TwitterService;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
-import com.visumbu.vb.bean.DataSetReport;
-import com.visumbu.vb.bean.DataSourceMetric;
 import com.visumbu.vb.bean.DateRange;
 import com.visumbu.vb.bean.MapSummaryHeader;
 import com.visumbu.vb.bean.Range;
-import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.AdwordsCriteria;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.DataSetColumns;
-import com.visumbu.vb.model.DataSourceFilter;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
-import com.visumbu.vb.model.Settings;
 import com.visumbu.vb.model.TabWidget;
-import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.utils.CsvDataSet;
 import com.visumbu.vb.utils.DataExporter;
@@ -48,19 +41,15 @@ import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.PropertyReader;
 import com.visumbu.vb.utils.Rest;
-import com.visumbu.vb.utils.SettingsProperty;
 import com.visumbu.vb.utils.ShuntingYard;
 import com.visumbu.vb.utils.XlsDataSet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.math.BigInteger;
 import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
@@ -122,16 +111,10 @@ public class ProxyController {
     private GaService gaService;
 
     @Autowired
-    private BingService bingService;
-
-    @Autowired
     private ReportService reportService;
 
     @Autowired
     private LinkedinService linkedinService;
-
-    @Autowired
-    private SettingsService settingsService;
 
     @Autowired
     private TwitterService twitterService;
@@ -392,13 +375,13 @@ public class ProxyController {
                 if (metricsMap == null) {
                     metricsMap = (Map<String, Object>) mapData.get("metrics2");
                 }
-                if(metricsMap.get(key) != null) {
+                if (metricsMap.get(key) != null) {
                     ColumnDef columnDef = getColumnDef(key, value, "metric");
                     if (columnDef != null) {
                         columnDefs.add(columnDef);
                     }
                 } else if (key.equalsIgnoreCase("metrics1")) {
-                    
+
                 } else if (key.equalsIgnoreCase("metrics2")) {
                 } else if (key.equalsIgnoreCase("dimensions")) {
 
@@ -576,9 +559,9 @@ public class ProxyController {
 
     private List<ColumnDef> updateDataSetColumnId(List<ColumnDef> columnDefObject, Integer userId, Integer dataSetId, Integer widgetId) {
         List<ColumnDef> columnDef = new ArrayList<>();
-//        if (columnDefObject == null) {
-//            return null;
-//        }
+        if (columnDefObject == null) {
+            return null;
+        }
         for (Iterator<ColumnDef> iterator = columnDefObject.iterator(); iterator.hasNext();) {
             ColumnDef column = iterator.next();
             DataSetColumns dataSetColumn = uiService.getDataSetColumn(column.getFieldName(), column, userId, dataSetId, widgetId);
@@ -1246,39 +1229,41 @@ public class ProxyController {
         }
         List<Map<String, Object>> returnData = new ArrayList<>();
         // System.out.println("dataaaaa ------------> " + data);
-        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
-            Map<String, Object> dataMap = iterator.next();
-            Map<String, Object> returnDataMap = dataMap;
-            for (Iterator<DataSetColumns> iterator1 = dataSetColumns.iterator(); iterator1.hasNext();) {
-                DataSetColumns dataSetColumn = iterator1.next();
-                boolean isDerivedColumn = checkIsDerivedFunction(dataSetColumn);
-                if (isDerivedColumn) {
-                    String functionName = dataSetColumn.getFunctionName();
-                    String dateRangeName = dataSetColumn.getDateRangeName();
-                    Integer lastNdays = dataSetColumn.getLastNdays();
-                    Integer lastNweeks = dataSetColumn.getLastNweeks();
-                    Integer lastNmonths = dataSetColumn.getLastNmonths();
-                    Integer lastNyears = dataSetColumn.getLastNyears();
-                    String customStartDate = dataSetColumn.getCustomStartDate();
-                    String customEndDate = dataSetColumn.getCustomEndDate();
-                    if (dateRangeName != null && !dateRangeName.isEmpty()) {
-                        if (!dateRangeName.equalsIgnoreCase("custom")) {
-                            Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears, endDate);
-                            customStartDate = DateUtils.dateToString(dateMap.get("startDate"), "MM/dd/yyyy");
-                            customEndDate = DateUtils.dateToString(dateMap.get("endDate"), "MM/dd/yyyy");
-                            //// System.out.println("customStartDate ---> " + customStartDate);
-                            //// System.out.println("customEndDate ---> " + customEndDate);
+        if (data != null) {
+            for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                Map<String, Object> returnDataMap = dataMap;
+                for (Iterator<DataSetColumns> iterator1 = dataSetColumns.iterator(); iterator1.hasNext();) {
+                    DataSetColumns dataSetColumn = iterator1.next();
+                    boolean isDerivedColumn = checkIsDerivedFunction(dataSetColumn);
+                    if (isDerivedColumn) {
+                        String functionName = dataSetColumn.getFunctionName();
+                        String dateRangeName = dataSetColumn.getDateRangeName();
+                        Integer lastNdays = dataSetColumn.getLastNdays();
+                        Integer lastNweeks = dataSetColumn.getLastNweeks();
+                        Integer lastNmonths = dataSetColumn.getLastNmonths();
+                        Integer lastNyears = dataSetColumn.getLastNyears();
+                        String customStartDate = dataSetColumn.getCustomStartDate();
+                        String customEndDate = dataSetColumn.getCustomEndDate();
+                        if (dateRangeName != null && !dateRangeName.isEmpty()) {
+                            if (!dateRangeName.equalsIgnoreCase("custom")) {
+                                Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears, endDate);
+                                customStartDate = DateUtils.dateToString(dateMap.get("startDate"), "MM/dd/yyyy");
+                                customEndDate = DateUtils.dateToString(dateMap.get("endDate"), "MM/dd/yyyy");
+                                //// System.out.println("customStartDate ---> " + customStartDate);
+                                //// System.out.println("customEndDate ---> " + customEndDate);
+                            }
                         }
+                        DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, startDate, endDate);
+                        String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                        Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(dataSetColumn.getBaseField()), dataSetColumn);
+                        returnDataMap.put(dataSetColumn.getFieldName(), derivedFunctionValue);
+                    } else {
+                        returnDataMap.put(dataSetColumn.getFieldName(), dataMap.get(dataSetColumn.getFieldName()));
                     }
-                    DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, startDate, endDate);
-                    String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
-                    Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(dataSetColumn.getBaseField()), dataSetColumn);
-                    returnDataMap.put(dataSetColumn.getFieldName(), derivedFunctionValue);
-                } else {
-                    returnDataMap.put(dataSetColumn.getFieldName(), dataMap.get(dataSetColumn.getFieldName()));
                 }
+                returnData.add(returnDataMap);
             }
-            returnData.add(returnDataMap);
         }
         return returnData;
     }
@@ -2048,15 +2033,14 @@ public class ProxyController {
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String linkedinAccessToken=getAccountId(accountProperty, "linkedinAccessToken");
-        String linkedinCompanyId=getAccountId(accountProperty, "linkedinCompanyId");
-        
-        
+        String linkedinAccessToken = getAccountId(accountProperty, "linkedinAccessToken");
+        String linkedinCompanyId = getAccountId(accountProperty, "linkedinCompanyId");
+
         try {
-            Long companyId=Long.parseLong(linkedinCompanyId);
+            Long companyId = Long.parseLong(linkedinCompanyId);
 
             List<Map<String, Object>> data = linkedinService.get(linkedinAccessToken,
-                    dataSetReportName,startDate, endDate, timeSegment, productSegment,companyId);
+                    dataSetReportName, startDate, endDate, timeSegment, productSegment, companyId);
             log.debug(data);
             Map returnMap = new HashMap();
             List<ColumnDef> columnDefs = getColumnDefObject(data);
@@ -2677,6 +2661,7 @@ public class ProxyController {
                     columnDef = new ColumnDef(key, columns.getFieldType(), columns.getDisplayName());
                     columnDef.setDisplayFormat(columns.getDisplayFormat());
                     columnDef.setCategory(columns.getCategory());
+                    System.out.println("ColumnDefs =====> " + columnDef);
                 } else {
                     DefaultFieldProperties fieldProperties = uiService.getDefaultFieldProperties(key);
                     if (fieldProperties != null) {

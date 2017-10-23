@@ -1,4 +1,4 @@
-app.directive('previewTable', function ($http, $filter, $stateParams,$translate) {
+app.directive('previewTable', function ($http, $filter, $stateParams, $translate) {
     return{
         restrict: 'A',
         scope: {
@@ -14,7 +14,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams,$translate)
                 '<div class="message" ng-if="showMessage">No Data Found</div>' +
                 '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
                 '<button class="btn btn-warning btn-xs" ng-click="resetDataSetColumn()" translate>Reset</button>' +
-                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
+                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataSet" title="{{\'Add Column\' | translate}}" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
                 '<div id="dataSet" class="modal" role="dialog">' +
                 '<div class="modal-dialog modal-lg">' +
                 '<div class="modal-content">' +

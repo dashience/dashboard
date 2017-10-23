@@ -99,6 +99,7 @@
     "Create Join Data Set": "创建加入 数据集",
     "File Name": "文件名",
     "Scheduler Name": "计划程序名称",
+    "Scheduler Date": "计划日期",
     "Start Time": "开始时间",
     "End Time": "时间结束",
     "To": "至",
@@ -251,8 +252,6 @@
     "Alignment": "对准",
     "Action": "行动",
     "Share": "分享",
-    
-    
     "Join DataSet": "加入数据集",
     "DataSet Name": "数据集名称",
     "JoinType": "联接类型",
@@ -265,19 +264,17 @@
     "Add rule": "添加规则",
     "Add group": "添加组",
     "Select All": "全选",
-    "Code":"码",
+    "Code": "码",
     "Field Type": "字段类型",
-    "No Data Set Found":"找不到数据集",
-    "Catagory":"产品类别",
-    "Data Format":"数据格式",
-    "Reset":"重启",
-    "Field Name":"字段名称",
-    "Expression":"表达",
-    "Derived Column":"派生列",
-    "DataSet1 Column":"数据集1列",
-    "DataSet2 Column":"数据集2列",
-    "Condition":"条件",
-    "Select X Axis":"选择X轴",
-    "Select Y Axis":"选择Y轴"
-    
+    "No Data Set Found": "找不到数据集",
+    "Catagory": "产品类别",
+    "Data Format": "数据格式",
+    "Field Name": "字段名称",
+    "Expression": "表达",
+    "Derived Column": "派生列",
+    "DataSet1 Column": "数据集1列",
+    "DataSet2 Column": "数据集2列",
+    "Condition": "条件",
+    "Select X Axis": "选择X轴",
+    "Select Y Axis": "选择Y轴"
 }

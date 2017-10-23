@@ -204,11 +204,11 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     $scope.tableDef = function (widget) {
         if (widget.columns) {
             if (widget.dataSetId) {
-                columnHeaderDef(widget)
+                columnHeaderDef(widget);
             }
         } else {
             if (widget.dataSetId) {
-                columnHeaderDef(widget)
+                columnHeaderDef(widget);
             }
         }
     };
@@ -303,7 +303,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         $scope.editChartType = null;
         widget.previewUrl = dataSet;
         widget.columns = [];
-        var chartType = widget
+        var chartType = widget;
 
         var url = "admin/proxy/getData?";
         if (dataSet.dataSourceId.dataSourceType == "sql") {
