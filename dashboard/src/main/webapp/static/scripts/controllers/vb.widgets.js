@@ -7,6 +7,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.showFilter = false;
     $scope.showColumnDefs = false;
     $scope.showDateRange = false;
+    $scope.showWidgeDateRange = false;
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -847,8 +848,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectWidgetDataSource = function (dataSourceName) {
+
         if (!dataSourceName) {
             return;
+        }
+
+        console.log(dataSourceName);
+        if (dataSourceName.dataSourceType === "xls" || dataSourceName.dataSourceType === "csv") {
+            console.log("true");
+            $scope.showWidgeDateRange = true;
+        } else {
+            $scope.showWidgeDateRange = false;
         }
         $scope.y1Column = "";
         $scope.selectPieChartXAxis = "";
@@ -1131,11 +1141,21 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectColumnItem = function (obj, widget) {
+
+        console.log("Selected Column Item");
+        console.log(obj);
+
+        console.log("Widget");
+        console.log(widget);
+
 //        $scope.dispHideBuilder = true;
         obj.columnsButtons = true;
         var checkColumnDef = obj.selectColumnDef;
         if (checkColumnDef === 1) {
+            console.log(obj.derivedColumnId);
             var data = {
+
+                derivedColumnId: obj.derivedColumnId,
                 derivedId: obj.id,
                 agregationFunction: obj.agregationFunction,
                 columnsButtons: obj.columnsButtons,
@@ -1156,7 +1176,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 category: obj.category
             };
             widget.columns.push(data);
+            console.log("slected colum item push values");
+            console.log(widget.columns);
         } else {
+             console.log("else loop");
+             console.log(obj.derivedColumnId);
             var index = -1;
             var filteredObj = widget.columns.find(function (item, i) {
                 if (item.fieldName === obj.fieldName) {
@@ -1848,6 +1872,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     //Edit Derived
     $scope.editDerivedColumn = function (collectionField, widgetObj) {
+
+        console.log("Edit derived column")
+        console.log(collectionField);
+        console.log(widgetObj);
+
         $scope.showDerived = false;
         $scope.dataSetColumn = {};
         if (collectionField.userId != null) {
@@ -1866,13 +1895,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 displayName: collectionField.displayName,
                 userId: collectionField.userId,
                 displayFormat: collectionField.displayFormat,
-                widgetId: widgetObj.id
+                widgetId: widgetObj.id,
+                derivedColumnId: collectionField.derivedColumnId
             };
             $scope.dataSetColumn = data;
         }
     };
     var deleteColumns = [];
     $scope.removeDerivedColumn = function (obj, widgetObj) {
+
         var checkColumnDef = obj.selectColumnDef;
         if (checkColumnDef === 1) {
             var data = {
@@ -1905,8 +1936,23 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         deleteColumns.push({id: obj.id, fieldName: obj.fieldName});
     };
+
+    function getObject(collection, column, searchData) {
+        var object = $filter('filter')(collection, function (field) {
+            return field.derivedColumnId === searchData;
+        })[0];
+        return object;
+    }
+
+    function getRandomNumber() {
+        return Math.floor(Math.random() * 1000000000);
+    }
+
+
+
     //Save DerivedColumn
     $scope.saveDerivedColumn = function (dataSetColumn, widget) {
+
         $scope.collectionField = {};
         var dataSetColumnData = {
             functionName: dataSetColumn.functionName ? dataSetColumn.functionName : null,
@@ -1923,9 +1969,76 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         };
         var oldFieldName = "";
         if (!dataSetColumn.id) {
-            $scope.collectionFields.push(dataSetColumnData);
-            $scope.columnY1Axis.push(dataSetColumnData);
-            $scope.columnY2Axis.push(dataSetColumnData);
+            if (typeof (dataSetColumn.derivedColumnId) === "undefined") {
+                dataSetColumnData.derivedColumnId = getRandomNumber();
+                $scope.collectionFields.push(dataSetColumnData);
+                $scope.columnY1Axis.push(dataSetColumnData);
+                $scope.columnY2Axis.push(dataSetColumnData);
+            } else {
+                var derivedColumnId = dataSetColumn.derivedColumnId;
+                dataSetColumnData.derivedColumnId = derivedColumnId;
+
+                $scope.collectionFields.forEach(function (val, key) {
+                    if (val.derivedColumnId === derivedColumnId) {
+                        val.fieldName = dataSetColumnData.fieldName;
+                        val.displayName = dataSetColumnData.displayName;
+                        val.expression = dataSetColumnData.expression;
+                        val.functionName = dataSetColumnData.functionName;
+                        val.fieldType = dataSetColumnData.fieldType;
+                        val.displayFormat = dataSetColumnData.displayFormat;
+                        val.status = dataSetColumnData.status;
+                        val.dataSetId = dataSetColumnData.dataSetId;
+                        val.userId = dataSetColumnData.userId;
+                        val.sortPriority = dataSetColumnData.sortPriority;
+                    }
+                });
+
+                $scope.columnY1Axis.forEach(function (val, key) {
+                    if (val.derivedColumnId === derivedColumnId) {
+                        val.fieldName = dataSetColumnData.fieldName;
+                        val.displayName = dataSetColumnData.displayName;
+                        val.expression = dataSetColumnData.expression;
+                        val.functionName = dataSetColumnData.functionName;
+                        val.fieldType = dataSetColumnData.fieldType;
+                        val.displayFormat = dataSetColumnData.displayFormat;
+                        val.status = dataSetColumnData.status;
+                        val.dataSetId = dataSetColumnData.dataSetId;
+                        val.userId = dataSetColumnData.userId;
+                        val.sortPriority = dataSetColumnData.sortPriority;
+                    }
+                });
+
+                $scope.columnY2Axis.forEach(function (val, key) {
+                    if (val.derivedColumnId === derivedColumnId) {
+                        val.fieldName = dataSetColumnData.fieldName;
+                        val.displayName = dataSetColumnData.displayName;
+                        val.expression = dataSetColumnData.expression;
+                        val.functionName = dataSetColumnData.functionName;
+                        val.fieldType = dataSetColumnData.fieldType;
+                        val.displayFormat = dataSetColumnData.displayFormat;
+                        val.status = dataSetColumnData.status;
+                        val.dataSetId = dataSetColumnData.dataSetId;
+                        val.userId = dataSetColumnData.userId;
+                        val.sortPriority = dataSetColumnData.sortPriority;
+                    }
+                });
+
+                $scope.widgetObj.columns.forEach(function (val, key) {
+                    if (val.derivedColumnId === derivedColumnId) {
+                        val.fieldName = dataSetColumnData.fieldName;
+                        val.displayName = dataSetColumnData.displayName;
+                        val.expression = dataSetColumnData.expression;
+                        val.functionName = dataSetColumnData.functionName;
+                        val.fieldType = dataSetColumnData.fieldType;
+                        val.displayFormat = dataSetColumnData.displayFormat;
+                        val.status = dataSetColumnData.status;
+                        val.dataSetId = dataSetColumnData.dataSetId;
+                        val.userId = dataSetColumnData.userId;
+                        val.sortPriority = dataSetColumnData.sortPriority;
+                    }
+                });
+
+            }
         } else {
             $scope.collectionFields.forEach(function (val, key) {
                 if (val.id === dataSetColumn.id) {
