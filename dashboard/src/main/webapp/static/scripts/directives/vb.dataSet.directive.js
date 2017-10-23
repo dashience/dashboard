@@ -492,10 +492,11 @@ app.directive('previewTable', function ($http, $filter, $stateParams,$translate)
                         scope.getDataSetColumns({dataSetColumnDef: scope.dataSetColumns});
                     }
                     scope.tableColumns = response.columnDefs;
-                    if (response.data == null || response.data.length == 0) {
+                    if (response.data === null || response.data.length == 0) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
                         scope.showMessage = true;
+                        return;
                     } else {
                         scope.tableRows = response.data.slice(0, 5);
                     }

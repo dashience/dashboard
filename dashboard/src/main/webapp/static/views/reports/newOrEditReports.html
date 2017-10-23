@@ -181,14 +181,14 @@
                         <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
                         <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
                     </div>
-                        <div set-Ticker-Fn="setTickerFn(tickerFn)"
-                             widget-Obj="{{reportWidget.widgetId}}"
-                             ticker-Directive
-                             ticker-Title-Name="{{reportWidget.widgetId.widgetTitle}}"
-                             ticker-Source="{{reportWidget.widgetId.dataSetId}}"
-                             ticker-Id="{{reportWidget.widgetId.id}}" 
-                             ticker-Columns="{{reportWidget.widgetId.columns}}">
-                        </div>
+                    <div set-Ticker-Fn="setTickerFn(tickerFn)"
+                         widget-Obj="{{reportWidget.widgetId}}"
+                         ticker-Directive
+                         ticker-Title-Name="{{reportWidget.widgetId.widgetTitle}}"
+                         ticker-Source="{{reportWidget.widgetId.dataSetId}}"
+                         ticker-Id="{{reportWidget.widgetId.id}}" 
+                         ticker-Columns="{{reportWidget.widgetId.columns}}">
+                    </div>
                 </div>
             </div>
         </div>
@@ -200,11 +200,15 @@
                             <!--<i class="fa fa-heart" title="Favourites" ng-click="favourites = !favourites;favouritesNew(favourites)" ng-class="{'red' : favourites,'green':!favourites}"></i>-->
                             <a ng-if="reportWidget.widgetId.chartType === 'line'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
                             <a ng-if="reportWidget.widgetId.chartType === 'bar'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="reportWidget.widgetId.chartType === 'horizontalBar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
                             <a ng-if="reportWidget.widgetId.chartType === 'pie'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
                             <a ng-if="reportWidget.widgetId.chartType === 'area'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
                             <a ng-if="reportWidget.widgetId.chartType === 'stackedbar'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
                             <a ng-if="reportWidget.widgetId.chartType === 'table'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
                             <a ng-if="reportWidget.widgetId.chartType === 'scatter'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="reportWidget.widgetId.chartType === 'gauge'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveGaugeFn()"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="reportWidget.widgetId.chartType === 'map'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveMapFn()"><i class="fa fa-repeat"></i></a>
+
                             <!--                        <a class="edit" ng-click="editReportWidget(reportWidget);"
                             
                                                        ui-sref="index.editWidget({accountId: accountId, 
@@ -228,7 +232,7 @@
                     <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'bar'">
                         <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                     </div> 
-                    <div class="panel-body" ng-if="reportWidget.widgetId.chartType=== 'horizontalBar'">
+                    <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'horizontalBar'">
                         <div>
                             <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                  bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
@@ -242,7 +246,7 @@
                     <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'pie'">
                         <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{reportWidget.widgetId.dataSetId}}' widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                     </div> 
-                    <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'area' || reportWidget.widgetId.chartType==='combination'">
+                    <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'area' || reportWidget.widgetId.chartType === 'combination'">
                         <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                     </div> 
                     <div class="box-body"  ng-if="reportWidget.widgetId.chartType === 'stackedbar'">

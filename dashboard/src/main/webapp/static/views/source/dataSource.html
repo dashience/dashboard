@@ -145,7 +145,7 @@
                         <div class="form-group">
                             <label translate>Type</label>
                             <select class="form-control" ng-model="dataSource.dataSourceType" ng-change="selectSourceType(dataSource)">
-                                <option value="" selected="selected" ng-disabled="true">{{'Choose One' | translate}}</option>
+                                <option value="" selected="selected" ng-disabled="true">{{'Choose One'| translate}}</option>
                                 <option ng-repeat="sourceType in dataSourceTypes"  value="{{sourceType.type}}">{{sourceType.name}}</option>
                             </select>
                         </div>
@@ -196,8 +196,14 @@
                             <input type="text" class="form-control" ng-model="dataSource.userName">
                         </div>
                         <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
+                            <!--<input type="text" class="form-control" ng-model="dataSource.password">-->        
                             <label translate>Password</label>
-                            <input type="text" class="form-control" ng-model="dataSource.password">
+                            <div class="input-group">
+                                <input type="password" class="form-control" ng-model="dataSource.password" id="password" name="password" >
+                                <span class="input-group-addon">
+                                    <i show-password class="fa fa-eye-slash" style="cursor: pointer" aria-hidden="true"></i>
+                                </span>
+                            </div>
                         </div>
                         <input type="hidden" id="fbAccessToken" ng-model="dataSource.accessToken">
                         <input type="hidden" id="fbOauthToken" ng-model="dataSource.oauthToken">
@@ -207,7 +213,7 @@
                                     class="btn btn-info" ng-click="saveDataSource(dataSource)" translate>Save</button>
                             <button ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'"
                                     class="btn btn-info" ng-click="uploadFile(dataSource)" translate>Save</button>
-                                    <button class="btn btn-warning" ng-click="clearDataSource(dataSource)" translate>Cancel</button>
+                            <button class="btn btn-warning" ng-click="clearDataSource(dataSource)" translate>Cancel</button>
                         </div>
                     </form>
                 </div>

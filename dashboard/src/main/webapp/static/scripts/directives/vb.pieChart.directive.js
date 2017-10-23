@@ -153,6 +153,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                 }
                 return maxData;
             }
+            console.log(scope.pieChartSource);
+            console.log(typeof (scope.pieChartSource));
             var pieChartDataSource = JSON.parse(scope.pieChartSource);
             if (scope.pieChartSource) {
                 var url = "admin/proxy/getData?";
