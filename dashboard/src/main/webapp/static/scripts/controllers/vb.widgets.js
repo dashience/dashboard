@@ -485,11 +485,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         setDefaultWidgetObj = [];
         var data = loadInitialWidgetColumnData(widget.columns);
-        if ($scope.collectionFields.length == widget.columns.length) {
-            widget.selectAll = 1;
-        } else {
-            widget.selectAll = 0;
-        }
         if (widget.dateRangeName == "None") {
             widget.customStartDate = "";
             widget.customEndDate = "";
@@ -672,7 +667,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 "&fieldsOnly=true").success(function (response) {
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
-
+            if ($scope.collectionFields.length == widget.columns.length) {
+                widget.selectAll = 1;
+            } else {
+                widget.selectAll = 0;
+            }
 //            $scope.locations = response.data;
 //            console.log($scope.locations);
 
@@ -680,6 +679,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 columns: response.columnDefs,
                 widgetObj: widget
             };
+            console.log(widget);
 //            $timeout(function () {
             $scope.queryBuilderList = filterList;
             resetQueryBuilder();
@@ -1373,6 +1373,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setCustomDatePickerFn = function (customDateFn) {
         $scope.directiveDateFn = customDateFn;
     };
+    $scope.setMapFn = function (mapFn) {
+        $scope.directiveMapFn = mapFn;
+    };
 
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
@@ -1543,10 +1546,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        console.log(y1data[0].fieldName);
 //         $scope.cities.push({"pos":y1data[0].fieldName});
         //        $scope.dispHideBuilder = true;
-        if(chartTypeName==="combination"||widget.chartType==="combination"){
+        if (chartTypeName === "combination" || widget.chartType === "combination") {
             console.log(y1data);
             angular.forEach(y1data, function (value, key) {
-                value.combinationType='area';
+                value.combinationType = 'area';
             });
         }
         angular.forEach($scope.columnY2Axis, function (val, key) {
@@ -1588,12 +1591,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     };
 
-    $scope.selectY2Axis = function (widget, y2data,chartTypeName) {
+    $scope.selectY2Axis = function (widget, y2data, chartTypeName) {
         //        $scope.dispHideBuilder = true;
-        if(chartTypeName==="combination"||widget.chartType==="combination"){
+        if (chartTypeName === "combination" || widget.chartType === "combination") {
             console.log(y2data);
             angular.forEach(y2data, function (value, key) {
-                value.combinationType='line';
+                value.combinationType = 'line';
             });
         }
         angular.forEach($scope.columnY1Axis, function (val, key) {
@@ -2316,7 +2319,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             createdBy: widget.createdBy,
             chartColorOption: widgetColor,
             icon: widget.icon
-            
+
         };
         clearEditAllWidgetData();
         var deleteColumnDef = deleteColumns.map(function (value, key) {
@@ -2356,7 +2359,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         fieldType: val.fieldType,
                         displayName: val.displayName,
                         icon: val.icon
-                        
+
                     };
                     $scope.columnHeaderColuction.push(collectionFieldDefs);
                 });
