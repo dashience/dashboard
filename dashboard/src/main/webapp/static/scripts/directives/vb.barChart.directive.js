@@ -268,6 +268,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     }
                                 });
                             }
+                            if (chartMaxRecord.maxRecord > 0) {
+                                chartData = chartData.slice(0, chartMaxRecord.maxRecord);
+                            }
                             xTicks = [xAxis.fieldName];
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
@@ -293,12 +296,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             } else {
                                 gridLine = false;
                             }
-                            
+
                             try {
                                 var isRotate = JSON.parse(scope.isHorizontalBar);
                             } catch (exception) {
                             }
-                            
+
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,

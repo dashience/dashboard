@@ -66,13 +66,14 @@ public class UserDao extends BaseDao {
         return query.list();
     }
 
-    public VbUser findUser(String username, Agency agency) {
+    public VbUser findUser(String dashiencePath, String username, Agency agency) {
         if(agency == null || username == null || username.isEmpty()) {
             return null;
         }
-        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId = :agency and userName = :userName");//.getNamedQuery("VbUser.findByUserName");
+        Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId = :agency and agencyId.agencyDashiencePath = :path and userName = :userName");//.getNamedQuery("VbUser.findByUserName");
         query.setParameter("userName", username);
         query.setParameter("agency", agency);
+        query.setParameter("path", dashiencePath);
         List<VbUser> users = query.list();
         if (!users.isEmpty() && users.size() > 0) {
             return users.get(0);

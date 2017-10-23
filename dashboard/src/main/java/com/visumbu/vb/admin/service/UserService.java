@@ -97,10 +97,11 @@ public class UserService {
             user = userDao.findAdminUserByName(userBean.getUsername());
             userBean.setIsAdmin("true");
         } else {
+            String userName = userBean.getUsername();
             Agency agency = userDao.findAgencyByDashiencePath(dashiencePath);
-            user = userDao.findUser(dashiencePath, agency);
+            user = userDao.findUser(dashiencePath, userName,  agency);
         }
-
+       
         LoginUserBean loginUserBean = null;
         if (user != null) {
             if (user.getPassword().equals(userBean.getPassword())
