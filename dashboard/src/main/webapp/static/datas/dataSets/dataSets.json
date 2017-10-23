@@ -472,6 +472,170 @@
                 }
             ]
         }],
+    "twitter": [{
+            "type": "pagePerformance",
+            "name": "Page Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "screenName",
+            "name": "Screen Name",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "userTimeLine",
+            "name": "User Performance Metrics",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }],
+    "linkedin": [{
+            "type": "companyProfile",
+            "name": "Company Profile",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "pagePerformance",
+            "name": "Page Performance",
+            "timeSegments": [
+                {
+                    "type": "month",
+                    "name": "Month"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "postPerformance",
+            "name": "Post Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "overall",
+                    "name": "Over All"
+                },
+                {
+                    "type": "recentPosts",
+                    "name": "Recent Posts"
+                }, {
+                    "type": "postType",
+                    "name": "Post Type"
+                }
+            ]
+        }, {
+            "type": "pageFollowersPerformance",
+            "name": "Page Followers Performance Report",
+            "timeSegments": [
+                {
+                    "type": "day",
+                    "name": "Day"
+                }, {
+                    "type": "month",
+                    "name": "Month"
+                }, {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "overall",
+                    "name": "Over All"
+                }, {
+                    "type": "country",
+                    "name": "Country"
+                }, {
+                    "type": "regions",
+                    "name": "Regions"
+                }, {
+                    "type": "jobFunction",
+                    "name": "Job Function"
+                }, {
+                    "type": "seniorities",
+                    "name": "Seniority"
+                }, {
+                    "type": "industries",
+                    "name": "Industry"
+                }, {
+                    "type": "companySize",
+                    "name": "Company Size"
+                }, {
+                    "type": "employmentStatus",
+                    "name": "Employment Status"
+                }, {
+                    "type": "historicalPageFollowers",
+                    "name": "Historical Followers"
+                }, {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }],
+
+    "googlePlus": [{
+            "type": "activityPerformance",
+            "name": "Activity Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }],
     "analytics": [
         {
             "type": "overallPerformance",

@@ -228,10 +228,21 @@
                     <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'bar'">
                         <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                     </div> 
+                    <div class="panel-body" ng-if="reportWidget.widgetId.chartType=== 'horizontalBar'">
+                        <div>
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                 widget-Id="{{reportWidget.widgetId.id}}" 
+                                 widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                 widget-Obj="{{reportWidget.widgetId}}"
+                                 is-Horizontal-Bar="{{reportWidget.widgetId.isHorizontalBar}}">                                     
+                            </div>
+                        </div>
+                    </div>
                     <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'pie'">
                         <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{reportWidget.widgetId.dataSetId}}' widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                     </div> 
-                    <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'area'">
+                    <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'area' || reportWidget.widgetId.chartType==='combination'">
                         <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
                     </div> 
                     <div class="box-body"  ng-if="reportWidget.widgetId.chartType === 'stackedbar'">

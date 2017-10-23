@@ -237,6 +237,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'horizontalBar'">
+                        <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">>
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                 widget-Id="{{reportWidget.widgetId.id}}" 
+                                 widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                 widget-Obj="{{reportWidget.widgetId}}" default-chart-color="{{defaultChartColor}}"
+                                 is-Horizontal-Bar="{{reportWidget.widgetId.isHorizontalBar}}">                                     
+                            </div>
+                        </div>
+                    </div>
                         <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'pie'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 

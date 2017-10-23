@@ -29,6 +29,11 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
             }
             widgetItems.forEach(function (value, key) {
                 value.widgetId.chartColors = widgetColors;
+                if (value.widgetId.chartType == 'horizontalBar') {
+                    value.widgetId.isHorizontalBar = true;
+                } else {
+                    value.widgetId.isHorizontalBar = false;
+                }
             });
             $scope.favPdfWidgets = widgetItems;
         }).error(function () {

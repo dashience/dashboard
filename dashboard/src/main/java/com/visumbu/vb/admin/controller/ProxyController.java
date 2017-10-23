@@ -10,6 +10,7 @@ import com.visumbu.vb.admin.service.BingService;
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.GaService;
+import com.visumbu.vb.admin.service.GooglePlusService;
 import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
 import com.visumbu.vb.admin.service.SemrushService;
@@ -53,6 +54,7 @@ import com.visumbu.vb.utils.XlsDataSet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -136,6 +138,9 @@ public class ProxyController {
 
     @Autowired
     private SemrushService semrushService;
+
+    @Autowired
+    private GooglePlusService googlePlusService;
 
     PropertyReader propReader = new PropertyReader();
 
@@ -854,6 +859,10 @@ public class ProxyController {
 
         if (dataSourceType.equalsIgnoreCase("facebook") || dataSourceType.equalsIgnoreCase("instagram")) {
             returnMap = (Map) getFbData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("googleplus")) {
+            List<Map<String, Object>> dataList = getGooglePlusData(request, response);
+            returnMap.put("data", dataList);
+            returnMap.put("columnDefs", getColumnDefObject(dataList));
         } else if (dataSourceType.equalsIgnoreCase("csv")) {
             returnMap = (Map) getCsvData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("semRush")) {
@@ -2039,12 +2048,15 @@ public class ProxyController {
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String linkedinAccountId = getAccountId(accountProperty, "linkedinAccountId");
+        String linkedinAccessToken=getAccountId(accountProperty, "linkedinAccessToken");
+        String linkedinCompanyId=getAccountId(accountProperty, "linkedinCompanyId");
+        
+        
         try {
-            Long linkedInaccountId = Long.parseLong(linkedinAccountId);
+            Long companyId=Long.parseLong(linkedinCompanyId);
 
-            List<Map<String, Object>> data = linkedinService.get(linkedInaccountId, dataSetReportName,
-                    startDate, endDate, timeSegment, productSegment);
+            List<Map<String, Object>> data = linkedinService.get(linkedinAccessToken,
+                    dataSetReportName,startDate, endDate, timeSegment, productSegment,companyId);
             log.debug(data);
             Map returnMap = new HashMap();
             List<ColumnDef> columnDefs = getColumnDefObject(data);
@@ -2152,6 +2164,69 @@ public class ProxyController {
         returnMap.put("columnDefs", columnDefs);
         returnMap.put("data", data);
         return returnMap;
+    }
+
+    //google plus service
+    List<Map<String, Object>> getGooglePlusData(MultiValueMap<String, String> request, HttpServletResponse response) {
+
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(request, "timeSegment");
+        String productSegment = getFromMultiValueMap(request, "productSegment");
+
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+
+        Integer dataSetIdInt = null;
+        DataSet dataSet = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+            if (dataSetIdInt != null) {
+                dataSet = uiService.readDataSet(dataSetIdInt);
+            }
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+            }
+        }
+
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+        String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
+            }
+        }
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String googlePlusAccountId = getAccountId(accountProperty, "googlePlusAccountId");
+
+        String gPlusApiKey = getAccountId(accountProperty, "googlePlusApiKey");
+
+        try {
+//            long gPlusAccountId = Long.parseLong(googlePlusAccountId);
+            List<Map<String, Object>> gPlusReport = googlePlusService.get(googlePlusAccountId, gPlusApiKey, dataSetReportName);
+            return gPlusReport;
+        } catch (NumberFormatException e) {
+            System.out.println("Exception occured");
+            return null;
+        }
     }
 
     List<Map<String, Object>> getTwitterData(MultiValueMap<String, String> request, HttpServletResponse response) {
