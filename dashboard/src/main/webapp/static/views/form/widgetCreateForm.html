@@ -551,7 +551,7 @@
                                 <input type="checkbox" ng-model="collectionField.selectColumnDef" 
                                        ng-true-value="1" ng-false-value="0" ng-click="selectColumnItem(collectionField, widgetObj)">
                                 <label for="checkbox1" ng-class="{'selected':(collectionField.expression)}">
-                                    <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.displayName}} - {{collectionField.category}}</a>
+                                    <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.displayName}} <span ng-if="collectionField.category">- {{collectionField.category}}</span></a>
                                 </label>
                                 <span class="pull-right" ng-if="collectionField.expression">
                                     <a class="btn btn-default btn-xs" ng-click="editDerivedColumn(collectionField, widgetObj)">
@@ -949,14 +949,14 @@
                                         <td>
                                             <span class="input-group-btn">
                                                 <div ng-show="currentColumn.isEdit">
-                                                    <span class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = false"><i class="fa fa-save"></i></span>
-                                                    <span class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = false"><i class="fa fa-close"></i></span>
-                                                    <span class="btn btn-default btn-xs" ng-click="deleteColumn(widget.columns, $index)"><i class="fa fa-trash"></i></span>
+                                                    <span class="btn btn-default btn-xs" title="Save" ng-click="currentColumn.isEdit = false"><i class="fa fa-save"></i></span>
+                                                    <span class="btn btn-default btn-xs" title="Close" ng-click="currentColumn.isEdit = false"><i class="fa fa-close"></i></span>
+                                                    <span class="btn btn-default btn-xs" title="Delete" ng-click="deleteColumn(widget.columns, $index)"><i class="fa fa-trash"></i></span>
                                                 </div>
 
                                                 <div ng-hide="currentColumn.isEdit">
-                                                    <span class="btn btn-default btn-xs" ng-click="currentColumn.isEdit = true"><i class="fa fa-pencil"></i></span>
-                                                    <span class="btn btn-default btn-xs" ng-click="deleteColumn(widget.columns, $index)"><i class="fa fa-trash"></i></span>
+                                                    <span class="btn btn-default btn-xs" title="Edit" ng-click="currentColumn.isEdit = true"><i class="fa fa-pencil"></i></span>
+                                                    <span class="btn btn-default btn-xs" title="Delete" ng-click="deleteColumn(widget.columns, $index)"><i class="fa fa-trash"></i></span>
                                                 </div>
                                             </span>
                                         </td>

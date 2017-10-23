@@ -26,9 +26,11 @@ import org.springframework.stereotype.Repository;
 public class SchedulerDao extends BaseDao {
 
     public List getAgencyScheduler(VbUser user) {
-        String queryStr = "select d from Scheduler d where (d.schedulerStatus is null or  d.schedulerStatus != 'Deleted') and d.agencyId.id = :agencyId";
+//        String queryStr = "select d from Scheduler d where (d.schedulerStatus is null or  d.schedulerStatus != 'Deleted') and d.agencyId.id = :agencyId";
+        String queryStr = "select d from Scheduler d where (d.schedulerStatus is null or  d.schedulerStatus != 'Deleted') and d.createdBy = :user";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("agencyId", user.getAgencyId().getId());
+//        query.setParameter("agencyId", user.getAgencyId().getId());
+        query.setParameter("user", user);
         return query.list();
     }
 
@@ -58,8 +60,8 @@ public class SchedulerDao extends BaseDao {
         if (hour < 10) {
             scheduledHour = "0" + hour + ":00";
         }
-        System.out.println("schedulerHour: "+scheduledHour);
-        System.out.println("agency: "+agency);
+        System.out.println("schedulerHour: " + scheduledHour);
+        System.out.println("agency: " + agency);
         String queryStr = "select d from Scheduler d where d.status = 'Active' and d.schedulerRepeatType = :schedulerRepeatType and d.schedulerTime = :hour and d.agencyId = :agency";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("schedulerRepeatType", "Daily");
