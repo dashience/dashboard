@@ -299,15 +299,21 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
 
                             try {
                                 var isRotate = JSON.parse(scope.isHorizontalBar);
+
                             } catch (exception) {
                             }
-
+                            var left;
+                            if (isRotate === true) {
+                                left = 75;
+                            } else {
+                                left = 50;
+                            }
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
                                     right: 50,
                                     bottom: 10,
-                                    left: 50,
+                                    left: left,
                                 },
                                 bindto: element[0],
                                 data: {
@@ -329,6 +335,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                             format: function (x) {
                                                 return xData[x];
                                             },
+                                            multiline: true,
+                                            fit: true,
                                             culling: false
                                         }
                                     },
