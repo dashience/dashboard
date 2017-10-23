@@ -144,6 +144,9 @@ public class Scheduler implements Serializable {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne
     private Account accountId;
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    @ManyToOne
+    private VbUser createdBy;
 
     public Scheduler() {
     }
@@ -366,6 +369,14 @@ public class Scheduler implements Serializable {
 
     public void setAccountId(Account accountId) {
         this.accountId = accountId;
+    }
+
+    public VbUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(VbUser createdBy) {
+        this.createdBy = createdBy;
     }
 
     @Override

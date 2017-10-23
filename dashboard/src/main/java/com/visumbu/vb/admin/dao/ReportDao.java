@@ -49,9 +49,11 @@ public class ReportDao extends BaseDao {
 //    }
 
     public List<Report> getAgencyReport(VbUser user) {
-        String queryStr = "select d from Report d where (d.status is null or d.status != 'Deleted') and d.agencyId.id = :agencyId";
+        //String queryStr = "select d from Report d where (d.status is null or d.status != 'Deleted') and d.agencyId.id = :agencyId";
+        String queryStr = "select d from Report d where (d.status is null or d.status != 'Deleted') and d.createdBy = :user";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("agencyId", user.getAgencyId().getId());
+        query.setParameter("user", user);
+        //query.setParameter("agencyId", user.getAgencyId().getId());
         return query.list();
     }  
     

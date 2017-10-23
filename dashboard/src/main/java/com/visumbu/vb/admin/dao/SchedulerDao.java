@@ -26,9 +26,11 @@ import org.springframework.stereotype.Repository;
 public class SchedulerDao extends BaseDao {
 
     public List getAgencyScheduler(VbUser user) {
-        String queryStr = "select d from Scheduler d where (d.schedulerStatus is null or  d.schedulerStatus != 'Deleted') and d.agencyId.id = :agencyId";
+//        String queryStr = "select d from Scheduler d where (d.schedulerStatus is null or  d.schedulerStatus != 'Deleted') and d.agencyId.id = :agencyId";
+        String queryStr = "select d from Scheduler d where (d.schedulerStatus is null or  d.schedulerStatus != 'Deleted') and d.createdBy = :user";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("agencyId", user.getAgencyId().getId());
+//        query.setParameter("agencyId", user.getAgencyId().getId());
+        query.setParameter("user", user);
         return query.list();
     }
 

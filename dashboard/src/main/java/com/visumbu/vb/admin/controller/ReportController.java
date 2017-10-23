@@ -81,6 +81,7 @@ public class ReportController extends BaseController{
     Report addReport(HttpServletRequest request, HttpServletResponse response, @RequestBody Report report) {
         VbUser user = userService.findByUsername(getUser(request));
         report.setAgencyId(user.getAgencyId());
+        report.setCreatedBy(user);
         return reportService.addReport(report);
     }
 
@@ -89,6 +90,7 @@ public class ReportController extends BaseController{
     Report updateReport(HttpServletRequest request, HttpServletResponse response, @RequestBody Report report) {
         VbUser user = userService.findByUsername(getUser(request));
         report.setAgencyId(user.getAgencyId());
+        report.setCreatedBy(user);
         return reportService.updateReport(report);
     }
     
