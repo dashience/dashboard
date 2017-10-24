@@ -1430,6 +1430,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        $scope.cities.push({name:column.fieldName});
 
 //        $scope.dispHideBuilder = true;
+        if (!column) {
+            return;
+        }
         var exists = false;
 
         angular.forEach(widgetObj.columns, function (value, key) {
@@ -1532,7 +1535,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 
 
-    $scope.selectY1Axis = function (widget, y1data, chartTypeName, combinationTypeName) {
+    $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
 //         $scope.cities.push({"pos":y1data[0].fieldName});
         //        $scope.dispHideBuilder = true;
         if (chartTypeName === "combination" || widget.chartType === "combination") {
@@ -1580,6 +1583,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectY2Axis = function (widget, y2data, chartTypeName) {
+        console.log(y2data);
+        console.log(chartTypeName);
         //        $scope.dispHideBuilder = true;
         if (chartTypeName === "combination" || widget.chartType === "combination") {
             angular.forEach(y2data, function (value, key) {
@@ -1623,7 +1628,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
 
-
+    $scope.columnY1Axis = [];
+    $scope.columnY2Axis = [];
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
         //        if (yAxisItems.length > 0) {
         $scope.columnY2Axis.push(column);
@@ -1632,7 +1638,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnY1Axis.push(column);
         }
         yAxisItems.removeItem = column.fieldName;
-        $scope.selectY1Axis(widgetObj, yAxisItems);
+        $scope.selectY1Axis(widgetObj, yAxisItems, widgetObj.chartType);
 //        } else {
         var getIndex = widgetObj.columns.indexOf(column);
         widgetObj.columns.splice(getIndex, 1);
@@ -1644,6 +1650,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        }
     };
     $scope.removedByY2Column = function (widgetObj, column, yAxisItems) {
+        console.log(yAxisItems);
+        console.log(column);
         //        if (yAxisItems.length > 0) {
         $scope.columnY1Axis.push(column);
         var index = $scope.columnY2Axis.indexOf(column);
@@ -1651,7 +1659,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnY2Axis.push(column);
         }
         yAxisItems.removeItem = column.fieldName;
-        $scope.selectY2Axis(widgetObj, yAxisItems);
+        $scope.selectY2Axis(widgetObj, yAxisItems, widgetObj.chartType);
 //        } else {
         var getIndex = widgetObj.columns.indexOf(column);
         widgetObj.columns.splice(getIndex, 1);
@@ -2249,7 +2257,56 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.queryBuilderList = "";
         $scope.advanced = false;
     }
+    $scope.deleteColumn = function (widget, index) {
+        if (widget.chartType === 'table') {
+            var widgetObj = widget.columns[index];
+            $scope.collectionFields.forEach(function (val, key) {
+                if (val.displayName === widgetObj.displayName) {
+                    val.selectColumnDef = 0;
+                }
+            });
+        }
+        if (widget.chartType != 'table') {
+            if (widget.chartType === 'pie'||widget.chartType === 'map'||widget.chartType === 'ticker'||widget.chartType === 'gauge') {
+                var widgetObj = widget.columns[index];
+                console.log(widgetObj);
+                $scope.collectionFields.forEach(function (val, key) {
+                    if (val.displayName === widgetObj.displayName) {
+                        var chartIndex = $scope.collectionFields.indexOf(val);
+                        $scope.collectionFields.splice(chartIndex, 1);
+                    }
+                });
+            } else if (widget.chartType != 'pie') {
+                var widgetObj = widget.columns[index];
+                widget.columns.forEach(function (val, key) {
+                    if (val.yAxis == 1 || val.yAxis == 2) {
+                        if (val.yAxis == 1) {
+                            if (val.displayName === widgetObj.displayName) {
+                                var chartIndex = $scope.y1Column.indexOf(val);
+                                $scope.y1Column.splice(chartIndex, 1);
+                            }
+                        }
+                        if (val.yAxis == 2) {
+                            if (val.displayName === widgetObj.displayName) {
+                                var chartIndex = $scope.y2Column.indexOf(val);
+                                $scope.y2Column.splice(chartIndex, 1);
+                            }
 
+                        }
+                    } else {
+                        $scope.collectionFields.forEach(function (val, key) {
+                            if (val.displayName === widgetObj.displayName) {
+                                var chartIndex = $scope.collectionFields.indexOf(val);
+                                $scope.collectionFields.splice(chartIndex, 1);
+                            }
+                        });
+                    }
+                })
+
+            }
+        }
+        widget.columns.splice(index, 1);
+    };
     $scope.save = function (widget) {
         addColor = [];
         $scope.jsonData = "";
