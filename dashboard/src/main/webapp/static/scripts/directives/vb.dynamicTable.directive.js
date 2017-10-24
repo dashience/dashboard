@@ -91,7 +91,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 return;
             }
             var widgetData = JSON.parse(scope.widgetObj);
-            console.log(widgetData);
             scope.bindSearch = function (search) {
                 scope.searchData = search.col;
             };
@@ -178,12 +177,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
 //                    if (isNaN(value)) {
 //                        return "aa-";
 //                    }
-
-                    if (column.fieldName == "sessionDuration") {
-//                        console.log(value);
-                    }
                     var columnValue = dashboardFormat(column, value);
-                    console.log(columnValue);
                     if (columnValue == 'NaN') {
                         columnValue = "-";
                     }

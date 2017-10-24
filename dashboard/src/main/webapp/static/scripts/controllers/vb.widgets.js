@@ -422,15 +422,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     }
                 });
                 $scope.widgets = widgetItems;
-                console.log("Widgets is -->");
-                console.log($scope.widgets);
             });
         });
     };
     $rootScope.getWidgetItem();
 
     function loadInitialWidgetColumnData(columns) {
-        console.log(columns);
         var data = [];
         columns.forEach(function (value, key) {
             data.push({
@@ -530,8 +527,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = [];
         $scope.tickerItem = [];
         $scope.groupingFields = [];
-        $scope.funnelItem = []
-        $scope.gaugeItem = [];
+        $scope.funnelItem = [];
+//        $scope.gaugeItem = [];
 
         angular.forEach(widget.columns, function (val, key) {
             if (val.xAxis == 1) {
@@ -556,7 +553,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.y1Column.push(val);
                 }
             }
-
             if (val.yAxis == 2) {
                 if (val.fieldName) {
                     $scope.y2Column.push(val);
@@ -574,9 +570,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
             if (widget.chartType === 'gauge') {
 //                alert("gauge")
-                $scope.gaugeItem.push(val);
+//                $scope.gaugeItem.push(val);
+                $scope.gaugeItem=val;
             }
-
         });
 
 
@@ -1217,8 +1213,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.widgetDuplicate = function (widgetData) {
-        console.log("duplicate widget");
-        console.log(widgetData);
 //        var dialog = bootbox.dialog({
 //            title: '<h4>Duplicate Widget</h4>',
 //            message: '<center><img src="static/img/logos/loader.gif" width="50"></center>',
@@ -1234,11 +1228,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            }});
 
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
-            console.log("first response");
-            console.log(response);
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
-                console.log("dataTag");
-                console.log(dataTag);
                 response["tags"] = dataTag[0];
                 if (response.chartType === "horizontalBar") {
                     response.isHorizontalBar = true;
@@ -1246,7 +1236,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     response.isHorizontalBar = true;
                 }
                 $scope.widgets.push(response);
-                console.log($scope.widgets);
 //                dialog.init(function () {
 //                    setTimeout(function () {
 //                        dialog.find('.bootbox-body').html('<center>Duplicate Widget Added Bottom of the Page</center>');
@@ -1600,8 +1589,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 $scope.y2Column=[];
     $scope.selectY2Axis = function (widget, y2data, chartTypeName) {
-        console.log(y2data);
-        console.log(chartTypeName);
         //        $scope.dispHideBuilder = true;
         if (chartTypeName === "combination" || widget.chartType === "combination") {
             angular.forEach(y2data, function (value, key) {
@@ -1667,8 +1654,6 @@ $scope.y2Column=[];
 //        }
     };
     $scope.removedByY2Column = function (widgetObj, column, yAxisItems) {
-        console.log(yAxisItems);
-        console.log(column);
         //        if (yAxisItems.length > 0) {
         $scope.columnY1Axis.push(column);
         var index = $scope.columnY2Axis.indexOf(column);
@@ -1726,6 +1711,7 @@ $scope.y2Column=[];
                 }
             });
             widgetObj.columns = newColumns;
+           
 //            });
         }
         $scope.gaugeItem = widgetObj.columns;
@@ -2286,7 +2272,6 @@ $scope.y2Column=[];
         if (widget.chartType != 'table') {
             if (widget.chartType === 'pie' || widget.chartType === 'map' || widget.chartType === 'ticker' || widget.chartType === 'gauge') {
                 var widgetObj = widget.columns[index];
-                console.log(widgetObj);
                 $scope.collectionFields.forEach(function (val, key) {
                     if (val.displayName === widgetObj.displayName) {
                         var chartIndex = $scope.collectionFields.indexOf(val);
@@ -2299,7 +2284,6 @@ $scope.y2Column=[];
                     if (val.yAxis == 1 || val.yAxis == 2) {
                         if (val.yAxis == 1) {
                             if (val.displayName === widgetObj.displayName) {
-                                console.log($scope.y1Column);
                                 var chartIndex = $scope.y1Column.indexOf(val);
                                 $scope.y1Column.splice(chartIndex, 1);
 
@@ -2307,7 +2291,6 @@ $scope.y2Column=[];
                         }
                         if (val.yAxis == 2) {
                             if (val.displayName === widgetObj.displayName) {
-                                console.log($scope.y2Column);
                                 var chartIndex = $scope.y2Column.indexOf(val);
                                 $scope.y2Column.splice(chartIndex, 1);
                             }

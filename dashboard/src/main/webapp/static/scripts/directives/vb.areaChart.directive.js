@@ -1,5 +1,5 @@
 app.directive('areaChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
-    return{
+    return {
         restrict: 'A',
         template: '<div ng-show="loadingArea" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-show="hideEmptyArea" class="text-center">{{areaEmptyMessage}}</div>',
@@ -235,9 +235,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             var sortingObj;
                             var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj);
-                            console.log(chartMaxRecord);
                             var chartData = response.data;
-                            console.log(sortFields);
                             if (sortFields.length > 0) {
                                 angular.forEach(sortFields, function (value, key) {
                                     if (value.fieldType != 'day') {
@@ -272,7 +270,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 }
                             }
                             xTicks = [xAxis.fieldName];
-                            console.log(chartData);
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;
