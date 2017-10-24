@@ -59,8 +59,6 @@ import org.springframework.stereotype.Repository;
 @Repository("uiDao")
 public class UiDao extends BaseDao {
 
-    
-
     public List<Dashboard> getDashboards(VbUser user) {
         String queryStr = "select d from Dashboard d where d.userId = :user";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -862,7 +860,11 @@ public class UiDao extends BaseDao {
         String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId = :userId and u.optionName = 'Chart_Color_Options'";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("userId", userId);
-        return (UserPreferences) query.uniqueResult();
+        List<UserPreferences> userPreferencesList = query.list();
+        if (userPreferencesList != null && !userPreferencesList.isEmpty()) {
+            return userPreferencesList.get(0);
+        }
+        return null;
     }
 
     public DashboardTemplate getDashboardTemplateById(Integer templateId) {
@@ -989,7 +991,11 @@ public class UiDao extends BaseDao {
         String queryStr = "SELECT u FROM UserPreferences u WHERE u.userId.id = :userId and u.optionName = 'Chart_Color_Options'";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("userId", userId);
-        return (UserPreferences) query.uniqueResult();
+        List<UserPreferences> userPreferencesList = query.list();
+        if (userPreferencesList != null && !userPreferencesList.isEmpty()) {
+            return userPreferencesList.get(0);
+        }
+        return null;
     }
 
     public List<DashboardTemplate> getTemplates(Integer userId, Integer agencyId, AgencyProduct agencyProduct) {

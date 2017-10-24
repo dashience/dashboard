@@ -7,8 +7,10 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.favouriteId = $stateParams.favouriteId;
     $scope.favouritesWidgets = [];
     $scope.favouriteName = $stateParams.favouriteName;
+    $scope.userId = $cookies.getObject("userId");
 
-    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
+    console.log("User Id ====> " + $scope.userId);
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
@@ -80,7 +82,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
         } else {
             widget.width = 12;
         }
-        saveWidgetSize(widget, expandchart)
+        saveWidgetSize(widget, expandchart);
     };
 
     $scope.reduceWidget = function (widget) {

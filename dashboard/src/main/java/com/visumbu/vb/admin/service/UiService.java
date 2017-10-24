@@ -1135,6 +1135,7 @@ public class UiService {
         checkDbForColumn.setLastNmonths(dataSetColumnBean.getLastNmonths());
         checkDbForColumn.setLastNweeks(dataSetColumnBean.getLastNweeks());
         checkDbForColumn.setLastNyears(dataSetColumnBean.getLastNyears());
+        checkDbForColumn.setDataFormat(dataSetColumnBean.getDataFormat());
         if (dataSetColumnBean.getFieldType() != null && !dataSetColumnBean.getFieldType().isEmpty()) {
             checkDbForColumn.setFieldType(dataSetColumnBean.getFieldType());
         }

@@ -393,10 +393,10 @@
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <div ng-hide="columnsHeaderDef.isEdit">{{columnsHeaderDef.dataType}}</div> 
+                                                                <div ng-hide="columnsHeaderDef.isEdit">{{columnsHeaderDef.fieldType}}</div> 
                                                                 <div ng-show="columnsHeaderDef.isEdit">
                                                                     <select class="form-control" 
-                                                                            ng-model="columnsHeaderDef.dataType" 
+                                                                            ng-model="columnsHeaderDef.fieldType" 
                                                                             ng-options="fieldType.value as fieldType.name for fieldType in fieldTypes">
                                                                     </select>
                                                                 </div>

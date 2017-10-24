@@ -3,7 +3,7 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter, 
     $scope.reportEndDate = $filter('date')(new Date($stateParams.endDate), 'MMM dd yyyy'); //$filter(new Date($stateParams.endDate, 'MM/dd/yyyy'));
     $scope.pdfWidget = [];
     console.log("userId>>>>>>>>" + $stateParams.userId);
-    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
@@ -49,7 +49,7 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter, 
         });
         setInterval(function () {
             window.status = "done";
-        }, 13000);
+        }, 14000);
     });
 
     $scope.downloadUiPdf = function () {

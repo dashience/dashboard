@@ -430,6 +430,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $rootScope.getWidgetItem();
 
     function loadInitialWidgetColumnData(columns) {
+        console.log(columns);
         var data = [];
         columns.forEach(function (value, key) {
             data.push({
@@ -748,6 +749,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.queryBuilderList = ""
         $scope.dispHideBuilder = true;
         widget.columns = [];
+        widget.selectAll = "";
         $scope.collectionFields = [];
         $scope.afterLoadWidgetColumns = false;
         var widgetList = widget;
@@ -1238,11 +1240,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 console.log("dataTag");
                 console.log(dataTag);
                 response["tags"] = dataTag[0];
-                
-                if(response.chartType==="horizontalBar") {
+                if (response.chartType === "horizontalBar") {
                     response.isHorizontalBar = true;
                 } else {
-                   response.isHorizontalBar = true;
+                    response.isHorizontalBar = true;
                 }
                 $scope.widgets.push(response);
                 console.log($scope.widgets);

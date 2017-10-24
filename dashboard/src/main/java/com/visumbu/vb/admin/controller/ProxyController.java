@@ -2661,6 +2661,7 @@ public class ProxyController {
                     columnDef = new ColumnDef(key, columns.getFieldType(), columns.getDisplayName());
                     columnDef.setDisplayFormat(columns.getDisplayFormat());
                     columnDef.setCategory(columns.getCategory());
+                    columnDef.setDataFormat(columns.getDataFormat());
                     System.out.println("ColumnDefs =====> " + columnDef);
                 } else {
                     DefaultFieldProperties fieldProperties = uiService.getDefaultFieldProperties(key);
