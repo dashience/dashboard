@@ -1534,7 +1534,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
 
-
+    $scope.y1Column = [];
     $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
 //         $scope.cities.push({"pos":y1data[0].fieldName});
         //        $scope.dispHideBuilder = true;
@@ -1575,13 +1575,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     widget.columns.push(value);
                 }
             }
+            $scope.y1Column = y1data;
 //            $timeout(function () {
             //                $scope.queryBuilderList = widget;
 //                resetQueryBuilder();
             //            }, 50);
         });
     };
-
+$scope.y2Column=[];
     $scope.selectY2Axis = function (widget, y2data, chartTypeName) {
         console.log(y2data);
         console.log(chartTypeName);
@@ -1621,6 +1622,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             }
         });
+        $scope.y2Column=y2data;
 //        $timeout(function () {
         //            $scope.queryBuilderList = widget;
         //            resetQueryBuilder();
@@ -1628,8 +1630,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
 
-    $scope.columnY1Axis = [];
-    $scope.columnY2Axis = [];
+
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
         //        if (yAxisItems.length > 0) {
         $scope.columnY2Axis.push(column);
@@ -2267,7 +2268,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         }
         if (widget.chartType != 'table') {
-            if (widget.chartType === 'pie'||widget.chartType === 'map'||widget.chartType === 'ticker'||widget.chartType === 'gauge') {
+            if (widget.chartType === 'pie' || widget.chartType === 'map' || widget.chartType === 'ticker' || widget.chartType === 'gauge') {
                 var widgetObj = widget.columns[index];
                 console.log(widgetObj);
                 $scope.collectionFields.forEach(function (val, key) {
@@ -2282,12 +2283,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     if (val.yAxis == 1 || val.yAxis == 2) {
                         if (val.yAxis == 1) {
                             if (val.displayName === widgetObj.displayName) {
+                                console.log($scope.y1Column);
                                 var chartIndex = $scope.y1Column.indexOf(val);
                                 $scope.y1Column.splice(chartIndex, 1);
+
                             }
                         }
                         if (val.yAxis == 2) {
                             if (val.displayName === widgetObj.displayName) {
+                                console.log($scope.y2Column);
                                 var chartIndex = $scope.y2Column.indexOf(val);
                                 $scope.y2Column.splice(chartIndex, 1);
                             }
