@@ -422,8 +422,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     }
                 });
                 $scope.widgets = widgetItems;
-                console.log("Widgets is -->");
-                console.log($scope.widgets);
             });
         });
     };
@@ -529,8 +527,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = [];
         $scope.tickerItem = [];
         $scope.groupingFields = [];
-        $scope.funnelItem = []
-        $scope.gaugeItem = [];
+        $scope.funnelItem = [];
+//        $scope.gaugeItem = [];
 
         angular.forEach(widget.columns, function (val, key) {
             if (val.xAxis == 1) {
@@ -555,7 +553,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.y1Column.push(val);
                 }
             }
-
             if (val.yAxis == 2) {
                 if (val.fieldName) {
                     $scope.y2Column.push(val);
@@ -573,9 +570,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
             if (widget.chartType === 'gauge') {
 //                alert("gauge")
-                $scope.gaugeItem.push(val);
+//                $scope.gaugeItem.push(val);
+                $scope.gaugeItem=val;
             }
-
         });
 
 
@@ -1215,8 +1212,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.widgetDuplicate = function (widgetData) {
-        console.log("duplicate widget");
-        console.log(widgetData);
 //        var dialog = bootbox.dialog({
 //            title: '<h4>Duplicate Widget</h4>',
 //            message: '<center><img src="static/img/logos/loader.gif" width="50"></center>',
@@ -1232,11 +1227,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            }});
 
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
-            console.log("first response");
-            console.log(response);
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
-                console.log("dataTag");
-                console.log(dataTag);
                 response["tags"] = dataTag[0];
                 
                 if(response.chartType==="horizontalBar") {
@@ -1245,7 +1236,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                    response.isHorizontalBar = true;
                 }
                 $scope.widgets.push(response);
-                console.log($scope.widgets);
 //                dialog.init(function () {
 //                    setTimeout(function () {
 //                        dialog.find('.bootbox-body').html('<center>Duplicate Widget Added Bottom of the Page</center>');
@@ -1407,6 +1397,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     };
     $scope.reduceWidget = function (widget) {
+        
+        console.log("Reduce widget");
+        console.log(widget);
         var expandchart = widget.chartType;
 
         widget.chartType = null;
@@ -1716,6 +1709,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             });
             widgetObj.columns = newColumns;
+           
 //            });
         }
         $scope.gaugeItem = widgetObj.columns;

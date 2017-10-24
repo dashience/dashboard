@@ -91,7 +91,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 return;
             }
             var widgetData = JSON.parse(scope.widgetObj);
-            console.log(widgetData);
             scope.bindSearch = function (search) {
                 scope.searchData = search.col;
             };
@@ -151,7 +150,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             };
             scope.columns = [];
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
-                console.log(value);
                 scope.columns.push(value);
             });
 

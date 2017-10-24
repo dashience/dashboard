@@ -98,9 +98,6 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             }
             var setWidgetChartColors = getWidgetObj.chartColors ? getWidgetObj.chartColors : "";
             var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
-
-            console.log(defaultColors);
-            console.log(chartColors[0]);
             scope.colorName = chartColors[0];
 
             var getWidgetObj = JSON.parse(scope.widgetObj);
