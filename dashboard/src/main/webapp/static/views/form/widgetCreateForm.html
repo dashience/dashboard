@@ -641,7 +641,7 @@
                             <label ng-if="hideSelectedColumn === false;" translate>Select X-Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="xColumn" 
-                                    ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                    ng-options="currentColumn.displayName for currentColumn in columnXAxis track by currentColumn.fieldName" 
                                     ng-change="selectX1Axis(widgetObj, xColumn)">
                             </select>
                         </div>
@@ -661,9 +661,6 @@
                                     ng-change="selectPieChartY(widgetObj, selectPieChartYAxis)">
                             </select>
                         </div>
-
-
-
                     </div>
 
                     <div class="form-group" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) == 'pie' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge' || (chartTypeName ? chartTypeName : widgetObj.chartType) == 'map')">

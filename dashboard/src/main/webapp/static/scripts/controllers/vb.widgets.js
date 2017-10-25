@@ -571,7 +571,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             if (widget.chartType === 'gauge') {
 //                alert("gauge")
 //                $scope.gaugeItem.push(val);
-                $scope.gaugeItem=val;
+                $scope.gaugeItem = val;
             }
         });
 
@@ -692,29 +692,70 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.afterLoadWidgetColumns = true;
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
+            $scope.columnXAxis = [];
 
             angular.forEach($scope.collectionFields, function (value, key) {
                 $scope.columnY1Axis.push(value);
                 $scope.columnY2Axis.push(value);
+                $scope.columnXAxis.push(value);
             });
+
+            var dataY1 = $scope.columnY1Axis.find(function (item, i) {
+                if (item.fieldName === $scope.xColumn.fieldName) {
+                    return i;
+                }
+            });
+            var dataY2 = $scope.columnY2Axis.find(function (item, i) {
+                if (item.fieldName === $scope.xColumn.fieldName) {
+                    return i;
+                }
+            });
+            var indexY1 = $scope.columnY1Axis.indexOf(dataY1);
+            var indexY2 = $scope.columnY2Axis.indexOf(dataY2);
+            $scope.columnY1Axis.splice(indexY1, 1);
+            $scope.columnY2Axis.splice(indexY2, 1);
+
+            var data = $scope.columnXAxis.find(function (item, i) {
+                if (item.fieldName === $scope.xColumn.fieldName) {
+                    return i;
+                }
+            });
+            var index = $scope.columnXAxis.indexOf(data);
+            $scope.columnXAxis.splice(index, 1);
+
             angular.forEach(y1Column, function (value, key) {
-                var data = $scope.columnY1Axis.find(function (item, i) {
+                var dataY1 = $scope.columnY1Axis.find(function (item, i) {
                     if (item.fieldName === value.fieldName) {
                         return i;
                     }
                 });
-                var index = $scope.columnY1Axis.indexOf(data);
-                $scope.columnY1Axis.splice(index, 1);
+                var dataX = $scope.columnXAxis.find(function (item, i) {
+                    if (item.fieldName === value.fieldName) {
+                        return i;
+                    }
+                });
+                var indexY1 = $scope.columnY1Axis.indexOf(dataY1);
+                var indexX = $scope.columnXAxis.indexOf(dataX);
+                $scope.columnY1Axis.splice(indexY1, 1);
+                $scope.columnXAxis.splice(indexX, 1);
             });
 
             angular.forEach(y2Column, function (value, key) {
-                var data = $scope.columnY2Axis.find(function (item, i) {
+                var dataY2 = $scope.columnY2Axis.find(function (item, i) {
                     if (item.fieldName === value.fieldName) {
                         return i;
                     }
                 });
-                var index = $scope.columnY2Axis.indexOf(data);
-                $scope.columnY2Axis.splice(index, 1);
+                var dataX = $scope.columnXAxis.find(function (item, i) {
+                    if (item.fieldName === value.fieldName) {
+                        return i;
+                    }
+                });
+                var indexY2 = $scope.columnY2Axis.indexOf(dataY2);
+                var indexX = $scope.columnXAxis.indexOf(dataX);
+                $scope.columnY2Axis.splice(indexY2, 1);
+                $scope.columnXAxis.splice(indexX, 1);
+
             });
 
             angular.forEach(y2Column, function (value, key) {
@@ -825,9 +866,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            }
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
+            $scope.columnXAxis = [];
             angular.forEach($scope.collectionFields, function (value, key) {
                 $scope.columnY1Axis.push(value);
                 $scope.columnY2Axis.push(value);
+                $scope.columnXAxis.push(value);
             });
             resetQueryBuilder();
         });
@@ -1041,7 +1084,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.advanced = false;
         $scope.chartTypeName = null;
 
-
         $timeout(function () {
             $scope.chartTypeName = chartType ? chartType : widgetObj.chartType;
         }, 50);
@@ -1071,7 +1113,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         stop: function (event, ui) {
         }
     };
-
 
     $scope.selectAllColumns = function (columns, widget) {
 //        $scope.dispHideBuilder = true;
@@ -1129,7 +1170,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var checkColumnDef = obj.selectColumnDef;
         if (checkColumnDef === 1) {
             var data = {
-
                 derivedColumnId: obj.derivedColumnId,
                 derivedId: obj.id,
                 agregationFunction: obj.agregationFunction,
@@ -1441,7 +1481,26 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         var exists = false;
 
+        angular.forEach($scope.columnY1Axis, function (val, key) {
+            console.log(val);
+            if (val.fieldName === column.fieldName) {
+                var index = $scope.columnY1Axis.indexOf(val);
+                $scope.columnY1Axis.splice(index, 1);
+            }
+        });
+        angular.forEach($scope.columnY2Axis, function (val, key) {
+            if (val.fieldName === column.fieldName) {
+                var index = $scope.columnY2Axis.indexOf(val);
+                $scope.columnY2Axis.splice(index, 1);
+            }
+        });
         angular.forEach(widgetObj.columns, function (value, key) {
+            if (value.xAxis == 1) {
+                value.xAxis = "";
+                $scope.columnY1Axis.push(value);
+                $scope.columnY2Axis.push(value);
+                value.xAxis = 1;
+            }
             if (!(value.xAxis == 1 && value.yAxis == 1 && value.yAxis == 2)) {
                 value = "";
             }
@@ -1452,7 +1511,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             } else {
                 value.xAxis = null;
             }
-
         });
         if (exists === false) {
             column.xAxis = 1;
@@ -1539,7 +1597,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     };
 
-
     $scope.y1Column = [];
     $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
 //         $scope.cities.push({"pos":y1data[0].fieldName});
@@ -1554,6 +1611,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 if (val.fieldName === value.fieldName) {
                     var index = $scope.columnY2Axis.indexOf(val);
                     $scope.columnY2Axis.splice(index, 1);
+                }
+            });
+        });
+
+        angular.forEach($scope.columnXAxis, function (val, key) {
+            angular.forEach(y1data, function (value, key) {
+                if (val.fieldName === value.fieldName) {
+                    var index = $scope.columnXAxis.indexOf(val);
+                    $scope.columnXAxis.splice(index, 1);
                 }
             });
         });
@@ -1588,7 +1654,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             //            }, 50);
         });
     };
-$scope.y2Column=[];
+    $scope.y2Column = [];
     $scope.selectY2Axis = function (widget, y2data, chartTypeName) {
         //        $scope.dispHideBuilder = true;
         if (chartTypeName === "combination" || widget.chartType === "combination") {
@@ -1601,6 +1667,14 @@ $scope.y2Column=[];
                 if (val.fieldName === value.fieldName) {
                     var index = $scope.columnY1Axis.indexOf(val);
                     $scope.columnY1Axis.splice(index, 1);
+                }
+            });
+        });
+        angular.forEach($scope.columnXAxis, function (val, key) {
+            angular.forEach(y2data, function (value, key) {
+                if (val.fieldName === value.fieldName) {
+                    var index = $scope.columnXAxis.indexOf(val);
+                    $scope.columnXAxis.splice(index, 1);
                 }
             });
         });
@@ -1626,7 +1700,7 @@ $scope.y2Column=[];
                 }
             }
         });
-        $scope.y2Column=y2data;
+        $scope.y2Column = y2data;
 //        $timeout(function () {
         //            $scope.queryBuilderList = widget;
         //            resetQueryBuilder();
@@ -1639,9 +1713,14 @@ $scope.y2Column=[];
         //        if (yAxisItems.length > 0) {
         $scope.columnY2Axis.push(column);
         var index = $scope.columnY1Axis.indexOf(column);
+        var indexX = $scope.columnXAxis.indexOf(column);
         if (index == -1) {
             $scope.columnY1Axis.push(column);
         }
+        if (indexX == -1) {
+            $scope.columnXAxis.push(column);
+        }
+
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY1Axis(widgetObj, yAxisItems, widgetObj.chartType);
 //        } else {
@@ -1658,8 +1737,12 @@ $scope.y2Column=[];
         //        if (yAxisItems.length > 0) {
         $scope.columnY1Axis.push(column);
         var index = $scope.columnY2Axis.indexOf(column);
+        var indexX = $scope.columnXAxis.indexOf(column);
         if (index == -1) {
             $scope.columnY2Axis.push(column);
+        }
+        if (indexX == -1) {
+            $scope.columnXAxis.push(column);
         }
         yAxisItems.removeItem = column.fieldName;
         $scope.selectY2Axis(widgetObj, yAxisItems, widgetObj.chartType);
@@ -1712,7 +1795,7 @@ $scope.y2Column=[];
                 }
             });
             widgetObj.columns = newColumns;
-           
+
 //            });
         }
         $scope.gaugeItem = widgetObj.columns;
@@ -2589,6 +2672,7 @@ $scope.y2Column=[];
             $scope.collectionFields = [];
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
+            $scope.columnXAxis = [];
         }
         $scope.chartTypeName = "";
         $scope.xColumn = "";
