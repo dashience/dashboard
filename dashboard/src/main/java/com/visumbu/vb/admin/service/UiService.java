@@ -492,7 +492,7 @@ public class UiService {
                 widgetColumn.setIsLocation(widgetColumnBean.getIsLocation());
                 widgetColumn.setIsLatitude(widgetColumnBean.getIsLatitude());
                 widgetColumn.setIsLongitude(widgetColumnBean.getIsLongitude());
-                
+
                 Integer columnHide = null;
                 if (widgetColumnBean.getGroupPriority() != null && widgetColumnBean.getGroupPriority() != 0) {
                     columnHide = 1;
@@ -1123,6 +1123,9 @@ public class UiService {
         }
         if (dataSetColumnBean.getDisplayFormat() != null && !dataSetColumnBean.getDisplayFormat().isEmpty()) {
             checkDbForColumn.setDisplayFormat(dataSetColumnBean.getDisplayFormat());
+        } else {
+            checkDbForColumn.setDisplayFormat(dataSetColumnBean.getDisplayFormat());
+
         }
         checkDbForColumn.setStatus(dataSetColumnBean.getStatus());
         checkDbForColumn.setFunctionName(dataSetColumnBean.getFunctionName());

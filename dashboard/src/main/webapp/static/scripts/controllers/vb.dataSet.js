@@ -66,7 +66,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     ];
 
     $scope.deleteField = function (index) {
+        console.log("index is"+index);
+        console.log($scope.columnsHeaderDefs);
         $scope.columnsHeaderDefs.splice(index, 1);
+        
     };
 
 
@@ -4878,7 +4881,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
     $scope.saveDataSetFieldSettings = function (columnHeader) {
         var dataSetId = $scope.columnHeaderByDataSetId;
-        console.log(columnHeader);
         var data = {
             id: columnHeader.id,
             fieldName: columnHeader.fieldName,
@@ -4886,7 +4888,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             dataSetId: dataSetId ? dataSetId.id : '',
             category: columnHeader.category,
             dataFormat: columnHeader.dataFormat,
-            displayFormat: columnHeader.displayFormat,
+            displayFormat: columnHeader.displayFormat ? columnHeader.displayFormat : '',
             expression: columnHeader.expression,
             fieldType: columnHeader.fieldType,
             functionName: columnHeader.functionName,

@@ -68,6 +68,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (value.yAxis) {
                     yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
+//                    axes[value.fieldName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {
                     y2 = {show: true, label: ''};
@@ -78,6 +79,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (value.combinationType) {
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
+
+                console.log("Line chart combination type");
+                console.log(combinationTypes);
             });
             var xData = [];
             var xTicks = [];
@@ -275,17 +279,35 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 loopCount++;
                                 return a[xAxis.fieldName];
                             });
+                            console.log("Xtics");
+                            console.log(xTicks);
                             columns.push(xTicks);
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
-                                ySeriesData.unshift(value.displayName);
+//                                ySeriesData.unshift(value.displayName);
+                                ySeriesData.unshift(value.fieldName);
                                 columns.push(ySeriesData);
                             });
+                            var combined={};
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            
+                            console.log("chartCombinationtypes")
+                            console.log(chartCombinationtypes)
+                            
+                            var data= {
+                                    x: xAxis.fieldName,
+                                    columns: columns,
+                                    labels: labels,
+                                    type: 'area',
+                                    axes: axes,
+                                    types: combined
+                                };
+                            console.log("data");
+                            console.log(data);
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {
                                 gridLine = true;
