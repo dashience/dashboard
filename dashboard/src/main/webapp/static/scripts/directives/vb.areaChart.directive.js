@@ -134,7 +134,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
-                                return -1 * parsedValue;
+                                return -1 * parsedValue; 
                             });
                         }
                     } else {
