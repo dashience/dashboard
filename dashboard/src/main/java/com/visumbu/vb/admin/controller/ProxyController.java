@@ -1374,11 +1374,12 @@ public class ProxyController {
         }
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
+        String filter = account.getGeoLocation();
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String gaAccountId = getAccountId(accountProperty, "gaAccountId");
-        String gaProfileId = getAccountId(accountProperty, "gaProfileId");
+        String gaAccountId = "7011155"; // getAccountId(accountProperty, "gaAccountId");
+        String gaProfileId = "141652234"; //getAccountId(accountProperty, "gaProfileId");
 
-        Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
+        Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt, filter);
         List<Map<String, Object>> data = (List<Map<String, Object>>) dataMap.get("data");
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         Map returnMap = new HashMap<>();
@@ -1574,7 +1575,7 @@ public class ProxyController {
     @RequestMapping(value = "testGa", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object testGa(HttpServletRequest request, HttpServletResponse response) {
-        return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"), null);
+        return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"), null, "city");
     }
 
     //linkedin 

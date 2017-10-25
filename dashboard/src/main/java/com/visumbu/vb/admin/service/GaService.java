@@ -139,7 +139,7 @@ public class GaService {
         return null;
     }
 
-    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments, Integer dataSetId) {
+    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments, Integer dataSetId, String filter) {
         Map<String, GaReport> gaReports = ApiUtils.getAllGaReports();
         GaReport gaReport = gaReports.get(reportName);
         String metricsList = gaReport.getFields();
@@ -154,9 +154,10 @@ public class GaService {
         if (dimensions == null || dimensions.trim().isEmpty() || dimensions.trim().equalsIgnoreCase("none")) {
             dimensions = null;
         }
-        String filter = gaReport.getDefaultFilter();
-        System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + filter);
-        GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, filter);
+//        String filter = gaReport.getDefaultFilter();
+        String gaFilter = "ga:region==" + filter;
+        System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + gaFilter);
+        GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, gaFilter);
         return getResponseAsMap(gaData);
     }
 
