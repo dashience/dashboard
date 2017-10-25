@@ -80,6 +80,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 if (value.combinationType) {
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
+
             });
             var xData = [];
             var xTicks = [];
