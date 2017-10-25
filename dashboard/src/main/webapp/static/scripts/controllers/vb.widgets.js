@@ -571,7 +571,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             if (widget.chartType === 'gauge') {
 //                alert("gauge")
 //                $scope.gaugeItem.push(val);
-                $scope.gaugeItem=val;
+                $scope.gaugeItem = val;
             }
         });
 
@@ -1031,6 +1031,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     var firstPreviewAfterEdit = 1;
     $scope.showPreview = function (widgetObj, userChartColors) {
+        console.log(widgetObj);
         var chartType = $scope.chartTypeName;
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
@@ -1214,6 +1215,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.widgetDuplicate = function (widgetData) {
+        $scope.duplicateLoading=true;
 //        var dialog = bootbox.dialog({
 //            title: '<h4>Duplicate Widget</h4>',
 //            message: '<center><img src="static/img/logos/loader.gif" width="50"></center>',
@@ -1230,6 +1232,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
+                $scope.duplicateLoading=false;
                 response["tags"] = dataTag[0];
                 if (response.chartType === "horizontalBar") {
                     response.isHorizontalBar = true;
@@ -1588,7 +1591,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             //            }, 50);
         });
     };
-$scope.y2Column=[];
+    $scope.y2Column = [];
     $scope.selectY2Axis = function (widget, y2data, chartTypeName) {
         //        $scope.dispHideBuilder = true;
         if (chartTypeName === "combination" || widget.chartType === "combination") {
@@ -1626,7 +1629,7 @@ $scope.y2Column=[];
                 }
             }
         });
-        $scope.y2Column=y2data;
+        $scope.y2Column = y2data;
 //        $timeout(function () {
         //            $scope.queryBuilderList = widget;
         //            resetQueryBuilder();
@@ -1700,7 +1703,9 @@ $scope.y2Column=[];
     $scope.gauge = function (widgetObj, gaugeItem) {
         $scope.dispHideBuilder = true;
         var newColumns = [];
-
+        if (!gaugeItem) {
+            return;
+        }
         if (gaugeItem.length === 0) {
             widgetObj.columns = "";
         } else {
@@ -1712,7 +1717,7 @@ $scope.y2Column=[];
                 }
             });
             widgetObj.columns = newColumns;
-           
+
 //            });
         }
         $scope.gaugeItem = widgetObj.columns;

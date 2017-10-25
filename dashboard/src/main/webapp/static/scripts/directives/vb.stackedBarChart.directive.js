@@ -260,7 +260,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
                                             } else if (value.sortOrder === 'desc') {
-                                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                                                return dateOrders.indexOf(item[value.fieldName]) * -1;
                                             }
                                         });
                                         if (chartMaxRecord.maxRecord) {
