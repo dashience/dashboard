@@ -157,11 +157,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             };
 
             function maximumRecord(maxValue, list) {
-                console.log("inside maximum record");
-                console.log("max value");
-                console.log(maxValue);
-                console.log("List");
-                console.log(list);
                 var maxData;
                 if (maxValue.maxRecord > 0) {
                     maxData = list.slice(0, maxValue.maxRecord);
@@ -170,8 +165,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             }
 
             var stackedBarChartDataSource = JSON.parse(scope.stackedBarChartSource);
-            console.log("Stckedbar Datasource is -->");
-            console.log(stackedBarChartDataSource);
             if (scope.stackedBarChartSource) {
                 var url = "admin/proxy/getData?";
 //                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
@@ -185,8 +178,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                console.log("Widget Object --->")
-                console.log(getWidgetObj)
                 
                 var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
@@ -248,17 +239,14 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             scope.stackedBarEmptyMessage = "No Data Found";
                             scope.hideEmptyStackedBar = true;
                         } else {
-                            console.log("stackedbar chart response");
                             var loopCount = 0;
                             var sortingObj;
                             var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj);
-                            console.log("Stackedbar chart maximum record -->"+chartMaxRecord);
-                            console.log(chartMaxRecord);
                             var chartData = response.data;
                             if (sortFields.length > 0) { 
                                 angular.forEach(sortFields, function (value, key) {
-                                    if (value.fieldType != 'day') { console.log("sorting field inside if llop");
+                                    if (value.fieldType != 'day') {
 //                                    chartData = scope.orderData(chartData, sortFields);
                                         sortingObj = scope.orderData(chartData, sortFields);
                                         if (chartMaxRecord.maxRecord) {
@@ -288,14 +276,12 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             }
 //                        chartData = orderData(chartData, sortFields);
                             xTicks = [xAxis.fieldName];
-//                            console.log("XData is -->");
                             
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;
                                 return a[xAxis.fieldName];
                             });
-//                            console.log(xData);
                             columns.push(xTicks);
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {

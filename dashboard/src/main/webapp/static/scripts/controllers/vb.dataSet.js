@@ -4637,6 +4637,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
     $scope.columnsHeaderDefs = [];
     $scope.getDataSetColDefs = function (getDataSetColDefs) {
+        console.log(getDataSetColDefs);
         $scope.columnsHeaderDefs = "";
         $scope.columnsHeaderDefs = getDataSetColDefs;
     };
@@ -4877,6 +4878,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
     $scope.saveDataSetFieldSettings = function (columnHeader) {
         var dataSetId = $scope.columnHeaderByDataSetId;
+        console.log(columnHeader);
         var data = {
             id: columnHeader.id,
             fieldName: columnHeader.fieldName,

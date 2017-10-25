@@ -393,10 +393,10 @@
                                                                 </div>
                                                             </td>
                                                             <td>
-                                                                <div ng-hide="columnsHeaderDef.isEdit">{{columnsHeaderDef.dataType}}</div> 
+                                                                <div ng-hide="columnsHeaderDef.isEdit">{{columnsHeaderDef.fieldType}}</div> 
                                                                 <div ng-show="columnsHeaderDef.isEdit">
                                                                     <select class="form-control" 
-                                                                            ng-model="columnsHeaderDef.dataType" 
+                                                                            ng-model="columnsHeaderDef.fieldType" 
                                                                             ng-options="fieldType.value as fieldType.name for fieldType in fieldTypes">
                                                                     </select>
                                                                 </div>
@@ -567,7 +567,7 @@
                     <div class="hpanel">
                         <div class="panel-heading" translate>Condition</div>
                         <div class="panel-body">
-                            <div class="pull-right"><button class="btn btn-xs btn-success" ng-click="addJoinColumnList()"><i class="fa fa-plus"></i></button></div>
+                            <div class="pull-right"><button class="btn btn-xs btn-success" title="{{'Add'|translate}}" ng-click="addJoinColumnList()"><i class="fa fa-plus"></i></button></div>
 
                             <table class="table table-bordered table-responsive table-scheduler" >
                                 <thead>
@@ -605,7 +605,7 @@
                                         </td>
                                         <td ng-if="operationType === 'union'"><div><input type="text" placeholder="{{'columnName'|translate}}" class="form-control" ng-model="dataSetColumn.columnName"></div></td>
                                         <td>
-                                            <div><span class="btn btn-default btn-xs" ng-click="removeJoinDataSetColumn($index, joinDataSetList[$index].id)"><i class="fa fa-trash"></i></span></div> 
+                                            <div><span class="btn btn-default btn-xs" title="{{'Delete'|translate}}" ng-click="removeJoinDataSetColumn($index, joinDataSetList[$index].id)"><i class="fa fa-trash"></i></span></div> 
                                         </td>
                                     </tr>
                                 </tbody>

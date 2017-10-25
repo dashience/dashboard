@@ -20,21 +20,10 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
             defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
-
-//            console.log(scope.setGaugeChartFn);
-//            console.log(scope.getSelectedFilterItem);
-//            console.log(scope.gaugeChartSource);
-//            console.log(scope.widgetColumns);
-//            console.log(scope.widgetObj);
-//            var gaugeName;
-
-
             scope.loadingGauge = true;
 
-            console.log(scope.gaugeColumns);
             var gaugeColumnsObj = JSON.parse(scope.gaugeColumns);
             var fieldName = gaugeColumnsObj[0].fieldName;
-            console.log(fieldName);
 
 
 
@@ -118,23 +107,18 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
 
                     //array of object
                     var gaugeDataArray = response.data;
-                    console.log(gaugeDataArray);
 
                     var gaugeDataObj = gaugeDataArray[0];
-                    console.log(gaugeDataObj);
 
                     var arrayGaugeData = [];
 
                     //array of array
                     arrayGaugeData.push(fieldName, gaugeDataObj[fieldName]);
 
-                    console.log(gaugeDataObj[fieldName]);
 
-                    console.log(arrayGaugeData);
 
 
 //                    var groups = gaugeData;
-//                    console.log(groups)
 
                     var chart = c3.generate({
                         bindto: element[0],

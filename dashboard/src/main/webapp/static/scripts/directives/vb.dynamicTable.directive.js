@@ -91,7 +91,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 return;
             }
             var widgetData = JSON.parse(scope.widgetObj);
-            console.log(widgetData);
             scope.bindSearch = function (search) {
                 scope.searchData = search.col;
             };
@@ -104,7 +103,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             };
             scope.showTotal = function () {
                 scope.totalShown = 1;
-                return "Total :"
+                return "Total :";
             };
             scope.initTotalPrint = function () {
                 scope.totalShown = 0;
@@ -142,7 +141,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     value.$hideRows = hideStatus;
                     if (hideStatus == false) {
                         scope.hideAll(value, hideStatus);
-                        scope.hideAll(value.data, false)
+                        scope.hideAll(value.data, false);
                     }
                 });
             };
@@ -151,7 +150,6 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
             };
             scope.columns = [];
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
-                console.log(value);
                 scope.columns.push(value);
             });
 
@@ -394,7 +392,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                     if (isNaN(list[i][fieldname])) {
 
                     } else {
-                        
+
                         sum = sum + Number(list[i][fieldname]);
                     }
                 }

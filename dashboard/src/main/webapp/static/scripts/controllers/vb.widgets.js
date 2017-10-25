@@ -422,8 +422,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     }
                 });
                 $scope.widgets = widgetItems;
-                console.log("Widgets is -->");
-                console.log($scope.widgets);
             });
         });
     };
@@ -529,8 +527,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y2Column = [];
         $scope.tickerItem = [];
         $scope.groupingFields = [];
-        $scope.funnelItem = []
-        $scope.gaugeItem = [];
+        $scope.funnelItem = [];
+//        $scope.gaugeItem = [];
 
         angular.forEach(widget.columns, function (val, key) {
             if (val.xAxis == 1) {
@@ -555,7 +553,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.y1Column.push(val);
                 }
             }
-
             if (val.yAxis == 2) {
                 if (val.fieldName) {
                     $scope.y2Column.push(val);
@@ -573,9 +570,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
             if (widget.chartType === 'gauge') {
 //                alert("gauge")
-                $scope.gaugeItem.push(val);
+//                $scope.gaugeItem.push(val);
+                $scope.gaugeItem=val;
             }
-
         });
 
 
@@ -748,6 +745,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.queryBuilderList = ""
         $scope.dispHideBuilder = true;
         widget.columns = [];
+        widget.selectAll = "";
         $scope.collectionFields = [];
         $scope.afterLoadWidgetColumns = false;
         var widgetList = widget;
@@ -1215,8 +1213,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.widgetDuplicate = function (widgetData) {
-        console.log("duplicate widget");
-        console.log(widgetData);
 //        var dialog = bootbox.dialog({
 //            title: '<h4>Duplicate Widget</h4>',
 //            message: '<center><img src="static/img/logos/loader.gif" width="50"></center>',
@@ -1232,20 +1228,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            }});
 
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
-            console.log("first response");
-            console.log(response);
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
-                console.log("dataTag");
-                console.log(dataTag);
                 response["tags"] = dataTag[0];
-                
-                if(response.chartType==="horizontalBar") {
+                if (response.chartType === "horizontalBar") {
                     response.isHorizontalBar = true;
                 } else {
-                   response.isHorizontalBar = true;
+                    response.isHorizontalBar = true;
                 }
                 $scope.widgets.push(response);
-                console.log($scope.widgets);
 //                dialog.init(function () {
 //                    setTimeout(function () {
 //                        dialog.find('.bootbox-body').html('<center>Duplicate Widget Added Bottom of the Page</center>');
@@ -1445,6 +1435,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        $scope.cities.push({name:column.fieldName});
 
 //        $scope.dispHideBuilder = true;
+        if (!column) {
+            return;
+        }
         var exists = false;
 
         angular.forEach(widgetObj.columns, function (value, key) {
@@ -1546,8 +1539,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
 
-
-    $scope.selectY1Axis = function (widget, y1data, chartTypeName, combinationTypeName) {
+    $scope.y1Column = [];
+    $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
 //         $scope.cities.push({"pos":y1data[0].fieldName});
         //        $scope.dispHideBuilder = true;
         if (chartTypeName === "combination" || widget.chartType === "combination") {
@@ -1587,13 +1580,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     widget.columns.push(value);
                 }
             }
+            $scope.y1Column = y1data;
 //            $timeout(function () {
             //                $scope.queryBuilderList = widget;
 //                resetQueryBuilder();
             //            }, 50);
         });
     };
-
+$scope.y2Column=[];
     $scope.selectY2Axis = function (widget, y2data, chartTypeName) {
         //        $scope.dispHideBuilder = true;
         if (chartTypeName === "combination" || widget.chartType === "combination") {
@@ -1631,6 +1625,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             }
         });
+        $scope.y2Column=y2data;
 //        $timeout(function () {
         //            $scope.queryBuilderList = widget;
         //            resetQueryBuilder();
@@ -1647,7 +1642,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnY1Axis.push(column);
         }
         yAxisItems.removeItem = column.fieldName;
-        $scope.selectY1Axis(widgetObj, yAxisItems);
+        $scope.selectY1Axis(widgetObj, yAxisItems, widgetObj.chartType);
 //        } else {
         var getIndex = widgetObj.columns.indexOf(column);
         widgetObj.columns.splice(getIndex, 1);
@@ -1666,7 +1661,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnY2Axis.push(column);
         }
         yAxisItems.removeItem = column.fieldName;
-        $scope.selectY2Axis(widgetObj, yAxisItems);
+        $scope.selectY2Axis(widgetObj, yAxisItems, widgetObj.chartType);
 //        } else {
         var getIndex = widgetObj.columns.indexOf(column);
         widgetObj.columns.splice(getIndex, 1);
@@ -1716,6 +1711,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             });
             widgetObj.columns = newColumns;
+           
 //            });
         }
         $scope.gaugeItem = widgetObj.columns;
@@ -2264,7 +2260,56 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.queryBuilderList = "";
         $scope.advanced = false;
     }
+    $scope.deleteColumn = function (widget, index) {
+        if (widget.chartType === 'table') {
+            var widgetObj = widget.columns[index];
+            $scope.collectionFields.forEach(function (val, key) {
+                if (val.displayName === widgetObj.displayName) {
+                    val.selectColumnDef = 0;
+                }
+            });
+        }
+        if (widget.chartType != 'table') {
+            if (widget.chartType === 'pie' || widget.chartType === 'map' || widget.chartType === 'ticker' || widget.chartType === 'gauge') {
+                var widgetObj = widget.columns[index];
+                $scope.collectionFields.forEach(function (val, key) {
+                    if (val.displayName === widgetObj.displayName) {
+                        var chartIndex = $scope.collectionFields.indexOf(val);
+                        $scope.collectionFields.splice(chartIndex, 1);
+                    }
+                });
+            } else if (widget.chartType != 'pie') {
+                var widgetObj = widget.columns[index];
+                widget.columns.forEach(function (val, key) {
+                    if (val.yAxis == 1 || val.yAxis == 2) {
+                        if (val.yAxis == 1) {
+                            if (val.displayName === widgetObj.displayName) {
+                                var chartIndex = $scope.y1Column.indexOf(val);
+                                $scope.y1Column.splice(chartIndex, 1);
 
+                            }
+                        }
+                        if (val.yAxis == 2) {
+                            if (val.displayName === widgetObj.displayName) {
+                                var chartIndex = $scope.y2Column.indexOf(val);
+                                $scope.y2Column.splice(chartIndex, 1);
+                            }
+
+                        }
+                    } else {
+                        $scope.collectionFields.forEach(function (val, key) {
+                            if (val.displayName === widgetObj.displayName) {
+                                var chartIndex = $scope.collectionFields.indexOf(val);
+                                $scope.collectionFields.splice(chartIndex, 1);
+                            }
+                        });
+                    }
+                })
+
+            }
+        }
+        widget.columns.splice(index, 1);
+    };
     $scope.save = function (widget) {
         addColor = [];
         $scope.jsonData = "";

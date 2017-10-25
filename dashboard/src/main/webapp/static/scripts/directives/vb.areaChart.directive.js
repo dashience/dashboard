@@ -1,5 +1,5 @@
 app.directive('areaChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
-    return{
+    return {
         restrict: 'A',
         template: '<div ng-show="loadingArea" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-show="hideEmptyArea" class="text-center">{{areaEmptyMessage}}</div>',
@@ -234,16 +234,14 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             var loopCount = 0;
                             var sortingObj;
                             var gridData = JSON.parse(scope.widgetObj);
-                            var chartMaxRecord = JSON.parse(scope.widgetObj)
-                            console.log(chartMaxRecord);
-                            var chartData;// = response.data;
-                            console.log(sortFields);
+                            var chartMaxRecord = JSON.parse(scope.widgetObj);
+                            var chartData = response.data;
                             if (sortFields.length > 0) {
                                 angular.forEach(sortFields, function (value, key) {
                                     if (value.fieldType != 'day') {
                                         sortingObj = scope.orderData(chartData, sortFields);
                                         if (chartMaxRecord.maxRecord) {
-                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj);
                                         } else {
                                             chartData = sortingObj;
                                         }
@@ -257,7 +255,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                             }
                                         });
                                         if (chartMaxRecord.maxRecord) {
-                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj);
                                         } else {
                                             chartData = sortingObj;
                                         }
@@ -266,13 +264,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             } else {
                                 var responseObject = response.data;
                                 if (chartMaxRecord.maxRecord) {
-                                    chartData = maximumRecord(chartMaxRecord, responseObject)
+                                    chartData = maximumRecord(chartMaxRecord, responseObject);
                                 } else {
-                                    chartData = responseObject
+                                    chartData = responseObject;
                                 }
                             }
                             xTicks = [xAxis.fieldName];
-                            console.log(chartData)
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;
@@ -337,7 +334,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             });
                         }
                     });
-                }
+                };
                 scope.setAreaChartFn({areaFn: scope.refreshAreaChart});
                 scope.refreshAreaChart();
             }

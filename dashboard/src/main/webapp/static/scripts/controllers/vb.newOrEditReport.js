@@ -51,8 +51,11 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 console.log(value);
             });
             $scope.reportWidgets = widgetItems;
+            console.log("report widgets");
+            console.log($scope.reportWidgets);
         }).error(function () {
             $scope.reportWidgets = widgetItems;
+
         });
     });
 
@@ -148,7 +151,9 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 content: widget.content,
                 width: widget.width,
                 jsonData: widget.jsonData,
-                queryFilter: widget.queryFilter
+                queryFilter: widget.queryFilter,
+                productSegment:widget.productSegment,
+                timeSegment:widget.timeSegment
             };
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             });
