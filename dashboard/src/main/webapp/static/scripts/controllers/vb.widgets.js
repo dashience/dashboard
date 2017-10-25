@@ -931,6 +931,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             widgetObj.isHorizontalBar = false;
         }
+        $scope.widgetObj.selectAll = "";
         $scope.widgetObj.chartColorOption = "";
         $scope.widgetObj.targetColors = "";
         if ($scope.chartTypeName) {

@@ -297,7 +297,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     top: 10,
                                     right: 50,
                                     bottom: 10,
-                                    left: 50,
+                                    left: 50
                                 },
                                 bindto: element[0],
                                 data: {
