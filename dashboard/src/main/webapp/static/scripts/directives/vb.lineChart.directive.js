@@ -252,7 +252,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
                                             } else if (value.sortOrder === 'desc') {
-                                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                                                return dateOrders.indexOf(item[value.fieldName]) * -1;
                                             }
                                         });
 

@@ -285,6 +285,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             });
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
+                                console.log(chartCombinationtypes);
                             });
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {

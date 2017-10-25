@@ -281,8 +281,8 @@
                         <a ng-show="showCreateReport" title="{{'Report'|translate}}" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                         <a class="refresh" ng-click="directiveTickerFn()" title="{{'Refresh'|translate}}"><i class="fa fa-repeat"></i></a>
                         <!--<a ng-if="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="{{'Duplicate Widget'|translate}}"><i class="fa fa-files-o" aria-hidden="true" ></i></a>-->
-                        <a ng-if ="templateUserId === userId" data-toggle="modal" data-target="#duplicate{{widget.id}}"
-                                    title="{{'Duplicate Widget'| translate}}">
+                        <a ng-if ="templateUserId === userId" data-toggle="modal" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" 
+                                    title="{{'Duplicate Widget'| translate}}" data-backdrop="static" data-target="#duplicate{{widget.id}}">
                                     <i class="fa fa-files-o" aria-hidden="true" ></i>
                         </a>
                         <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" 
@@ -319,15 +319,14 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <strong translate>Duplicate Widget</strong>
-                        <strong><button class="close" data-dismiss="modal" title="Close" translate>&times;</button></strong>
-                    </div>
+                                           </div>
                     <div class="modal-body">
-                        <span translate>Want to duplicate widget? </span>
+                        <div ng-show="duplicateLoading" class="text-center"><img src="static/img/logos/loader.gif" width="45"></div>
+                        <span ng-hide="duplicateLoading" translate>Duplicate Widget Added Bottom of the Page</span>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-info btn-xs" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" 
-                                data-dismiss="modal"> <span translate>Yes</span></button>
-                        <button class="btn btn-danger btn-xs" data-dismiss="modal"> <span translate>No</span></button>
+                        
+                        <button ng-hide="duplicateLoading" ng-hide class="btn btn-success btn-xs" data-dismiss="modal"> <span translate>Ok</span></button>
                     </div>
                 </div>
                  </div>
@@ -449,8 +448,8 @@
                                    ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate});" title="{{'Duplicate Widget'| translate}}">
                                     <i class="fa fa-files-o" aria-hidden="true" ></i>
                                 </a>-->
-                                <a ng-if ="templateUserId === userId" data-toggle="modal" data-target="#duplicate{{widget.id}}"
-                                    title="{{'Duplicate Widget'| translate}}">
+                                <a ng-if ="templateUserId === userId" data-toggle="modal" data-backdrop="static" data-target="#duplicate{{widget.id}}"
+                                    title="{{'Duplicate Widget'| translate}}" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" >
                                     <i class="fa fa-files-o" aria-hidden="true" ></i>
                                 </a>
                                     
@@ -608,24 +607,23 @@
             
             
             <!-- duplicate widget popup -->
-            <div id="duplicate{{widget.id}}" class="modal">
+           <div id="duplicate{{widget.id}}" class="modal">
                 <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <strong translate>Duplicate Widget</strong>
-                        <strong><button class="close" data-dismiss="modal" title="Close" translate>&times;</button></strong>
-                    </div>
+                                           </div>
                     <div class="modal-body">
-                        <span translate>Want to duplicate widget? </span>
+                        <div ng-show="duplicateLoading" class="text-center"><img src="static/img/logos/loader.gif" width="45"></div>
+                        <span ng-hide="duplicateLoading" translate>Duplicate Widget Added Bottom of the Page</span>
                     </div>
                     <div class="modal-footer">
-                                        <button class="btn btn-info btn-xs" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" 
-                                                data-dismiss="modal"> <span translate>Yes</span></button>
-                                        <button class="btn btn-danger btn-xs" data-dismiss="modal"> <span translate>No</span></button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
+                        <button ng-hide="duplicateLoading" ng-hide class="btn btn-success btn-xs" data-dismiss="modal"> <span translate>Ok</span></button>
+                    </div>
+                </div>
+                 </div>
+                </div><!--
             
             <!-- delete widget popup -->
             <div id="delete{{widget.id}}" class="modal">
