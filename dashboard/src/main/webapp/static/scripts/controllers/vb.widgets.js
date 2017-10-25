@@ -918,7 +918,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
-        $scope.showPreviewChart = false;
+        $scope.showPreviewChart = false; 
         $scope.showFilter = false;
         $scope.showColor = false;
         $scope.selectedChartType = chartType.type;
@@ -931,6 +931,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             widgetObj.isHorizontalBar = false;
         }
+        $scope.widgetObj.selectAll = "";
         $scope.widgetObj.chartColorOption = "";
         $scope.widgetObj.targetColors = "";
         if ($scope.chartTypeName) {

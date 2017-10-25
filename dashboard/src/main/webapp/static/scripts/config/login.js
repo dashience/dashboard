@@ -42,7 +42,7 @@ app.controller("LoginController", function ($scope, $http, $window, $cookies, lo
                 $cookies.putObject("isAdmin", response.isAdmin);
                 $cookies.putObject("agencyId", response.agencyId);
 //                $location.path('index.dashboard');
-                $window.location.href = 'index.html'
+                $window.location.href = 'index.html';
             }
         });
         $scope.login = "";

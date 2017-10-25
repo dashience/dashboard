@@ -190,9 +190,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         });
     }
 
-
-
-
     function defaultCalls() {
         if ($scope.getCurrentPage() === "dashboard") {
             $state.go("index.dashboard." + $scope.getCurrentTab(), {
@@ -582,6 +579,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //        }
         return "dashboard";
     };
+
     $scope.getCurrentTab = function () {
         var url = window.location.href;
         if (url.indexOf("widget") > 0) {
@@ -601,7 +599,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             }
         });
     }
-    ;
+
     getChartColor();
 
     $scope.selectChartColor = function (color, chartColor) {
@@ -652,7 +650,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             setThemeColor(themeColor);
         });
     }
-    ;
+
     getThemeColor();
 
     function setThemeColor(themeColor) {
@@ -726,8 +724,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 },
                 function (startDate, endDate) {
                     $('#daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
-                },
-        );
+                });
+
         //Date picker
         $('#datepicker').datepicker({
             autoclose: true
