@@ -1491,11 +1491,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         angular.forEach(widgetObj.columns, function (value, key) {
             if (value.xAxis == 1 && value.yAxis != 1 && value.yAxis != 2) {
-                console.log(value);
                 value.xAxis = "";
                 $scope.columnY1Axis.push(value);
                 $scope.columnY2Axis.push(value);
-                console.log($scope.columnY1Axis);
             }
             if (!(value.xAxis == 1 && value.yAxis == 1 && value.yAxis == 2)) {
                 value = "";
