@@ -256,7 +256,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
                                             } else if (value.sortOrder === 'desc') {
-                                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                                                return dateOrders.indexOf(item[value.fieldName]) * -1;
                                             }
                                         });
 

@@ -954,7 +954,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
-        $scope.showPreviewChart = false;
+        $scope.showPreviewChart = false; 
         $scope.showFilter = false;
         $scope.showColor = false;
         $scope.selectedChartType = chartType.type;
@@ -1067,6 +1067,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     var firstPreviewAfterEdit = 1;
     $scope.showPreview = function (widgetObj, userChartColors) {
+        console.log(widgetObj);
         var chartType = $scope.chartTypeName;
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
@@ -1247,6 +1248,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.widgetDuplicate = function (widgetData) {
+        $scope.duplicateLoading=true;
 //        var dialog = bootbox.dialog({
 //            title: '<h4>Duplicate Widget</h4>',
 //            message: '<center><img src="static/img/logos/loader.gif" width="50"></center>',
@@ -1263,6 +1265,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
+                $scope.duplicateLoading=false;
                 response["tags"] = dataTag[0];
                 if (response.chartType === "horizontalBar") {
                     response.isHorizontalBar = true;
@@ -1776,7 +1779,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.gauge = function (widgetObj, gaugeItem) {
         $scope.dispHideBuilder = true;
         var newColumns = [];
-
+        if (!gaugeItem) {
+            return;
+        }
         if (gaugeItem.length === 0) {
             widgetObj.columns = "";
         } else {
