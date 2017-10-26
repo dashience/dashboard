@@ -72,10 +72,10 @@ public class UiDao extends BaseDao {
     }
 
     public List<DashboardTabs> getAgencyProductTab(Integer agencyProductId, Integer accountId, Integer userId) {
-        String queryStr = "select d from DashboardTabs d where (d.status is null or d.status != 'Deleted') and d.agencyProductId.id = :agencyProductId and d.accountId.id = :accountId and d.userId.id = :userId order by tabOrder";
+        String queryStr = "select d from DashboardTabs d where (d.status is null or d.status != 'Deleted') and d.agencyProductId.id = :agencyProductId and d.userId.id = :userId order by tabOrder";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyProductId", agencyProductId);
-        query.setParameter("accountId", accountId);
+        // query.setParameter("accountId", accountId);
         query.setParameter("userId", userId);
         return query.list();
     }
@@ -771,9 +771,9 @@ public class UiDao extends BaseDao {
     }
 
     public List<DashboardTabs> getDashboardTabsByProductId(Integer userId, Integer accountId, Integer productId) {
-        String queryStr = "select d from DashboardTabs d where d.accountId.id = :accountId and d.agencyProductId.id=:productId and d.userId.id=:userId";
+        String queryStr = "select d from DashboardTabs d where d.agencyProductId.id=:productId and d.userId.id=:userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("accountId", accountId);
+        // query.setParameter("accountId", accountId);
         query.setParameter("productId", productId);
         query.setParameter("userId", userId);
         return query.list();

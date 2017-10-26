@@ -156,6 +156,9 @@ public class GaService {
         }
 //        String filter = gaReport.getDefaultFilter();
         String gaFilter = "ga:region==" + filter;
+        if(filter.equalsIgnoreCase("all")) {
+            gaFilter = null;
+        }
         System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + gaFilter);
         GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, gaFilter);
         return getResponseAsMap(gaData);

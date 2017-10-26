@@ -1377,7 +1377,7 @@ public class ProxyController {
         String filter = account.getGeoLocation();
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String gaAccountId = "7011155"; // getAccountId(accountProperty, "gaAccountId");
-        String gaProfileId = "141652234"; //getAccountId(accountProperty, "gaProfileId");
+        String gaProfileId = "14165234"; //getAccountId(accountProperty, "gaProfileId");
 
         Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt, filter);
         List<Map<String, Object>> data = (List<Map<String, Object>>) dataMap.get("data");
