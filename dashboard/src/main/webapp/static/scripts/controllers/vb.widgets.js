@@ -693,11 +693,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
             $scope.columnXAxis = [];
+            $scope.columnPieXAxis = [];
+            $scope.columnPieYAxis = [];
+
 
             angular.forEach($scope.collectionFields, function (value, key) {
                 $scope.columnY1Axis.push(value);
                 $scope.columnY2Axis.push(value);
                 $scope.columnXAxis.push(value);
+                $scope.columnPieXAxis.push(value);
+                $scope.columnPieYAxis.push(value);
             });
 
             if ($scope.xColumn) {
@@ -715,6 +720,23 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 var indexY2 = $scope.columnY2Axis.indexOf(dataY2);
                 $scope.columnY1Axis.splice(indexY1, 1);
                 $scope.columnY2Axis.splice(indexY2, 1);
+            }
+
+            if ($scope.selectPieChartXAxis && $scope.selectPieChartYAxis) {
+                var dataX = $scope.columnPieXAxis.find(function (item, i) {
+                    if (item.fieldName === $scope.selectPieChartYAxis.fieldName) {
+                        return item;
+                    }
+                });
+                var dataY = $scope.columnPieYAxis.find(function (item, i) {
+                    if (item.fieldName === $scope.selectPieChartXAxis.fieldName) {
+                        return item;
+                    }
+                });
+                var indexX = $scope.columnPieXAxis.indexOf(dataX);
+                var indexY = $scope.columnPieYAxis.indexOf(dataY);
+                $scope.columnPieXAxis.splice(indexX, 1);
+                $scope.columnPieYAxis.splice(indexY, 1);
             }
 
             angular.forEach(y1Column, function (value, key) {
@@ -860,10 +882,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
             $scope.columnXAxis = [];
+            $scope.columnPieXAxis = [];
+            $scope.columnPieYAxis = [];
             angular.forEach($scope.collectionFields, function (value, key) {
                 $scope.columnY1Axis.push(value);
                 $scope.columnY2Axis.push(value);
                 $scope.columnXAxis.push(value);
+                $scope.columnPieXAxis.push(value);
+                $scope.columnPieYAxis.push(value);
             });
             resetQueryBuilder();
         });
@@ -954,7 +980,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
-        $scope.showPreviewChart = false; 
+        $scope.showPreviewChart = false;
         $scope.showFilter = false;
         $scope.showColor = false;
         $scope.selectedChartType = chartType.type;
@@ -1248,7 +1274,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.widgetDuplicate = function (widgetData) {
-        $scope.duplicateLoading=true;
+        $scope.duplicateLoading = true;
 //        var dialog = bootbox.dialog({
 //            title: '<h4>Duplicate Widget</h4>',
 //            message: '<center><img src="static/img/logos/loader.gif" width="50"></center>',
@@ -1265,7 +1291,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
-                $scope.duplicateLoading=false;
+                $scope.duplicateLoading = false;
                 response["tags"] = dataTag[0];
                 if (response.chartType === "horizontalBar") {
                     response.isHorizontalBar = true;
@@ -1850,7 +1876,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             return;
         }
         var exists = false;
+
+        angular.forEach($scope.columnPieYAxis, function (val, key) {
+            if (val.fieldName === column.fieldName) {
+                var index = $scope.columnPieYAxis.indexOf(val);
+                $scope.columnPieYAxis.splice(index, 1);
+            }
+        });
+
         angular.forEach(widget.columns, function (value, key) {
+            if (value.xAxis == 1 && value.yAxis != 1 && value.yAxis != 2) {
+                value.xAxis = "";
+                $scope.columnPieYAxis.push(value);
+            }
             if (!(value.xAxis == 1 && value.yAxis == 1 && value.yAxis == 2)) {
                 value = "";
             }
@@ -1881,7 +1919,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             return;
         }
         var exists = false;
+        angular.forEach($scope.columnPieXAxis, function (val, key) {
+            if (val.fieldName === column.fieldName) {
+                var index = $scope.columnPieXAxis.indexOf(val);
+                $scope.columnPieXAxis.splice(index, 1);
+            }
+        });
         angular.forEach(widget.columns, function (value, key) {
+            if (value.yAxis == 1 && value.xAxis != 1) {
+                value.yAxis = "";
+                $scope.columnPieXAxis.push(value);
+            }
             if (column.fieldName == value.fieldName) {
                 exists = true;
                 value.yAxis = 1;
@@ -2023,6 +2071,51 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 dataSetColumnData.derivedColumnId = derivedColumnId;
 
                 $scope.collectionFields.forEach(function (val, key) {
+                    if (val.derivedColumnId === derivedColumnId) {
+                        val.fieldName = dataSetColumnData.fieldName;
+                        val.displayName = dataSetColumnData.displayName;
+                        val.expression = dataSetColumnData.expression;
+                        val.functionName = dataSetColumnData.functionName;
+                        val.fieldType = dataSetColumnData.fieldType;
+                        val.displayFormat = dataSetColumnData.displayFormat;
+                        val.status = dataSetColumnData.status;
+                        val.dataSetId = dataSetColumnData.dataSetId;
+                        val.userId = dataSetColumnData.userId;
+                        val.sortPriority = dataSetColumnData.sortPriority;
+                    }
+                });
+
+                $scope.columnXAxis.forEach(function (val, key) {
+                    if (val.derivedColumnId === derivedColumnId) {
+                        val.fieldName = dataSetColumnData.fieldName;
+                        val.displayName = dataSetColumnData.displayName;
+                        val.expression = dataSetColumnData.expression;
+                        val.functionName = dataSetColumnData.functionName;
+                        val.fieldType = dataSetColumnData.fieldType;
+                        val.displayFormat = dataSetColumnData.displayFormat;
+                        val.status = dataSetColumnData.status;
+                        val.dataSetId = dataSetColumnData.dataSetId;
+                        val.userId = dataSetColumnData.userId;
+                        val.sortPriority = dataSetColumnData.sortPriority;
+                    }
+                });
+
+                $scope.columnPieXAxis.forEach(function (val, key) {
+                    if (val.derivedColumnId === derivedColumnId) {
+                        val.fieldName = dataSetColumnData.fieldName;
+                        val.displayName = dataSetColumnData.displayName;
+                        val.expression = dataSetColumnData.expression;
+                        val.functionName = dataSetColumnData.functionName;
+                        val.fieldType = dataSetColumnData.fieldType;
+                        val.displayFormat = dataSetColumnData.displayFormat;
+                        val.status = dataSetColumnData.status;
+                        val.dataSetId = dataSetColumnData.dataSetId;
+                        val.userId = dataSetColumnData.userId;
+                        val.sortPriority = dataSetColumnData.sortPriority;
+                    }
+                });
+
+                $scope.columnPieYAxis.forEach(function (val, key) {
                     if (val.derivedColumnId === derivedColumnId) {
                         val.fieldName = dataSetColumnData.fieldName;
                         val.displayName = dataSetColumnData.displayName;
@@ -2671,6 +2764,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
             $scope.columnXAxis = [];
+            $scope.columnPieXAxis = [];
+            $scope.columnPieYAxis = [];
         }
         $scope.chartTypeName = "";
         $scope.xColumn = "";

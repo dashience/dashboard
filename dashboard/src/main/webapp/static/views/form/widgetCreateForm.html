@@ -649,7 +649,7 @@
                             <label ng-if="hideSelectedColumn === false;" translate>Select X Axis</label>
                             <select ng-if="hideSelectedColumn === false;" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartXAxis" 
-                                    ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                    ng-options="currentColumn.displayName for currentColumn in columnPieXAxis track by currentColumn.fieldName" 
                                     ng-change="selectPieChartX(widgetObj, selectPieChartXAxis)">
                             </select>
                         </div>
@@ -657,7 +657,7 @@
                             <label ng-if="hideSelectedColumn === false" translate>Select Y Axis</label>
                             <select ng-if="hideSelectedColumn === false" style="height:28px; font-size: 11px;  padding: 0px 12px;" 
                                     class="form-control" ng-model="selectPieChartYAxis" 
-                                    ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                                    ng-options="currentColumn.displayName for currentColumn in columnPieYAxis track by currentColumn.fieldName" 
                                     ng-change="selectPieChartY(widgetObj, selectPieChartYAxis)">
                             </select>
                         </div>
