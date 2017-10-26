@@ -83,27 +83,35 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.selectAccount = {};
 
     $http.get('admin/ui/userAccountByUser').success(function (response) {
+
         if (!response[0]) {
             return;
         }
         $scope.accounts = response;
-        $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
-        $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
-        angular.forEach($scope.accounts, function (value, key) {
-            if (value.accountId.id == $stateParams.accountId) {
-                $scope.name = value;
+        $http.get('admin/user/getLastUserAccount').success(function (userAccountResponse) {
+            if (userAccountResponse) {
+                $stateParams.accountId = userAccountResponse.accountId.id;
+                $stateParams.accountName = userAccountResponse.accountId.accountName;
             }
+            $stateParams.accountId = $stateParams.accountId ? $stateParams.accountId : response[0].accountId.id;
+            $stateParams.accountName = $stateParams.accountName ? $stateParams.accountName : response[0].accountId.accountName;
+            angular.forEach($scope.accounts, function (value, key) {
+                if (value.accountId.id == $stateParams.accountId) {
+                    $scope.name = value;
+                }
+            });
+            $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
+            $scope.accountLogo = $scope.name.accountId.logo;
+            if (!$scope.name.userId.agencyId) {
+                $scope.loadNewUrl();
+                return;
+            }
+            getAgencyProduct($scope.name.userId.agencyId.id);
         });
-        $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
-        $scope.accountLogo = $scope.name.accountId.logo;
-        if (!$scope.name.userId.agencyId) {
-            $scope.loadNewUrl();
-            return;
-        }
-        getAgencyProduct($scope.name.userId.agencyId.id);
     });
 
     $scope.getAccountId = function (account) {
+        console.log(account);
         if ($stateParams.accountId != account.accountId.id) {
             $stateParams.tabId = 0;
             $stateParams.templateId = 0;
@@ -119,6 +127,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $http.get("admin/template/getProductTemplate/" + $stateParams.productId + "/" + $stateParams.accountId).success(function (response) {
             $stateParams.templateId = response.id;
             $scope.loadNewUrl();
+        });
+        $http({method: 'POST', url: "admin/user/lastUserAccount/" + $stateParams.productId + "/" + $stateParams.accountId}).success(function (response) {
+            console.log(response);
         });
     };
 

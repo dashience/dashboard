@@ -918,7 +918,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
         $scope.showColumnDefs = false;
-        $scope.showPreviewChart = false; 
+        $scope.showPreviewChart = false;
         $scope.showFilter = false;
         $scope.showColor = false;
         $scope.selectedChartType = chartType.type;
@@ -1215,7 +1215,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.widgetDuplicate = function (widgetData) {
-        $scope.duplicateLoading=true;
+        $scope.duplicateLoading = true;
 //        var dialog = bootbox.dialog({
 //            title: '<h4>Duplicate Widget</h4>',
 //            message: '<center><img src="static/img/logos/loader.gif" width="50"></center>',
@@ -1232,7 +1232,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
         $http.get("admin/ui/dbWidgetDuplicate/" + widgetData.widgetId + "/" + widgetData.tabId).success(function (response) {
             $http.get("admin/ui/dbDuplicateTag/" + response.id).success(function (dataTag) {
-                $scope.duplicateLoading=false;
+                $scope.duplicateLoading = false;
                 response["tags"] = dataTag[0];
                 if (response.chartType === "horizontalBar") {
                     response.isHorizontalBar = true;
@@ -1542,7 +1542,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     };
 
-
+   
     $scope.y1Column = [];
     $scope.selectY1Axis = function (widget, y1data, chartTypeName) {
 //         $scope.cities.push({"pos":y1data[0].fieldName});
@@ -1636,8 +1636,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        }, 50);
     };
 
-
-
+   
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
         //        if (yAxisItems.length > 0) {
         $scope.columnY2Axis.push(column);
