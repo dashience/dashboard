@@ -850,7 +850,9 @@
                                     <tr>
                                         <td translate>Field Name</td>
                                         <td translate>Display Name</td>
-                                        <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" translate>Aggregation Function</td>
+                                        <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) === 'ticker' " translate>
+                                            Aggregation Function
+                                        </td>
                                         <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" translate>Group Priority</td>
                                         <!--<td ng-if="(widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'table' && (widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'ticker'">X-Axis</td>-->
                                         <!--                                        <td ng-if="(widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'table' && (widgetObj.widgetChartType ? widgetObj.widgetChartType : widgetObj.chartType) !== 'ticker'">Y-Axis</td>
@@ -875,7 +877,7 @@
                                             </div>
                                         </td>
                                         <!--<td>Test</td>-->
-                                        <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'">
+                                        <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) === 'ticker'">
                                             <div ng-hide="currentColumn.isEdit"> {{currentColumn.agregationFunction}}</div>
                                             <div ng-show="currentColumn.isEdit">
                                                 <select ng-model="currentColumn.agregationFunction" class="form-control">
