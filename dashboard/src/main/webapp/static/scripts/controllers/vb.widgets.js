@@ -7,7 +7,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.showFilter = false;
     $scope.showColumnDefs = false;
     $scope.showDateRange = false;
-    $scope.showWidgeDateRange = false;
+    $scope.showWidgetDateRange = false;
     $scope.permission = localStorageService.get("permission");
     $scope.accountID = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
@@ -35,13 +35,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $translate.use(key);
     }
 
-
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {
         $scope.showCreateReport = false;
     }
-
 
     //Geo Map
     $scope.cities = [
@@ -53,7 +51,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     ];
 
 //    $scope.cities=[{id:1}]
-
     $http.get('static/datas/tickerIcons.json').success(function (response) {       //Popup- Select Chart-Type Json
         $scope.chartIcons = response;
     });
@@ -74,7 +71,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         return selectedIconName;
     };
-
 
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
         $scope.templates = response;
@@ -106,7 +102,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $http.get('static/datas/imageUrl.json').success(function (response) {       //Popup- Select Chart-Type Json
         $scope.chartTypes = response;
     });
-
 
     $http.get('admin/tag').success(function (response) {
         $scope.tags = response;
@@ -217,8 +212,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         {name: 'CPageE', value: "cpagee"},
         {name: 'CPP', value: "cpp"},
         {name: 'CPR', value: "cpr"}
-
-    ]; //Aggregation Type-Popup
+    ];
+    //Aggregation Type-Popup
     $scope.selectGroupPriorities = [
         {num: 'None', value: ""},
         {num: 1, value: 1},
@@ -902,9 +897,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
 
         if (dataSourceName.dataSourceType === "xls" || dataSourceName.dataSourceType === "csv") {
-            $scope.showWidgeDateRange = true;
+            $scope.showWidgetDateRange = true;
         } else {
-            $scope.showWidgeDateRange = false;
+            $scope.showWidgetDateRange = false;
         }
         $scope.y1Column = "";
         $scope.selectPieChartXAxis = "";
