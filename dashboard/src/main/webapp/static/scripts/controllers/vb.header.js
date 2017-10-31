@@ -8,7 +8,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.selectTabID = $state;
     $scope.agencyLanguage = localStorageService.get("agencyLanguage");
     $scope.tempLan = localStorageService.get('agenLan');
-    console.log($scope.tempLan)
     $scope.lan = $stateParams.lan ? $stateParams.lan : $scope.agencyLanguage;
     $stateParams.lan = $scope.lan;
     changeLanguage($scope.lan);
@@ -169,7 +168,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     function getAgencyProduct(agencyId) {
         $http.get('admin/user/agencyProduct/' + agencyId).success(function (response) {
             $scope.products = response;
-            console.log(response);
             if (!response) {
                 return;
             }
@@ -614,9 +612,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     getChartColor();
 
     $scope.selectChartColor = function (color, chartColor) {
-        console.log(chartColor);
-        console.log(color);
-        console.log($scope.chartColor.optionValue);
         if ($scope.chartColor.optionValue) {
             $scope.chartColor.optionValue = $scope.chartColor.optionValue + "," + color;
         } else {
@@ -627,7 +622,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 userId: chartColor ? chartColor.userId : null
             };
         }
-        console.log($scope.chartColor.optionValue);
     };
 
     $scope.themeDropDownChange = function (data) {
@@ -651,7 +645,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     function getThemeColor() {
         $http.get("admin/ui/getThemeByUserId").success(function (response) {
-            console.log(response);
             var data = {
                 name: response.optionName,
                 value: response.optionValue
@@ -671,7 +664,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     }
     $(document).ready(function (e) {
         $(".inside").click(function (e) {
-            console.log("inside");
             e.stopPropagation();
         });
     });

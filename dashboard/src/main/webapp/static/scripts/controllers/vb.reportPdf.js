@@ -50,7 +50,7 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
         });
         setInterval(function () {
             window.status = "done";
-        }, 14000);
+        }, 15000);
     });
     $scope.downloadUiPdf = function () {
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));
