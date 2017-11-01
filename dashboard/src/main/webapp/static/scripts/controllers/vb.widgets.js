@@ -370,7 +370,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.loadingColumnsGif = false;
         $scope.showDateRange = false;
         $scope.showSortBy = false;
-
+        $scope.saveDisable = true;
     };
 
     $scope.firstSortableOptions = {
@@ -546,6 +546,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         $scope.selectPieChartYAxis = val;
                     }
                     $scope.y1Column.push(val);
+                    if (($scope.xColumn && $scope.y1Column) || ($scope.selectPieChartXAxis && $scope.selectPieChartYAxis)) {
+                        $scope.saveDisable = false;
+                    } else {
+                        $scope.saveDisable = true;
+                    }
                 }
             }
             if (val.yAxis == 2) {
@@ -558,17 +563,40 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
             if (widget.chartType === 'ticker') {
                 $scope.tickerItem.push(val);
+                if ($scope.tickerItem) {
+                    $scope.saveDisable = false;
+                } else {
+                    $scope.saveDisable = true;
+                }
             }
             if (widget.chartType === 'funnel') {
 //                alert("funnel");
                 $scope.funnelItem.push(val);
+                if ($scope.funnelItem) {
+                    $scope.saveDisable = false;
+                } else {
+                    $scope.saveDisable = true;
+                }
             }
             if (widget.chartType === 'gauge') {
 //                alert("gauge")
 //                $scope.gaugeItem.push(val);
                 $scope.gaugeItem = val;
+                if ($scope.gaugeItem) {
+                    $scope.saveDisable = false;
+                } else {
+                    $scope.saveDisable = true;
+                }
             }
         });
+
+        if (widget.chartType === 'table') {
+            if (widget.columns) {
+                $scope.saveDisable = false;
+            } else {
+                $scope.saveDisable = true;
+            }
+        }
 
         tableDef(widget, $scope.y1Column, $scope.y2Column);
 //        $timeout(function () {
@@ -812,6 +840,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.tickerItem = "";
         $scope.funnelItem = "";
         $scope.gaugeItem = "";
+        $scope.saveDisable = true;
         getSegments(widget);
         widget.jsonData = null;
         widget.queryFilter = null;
@@ -904,10 +933,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.y1Column = "";
         $scope.selectPieChartXAxis = "";
         $scope.selectPieChartYAxis = "";
+        $scope.xColumn = "";
         $scope.y2Column = "";
         $scope.tickerItem = "";
         $scope.funnelItem = "";
         $scope.gaugeItem = "";
+        $scope.saveDisable = true;
         $http.get('admin/ui/dataSet/publishDataSet').success(function (response) {
             $scope.dataSets = [];
             angular.forEach(response, function (value, key) {
@@ -1004,7 +1035,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             });
         }
-
+        console.log($scope.chartTypeName);
+        console.log(widgetObj.columns);
+        if (widgetObj.columns.length > 0) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
         $timeout(function () {
             $scope.hideSelectedColumn = false;
         }, 50);
@@ -1173,6 +1210,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 val.selectColumnDef = 0;
             });
         }
+
+        if (widget.columns.length > 0) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
 //        $timeout(function () {
 //            $scope.queryBuilderList = widget;
 //            resetQueryBuilder();
@@ -1218,6 +1261,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widget.columns.splice(index, 1);
                 widget.selectAll = 0;
             }
+        }
+        if (widget.columns.length > 0) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
         }
         if ($scope.collectionFields.length == widget.columns.length) {
             widget.selectAll = 1;
@@ -1533,6 +1581,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             column.xAxis = 1;
             widgetObj.columns.push(column);
         }
+        $scope.chosenX = column;
+        console.log($scope.chosenX);
+        console.log($scope.y1Column);
+
+        if ($scope.chosenX && $scope.y1Column.length > 0) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
 //        $timeout(function () {
 //            $scope.queryBuilderList = widgetObj;
         //            resetQueryBuilder();
@@ -1586,7 +1643,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             column.isLatitude = 1;
             widgetObj.columns.push(column);
         }
-
     };
 
 
@@ -1664,12 +1720,20 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     widget.columns.push(value);
                 }
             }
-            $scope.y1Column = y1data;
 //            $timeout(function () {
             //                $scope.queryBuilderList = widget;
 //                resetQueryBuilder();
             //            }, 50);
         });
+        $scope.y1Column = y1data;
+        console.log($scope.chosenX);
+        console.log($scope.y1Column);
+
+        if ($scope.chosenX && $scope.y1Column.length > 0) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
     };
     $scope.y2Column = [];
     $scope.selectY2Axis = function (widget, y2data, chartTypeName) {
@@ -1722,6 +1786,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         //            $scope.queryBuilderList = widget;
         //            resetQueryBuilder();
 //        }, 50);
+        if ($scope.chosenX && $scope.y1Column.length > 0) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
     };
 
 
@@ -1791,6 +1860,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         }
         $scope.tickerItem = widgetObj.columns;
+        if ($scope.tickerItem) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
         //        $timeout(function () {
         //            $scope.queryBuilderList = widgetObj;
         //            resetQueryBuilder();
@@ -1818,6 +1892,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //            });
         }
         $scope.gaugeItem = widgetObj.columns;
+        if ($scope.gaugeItem) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
         //        $timeout(function () {
         //            $scope.queryBuilderList = widgetObj;
         //            resetQueryBuilder();
@@ -1833,6 +1912,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (column.length == 0) {
             widget.columns = "";
         } else {
+            if (!widget.columns) {
+                widget.columns = [];
+            }
             angular.forEach(column, function (value, key) {
                 var checkObj = $.grep(widget.columns, function (val) {
                     if (value.fieldName === val.fieldName) {
@@ -1848,6 +1930,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         }
         $scope.funnelItem = widget.columns;
+        if ($scope.funnelItem) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
 //        $timeout(function () {
         //            $scope.queryBuilderList = widget;
 //            resetQueryBuilder();
@@ -1858,7 +1945,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        $scope.dispHideBuilder = true;
         var getIndex = widget.columns.indexOf(removeItem);
         widget.columns.splice(getIndex, 1);
-        //$scope.funnel(widget, funnelItem);   
+        $scope.funnel(widget, funnelItem);
 //        $timeout(function () {
         //            $scope.queryBuilderList = widget;
         //            resetQueryBuilder();
@@ -1902,6 +1989,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             //                resetQueryBuilder();
 //            }, 50);
         }
+
+        if ($scope.selectPieChartXAxis && $scope.selectPieChartYAxis) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
 //        $timeout(function () {
         //            $scope.queryBuilderList = widget;
         //            resetQueryBuilder();
@@ -1941,16 +2034,29 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             //                resetQueryBuilder();
             //            }, 50);
         }
+        if ($scope.selectPieChartXAxis && $scope.selectPieChartYAxis) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
         //        $timeout(function () {
         //            $scope.queryBuilderList = widget;
         //            resetQueryBuilder();
         //        }, 50);
     };
 
+    $scope.enterText = function (content) {
+        if (content) {
+            $scope.saveDisable = false;
+        } else {
+            $scope.saveDisable = true;
+        }
+    };
+
     function resetQueryBuilder() {
         $scope.dispHideBuilder = false;
     }
-    ;
+
     //Derived Column
     $scope.showDerived = false;
     $scope.dataSetColumn = {};
