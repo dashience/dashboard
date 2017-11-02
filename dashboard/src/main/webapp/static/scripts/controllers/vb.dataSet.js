@@ -4618,7 +4618,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         });
     }
     getItems();
-    $http.get('admin/dataSources/dataSource').success(function (response) {
+    $http.get('admin/datasources/dataSource').success(function (response) {
         $scope.searchDataSourceItems = [];
         $scope.dataSources = response;
 //        $scope.searchDataSourceItems.unshift({dataSourceId:{name: ''}});

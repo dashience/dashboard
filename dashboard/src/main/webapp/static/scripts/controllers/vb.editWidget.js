@@ -198,7 +198,7 @@ app.controller('EditWidgetController', function ($scope, $http, $stateParams, lo
 //        }
 //    }
 //
-//    $http.get('admin/dataSources/dataSource').success(function (response) {
+//    $http.get('admin/datasources/dataSource').success(function (response) {
 //        $scope.dataSources = response;
 //    });
 //    $scope.selectDataSource = function (dataSourceName, widget) {
