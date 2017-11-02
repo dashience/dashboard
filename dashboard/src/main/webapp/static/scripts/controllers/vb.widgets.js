@@ -95,7 +95,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportList = response;
     });
 
-    $http.get('admin/ui/dataSource').success(function (response) {
+    $http.get('admin/dataSources/dataSource').success(function (response) {
         $scope.dataSources = response;
     });
 
@@ -507,6 +507,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (!widget.accountId) {
             widget.allAccount = 1;
         }
+        console.log(widget);
         $scope.widgetObj = widget;
         $scope.widgetObj.previewTitle = widget.widgetTitle;
 //        $scope.queryBuilderList = widget;

@@ -264,12 +264,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSet = JSON.parse(joinDataSetColumn.firstDataSet);
         var dataSourceId = null;
         var joinDataSource = {
-            name: "Join DataSource",
+            name: "Data Blending",
             id: null,
             agencyId: dataSet.agencyId,
             userId: dataSet.userId
         };
-        $http({method: 'POST', url: 'admin/ui/joinDataSource', data: joinDataSource}).success(function (response) {
+        $http({method: 'POST', url: 'admin/dataSources/joinDataSource', data: joinDataSource}).success(function (response) {
             dataSourceId = response.id;
 
             var joinDataSetList = {
@@ -4089,7 +4089,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }, {
                     name: "URL",
                     type: "url"
-                },
+                }
             ]
         }
     ];
@@ -4111,7 +4111,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: "none"
                 }
             ]
-        },
+        }
     ];
 
     $scope.getTimeSegements = function (dataSet) {
@@ -4618,7 +4618,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         });
     }
     getItems();
-    $http.get('admin/ui/dataSource').success(function (response) {
+    $http.get('admin/dataSources/dataSource').success(function (response) {
         $scope.searchDataSourceItems = [];
         $scope.dataSources = response;
 //        $scope.searchDataSourceItems.unshift({dataSourceId:{name: ''}});
