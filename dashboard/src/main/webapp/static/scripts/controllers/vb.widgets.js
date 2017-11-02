@@ -2737,6 +2737,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         addColor = [];
         deleteColumns = [];
         $('.showEditWidget').modal('hide');
+        console.log("cancel widget");
+        console.log(widgetObj);
+        console.log(setDefaultWidgetObj);
         angular.forEach(setDefaultWidgetObj, function (val, key) {
             $scope.widgetObj.id = val.id;
             $scope.widgetObj.previewTitle = val.widgetTitle;
@@ -2765,6 +2768,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnPieXAxis = [];
             $scope.columnPieYAxis = [];
         }
+        $scope.widgetObj.dataSetId="";
+        $scope.widgetObj.productSegment="";
+        $scope.widgetObj.timeSegment="";
+        $scope.widgetObj.networkType="";
         $scope.chartTypeName = "";
         $scope.xColumn = "";
         $scope.tickerItem = "";
