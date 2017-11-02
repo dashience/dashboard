@@ -1995,8 +1995,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             //                resetQueryBuilder();
 //            }, 50);
         }
-
-        if ($scope.selectPieChartXAxis && $scope.selectPieChartYAxis) {
+        $scope.chosenPieX = column;
+        if ($scope.chosenPieX && $scope.chosenPieY) {
             $scope.saveDisable = false;
         } else {
             $scope.saveDisable = true;
@@ -2042,7 +2042,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             //                resetQueryBuilder();
             //            }, 50);
         }
-        if ($scope.selectPieChartXAxis && $scope.selectPieChartYAxis) {
+        $scope.chosenPieY = column;
+        if ($scope.chosenPieX && $scope.chosenPieY) {
             $scope.saveDisable = false;
         } else {
             $scope.saveDisable = true;
