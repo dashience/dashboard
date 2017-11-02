@@ -349,8 +349,8 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     });
 
     //DataSource
-    $http.get('admin/datasources').success(function (response) {
-        $scope.datasources = response;
+    $http.get('admin/datasources/dataSource').success(function (response) {
+        $scope.dataSources = response;
     });
 
     $scope.selectedDataSource = function (selectedItem) {

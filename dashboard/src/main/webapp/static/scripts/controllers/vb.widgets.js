@@ -95,7 +95,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.reportList = response;
     });
 
-    $http.get('admin/dataSources/dataSource').success(function (response) {
+    $http.get('admin/datasources/dataSource').success(function (response) {
         $scope.dataSources = response;
     });
 
