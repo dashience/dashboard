@@ -13,6 +13,7 @@ import com.visumbu.vb.model.AgencyProperty;
 import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.Dashboard;
 import com.visumbu.vb.model.DashboardTabs;
+import com.visumbu.vb.model.LastUserAccount;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.UserAccount;
@@ -67,7 +68,7 @@ public class UserDao extends BaseDao {
     }
 
     public VbUser findUser(String dashiencePath, String username, Agency agency) {
-        if(agency == null || username == null || username.isEmpty()) {
+        if (agency == null || username == null || username.isEmpty()) {
             return null;
         }
         Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId = :agency and agencyId.agencyDashiencePath = :path and userName = :userName");//.getNamedQuery("VbUser.findByUserName");
@@ -82,7 +83,7 @@ public class UserDao extends BaseDao {
     }
 
     public VbUser findAdminUserByName(String username) {
-        if(username == null || username.isEmpty()) {
+        if (username == null || username.isEmpty()) {
             return null;
         }
         Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId is null and userName = :userName");
@@ -95,7 +96,7 @@ public class UserDao extends BaseDao {
     }
 
     public Agency findAgencyByDashiencePath(String dashiencePath) {
-        if(dashiencePath == null || dashiencePath.isEmpty()) {
+        if (dashiencePath == null || dashiencePath.isEmpty()) {
             return null;
         }
         Query query = sessionFactory.getCurrentSession().createQuery("from Agency where agencyDashiencePath = :agencyDashiencePath");
@@ -107,7 +108,6 @@ public class UserDao extends BaseDao {
         return null;
     }
 
-    
     public List<VbUser> findByUserName(String username) {
 
         Query query = sessionFactory.getCurrentSession().createQuery("from VbUser where agencyId is null and userName = :userName");//.getNamedQuery("VbUser.findByUserName");
@@ -286,6 +286,11 @@ public class UserDao extends BaseDao {
         return query.list();
     }
 
+    public Account getAccountById(Integer id) {
+        Account account = (Account) sessionFactory.getCurrentSession().get(Account.class, id);
+        return account;
+    }
+
     public List getUserAccountById(Integer accountId) {
         String queryStr = "select d from UserAccount d where (d.userId.status is null or d.userId.status != 'Deleted') and d.accountId.id = :accountId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -429,6 +434,17 @@ public class UserDao extends BaseDao {
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("agencyPropertyId", agencyPropertyId);
         query.executeUpdate();
+        return null;
+    }
+
+    public LastUserAccount checkLastUserAccount(VbUser user) {
+        String queryStr = "select l from LastUserAccount l where l.userId=:user";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("user", user);
+        List<LastUserAccount> lastUserAccounts = query.list();
+        if (lastUserAccounts != null && !lastUserAccounts.isEmpty()) {
+            return (LastUserAccount) query.list().get(0);
+        }
         return null;
     }
 

@@ -3,6 +3,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportId = $stateParams.reportId;
+    $scope.userId = $cookies.getObject("userId");
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.reportWidgets = [];
@@ -41,18 +42,14 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 widgetColors = response.optionValue.split(',');
             }
             widgetItems.forEach(function (value, key) {
-                console.log(value);
                 value.widgetId.chartColors = widgetColors;
                 if (value.widgetId.chartType == 'horizontalBar') {
                     value.widgetId.isHorizontalBar = true;
                 } else {
                     value.widgetId.isHorizontalBar = false;
                 }
-                console.log(value);
             });
             $scope.reportWidgets = widgetItems;
-            console.log("report widgets");
-            console.log($scope.reportWidgets);
         }).error(function () {
             $scope.reportWidgets = widgetItems;
 
@@ -152,8 +149,8 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 width: widget.width,
                 jsonData: widget.jsonData,
                 queryFilter: widget.queryFilter,
-                productSegment:widget.productSegment,
-                timeSegment:widget.timeSegment
+                productSegment: widget.productSegment,
+                timeSegment: widget.timeSegment
             };
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             });

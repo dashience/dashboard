@@ -54,6 +54,9 @@ public class BaseDao {
     public Object read(Class c, Serializable id) {
         return sessionFactory.getCurrentSession().get(c, id);
     }
+    public void saveOrUpdate(Object object){
+        sessionFactory.getCurrentSession().saveOrUpdate(object);
+    }
 
     public Object delete(Object object) {
         try {
