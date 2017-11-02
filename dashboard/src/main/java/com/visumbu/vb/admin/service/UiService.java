@@ -1092,10 +1092,7 @@ public class UiService {
         }
         if (dataSetColumnBean.getDisplayFormat() != null && !dataSetColumnBean.getDisplayFormat().isEmpty()) {
             checkDbForColumn.setDisplayFormat(dataSetColumnBean.getDisplayFormat());
-        } else {
-            checkDbForColumn.setDisplayFormat(dataSetColumnBean.getDisplayFormat());
-
-        }
+        } 
         checkDbForColumn.setStatus(dataSetColumnBean.getStatus());
         checkDbForColumn.setFunctionName(dataSetColumnBean.getFunctionName());
         checkDbForColumn.setColumnName(dataSetColumnBean.getColumnName());
