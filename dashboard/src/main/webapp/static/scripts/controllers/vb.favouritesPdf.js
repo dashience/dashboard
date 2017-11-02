@@ -42,7 +42,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
         });
         setInterval(function () {
             window.status = "done";
-        }, 14000);
+        }, 15000);
     });
 
 

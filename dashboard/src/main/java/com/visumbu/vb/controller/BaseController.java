@@ -6,7 +6,6 @@
 package com.visumbu.vb.controller;
 
 import com.visumbu.vb.bean.ReportPage;
-import javax.servlet.http.HttpServletRequest;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;

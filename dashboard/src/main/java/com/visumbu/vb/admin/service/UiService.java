@@ -7,7 +7,6 @@ package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
-import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.bean.DashboardTemplateBean;
 import com.visumbu.vb.bean.DataSetColumnBean;
@@ -51,7 +50,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,8 +60,6 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.lang3.SerializationUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -290,7 +286,7 @@ public class UiService {
                 endDate = null;
             }
         }
-        System.out.println("dateRange start Date-----> " + startDate);
+        System.out.println("dateRange Start Date-----> " + startDate);
         System.out.println("dateRange End Date-----> " + endDate);
         tabWidget.setTabId(uiDao.getTabById(tabId));
         tabWidget.setWidth(tabWidgetBean.getWidth());
@@ -404,7 +400,6 @@ public class UiService {
     }
 
     public TabWidget duplicateWidget(Integer widgetId, Integer tabId) {
-
         int id = 0;
         TabWidget tabWidgetBean = uiDao.getWidgetById(widgetId);
         TabWidget tabWidget = new TabWidget();
@@ -673,13 +668,6 @@ public class UiService {
 //        List<DataSource> dataSource = uiDao.read(DataSource.class);
 //        return dataSource;
 //    }
-    public List<DataSource> getDataSourceByUser(VbUser user) {
-        return uiDao.getDataSourceByUser(user);
-    }
-
-    public DataSource update(DataSource dataSource) {
-        return (DataSource) uiDao.update(dataSource);
-    }
 
 //    public List<DataSet> getDataSet() {
 //        List<DataSet> dataSet = uiDao.read(DataSet.class);
@@ -729,25 +717,6 @@ public class UiService {
 
     public DataSetColumns deleteDataSetColumns(Integer id) {
         return (DataSetColumns) uiDao.deleteDataSetColumns(id);
-    }
-
-    public DataSource deleteDataSource(Integer id) {
-
-        return (DataSource) uiDao.deleteDataSource(id);
-    }
-
-    public DataSource saveDataSource(DataSourceBean dataSource) {
-        try {
-            DataSource dbDataSource = new DataSource();
-            BeanUtils.copyProperties(dbDataSource, dataSource);
-            uiDao.create(dbDataSource);
-
-        } catch (IllegalAccessException ex) {
-            Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvocationTargetException ex) {
-            Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
     }
 
     public List<VbUser> getUser() {
@@ -1231,30 +1200,6 @@ public class UiService {
             uiDao.saveOrUpdate(templateTab);
         }
         return dashboardTemplate;
-    }
-
-    public DataSource createDataSourceForJoinDataSet(DataSourceBean dataSource) {
-        List<DataSource> joinDataSourceList = uiDao.getJoinDataSource(dataSource.getUserId());
-        System.out.println("dataSource" + dataSource.getName());
-        DataSource newDataSource = new DataSource();
-        if (joinDataSourceList.size() > 0) {
-            System.out.println("if update --->");
-            DataSource joinDataSource = joinDataSourceList.get(0);
-            newDataSource.setId(joinDataSource.getId());
-            newDataSource.setName(joinDataSource.getName());
-            newDataSource.setDataSourceType("join");
-            newDataSource.setUserId(joinDataSource.getUserId());
-            newDataSource.setAgencyId(joinDataSource.getAgencyId());
-            uiDao.saveOrUpdate(newDataSource);
-        } else {
-            System.out.println("else create ---> ");
-            newDataSource.setName(dataSource.getName());
-            newDataSource.setDataSourceType("join");
-            newDataSource.setUserId(dataSource.getUserId());
-            newDataSource.setAgencyId(dataSource.getAgencyId());
-            uiDao.saveOrUpdate(newDataSource);
-        }
-        return newDataSource;
     }
 
     public List<DashboardTemplate> getTemplateId(Integer accountId, Integer productId, Integer userId) {

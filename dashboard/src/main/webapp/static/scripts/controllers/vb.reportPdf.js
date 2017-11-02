@@ -54,5 +54,5 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
     });
     $scope.downloadUiPdf = function () {
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));
-    }
+    };
 });

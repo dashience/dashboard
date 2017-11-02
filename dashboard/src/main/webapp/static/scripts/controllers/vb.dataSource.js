@@ -5,17 +5,16 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             $scope.dataSourceTypes = response.dataSource;
         });
         function getItems() {
-            $http.get('admin/ui/dataSource').success(function (response) {
+            $http.get('admin/datasources/dataSource').success(function (response) {
                 $scope.dataSources = response;
             });
         }
         getItems();
-        
-            
-    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
-    var lan = $scope.agencyLanguage;
-    changeLanguage(lan);
+        $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+        var lan = $scope.agencyLanguage;
+        changeLanguage(lan);
 
         var lan = $scope.agencyLanguage;
         changeLanguage(lan);
@@ -70,23 +69,18 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             }
         };
         $scope.getDataSource = function (data) {
-            console.log(data);
             $("#dataSourceType").val(data.dataSourceType);
             localStorage.setItem("dataSourceType", $("#dataSourceType").val());
             $scope.dataSourceUrl = getDataSourceUrl(data.dataSourceType);
-            console.log(data);
             window.open($scope.dataSourceUrl, data.dataSourceType, "myWindow", 'width=800,height=600');
-            console.log($scope.dataSourceUrl);
             function getDataSourceUrl(dataSourceType)
             {
-                console.log(dataSourceType);
                 var url;
                 for (var i = 0; i < $scope.dataSourceTypes.length; i++)
                 {
                     if ($scope.dataSourceTypes[i].type === data.dataSourceType)
                     {
                         url = $scope.dataSourceTypes[i].url;
-                        console.log(url);
                         return url;
                     }
                 }
@@ -111,8 +105,6 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             });
         };
         $scope.saveDataSource = function (dataSource) {
-            console.log("Save DataSource");
-            console.log(dataSource)
             dataSource.code = $('#fbOauthToken').val();
             dataSource.accessToken = $('#fbAccessToken').val();
             var data = {
@@ -131,10 +123,11 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 code: dataSource.code ? dataSource.code : ''
             };
             if (data.name && data.dataSourceType) {
-                $http({method: dataSource.id ? 'PUT' : 'POST', url: 'admin/ui/dataSource', data: data}).success(function (response) {
+                $http({method: dataSource.id ? 'PUT' : 'POST', url: 'admin/datasources/dataSource', data: data}).success(function (response) {
                     getItems();
                 });
             }
+
             dataSource = "";
             $scope.dataSource = "";
             $scope.sourceFileName = "";
@@ -172,7 +165,7 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
         };
         $scope.deleteDataSource = function (dataSource, index) {
             if (dataSource.id) {
-                $http({method: 'DELETE', url: 'admin/ui/dataSource/' + dataSource.id}).success(function () {
+                $http({method: 'DELETE', url: 'admin/datasources/dataSource/' + dataSource.id}).success(function () {
                     $scope.dataSources.splice(index, 1);
                 });
             } else {
@@ -195,21 +188,20 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 $scope.showXLSFileUpload = false;
                 $scope.showCSVFileUpload = false;
             }
-        }
+        };
+
         $scope.uploadFile = function (dataSource) {
-            console.log($scope.editDataSourceType);
             if ($scope.editDataSourceType === true) {
                 $scope.saveDataSource(dataSource);
             } else {
                 var file = $scope.myFile;
-                console.log("scope file name-->");
                 $scope.sourceFileName = file.name;
                 var uploadUrl = "admin/ui/fileUpload";
                 uploadFileToUrl(file, uploadUrl, dataSource);
                 $scope.myFile = "";
             }
-
         };
+
         function uploadFileToUrl(file, uploadUrl, dataSource) {
             var fd = new FormData();
             fd.append('file', file);

@@ -178,7 +178,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         }
     };
 
-    $http.get('admin/ui/dataSource').success(function (response) {
+    $http.get('admin/dataSources/dataSource').success(function (response) {
         $scope.dataSources = response;
     });
 
