@@ -25,6 +25,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.templateId = $stateParams.templateId;
     $scope.widgetDataSetColumnsDefs = [];
 
+
     $scope.agencyLanguage = $stateParams.lan;//localStorageService.get("agencyLanguage");//$cookies.getObject("agencyLanguage");
 
     var lan = $scope.agencyLanguage ? $scope.agencyLanguage : null;
