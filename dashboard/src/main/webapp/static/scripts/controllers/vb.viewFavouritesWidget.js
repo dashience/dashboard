@@ -1,4 +1,4 @@
-app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state) {
+app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state, $cookies, $translate) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.productId = $stateParams.productId;
@@ -7,12 +7,22 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.favouriteId = $stateParams.favouriteId;
     $scope.favouritesWidgets = [];
     $scope.favouriteName = $stateParams.favouriteName;
+
+    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+
     $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
         var widgetItems = [];
         widgetItems = response;
         $http.get("admin/tag/getAllFav/").success(function (favResponse) {
             widgetItems.forEach(function (value, key) {
-                favWidget = $.grep(favResponse, function (b) {
+               var favWidget = $.grep(favResponse, function (b) {
                     return b.id === value.widgetId.id;
                 });
                 if (favWidget.length > 0) {
@@ -21,9 +31,20 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
                     value.widgetId.isFav = false;
                 }
             });
+            $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+                $scope.userChartColors = response;
+                var widgetColors;
+                if (response.optionValue) {
+                    widgetColors = response.optionValue.split(',');
+                }
+                widgetItems.forEach(function (value, key) {
+                    value.widgetId.chartColors = widgetColors;
+                });
+                $scope.favouritesWidgets = widgetItems;
+            }).error(function () {
+                $scope.favouritesWidgets = widgetItems;
+            });
         });
-
-        $scope.favouritesWidgets = widgetItems;
     });
 
     $scope.toggleFavourite = function (favouritesWidget, index) {
@@ -67,33 +88,35 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
         } else {
             widget.width = 3;
         }
-        saveWidgetSize(widget, expandchart)
+        saveWidgetSize(widget, expandchart);
     };
 
     function saveWidgetSize(widget, expandchart) {
         $timeout(function () {
             widget.chartType = expandchart;
-            var data = {
-                id: widget.id,
-                chartType: widget.chartType,
-                widgetTitle: widget.widgetTitle,
-                widgetColumns: widget.columns,
-                dataSourceId: widget.dataSourceId.id,
-                dataSetId: widget.dataSetId.id,
-                tableFooter: widget.tableFooter,
-                zeroSuppression: widget.zeroSuppression,
-                maxRecord: widget.maxRecord,
-                dateDuration: widget.dateDuration,
-                content: widget.content,
-                width: widget.width,
-                jsonData: widget.jsonData,
-                queryFilter: widget.queryFilter
-            };
-            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
+            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/editWidgetSize/' + widget.id + "?width=" + widget.width}).success(function (response) {
             });
+//            var data = {
+//                id: widget.id,
+//                chartType: widget.chartType,
+//                widgetTitle: widget.widgetTitle,
+//                widgetColumns: widget.columns,
+//                dataSourceId: widget.dataSourceId.id,
+//                dataSetId: widget.dataSetId.id,
+//                tableFooter: widget.tableFooter,
+//                zeroSuppression: widget.zeroSuppression,
+//                maxRecord: widget.maxRecord,
+//                dateDuration: widget.dateDuration,
+//                content: widget.content,
+//                width: widget.width,
+//                jsonData: widget.jsonData,
+//                queryFilter: widget.queryFilter
+//            };
+//            $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
+//            });
         }, 50);
     }
-    
+
     $scope.deleteReportWidget = function (favouritesWidget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/ui/dbWidget/' + favouritesWidget.widgetId.id}).success(function (response) {
             $scope.favouritesWidgets.splice(index, 1);
@@ -164,5 +187,30 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     };
     $scope.setFunnelFn = function (funnelFn) {
         $scope.directiveFunnelFn = funnelFn;
+    };
+
+    $scope.moveWidget = function (list, from, to) {
+        list.splice(to, 0, list.splice(from, 1)[0]);
+        return list;
+    };
+
+    $scope.onDropComplete = function (index, favWidget, evt) {
+        if (favWidget !== "" && favWidget !== null) {
+            var otherObj = $scope.favouritesWidgets[index];
+            var otherIndex = $scope.favouritesWidgets.indexOf(favWidget);
+            $scope.favouritesWidgets = $scope.moveWidget($scope.favouritesWidgets, otherIndex, index);
+//            $scope.favouritesWidgets[index] = favWidget;
+//            $scope.favouritesWidgets[otherIndex] = otherObj;
+            var favWidgetOrder = $scope.favouritesWidgets.map(function (value, key) {
+                if (!value) {
+                    return;
+                }
+                return value.id;
+            }).join(',');
+            if (favWidgetOrder) {
+                console.log(favWidgetOrder)
+                $http({method: 'GET', url: 'admin/tag/favWidgetUpdateOrder/' + favWidget.id + "?widgetOrder=" + favWidgetOrder});
+            }
+        }
     };
 });

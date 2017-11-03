@@ -30,6 +30,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "WidgetTag.findAll", query = "SELECT w FROM WidgetTag w")
     , @NamedQuery(name = "WidgetTag.findByWidgetId", query = "SELECT w FROM WidgetTag w WHERE w.widgetId.id = :id")
+    , @NamedQuery(name = "WidgetTag.findByWidgetOrder", query = "SELECT t FROM WidgetTag t WHERE t.widgetOrder = :widgetOrder")
     , @NamedQuery(name = "WidgetTag.findById", query = "SELECT w FROM WidgetTag w WHERE w.id = :id")})
 public class WidgetTag implements Serializable {
 
@@ -42,6 +43,8 @@ public class WidgetTag implements Serializable {
     @Size(max = 45)
     @Column(name = "status")
     private String status;
+    @Column(name = "widget_order")
+    private Integer widgetOrder;
     @JoinColumn(name = "widget_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private TabWidget widgetId;
@@ -97,6 +100,14 @@ public class WidgetTag implements Serializable {
 
     public void setUserId(VbUser userId) {
         this.userId = userId;
+    }
+
+    public Integer getWidgetOrder() {
+        return widgetOrder;
+    }
+
+    public void setWidgetOrder(Integer widgetOrder) {
+        this.widgetOrder = widgetOrder;
     }
 
     @Override

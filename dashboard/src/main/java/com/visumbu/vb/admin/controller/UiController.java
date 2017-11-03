@@ -51,6 +51,7 @@ import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
 import com.visumbu.vb.model.TemplateTabs;
 import com.visumbu.vb.model.Timezone;
+import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.WidgetTag;
 
 import com.visumbu.vb.utils.Rest;
@@ -65,6 +66,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.eclipse.persistence.annotations.ReadOnly;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -158,7 +160,7 @@ public class UiController extends BaseController {
         return uiService.getAgencyProductTab(agencyProductId, accountId, userId);
     }
 
-    @RequestMapping(value = "dbTabs/{templateId}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "templateTabs/{templateId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getTabByTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer templateId) {
         return uiService.getTabByTemplateId(templateId);
@@ -431,6 +433,21 @@ public class UiController extends BaseController {
         return uiService.create(dataSet, joinDataSetId);
     }
 
+    @RequestMapping(value = "saveDataSetColumnsForDataSet/{dataSetId}", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    List<DataSetColumns> saveDataSetColumnsForDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody List<DataSetColumnBean> dataSetColumnBeans, @PathVariable Integer dataSetId) {
+        DataSet dataSet = uiService.getDataSetById(dataSetId);
+        return uiService.saveDataSetColumns(dataSet, null, dataSetColumnBeans);
+    }
+
+    @RequestMapping(value = "saveDataSetColumnsForWidget/{widgetId}", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    List<DataSetColumns> saveDataSetColumnsForWidget(HttpServletRequest request, HttpServletResponse response, @RequestBody List<DataSetColumnBean> dataSetColumnBeans, @PathVariable Integer widgetId) {
+        TabWidget tabWidget = uiService.getWidgetById(widgetId);
+        DataSet dataSet = tabWidget.getDataSetId();
+        return uiService.saveDataSetColumns(dataSet, tabWidget, dataSetColumnBeans);
+    }
+
 //    @RequestMapping(value = "dataSet/enableOrDisable", method = RequestMethod.PUT, produces = "application/json")
 //    public @ResponseBody
 //    DataSet updateDataSetEnableDisable(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSet dataSet) {
@@ -453,6 +470,13 @@ public class UiController extends BaseController {
     List<DataSetColumns> createWidgetColumn(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId, @RequestBody DataSetColumnBean dataSetColumnBean) {
         VbUser user = userService.findByUsername(getUser(request));
         return uiService.createWidgetColumn(dataSetColumnBean, user, widgetId);
+    }
+    
+    @RequestMapping(value = "createDataSetColumnByDataSet", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DataSetColumns createDataSetColumnByDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSetColumnBean dataSetColumnBean) {
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.createDataSetColumnByDataSet(dataSetColumnBean, user);
     }
 
     @RequestMapping(value = "dataSetFormulaColumns/{dataSetColumnId}", method = RequestMethod.DELETE, produces = "application/json")
@@ -709,6 +733,34 @@ public class UiController extends BaseController {
         return uiService.createDashboardTemplate(dashboardTemplate, user, productId);
     }
 
+    @RequestMapping(value = "updateChartColor", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    UserPreferences addChartColor(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
+        VbUser user = userService.findByUsername(getUser(request));
+        userPreferences.setUserId(user);
+        return uiService.addChartColor(userPreferences);
+    }
+
+    @RequestMapping(value = "updateChartColor", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    UserPreferences updateChartColor(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
+        return uiService.updateChartColor(userPreferences);
+    }
+
+    @RequestMapping(value = "getChartColorByUserId", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    UserPreferences getChartColorByUserId(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.getChartColorByUserId(user);
+    }
+
+    @RequestMapping(value = "getChartColorByUserId/{userId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    UserPreferences getChartColorByUserId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer userId) {
+//        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.getChartColorById(userId);
+    }
+
     @RequestMapping(value = "getTemplateId/{accountId}/{productId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List<DashboardTemplate> getTemplateId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer accountId, @PathVariable Integer productId) {
@@ -756,6 +808,38 @@ public class UiController extends BaseController {
     public @ResponseBody
     void deleteUserTemplate(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer templateId) {
         uiService.deleteUserTemplate(templateId);
+    }
+
+    @RequestMapping(value = "updateThemeSettings", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    UserPreferences updateThemeSettings(HttpServletRequest request, HttpServletResponse response, @RequestBody UserPreferences userPreferences) {
+        VbUser user = userService.findByUsername(getUser(request));
+        userPreferences.setUserId(user);
+        return uiService.updateThemeSettings(userPreferences);
+    }
+
+    @RequestMapping(value = "getThemeByUserId", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    UserPreferences getThemeByUserId(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        return uiService.getThemeByUserId(user);
+    }
+
+    @RequestMapping(value = "deleteDerivedColumn/{widgetId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    void deleteDerivedColumn(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer widgetId) {
+        String deleteColumns = request.getParameter("deleteColumns");
+        uiService.deleteDerivedColumn(deleteColumns, widgetId);
+    }
+
+    @RequestMapping(value = "dashboardTemplates/{productId}/{userId}/{agencyId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List<DashboardTemplate> getTemplates(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId,@PathVariable Integer userId,@PathVariable Integer agencyId) {
+//        VbUser user = userService.findByUsername(getUser(request));
+//        Agency agency = user.getAgencyId();
+        AgencyProduct agencyProduct = uiService.getAgencyProductById(productId);
+//        Agency agency = agencyProduct.getAgencyId();
+        return uiService.getTemplates(userId, agencyId, agencyProduct);
     }
 
     @ExceptionHandler

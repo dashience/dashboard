@@ -23,9 +23,11 @@ public class ColumnDef {
     private String displayName;
     private Integer groupPriority;
     private String displayFormat;
+    private String dataFormat;
     private String functionName;
     private String expression;
     private String status;
+    private String category;
     private VbUser userId;
     private TabWidget widgetId;
 
@@ -208,6 +210,14 @@ public class ColumnDef {
         this.status = status;
     }
 
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public VbUser getUserId() {
         return userId;
     }
@@ -224,9 +234,17 @@ public class ColumnDef {
         this.widgetId = widgetId;
     }
 
-    @Override
-    public String toString() {
-        return "ColumnDef{" + "id=" + id + ", fieldName=" + fieldName + ", fieldType=" + fieldType + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", agregationFunction=" + agregationFunction + ", displayName=" + displayName + ", groupPriority=" + groupPriority + ", displayFormat=" + displayFormat + ", functionName=" + functionName + ", expression=" + expression + ", status=" + status + ", userId=" + userId + ", widgetId=" + widgetId + '}';
+    public String getDataFormat() {
+        return dataFormat;
     }
 
+    public void setDataFormat(String dataFormat) {
+        this.dataFormat = dataFormat;
+    }
+
+    @Override
+    public String toString() {
+        return "ColumnDef{" + "id=" + id + ", fieldName=" + fieldName + ", fieldType=" + fieldType + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", agregationFunction=" + agregationFunction + ", displayName=" + displayName + ", groupPriority=" + groupPriority + ", displayFormat=" + displayFormat + ", dataFormat=" + dataFormat + ", functionName=" + functionName + ", expression=" + expression + ", status=" + status + ", userId=" + userId + ", widgetId=" + widgetId + '}';
+    }
+    
 }

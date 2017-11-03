@@ -4,17 +4,17 @@
             <table class="table table-bordered table-responsive table-scheduler">
                 <thead>
                     <tr>
-                        <th>S.No</th>
-                        <th>Schedule Name</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
+                        <th translate>S.No</th>
+                        <th translate>Schedule Name</th>
+                        <th translate>Start Date</th>
+                        <th translate>End Date</th>
                         <!--<th>Next Execution Time</th>-->
-                        <th>Last Execution Status</th>
-                        <th>Type</th>
-                        <th>Account Name</th>
-                        <th>Enable/Disable</th>
+                        <th translate>Last Execution Status</th>
+                        <th translate>Type</th>
+                        <th translate>Account Name</th>
+                        <th translate>Enable/Disable</th>
                         <th>
-                            <button class="btn btn-success btn-xs" ui-sref="index.schedulerIndex.editOrNewScheduler({accountId: accountId, accountName: accountName, schedulerId: 0, startDate: startDate, endDate: endDate})"><i class="fa fa-plus"></i></button>
+                            <button class="btn btn-success btn-xs" ui-sref="index.schedulerIndex.editOrNewScheduler({lan: agencyLanguage, accountId: accountId, accountName: accountName, schedulerId: 0, startDate: startDate, endDate: endDate})"><i class="fa fa-plus"></i></button>
                             <!--<a class="btn btn-xs" href="static/views/demo/testPdf.html" target="_blank">pdf</a>-->
                         </th>
                     </tr>
@@ -40,7 +40,7 @@
                             </div>
                         </td>
                         <td>                           
-                            <button class="btn btn-default btn-xs" ui-sref="index.schedulerIndex.editOrNewScheduler({accountId: accountId, accountName: accountName, schedulerId: scheduler.id, startDate: startDate, endDate: endDate})"><span class="fa fa-pencil"></span></button>
+                            <button class="btn btn-default btn-xs" ui-sref="index.schedulerIndex.editOrNewScheduler({lan: agencyLanguage, accountId: accountId, accountName: accountName, schedulerId: scheduler.id, startDate: startDate, endDate: endDate})"><span class="fa fa-pencil"></span></button>
                             <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteScheduler{{scheduler.id}}"><span class="fa fa-trash"></span></button>
 
                             <div class="modal hmodal-success" id="deleteScheduler{{scheduler.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
@@ -49,14 +49,14 @@
                                         <div class="color-line"></div>
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h4 class="modal-title">Delete</h4>
+                                            <h4 class="modal-title" translate>Delete</h4>
                                             <small class="font-bold"></small>
                                         </div>
                                         <div class="modal-body">
                                             <form class="form-horizontal" role="form">
                                                 <div class="form-group">
                                                     <div class="col-sm-12  col-md-12">
-                                                        <span>Want to delete ?</span>
+                                                        <span translate>Want to delete?</span>
                                                     </div>
                                                 </div>
                                             </form>
@@ -66,11 +66,11 @@
                                                 <button type="button" class="btn btn-primary btn-xs " 
                                                         ng-click="deleteScheduler(scheduler, $index)" 
                                                         data-dismiss="modal">
-                                                    <span class="fa fa-trash"></span> Yes
+                                                    <span class="fa fa-trash"></span> <span translate>Yes</span>
                                                 </button>
                                                 <button type="button" class="btn btn-danger btn-xs " 
                                                         data-dismiss="modal">
-                                                    <span class="fa fa-times"></span> No
+                                                    <span class="fa fa-times"></span> <span translate>No</span>
                                                 </button>
                                             </div>
                                         </div>
@@ -87,13 +87,13 @@
                                     <table class="table table-bordered text-center">
                                         <thead>
                                             <tr>
-                                                <th>S.No</th>
-                                                <th>Scheduler Name</th>
-                                                <th>Start Time</th>
-                                                <th>End Time</th>
-                                                <th>To</th>
-                                                <th>Status</th>
-                                                <th>File Name</th>
+                                                <th translate>S.No</th>
+                                                <th translate>Scheduler Name</th>
+                                                <th translate>Start Time</th>
+                                                <th translate>End Time</th>
+                                                <th translate>To</th>
+                                                <th translate>Status</th>
+                                                <th translate>File Name</th>
                                             </tr>                                            
                                         </thead>
                                         <tbody>

@@ -14,6 +14,7 @@ import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyLicence;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.AgencyProperty;
 import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dealer;
@@ -85,13 +86,25 @@ public class UserService {
         return null;
     }
 
+    public Agency getAgencyByDomain(String dashiencePath) {
+        return userDao.findAgencyByDashiencePath(dashiencePath);
+    }
+
     public LoginUserBean authenicate(LoginUserBean userBean) {
-        List<VbUser> users = userDao.findByUserName(userBean.getUsername());
+        String dashiencePath = userBean.getDashiencePath();
+        VbUser user = null;
+        if (dashiencePath == null || dashiencePath.equalsIgnoreCase("")) {
+            user = userDao.findAdminUserByName(userBean.getUsername());
+            userBean.setIsAdmin("true");
+        } else {
+            Agency agency = userDao.findAgencyByDashiencePath(dashiencePath);
+            user = userDao.findUser(dashiencePath, agency);
+        }
+
         LoginUserBean loginUserBean = null;
-        if (!users.isEmpty()) {
-            VbUser user = users.get(0);
-            if (user.getPassword().equals(userBean.getPassword()) &&
-                    user.getUserName().equals(userBean.getUsername())) {
+        if (user != null) {
+            if (user.getPassword().equals(userBean.getPassword())
+                    && user.getUserName().equals(userBean.getUsername())) {
                 user.setFailedLoginCount(0);
                 user.setLastLoginTime(new Date());
                 loginUserBean = toLoginUserBean(user);
@@ -100,7 +113,6 @@ public class UserService {
                 loginUserBean.setAuthenticated(Boolean.TRUE);
             } else {
                 if (user != null) {
-                    user.setFailedLoginCount(0);
                     user.setFailedLoginCount(user.getFailedLoginCount() + 1);
                     loginUserBean = toLoginUserBean(user);
                 }
@@ -116,7 +128,7 @@ public class UserService {
     }
 
     private AgencyBean toAgencyBean(Agency agency) {
-        if(agency == null) {
+        if (agency == null) {
             return null;
         }
         AgencyBean agencyBean = new AgencyBean();
@@ -127,7 +139,7 @@ public class UserService {
         agencyBean.setId(agency.getId());
         return agencyBean;
     }
-    
+
     private LoginUserBean toLoginUserBean(VbUser teUser) {
         LoginUserBean userBean = new LoginUserBean();
         userBean.setUsername(teUser.getUserName());
@@ -325,15 +337,14 @@ public class UserService {
     public List<Account> getAccount(Agency agency) {
         return userDao.getAccountByAgency(agency);
     }
-    
+
     public String getAccountName(Integer id) {
         return userDao.getAccountName(id);
     }
-    
+
 //    public String getProductName(Integer id) {
 //        return userDao.getProductName(id);
 //    }
-    
     public AgencyProduct createAgencyProduct(AgencyProduct agencyProduct) {
         System.out.println("==================================>");
         System.out.println(agencyProduct);
@@ -356,23 +367,40 @@ public class UserService {
         return userDao.deleteAgencyProduct(agencyProductId);
     }
 
-     public AgencySettings createAgencySettings(AgencySettings agencySettings) {
-         System.out.println(agencySettings.getAgencyId()+"....."+agencySettings.getCurrencyId()+"....."+agencySettings.getTimeZoneId());
+    public AgencySettings createAgencySettings(AgencySettings agencySettings) {
+        System.out.println(agencySettings.getAgencyId() + "....." + agencySettings.getCurrencyId() + "....." + agencySettings.getTimeZoneId());
         return (AgencySettings) userDao.create(agencySettings);
     }
-     
-     public AgencySettings updateAgencySettings(AgencySettings agencysettings) {
+
+    public AgencySettings updateAgencySettings(AgencySettings agencysettings) {
         return (AgencySettings) userDao.update(agencysettings);
     }
-     
+
     public AgencySettings getAgencySettingsById(Integer agencyId) {
         return userDao.getAgencySettingsById(agencyId);
     }
 
-     public Currency getCurrencyById(Integer id) {
+    public Currency getCurrencyById(Integer id) {
         return (Currency) userDao.read(Property.class, id);
     }
-     public TimeZone getTimezoneById(Integer id) {
+
+    public TimeZone getTimezoneById(Integer id) {
         return (TimeZone) userDao.read(Property.class, id);
+    }
+
+    public List<AgencyProperty> getAgencyPropertyById(Integer agencyId) {
+        return userDao.getAgencyPropertyById(agencyId);
+    }
+
+    public AgencyProperty createAgencyProperty(AgencyProperty agencyProperty) {
+        return (AgencyProperty) userDao.create(agencyProperty);
+    }
+
+    public AgencyProperty updateAgencyProperty(AgencyProperty agencyProperty) {
+        return (AgencyProperty) userDao.update(agencyProperty);
+    }
+
+    public AgencyProperty deleteAgencyPropertyId(Integer agencyPropertyId) {
+        return userDao.deleteAgencyPropertyId(agencyPropertyId);
     }
 }

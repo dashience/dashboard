@@ -2,7 +2,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
     return{
         restrict: 'A',
         scope: {
-            path: '@'
+            path: '@',
+            getDataSetColumns: '&'
 //            dataSetId: '@'
                     // widgetColumns: '@',
                     //setTableFn: '&',
@@ -10,6 +11,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
         },
         template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
                 '<div ng-if="ajaxLoadingCompleted">' +
+                '<div class="message" ng-if="showMessage">No Data Found</div>' +
                 '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
                 '<button class="btn btn-warning btn-xs" title="Delete Derived Columns" ng-click="resetDataSetColumn()">Reset</button>' +
                 '<button class="btn btn-success btn-xs" title="Add Derived Column" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
@@ -122,11 +124,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                '<i class="fa fa-minus-circle" style="cursor:pointer" ng-click="clearFunction(dataSetColumn)"></i>' +
 //                '</div>' +
 //                '</div>' +
-
-
-
-
-
                 '<div class="form-group">' +
                 '<label class="col-md-3">Expression</label>' +
                 '<div class="col-md-8">' +
@@ -357,13 +354,14 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 {name: 'Custom', value: 'custom'}
             ];
             scope.loadingTable = true;
+
             var dataSourcePath = JSON.parse(scope.path)
             var url = "admin/proxy/getData?";
             var dataSourcePassword = '';
             if (dataSourcePath.dataSourceId != null) {
-                if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
-                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-                }
+//                if (dataSourcePath.dataSourceId.dataSourceType == "sql") {
+//                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//                }
 
                 if (dataSourcePath.dataSourceId.password) {
                     dataSourcePassword = dataSourcePath.dataSourceId.password;
@@ -372,31 +370,61 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 }
             }
             scope.format = function (column, value) {
-                if (!value) {
-                    return "-";
-                }
-                if (column.displayFormat) {
-                    if (Number.isNaN(value)) {
-                        return "-";
+//                if (column.fieldType === "date") {
+//                    return value;
+//                }
+//                if (!value) {
+//                    return "-";
+//                }
+//                
+//                if (column.displayFormat) {
+//                    if (Number.isNaN(value)) {
+//                        console.log("NAN");
+//                        return "-";
+//                    }
+//                    if (column.displayFormat.indexOf("%") > -1) {
+//                        return d3.format(column.displayFormat)(value / 100);
+//                    }
+//                    return d3.format(column.displayFormat)(value);
+//                }
+//                return value;
+//                }
+                var strValue = value;
+                if (strValue) {
+                    if (strValue.toString().indexOf(',') !== -1) {
+                        value = value.replace(/\,/g, '');
                     }
+                }
+                if (column.fieldType === "date") {
+                    return value;
+                }
+                if (column.fieldType === "string") {
+                    return value;
+                }
+                if (column.displayFormat == null) {
+                    return value;
+                }
+                if (column && column.displayFormat) {
                     if (column.displayFormat.indexOf("%") > -1) {
-                        // return d3.format(column.displayFormat)(value / 100);
+                        return d3.format(column.displayFormat)(value / 100);
+                    } else if (column.displayFormat == 'H:M:S') {
+                        return formatBySecond(parseInt(value))
+                    } else {
+                        return d3.format(column.displayFormat)(value);
                     }
-                    return d3.format(column.displayFormat)(value);
                 }
-                return value;
             };
-            var setTimeSegment, setProductSegment;
-            if (dataSourcePath.timeSegment) {
-                setTimeSegment = dataSourcePath.timeSegment.type;
-            } else {
-                setTimeSegment = 'none';
-            }
-            if (dataSourcePath.productSegment) {
-                setProductSegment = dataSourcePath.productSegment.type;
-            } else {
-                setProductSegment = 'none';
-            }
+//            var setTimeSegment, setProductSegment;
+//            if (dataSourcePath.timeSegment) {
+//                setTimeSegment = dataSourcePath.timeSegment.type;
+//            } else {
+//                setTimeSegment = 'none';
+//            }
+//            if (dataSourcePath.productSegment) {
+//                setProductSegment = dataSourcePath.productSegment.type;
+//            } else {
+//                setProductSegment = 'none';
+//            }
             var connectionUrl = null;
             var driver = null;
             var dataSourceType = null;
@@ -409,6 +437,26 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 dataSourceType = dataSourcePath.dataSourceId.dataSourceType;
                 userName = dataSourcePath.dataSourceId.userName;
             }
+            var setProductSegment;
+            var setTimeSegment;
+            var setNetworkType;
+            if (dataSourcePath.productSegment && dataSourcePath.productSegment.type) {
+                setProductSegment = dataSourcePath.productSegment.type;
+            } else {
+                setProductSegment = dataSourcePath.productSegment;
+            }
+
+            if (dataSourcePath.timeSegment && dataSourcePath.timeSegment.type) {
+                setTimeSegment = dataSourcePath.timeSegment.type;
+            } else {
+                setTimeSegment = dataSourcePath.timeSegment;
+            }
+
+            if (dataSourcePath.networkType && dataSourcePath.networkType.type) {
+                setNetworkType = dataSourcePath.networkType.type;
+            } else {
+                setNetworkType = dataSourcePath.networkType;
+            }
             scope.dataSetItems = function () {
                 $http.get(url + 'connectionUrl=' + connectionUrl +
                         "&dataSourceId=" + dataSourceId +
@@ -417,7 +465,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         "&accountId=" + $stateParams.accountId +
                         "&dataSetReportName=" + dataSourcePath.reportName +
                         "&timeSegment=" + setTimeSegment +
-                        "&filter=" + dataSourcePath.networkType +
+                        "&filter=" + setNetworkType +
                         "&productSegment=" + setProductSegment +
                         "&driver=" + driver +
                         "&dataSourceType=" + dataSourceType +
@@ -429,13 +477,28 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         '&url=' + dataSourcePath.url +
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                     scope.dataSetColumns = [];
+                    console.log(response.columnDefs);
+                    scope.getDataSetColumns({dataSetColumnDef: response.columnDefs});
+                    if (!response) {
+                        scope.ajaxLoadingCompleted = true;
+                        scope.loadingTable = false;
+                        scope.showMessage = true;
+                        return;
+                    }
                     if (dataSourcePath.id == null) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
                         scope.dataSetColumns = response.columnDefs;
+                        scope.getDataSetColumns({dataSetColumnDef: scope.dataSetColumns});
                     }
                     scope.tableColumns = response.columnDefs;
-                    scope.tableRows = response.data.slice(0, 5);
+                    if (response.data == null || response.data.length == 0) {
+                        scope.ajaxLoadingCompleted = true;
+                        scope.loadingTable = false;
+                        scope.showMessage = true;
+                    } else {
+                        scope.tableRows = response.data.slice(0, 5);
+                    }
                     function dayOfWeekAsString(dayIndex) {
                         return ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][dayIndex];
                     }
@@ -723,7 +786,6 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                     scope.dataSetItems();
                 });
             };
-//            };
 
             scope.editDataset = function (dataSetColumn) {
                 if (dataSetColumn.customStartDate == "" && dataSetColumn.customStartDate == null && dataSetColumn.customEndDate == "" && dataSetColumn.customEndDate == null) {
@@ -773,11 +835,11 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                             // [0] the full match, [1] the first capture group => username
                             // Prepare the fake data
                             var listData = scope.tableColumns.filter(function (element) {
-                                return element.displayName.substr(0, match[1].length).toLowerCase() === match[1].toLowerCase()
-                                        && element.displayName.length > match[1].length;
+                                return element.fieldName.substr(0, match[1].length).toLowerCase() === match[1].toLowerCase()
+                                        && element.fieldName.length > match[1].length;
                             }).map(function (element) {
                                 return {
-                                    display: element.displayName, // This gets displayed in the dropdown
+                                    display: element.fieldName, // This gets displayed in the dropdown
                                     item: element // This will get passed to onSelect
                                 };
                             });
@@ -792,10 +854,4 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
             };
         }
     };
-}); /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
-
+});

@@ -3,7 +3,7 @@
         <div class="panel-body header-title">
             <div id="hbreadcrumb" class="pull-right">
             </div>
-            <h2 class="font-bold m-b-xs ng-binding">
+            <h2 class="font-bold m-b-xs ng-binding" translate>
                 Field Settings
             </h2>               
         </div>
@@ -15,22 +15,22 @@
             <table class="table table-bordered table-responsive table-scheduler">
                 <thead>
                     <tr>
-                        <th>
+                        <th translate>
                             Field Name
                         </th>
-                        <th>
-                            Display Format
-                        </th>
-                        <th>
-                            Data Format
-                        </th>
-                        <th>
+                        <th translate>
                             Data Type
                         </th>
-                        <th>
+                        <th translate>
+                            Display Format
+                        </th>
+                        <th translate>
+                            Data Format
+                        </th>
+                        <th translate>
                             Display Name
                         </th>
-                        <th>
+                        <th translate>
                             Aggregation Function
                         </th>
                         <th><button class="btn btn-success btn-xs" ng-click="addFieldSettings()"><i class="fa fa-plus" aria-hidden="true"></i></button></th>
@@ -42,6 +42,17 @@
                             <div ng-hide="field.isEdit">{{field.fieldName}}</div>
                             <div ng-show="field.isEdit">
                                 <input type="text" ng-model="field.fieldName" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div ng-hide="field.isEdit">{{field.dataType}}</div> 
+                            <div ng-show="field.isEdit">
+                                <select class="form-control" ng-model="field.dataType">
+                                    <option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">
+                                        {{fieldType.name}}
+                                    </option>
+                                </select>
+                                <!--<input type="text" ng-model="field.dataType" class="form-control">-->
                             </div>
                         </td>
                         <td>
@@ -57,23 +68,13 @@
                         <td>
                             <div ng-hide="field.isEdit">{{field.dataFormat}}</div> 
                             <div ng-show="field.isEdit">
-                                <select class="form-control" ng-model="field.dataFormat" 
-                                        ng-options="dataFormat.name for dataFormat in formats track by dataFormat.value"
-                                        ng-change="selectDataFormat(field)">
-                                </select>
+                                <input type="text" ng-model="field.dataFormat" class="form-control">
+                                <!--                                <select class="form-control" ng-model="field.dataFormat" 
+                                                                        ng-options="dataFormat.name for dataFormat in formats track by dataFormat.value"
+                                                                        ng-change="selectDataFormat(field)">
+                                                                </select>-->
                             </div>
-                        </td>
-                        <td>
-                            <div ng-hide="field.isEdit">{{field.dataType}}</div> 
-                            <div ng-show="field.isEdit">
-                                <select class="form-control" ng-model="field.dataType">
-                                    <option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">
-                                        {{fieldType.name}}
-                                    </option>
-                                </select>
-                                <!--<input type="text" ng-model="field.dataType" class="form-control">-->
-                            </div>
-                        </td>
+                        </td>                        
                         <td>
                             <div ng-hide="field.isEdit">{{field.displayName}}</div>
                             <div ng-show="field.isEdit">
@@ -96,7 +97,7 @@
                                 <button class="btn btn-default btn-xs" ng-click="updateField(field);field.isEdit = true;">
                                     <i class="fa fa-pencil"></i>
                                 </button>
-                                <button class="btn btn-default btn-xs" ng-click="deleteField(field)">
+                                <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteFieldSettings" ng-click="deleteFieldSettingsItem(field,$index,'save')">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
@@ -104,7 +105,7 @@
                                 <button class="btn btn-default btn-xs" ng-click="saveField(field)">
                                     <i class="fa fa-save"></i>
                                 </button>
-                                <button class="btn btn-default btn-xs" ng-click="deleteFieldSettings($index)">
+                                <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteFieldSettings" ng-click="deleteFieldSettingsItem(field,$index,'create')">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
@@ -112,6 +113,41 @@
                     </tr>
                 </tbody>
             </table>
+                                <div class="modal hmodal-success" id="deleteFieldSettings" tabindex="1" role="dialog"  aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="color-line"></div>
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                <h4 class="modal-title">Delete</h4>
+                                                <small class="font-bold"></small>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form class="form-horizontal" role="form">
+                                                    <div class="form-group">
+                                                        <div class="col-sm-12  col-md-12">
+                                                            <span>Want to delete ?</span>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <div class="col-sm-12">
+                                                    <button type="button" class="btn btn-primary btn-xs "
+                                                            
+                                                            ng-click="deleteField(deleteFieldItems)"
+                                                            data-dismiss="modal">
+                                                        <span class="fa fa-trash"></span> Yes
+                                                    </button>
+                                                    <button type="button" class="btn btn-danger btn-xs "
+                                                            data-dismiss="modal">
+                                                        <span class="fa fa-times"></span> No
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
         </div>
     </div>
 </section>

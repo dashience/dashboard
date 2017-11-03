@@ -70,8 +70,14 @@ public class DataSetColumns implements Serializable {
     @Column(name = "status")
     private String status;
     @Size(max = 255)
+    @Column(name = "delete_status")
+    private String deleteStatus;
+    @Size(max = 255)
     @Column(name = "display_format")
     private String displayFormat;
+    @Size(max = 255)
+    @Column(name = "data_format")
+    private String dataFormat;
     @Size(max = 255)
     @Column(name = "function_name")
     private String functionName;
@@ -100,6 +106,9 @@ public class DataSetColumns implements Serializable {
     private Integer sortPriority;
     @Column(name = "last_nyears")
     private Integer lastNyears;
+    @Size(max = 255)
+    @Column(name = "category")
+    private String Category;
     @JoinColumn(name = "data_set_id", referencedColumnName = "id")
     @ManyToOne
     private DataSet dataSetId;
@@ -173,6 +182,22 @@ public class DataSetColumns implements Serializable {
         this.displayFormat = displayFormat;
     }
 
+    public String getDeleteStatus() {
+        return deleteStatus;
+    }
+
+    public void setDeleteStatus(String deleteStatus) {
+        this.deleteStatus = deleteStatus;
+    }
+
+    public String getDataFormat() {
+        return dataFormat;
+    }
+
+    public void setDataFormat(String dataFormat) {
+        this.dataFormat = dataFormat;
+    }
+    
     public String getFunctionName() {
         return functionName;
     }
@@ -285,6 +310,14 @@ public class DataSetColumns implements Serializable {
         this.widgetId = widgetId;
     }
 
+    public String getCategory() {
+        return Category;
+    }
+
+    public void setCategory(String Category) {
+        this.Category = Category;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -307,7 +340,7 @@ public class DataSetColumns implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.DataSetColumns[ id=" + id + " ]";
+        return "DataSetColumns{" + "id=" + id + ", displayName=" + displayName + ", fieldName=" + fieldName + ", fieldType=" + fieldType + ", expression=" + expression + ", status=" + status + ", deleteStatus=" + deleteStatus + ", displayFormat=" + displayFormat + ", dataFormat=" + dataFormat + ", functionName=" + functionName + ", columnName=" + columnName + ", baseField=" + baseField + ", dateRangeName=" + dateRangeName + ", customStartDate=" + customStartDate + ", customEndDate=" + customEndDate + ", lastNdays=" + lastNdays + ", lastNweeks=" + lastNweeks + ", lastNmonths=" + lastNmonths + ", sortPriority=" + sortPriority + ", lastNyears=" + lastNyears + ", Category=" + Category + ", dataSetId=" + dataSetId + ", userId=" + userId + ", widgetId=" + widgetId + '}';
     }
 
 }

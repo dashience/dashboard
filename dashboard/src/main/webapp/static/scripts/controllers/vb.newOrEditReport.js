@@ -1,12 +1,19 @@
-app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout) {
+app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout,$cookies,$translate) {
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportId = $stateParams.reportId;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
-
     $scope.reportWidgets = [];
+    
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 
     $http.get("admin/report/" + $stateParams.reportId).success(function (response) {
         $scope.reports = response;
@@ -19,19 +26,33 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         $scope.uploadLogo = response.logo;
         angular.forEach($scope.report, function (value, key) {
             $scope.logo = window.atob(value.logo);
-        })
+        });
     });
 
+
+    $scope.firstDataSetLoading = true;
     $http.get('admin/report/reportWidget/' + $stateParams.reportId).success(function (response) {
-        $scope.reportWidgets = response;
-        angular.forEach(response, function (value, key) {
-        })
+        var widgetItems = response;
+        $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+            $scope.firstDataSetLoading = false;
+            $scope.userChartColors = response;
+            var widgetColors;
+            if (response.optionValue) {
+                widgetColors = response.optionValue.split(',');
+            }
+            widgetItems.forEach(function (value, key) {
+                value.widgetId.chartColors = widgetColors;
+            });
+            $scope.reportWidgets = widgetItems;
+        }).error(function () {
+            $scope.reportWidgets = widgetItems;
+        });
     });
 
     $scope.downloadReportPdf = function (report) {
         var url = "admin/proxy/downloadReport/" + $stateParams.reportId + "?dealerId=" + $stateParams.accountId + "&location=" + $stateParams.accountId + "&accountId=" + $stateParams.accountId + "&startDate=" + $stateParams.startDate + "&endDate=" + $stateParams.endDate + "&exportType=pdf";
         $window.open(url);
-    }
+    };
 
     $scope.uploadLogo = "static/img/logos/deeta-logo.png";       //Logo Upload
     $scope.imageUpload = function (event) {
@@ -63,9 +84,14 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             logo: $scope.uploadLogo   //window.btoa($scope.uploadLogo)
         };
         $http({method: $scope.selectReportId ? 'PUT' : 'POST', url: 'admin/report/report', data: data}).success(function () {
-            $stateParams.reportId = $scope.reports[$scope.reports.length - 1].id;
+            $stateParams.reportId = $scope.reports.id;
+            $scope.editReport = false;
         });
     };
+    
+    $scope.editReportData = function(){
+        $scope.editReport = true;
+    }
 
     $scope.expandWidget = function (widget) {
         var expandchart = widget.chartType;
@@ -79,9 +105,9 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         } else {
             widget.width = 12;
         }
-        saveWidgetSize(widget, expandchart)
+        saveWidgetSize(widget, expandchart);
     };
-    
+
     $scope.reduceWidget = function (widget) {
         var expandchart = widget.chartType;
         widget.chartType = null;
@@ -95,7 +121,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         } else {
             widget.width = 3;
         }
-        saveWidgetSize(widget, expandchart)
+        saveWidgetSize(widget, expandchart);
     };
 
     function saveWidgetSize(widget, expandchart) {
@@ -130,9 +156,9 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         if (reportWidget !== "" && reportWidget !== null) {
             var otherObj = $scope.reportWidgets[index];
             var otherIndex = $scope.reportWidgets.indexOf(reportWidget);
-//            $scope.reportWidgets = $scope.moveWidget($scope.reportWidgets, otherIndex, index);
-            $scope.reportWidgets[index] = reportWidget;
-            $scope.reportWidgets[otherIndex] = otherObj;
+            $scope.reportWidgets = $scope.moveWidget($scope.reportWidgets, otherIndex, index);
+//            $scope.reportWidgets[index] = reportWidget;
+//            $scope.reportWidgets[otherIndex] = otherObj;
             var widgetOrder = $scope.reportWidgets.map(function (value, key) {
                 if (!value) {
                     return;
@@ -143,9 +169,8 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 $http({method: 'GET', url: 'admin/report/dbReportUpdateOrder/' + $stateParams.reportId + "?widgetOrder=" + widgetOrder});
             }
         }
-        ;
     };
-    
+
     $scope.deleteReportWidget = function (reportWidget, index) {                            //Delete Widget
         $http({method: 'DELETE', url: 'admin/report/reportWidget/' + reportWidget.id}).success(function (response) {
             $scope.reportWidgets.splice(index, 1);

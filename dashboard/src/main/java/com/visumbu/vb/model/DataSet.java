@@ -239,6 +239,8 @@ public class DataSet implements Serializable {
         this.dataSourceId = dataSourceId;
     }
 
+    @XmlTransient
+    @JsonIgnore
     public JoinDataSet getJoinDataSetId() {
         return joinDataSetId;
     }

@@ -137,7 +137,9 @@
         .table{
             width: 99% !important;
         }
-
+        .text-widget {
+            word-wrap: break-word;
+        }
     }
 
     @media screen {
@@ -168,7 +170,7 @@
                 </div>
                 <div class="pull-right">
                     <div class="section-right-block">                    
-                        <p class="pdf-subtitle-color">Email: info@dashience.com<br>Phone: 773-446-7565</p>                    
+                        <p class="pdf-subtitle-color"><span translate>Email</span>: info@dashience.com<br><span translate>Phone</span>: 773-446-7565</p>                    
                     </div>
                 </div>
             </div>
@@ -224,7 +226,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak"  ng-if="widget.chartType === 'area'">
+                        <div class="panel-body pageBreak"  ng-if="widget.chartType === 'area' || widget.chartType === 'combination'">
                             <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" 
                                      area-Chart-Directive 
@@ -232,6 +234,16 @@
                                      widget-Id="{{widget.id}}" 
                                      widget-Columns="{{widget.columns}}" 
                                      widget-Obj="{{widget}}">                                         
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body pageBreak" ng-if="widget.chartType === 'scatter'">
+                            <div  class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
+                                <div scatter-Chart-Directive 
+                                     scatter-Chart-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}" 
+                                     widget-Columns="{{widget.columns}}" 
+                                     widget-Obj="{{widget}}">                                     
                                 </div>
                             </div>
                         </div>

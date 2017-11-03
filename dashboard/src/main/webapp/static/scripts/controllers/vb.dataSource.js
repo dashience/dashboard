@@ -1,62 +1,30 @@
-app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$rootScope', function ($scope, $stateParams, $http, $rootScope) {
+app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$rootScope', '$cookies', '$translate', function ($scope, $stateParams, $http, $rootScope, $cookies, $translate) {
 //    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
         $scope.authenticateFlag = true;
-        $scope.dataSourceTypes = [
-            {
-                type: "sql",
-                name: "SQL"
-            },
-            {
-                type: "csv",
-                name: "CSV"
-            },
-            {type: "https", name: "HTTPS"},
-            {
-                type: "xls",
-                name: "XLS"
-            },
-            {
-                type: "facebook",
-                name: "Facebook",
-//                url: 'https://www.facebook.com/v2.8/dialog/oauth?client_id=1631503257146893&&display=popup&response_type=code&redirect_uri=http://localhost:9090/VizBoard/fbPost.html'
-            },
-            {
-                type: 'instagram',
-                name: 'Instagram',
-//                url: 'https://www.instagram.com/oauth/authorize/?client_id=3e39cb1cc6be4a60873487a1ce90a451&redirect_uri=http://localhost:9090/VizBoard/fbPost.html&response_type=token&scope=public_content'
-            },
-            {
-                type: 'adwords',
-                name: 'Google AdWords'
-            },
-            {
-                type: 'analytics',
-                name: 'Google Analytics'
-            
-            },
-            {
-                type: 'pinterest',
-                name: 'Pinterest'
-            },
-            {
-                type: 'linkedin',
-                name: 'LinkedIn'
-            },
-//            {
-//                type: 'twitter',
-//                name: 'Twitter'
-//            },
-             {
-                type: 'bing',
-                name: 'Bing'
-            }
-        ];
+        $http.get('static/datas/dataSources/dataSource.json').success(function (response) {
+            $scope.dataSourceTypes = response.dataSource;
+        });
         function getItems() {
             $http.get('admin/ui/dataSource').success(function (response) {
                 $scope.dataSources = response;
             });
         }
         getItems();
+        
+            
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+        var lan = $scope.agencyLanguage;
+        changeLanguage(lan);
+
+        function changeLanguage(key) {
+            $translate.use(key);
+        }
+
+
 //        $scope.csvFileUpload = function (event) {
 //            var files = event.target.files;
 //            angular.forEach(files, function (value, key) {
@@ -94,7 +62,6 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
         //for authentication button flag enable status
         $scope.authenticateStatus = function (name)
         {
-            console.log(name.length);
             if (name.length != 0)
             {
                 $scope.authenticateFlag = false;
@@ -126,18 +93,13 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             }
             setTimeout(function () {
                 var accessToken = $('#fbAccessToken').val();
-                console.log(accessToken);
                 $http.get("admin/ui/oauthCode/" + accessToken + '/' + data.dataSourceType).success(function (response) {
-                    console.log("success");
-                    console.log(response);
                     $scope.oauthToken = response.access_token;
                     $("#fbOauthToken").val(response.access_token);
                     alert(response.access_token);
                     $scope.saveDataSource(data);
-                    console.log($scope.oauthToken);
                 }).error(function (response) {
                     console.log("error");
-                    console.log(response);
                 });
             }, 5000);
         };
@@ -145,14 +107,11 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
         $scope.getfacebookData = function ()
         {
             $http.get("admin/ui/facebookDataSets").success(function (response) {
-                console.log("success");
-                console.log(response);
             }).error(function (response) {
-                console.log("error");
-                console.log(response);
             });
         };
         $scope.saveDataSource = function (dataSource) {
+            console.log("Save DataSource");
             console.log(dataSource)
             dataSource.code = $('#fbOauthToken').val();
             dataSource.accessToken = $('#fbAccessToken').val();
@@ -171,10 +130,12 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 userId: dataSource.userId,
                 code: dataSource.code ? dataSource.code : ''
             };
-            console.log(data);
-            $http({method: dataSource.id ? 'PUT' : 'POST', url: 'admin/ui/dataSource', data: data}).success(function (response) {
-                getItems();
-            });
+            if (data.name && data.dataSourceType) {
+                $http({method: dataSource.id ? 'PUT' : 'POST', url: 'admin/ui/dataSource', data: data}).success(function (response) {
+                    getItems();
+                });
+            }
+            dataSource = "";
             $scope.dataSource = "";
             $scope.sourceFileName = "";
             $scope.selectedRow = null;
@@ -184,6 +145,11 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             $scope.selectedRow = index;
         };
         $scope.editDataSource = function (dataSource) {
+            if (dataSource.dataSourceType === "csv" || dataSource.dataSourceType === "xls") {
+                $scope.editDataSourceType = true;
+            } else {
+                $scope.editDataSourceType = false;
+            }
             var data = {
                 id: dataSource.id,
                 name: dataSource.name,
@@ -197,7 +163,7 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 userId: dataSource.userId.id
             };
             $scope.dataSource = data;
-            $scope.selectSourceType(dataSource)
+            $scope.selectSourceType(dataSource);
         };
         $scope.clearDataSource = function (dataSource) {
             $scope.dataSource = "";
@@ -212,6 +178,8 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             } else {
                 $scope.dataSources.splice(index, 1);
             }
+            $scope.clearDataSource(dataSource);
+            $scope.selectedRow = null;
         };
         $scope.showXLSFileUpload = false;
         $scope.showCSVFileUpload = false;
@@ -229,20 +197,26 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             }
         }
         $scope.uploadFile = function (dataSource) {
-            var file = $scope.myFile;
-            $scope.sourceFileName = file.name;
-            var uploadUrl = "admin/ui/fileUpload";
-            uploadFileToUrl(file, uploadUrl, dataSource);
-            $scope.myFile = "";
+            console.log($scope.editDataSourceType);
+            if ($scope.editDataSourceType === true) {
+                $scope.saveDataSource(dataSource);
+            } else {
+                var file = $scope.myFile;
+                console.log("scope file name-->");
+                $scope.sourceFileName = file.name;
+                var uploadUrl = "admin/ui/fileUpload";
+                uploadFileToUrl(file, uploadUrl, dataSource);
+                $scope.myFile = "";
+            }
+
         };
         function uploadFileToUrl(file, uploadUrl, dataSource) {
             var fd = new FormData();
             fd.append('file', file);
             $http.post(uploadUrl, fd, {transformRequest: angular.identity, headers: {'Content-Type': undefined}}).success(function (response) {
-                console.log(response.filename)
                 dataSource.connectionString = response.filename;
                 $scope.saveDataSource(dataSource);
-            })
+            });
         }
     }]);
 app.directive('fileModel', ['$parse', function ($parse) {

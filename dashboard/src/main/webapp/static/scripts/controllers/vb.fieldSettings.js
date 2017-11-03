@@ -1,5 +1,14 @@
-app.controller('FieldSettingsController', function ($scope, $http, $stateParams, $filter, $timeout) {
+app.controller('FieldSettingsController', function ($scope, $http, $stateParams, $filter, $timeout, $cookies, $translate) {
     $scope.fieldSettings = [];
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+
     $scope.selectAggregations = [
         {name: 'None', value: ""},
         {name: 'Sum', value: "sum"},
@@ -36,7 +45,8 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         {name: "Decimal1", value: ',.1f'},
         {name: "Decimal2", value: ',.2f'},
         {name: "Time", value: 'H:M:S'},
-        {name: "Star Rating", value: 'starRating'}
+        {name: "Star Rating", value: 'starRating'},
+        {name: "Date", value: 'MM-dd-yyyy'}
     ];
     $http.get('admin/fieldSettings').success(function (response) {
         $scope.fieldSettings = response;
@@ -47,7 +57,7 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         });
     };
     $scope.selectDisplayFormat = function (field) {
-        field.dataFormat = field.displayFormat;
+        //field.dataFormat = field.displayFormat;
     };
     $scope.selectDataFormat = function (field) {
         field.displayFormat = field.dataFormat;
@@ -60,7 +70,7 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
             id: fields.id,
             fieldName: fields.fieldName,
             displayFormat: fields.displayFormat ? fields.displayFormat.value : null,
-            dataFormat: fields.dataFormat ? fields.dataFormat.value : null,
+            dataFormat: fields.dataFormat,
             dataType: fields.dataType,
             displayName: fields.displayName,
             agregationFunction: fields.agregationFunction
@@ -71,9 +81,15 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         $scope.field = "";
     };
     $scope.deleteField = function (fields) {
-        $http({method: "DELETE", url: 'admin/fieldSettings/' + fields.id}).success(function (response) {
-            $scope.getFields();
-        });
+        if ($scope.deleteFieldOnCreate === true) {
+            $scope.deleteFieldSettings($scope.deleteFieldIndex);
+        } else {
+            var field=$scope.deleteFieldItems;
+            $http({method: "DELETE", url: 'admin/fieldSettings/' + field.id}).success(function (response) {
+                $scope.getFields();
+            });
+        }
+
     };
     $scope.updateField = function (field) {
         var getDisplayFormat = field.displayFormat;
@@ -81,8 +97,8 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
         var getDisplayObj = $.grep($scope.formats, function (val) {
             return getDisplayFormat === val.value;
         });
-        angular.forEach(getDisplayObj, function(val, key){
-            field.dataFormat = val;
+        angular.forEach(getDisplayObj, function (val, key) {
+            // field.dataFormat = val;
             field.displayFormat = val;
         });
 //        var data = {
@@ -99,5 +115,21 @@ app.controller('FieldSettingsController', function ($scope, $http, $stateParams,
     $scope.deleteFieldSettings = function (index) {
         $scope.fieldSettings.splice(index, 1);
     };
+
+    $scope.deleteFieldSettingsItem = function (fields, index, type) {
+        console.log(fields);
+        if (type === "create") {
+            $scope.deleteFieldOnCreate = true;
+            $scope.deleteFieldIndex = index;
+            $scope.deleteFieldItems = fields;
+        } else {
+            $scope.deleteFieldOnCreate = false;
+            $scope.deleteFieldIndex = index;
+            $scope.deleteFieldItems = fields;
+            
+        }
+
+    };
+
 });
 

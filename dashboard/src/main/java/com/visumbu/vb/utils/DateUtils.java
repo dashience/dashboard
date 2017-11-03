@@ -261,7 +261,6 @@ public class DateUtils {
     }
 
     public static Date getEndDate(String strEnd) {
-        System.out.println("Start Date " + strEnd);
         if (strEnd.length() < 12) {
             strEnd += " 23:59:59";
         }
@@ -277,7 +276,6 @@ public class DateUtils {
     }
 
     public static Date getStartDate(String strStart) {
-        System.out.println("Start Date " + strStart);
         if (strStart.length() < 12) {
             strStart += " 00:00:00";
         }
@@ -293,7 +291,6 @@ public class DateUtils {
     }
 
     public static Date getStartTodayDate(String strStart) {
-        System.out.println("Start Date " + strStart);
         if (strStart.length() < 12) {
             strStart += " 00:00:00";
         }
@@ -317,7 +314,7 @@ public class DateUtils {
             Date date = format.parse(dateStr);
             return date;
         } catch (ParseException ex) {
-            Logger.getLogger(DateUtils.class.getName()).log(Level.SEVERE, null, ex);
+            // Logger.getLogger(DateUtils.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

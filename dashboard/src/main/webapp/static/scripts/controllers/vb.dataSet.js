@@ -1,4 +1,4 @@
-app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout, localStorageService) {
+app.controller('DataSetController', function ($scope, $http, $stateParams, $filter, $timeout, localStorageService, $translate, $cookies) {
     $scope.permission = localStorageService.get("permission");
     $scope.dataSetFlag = false;
     $scope.nwStatusFlag = false;
@@ -6,12 +6,79 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.tab = 1;
+    $scope.childTab = 3;
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
     };
+    $scope.setChildTab = function (newTab) {
+        $scope.childTab = newTab;
+    };
+
     $scope.isSet = function (tabNum) {
         return $scope.tab === tabNum;
     };
+    $scope.isChildSet = function (tabNum) {
+        return $scope.childTab === tabNum;
+    };
+
+    $scope.selectAggregations = [
+        {name: 'None', value: ""},
+        {name: 'Sum', value: "sum"},
+        {name: 'CTR', value: "ctr"},
+        {name: 'CPC', value: "cpc"},
+        {name: 'CPCS', value: "cpcs"},
+        {name: 'CPS', value: "cps"},
+        {name: 'CPA', value: "cpa"},
+        {name: 'CPAS', value: "cpas"},
+        {name: 'Avg', value: "avg"},
+        {name: 'Count', value: "count"},
+        {name: 'Min', value: "min"},
+        {name: 'Max', value: "max"},
+        {name: 'CPL', value: "cpl"},
+        {name: 'CPLC', value: "cplc"},
+        {name: 'CPComment', value: "cpcomment"},
+        {name: 'CPostE', value: "cposte"},
+        {name: 'CPageE', value: "cpagee"},
+        {name: 'CPP', value: "cpp"},
+        {name: 'CPR', value: "cpr"}
+    ];
+    $scope.fieldTypes = [
+        {name: 'None', value: ''},
+        {name: 'String', value: 'string'},
+        {name: 'Number', value: 'number'},
+        {name: 'Date', value: 'date'},
+        {name: 'Day', value: 'day'}
+    ];
+    $scope.formats = [
+        {name: "None", value: ''},
+        {name: "Currency", value: '$,.2f'},
+        {name: "Integer", value: ',.0f'},
+        {name: "Percentage", value: ',.2%'},
+        {name: "Decimal1", value: ',.1f'},
+        {name: "Decimal2", value: ',.2f'},
+        {name: "Time", value: 'H:M:S'},
+        {name: "Star Rating", value: 'starRating'},
+        {name: "Date", value: 'MM-dd-yyyy'}
+    ];
+    $scope.categories = [
+        {name: "Metrics", value: "metrics"},
+        {name: "Dimension", value: "dimension"}
+    ];
+
+    $scope.deleteField = function (index) {
+        $scope.columnsHeaderDefs.splice(index, 1);
+    };
+
+
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+
     $scope.joinTypes = [
         {name: 'Left', value: 'left'},
         {name: 'Right', value: 'right'},
@@ -82,7 +149,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
     }
     $scope.selectFirstDataSet = function (dataSet) {
-
         $scope.firstDataSet = JSON.parse(dataSet.firstDataSet);
         $scope.firstDataSetName = $scope.firstDataSet.name;
         $scope.dataSetIdFirst = $scope.firstDataSet.id;
@@ -90,7 +156,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.firstDataSetLoading = true;
         $scope.loadingResultCompleted = false;
         getPreviewDataSet($scope.firstDataSet, "dataSet1");
-
     };
     $scope.selectSecondDataSet = function (dataSet) {
         $scope.secondDataSet = JSON.parse(dataSet.secondDataSet);
@@ -99,7 +164,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.secondDataSetLoadingCompleted = false;
         $scope.secondDataSetLoading = true;
         $scope.loadingResultCompleted = false;
-        getPreviewDataSet($scope.secondDataSet, "dataSet2");
+        getbDataSet($scope.secondDataSet, "dataSet2");
     };
     $scope.selectFirstDataSetColumn = function (dataSetColumn) {
         if ($scope.operationType == 'union' || $scope.operationType == 'intersection') {
@@ -111,7 +176,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.hideCondition = false;
     $scope.selectJoinType = function (joinDataSetColumn) {
         $scope.operationType = joinDataSetColumn.joinType;
-        console.log($scope.operationType);
         if (joinDataSetColumn.joinType != null) {
             $scope.hideCondition = true;
         }
@@ -121,18 +185,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSetColumnList.push({});
     };
     $scope.removeJoinDataSetColumn = function (index, conditionId) {
-        console.log(conditionId)
         $scope.dataSetColumnList.splice(index, 1);
-
         $http({method: 'DELETE', url: 'admin/ui/deleteJoinDataSetCondition/' + conditionId + "/" + joinDataSetId}).success(function (response) {
-            console.log(response);
             $scope.joinDataSetList = response;
         });
-        console.log($scope.joinDataSetList);
-        console.log($scope.dataSetColumnList);
-    }
-    var joinDataSetId = null;
+    };
 
+    var joinDataSetId = "";
 
     $scope.loadingResultCompleted = false;
     $scope.loadingResult = false;
@@ -144,13 +203,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         var dataSetIdFirst = JSON.parse(joinDataSetColumn.firstDataSet).id;
         var dataSetIdSecond = JSON.parse(joinDataSetColumn.secondDataSet).id;
         if (joinDataSetId != null) {
-            console.log($scope.joinDataSetList);
             for (i = 0; i < $scope.dataSetColumnList.length; i++) {
                 var conditionId = null;
                 if (typeof ($scope.joinDataSetList[i]) !== "undefined") {
                     conditionId = $scope.joinDataSetList[i].id;
                 }
-                console.log(conditionId)
                 var conditionData = {
                     conditionFieldFirst: $scope.dataSetColumnList[i].conditionFieldFirst,
                     conditionFieldSecond: $scope.dataSetColumnList[i].conditionFieldSecond,
@@ -158,10 +215,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     conditionId: conditionId
                 };
                 $scope.dataSetLists.push(conditionData);
-                console.log($scope.dataSetLists)
             }
             $scope.dataSetColumnList = $scope.dataSetLists;
-            console.log($scope.dataSetColumnList)
         }
         var data = {
             id: joinDataSetId,
@@ -171,9 +226,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             operationType: joinDataSetColumn.joinType,
             conditionFields: $scope.dataSetColumnList
         };
-        console.log(data);
         $http({method: 'POST', url: 'admin/ui/joinDataSet', data: data}).success(function (response) {
-            console.log(response);
             $scope.joinDataSetList = response;
             joinDataSetId = response[0].joinDataSetId.id;
             $scope.joinDataSetNewName = response[0].joinDataSetId.dataSetName;
@@ -190,13 +243,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     $scope.errorHide = true;
                     $scope.errorMessage = "No Data Found";
                 }
-                console.log(response.columnDefs);
-                console.log(response.data);
             });
         });
     };
     $scope.cancelJoinDataSet = function () {
         $scope.joinDataSetColumn = "";
+        joinDataSetId = "";
 //        $scope.dataSetColumn = "";
         $scope.dataSetColumnList = [];
         $scope.hideCondition = false;
@@ -215,7 +267,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             userId: dataSet.userId
         };
         $http({method: 'POST', url: 'admin/ui/joinDataSource', data: joinDataSource}).success(function (response) {
-            console.log(response)
             dataSourceId = response.id;
 
             var joinDataSetList = {
@@ -228,23 +279,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var data = joinDataSetList;
             console.log(data);
             $http({method: 'POST', url: 'admin/ui/dataSet', data: data}).success(function (response) {
-                console.log(response);
                 $scope.cancelJoinDataSet();
                 getItems();
                 $scope.setTab(1);
             });
         });
     };
-    /*
-     * 
-     * All
-     search
-     unknown
-     content
-     youtubeSearch
-     youtubeWatch
-     
-     */
     $scope.networkTypes = [
         {
             type: 'SEARCH',
@@ -263,12 +303,19 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             name: 'Youtube Watch'
         },
         {
+            type: 'All',
+            name: 'All'
+        },
+        {
             type: 'none',
             name: 'None'
         }
     ];
     $scope.dataSetFlagValidation = function (dataSource)
     {
+        $scope.reportSelected = true;
+        $scope.enableMe = true;
+        $scope.dataSet.reportName = "";
         if (dataSource === "adwords")
         {
             $scope.report = $scope.adwordsPerformance;
@@ -276,39 +323,46 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
-            $scope.timeSegFlag = true;
+            $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "facebook")
         {
-            $scope.report = $scope.facebookPerformance; 
-            console.log($scope.report);
-            $scope.dataSetFlag = true;
-            $scope.nwStatusFlag = false;
-        } else if (dataSource === "pinterest")
-        {
-            $scope.report = $scope.pinterestPerformance;
+            $scope.report = $scope.facebookPerformance;
             console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
-
+            $scope.semRushFlag = false;
+        } else if (dataSource === "pinterest")
+        {
+            $scope.report = $scope.pinterestPerformance;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "instagram")
         {
             $scope.report = $scope.instagramPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "pinterest")
         {
             $scope.report = $scope.pinterestPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "linkedin")
         {
             $scope.report = $scope.linkedinPerformance;
@@ -316,14 +370,28 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "bing")
         {
             $scope.report = $scope.bingPerformance;
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
+        } else if (dataSource === "semRush")
+        {
+            $scope.report = $scope.semRush;
+            console.log($scope.report);
+            $scope.productSegFlag = false;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+            $scope.semRushFlag = true;
+            $scope.semFreqFlag = false;
         } else {
             $scope.dataSetFlag = false;
             $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
+            $scope.semFreqFlag = true;
         }
     };
     $scope.linkedinPerformance = [
@@ -365,7 +433,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             type: 'getOrganicData',
             name: 'getOrganicData'
         }
-    ]
+    ];
 
     $scope.bingPerformance = [
         {
@@ -515,9 +583,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'city',
                     name: 'City'
-                },
+                }
             ]
-        },
+        }
     ];
     $scope.facebookPerformance = [
         {
@@ -753,7 +821,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        },
+        }
     ];
     $scope.instagramPerformance = [
         {
@@ -812,8 +880,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type: 'ga:dateHour',
-                    name: 'Hour of Week'
+                    type: 'ga:hour',
+                    name: 'Hour of Day'
                 },
                 {
                     type: 'ga:dayOfWeekName',
@@ -1076,11 +1144,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type: 'ga:dayOfWeek',
+                    type: 'ga:dayOfWeekName',
                     name: 'Day of Week'
                 },
                 {
-                    type: 'ga:dateHour',
+                    type: 'ga:hour',
                     name: 'Hour of Day'
                 },
                 {
@@ -1204,7 +1272,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Year'
                 },
                 {
-                    type: 'ga:dayOfWeek',
+                    type: 'ga:dayOfWeekName',
                     name: 'Day of Week'
                 },
                 {
@@ -1623,6 +1691,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'Quarter'
                 },
                 {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'Device',
+                    name: 'Device'
+                },
+                {
+                    type: 'AdNetworkType1',
+                    name: 'Network Search Partner'
+                },
+                {
                     type: 'RegionCriteriaId',
                     name: 'Region'
                 },
@@ -1637,20 +1719,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     type: 'CityCriteriaId,RegionCriteriaId,MostSpecificCriteriaId',
                     name: 'Zip'
-                },
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'Device',
-                    name: 'Device'
-                },
-                {
-                    type: 'AdNetworkType1',
-                    name: 'Network Search Partner'
                 },
                 {
                     type: 'none',
@@ -1702,8 +1770,2194 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
+    $scope.semRush = [
+        {
+            type: 'overview',
+            name: 'Overview Report',
+            timeSegments: [
+                {
+                    name: "All Databases",
+                    type: "domain_ranks"
+                }, {
+                    name: "One Database",
+                    type: "domain_rank"
+                }, {
+                    name: "History",
+                    type: "domain_rank_history"
+                }, {
+                    name: "Winners and Losers",
+                    type: "rank_difference"
+                }, {
+                    name: "SEMrush Rank",
+                    type: "rank"
+                }
+            ],
+            productSegments: [
+                {
+                    name: "google.com",
+                    type: "us"
+                },
+                {
+                    name: "google.co.uk",
+                    type: "uk"
+                },
+                {
+                    name: "google.ca",
+                    type: "ca"
+                }, {
+                    name: "google.ru",
+                    type: "ru"
+                },
+                {
+                    name: "google.de",
+                    type: "de"
+                }, {
+                    name: "google.fr",
+                    type: "fr"
+                },
+                {
+                    name: "google.es",
+                    type: "es"
+                },
+                {
+                    name: "google.it",
+                    type: "it"
+                }, {
+                    name: "google.com.br",
+                    type: "br"
+                },
+                {
+                    name: "google.com.au",
+                    type: "au"
+                },
+                {
+                    name: "bing.com",
+                    type: "bing-us"
+                },
+                {
+                    name: "google.com.ar",
+                    type: "ar"
+                },
+                {
+                    name: "google.be",
+                    type: "be"
+                },
+                {
+                    name: "google.ch",
+                    type: "ch"
+                },
+                {
+                    name: "google.dk",
+                    type: "dk"
+                },
+                {
+                    name: "google.fi",
+                    type: "fi"
+                },
+                {
+                    name: "google.com.hk",
+                    type: "hk"
+                },
+                {
+                    name: "google.ie",
+                    type: "ie"
+                },
+                {
+                    name: "google.co.il",
+                    type: "il"
+                },
+                {
+                    name: "google.com.mx",
+                    type: "mx"
+                },
+                {
+                    name: "google.nl",
+                    type: "nl"
+                },
+                {
+                    name: "google.no",
+                    type: "no"
+                }, {
+                    name: "google.pl",
+                    type: "pl"
+                },
+                {
+                    name: "google.se",
+                    type: "se"
+                },
+                {
+                    name: "google.com.sg",
+                    type: "sg"
+                }, {
+                    name: "google.com.tr",
+                    type: "tr"
+                },
+                {
+                    name: "google.com.us-mobile",
+                    type: "mobile-us"
+                },
+                {
+                    name: "google.co.jp",
+                    type: "jp"
+                },
+                {
+                    name: "google.co.in",
+                    type: "in"
+                },
+                {
+                    name: "google.hu",
+                    type: "hu"
+                },
+                {
+                    name: "google.af",
+                    type: "af"
+                },
+                {
+                    name: "google.al",
+                    type: "al"
+                }, {
+                    name: "google.dz",
+                    type: "dz"
+                },
+                {
+                    name: "google.ao",
+                    type: "ao"
+                }, {
+                    name: "google.am",
+                    type: "am"
+                },
+                {
+                    name: "google.at",
+                    type: "at"
+                },
+                {
+                    name: "google.az",
+                    type: "az"
+                },
+                {
+                    name: "google.bh",
+                    type: "bh"
+                },
+                {
+                    name: "google.bd",
+                    type: "bd"
+                },
+                {
+                    name: "google.by",
+                    type: "by"
+                },
+                {
+                    name: "google.bz",
+                    type: "bz"
+                }, {
+                    name: "google.bo",
+                    type: "bo"
+                },
+                {
+                    name: "google.ba",
+                    type: "ba"
+                }, {
+                    name: "google.bw",
+                    type: "bw"
+                },
+                {
+                    name: "google.bn",
+                    type: "bn"
+                },
+                {
+                    name: "google.bg",
+                    type: "bg"
+                },
+                {
+                    name: "google.cv",
+                    type: "cv"
+                },
+                {
+                    name: "google.kh",
+                    type: "kh"
+                },
+                {
+                    name: "google.kh",
+                    type: "kh"
+                },
+                {
+                    name: "google.cm",
+                    type: "cm"
+                }, {
+                    name: "google.cl",
+                    type: "cl"
+                },
+                {
+                    name: "google.co",
+                    type: "co"
+                }, {
+                    name: "google.cr",
+                    type: "cr"
+                },
+                {
+                    name: "google.hr",
+                    type: "hr"
+                },
+                {
+                    name: "google.cy",
+                    type: "cy"
+                },
+                {
+                    name: "google.cz",
+                    type: "cz"
+                },
+                {
+                    name: "google.cd",
+                    type: "cd"
+                },
+                {
+                    name: "google.do",
+                    type: "do"
+                },
+                {
+                    name: "google.ec",
+                    type: "ec"
+                }, {
+                    name: "google.eg",
+                    type: "eg"
+                }, {
+                    name: "google.sv",
+                    type: "sv"
+                }, {
+                    name: "google.bw",
+                    type: "bw"
+                },
+                {
+                    name: "google.ee",
+                    type: "ee"
+                },
+                {
+                    name: "google.et",
+                    type: "et"
+                },
+                {
+                    name: "google.ge",
+                    type: "ge"
+                },
+                {
+                    name: "google.gh",
+                    type: "gh"
+                },
+                {
+                    name: "google.gr",
+                    type: "gr"
+                },
+                {
+                    name: "google.gt",
+                    type: "gt"
+                }, {
+                    name: "google.gt",
+                    type: "gt"
+                }, {
+                    name: "google.gy",
+                    type: "gy"
+                }, {
+                    name: "google.ht",
+                    type: "ht"
+                },
+                {
+                    name: "google.hn",
+                    type: "hn"
+                },
+                {
+                    name: "google.is",
+                    type: "is"
+                },
+                {
+                    name: "google.id",
+                    type: "id"
+                },
+                {
+                    name: "google.jm",
+                    type: "jm"
+                },
+                {
+                    name: "google.jo",
+                    type: "jo"
+                },
+                {
+                    name: "google.kz",
+                    type: "kz"
+                }, {
+                    name: "google.lv",
+                    type: "lv"
+                }, {
+                    name: "google.lb",
+                    type: "lb"
+                }, {
+                    name: "google.lt",
+                    type: "lt"
+                },
+                {
+                    name: "google.lu",
+                    type: "lu"
+                },
+                {
+                    name: "google.mg",
+                    type: "mg"
+                },
+                {
+                    name: "google.my",
+                    type: "my"
+                },
+                {
+                    name: "google.mt",
+                    type: "mt"
+                },
+                {
+                    name: "google.mu",
+                    type: "mu"
+                },
+                {
+                    name: "google.md",
+                    type: "md"
+                }, {
+                    name: "google.mn",
+                    type: "mn"
+                }, {
+                    name: "google.me",
+                    type: "me"
+                }, {
+                    name: "google.ma",
+                    type: "ma"
+                },
+                {
+                    name: "google.mz",
+                    type: "na"
+                },
+                {
+                    name: "google.np",
+                    type: "np"
+                },
+                {
+                    name: "google.nz",
+                    type: "nz"
+                },
+                {
+                    name: "google.ni",
+                    type: "ni"
+                },
+                {
+                    name: "google.ng",
+                    type: "ng"
+                },
+                {
+                    name: "google.om",
+                    type: "om"
+                }, {
+                    name: "google.py",
+                    type: "py"
+                }, {
+                    name: "google.pe",
+                    type: "pe"
+                }, {
+                    name: "google.ph",
+                    type: "ph"
+                },
+                {
+                    name: "google.pt",
+                    type: "pt"
+                },
+                {
+                    name: "google.ro",
+                    type: "ro"
+                },
+                {
+                    name: "google.sa",
+                    type: "sa"
+                },
+                {
+                    name: "google.sn",
+                    type: "sn"
+                },
+                {
+                    name: "google.rs",
+                    type: "rs"
+                },
+                {
+                    name: "google.sk",
+                    type: "sk"
+                }, {
+                    name: "google.si",
+                    type: "si"
+                },
+                {
+                    name: "google.za",
+                    type: "za"
+                },
+                {
+                    name: "google.kr",
+                    type: "kr"
+                },
+                {
+                    name: "google.lk",
+                    type: "lk"
+                },
+                {
+                    name: "google.th",
+                    type: "th"
+                },
+                {
+                    name: "google.bs",
+                    type: "bs"
+                }, {
+                    name: "google.tt",
+                    type: "tt"
+                }, {
+                    name: "google.tn",
+                    type: "tn"
+                }, {
+                    name: "google.ua",
+                    type: "ua"
+                },
+                {
+                    name: "google.ae",
+                    type: "ae"
+                },
+                {
+                    name: "google.uy",
+                    type: "uy"
+                },
+                {
+                    name: "google.ve",
+                    type: "ve"
+                },
+                {
+                    name: "google.vn",
+                    type: "vn"
+                },
+                {
+                    name: "google.zm",
+                    type: "zm"
+                },
+                {
+                    name: "google.zw",
+                    type: "zw"
+                }, {
+                    name: "google.ly",
+                    type: "ly"
+                }, {
+                    name: "google.com.uk-mobile",
+                    type: "mobile-uk"
+                }, {
+                    name: "google.ca-mobile",
+                    type: "mobile-ca"
+                },
+                {
+                    name: "google.de-mobile",
+                    type: "mobile-uk"
+                },
+                {
+                    name: "google.fr-mobile",
+                    type: "mobile-fr"
+                },
+                {
+                    name: "google.es-mobile",
+                    type: "mobile-es"
+                },
+                {
+                    name: "google.it-mobile",
+                    type: "mobile-it"
+                },
+                {
+                    name: "google.com.br-mobile",
+                    type: "mobile-br"
+                },
+                {
+                    name: "google.com.au-mobile",
+                    type: "mobile-au"
+                }, {
+                    name: "google.dk-mobile",
+                    type: "mobile-dk"
+                },
+                {
+                    name: "google.com.mx-mobile",
+                    type: "mobile-mx"
+                },
+                {
+                    name: "google.nl",
+                    type: "mobile-nl"
+                }, {
+                    name: "google.se",
+                    type: "mobile-se"
+                }, {
+                    name: "google.com.tr-mobile",
+                    type: "mobile-tr"
+                },
+
+                {
+                    name: "google.co.in",
+                    type: "mobile-in"
+                }, {
+                    name: "google.co-id",
+                    type: "mobile-id"
+                }, {
+                    name: "google.co.il",
+                    type: "mobile-il"
+                }
+            ]
+        }, {
+            type: 'domain',
+            name: 'Domain Report',
+            timeSegments: [
+                {
+                    name: "Domain Organic Search Keywords",
+                    type: "domain_organic"
+                }, {
+                    name: "Domain Paid Search Keywords",
+                    type: "domain_adwords"
+                }, {
+                    name: "Ads Copies",
+                    type: "domain_adwords_unique"
+                }, {
+                    name: "Competitors in Organic Search",
+                    type: "domain_organic_organic"
+                }, {
+                    name: "Competitors in Paid Search",
+                    type: "domain_adwords_adwords"
+                }, {
+                    name: " Domain Ads History",
+                    type: "domain_adwords_historical"
+                }, {
+                    name: "Domain vs. Domain",
+                    type: "domain_domains"
+                }, {
+                    name: "Domain PLA Search Keywords",
+                    type: "domain_shopping"
+                },
+                {
+                    name: "PLA Copies",
+                    type: "domain_shopping_unique"
+                }, {
+                    name: "PLA Competitors",
+                    type: "domain_shopping_shopping"
+                }
+            ],
+            productSegments: [
+                {
+                    name: "google.com",
+                    type: "us"
+                },
+                {
+                    name: "google.co.uk",
+                    type: "uk"
+                },
+                {
+                    name: "google.ca",
+                    type: "ca"
+                }, {
+                    name: "google.ru",
+                    type: "ru"
+                },
+                {
+                    name: "google.de",
+                    type: "de"
+                }, {
+                    name: "google.fr",
+                    type: "fr"
+                },
+                {
+                    name: "google.es",
+                    type: "es"
+                },
+                {
+                    name: "google.it",
+                    type: "it"
+                }, {
+                    name: "google.com.br",
+                    type: "br"
+                },
+                {
+                    name: "google.com.au",
+                    type: "au"
+                },
+                {
+                    name: "bing.com",
+                    type: "bing-us"
+                },
+                {
+                    name: "google.com.ar",
+                    type: "ar"
+                },
+                {
+                    name: "google.be",
+                    type: "be"
+                },
+                {
+                    name: "google.ch",
+                    type: "ch"
+                },
+                {
+                    name: "google.dk",
+                    type: "dk"
+                },
+                {
+                    name: "google.fi",
+                    type: "fi"
+                },
+                {
+                    name: "google.com.hk",
+                    type: "hk"
+                },
+                {
+                    name: "google.ie",
+                    type: "ie"
+                },
+                {
+                    name: "google.co.il",
+                    type: "il"
+                },
+                {
+                    name: "google.com.mx",
+                    type: "mx"
+                },
+                {
+                    name: "google.nl",
+                    type: "nl"
+                },
+                {
+                    name: "google.no",
+                    type: "no"
+                }, {
+                    name: "google.pl",
+                    type: "pl"
+                },
+                {
+                    name: "google.se",
+                    type: "se"
+                },
+                {
+                    name: "google.com.sg",
+                    type: "sg"
+                }, {
+                    name: "google.com.tr",
+                    type: "tr"
+                },
+                {
+                    name: "google.com.us-mobile",
+                    type: "mobile-us"
+                },
+                {
+                    name: "google.co.jp",
+                    type: "jp"
+                },
+                {
+                    name: "google.co.in",
+                    type: "in"
+                },
+                {
+                    name: "google.hu",
+                    type: "hu"
+                },
+                {
+                    name: "google.af",
+                    type: "af"
+                },
+                {
+                    name: "google.al",
+                    type: "al"
+                }, {
+                    name: "google.dz",
+                    type: "dz"
+                },
+                {
+                    name: "google.ao",
+                    type: "ao"
+                }, {
+                    name: "google.am",
+                    type: "am"
+                },
+                {
+                    name: "google.at",
+                    type: "at"
+                },
+                {
+                    name: "google.az",
+                    type: "az"
+                },
+                {
+                    name: "google.bh",
+                    type: "bh"
+                },
+                {
+                    name: "google.bd",
+                    type: "bd"
+                },
+                {
+                    name: "google.by",
+                    type: "by"
+                },
+                {
+                    name: "google.bz",
+                    type: "bz"
+                }, {
+                    name: "google.bo",
+                    type: "bo"
+                },
+                {
+                    name: "google.ba",
+                    type: "ba"
+                }, {
+                    name: "google.bw",
+                    type: "bw"
+                },
+                {
+                    name: "google.bn",
+                    type: "bn"
+                },
+                {
+                    name: "google.bg",
+                    type: "bg"
+                },
+                {
+                    name: "google.cv",
+                    type: "cv"
+                },
+                {
+                    name: "google.kh",
+                    type: "kh"
+                },
+                {
+                    name: "google.kh",
+                    type: "kh"
+                },
+                {
+                    name: "google.cm",
+                    type: "cm"
+                }, {
+                    name: "google.cl",
+                    type: "cl"
+                },
+                {
+                    name: "google.co",
+                    type: "co"
+                }, {
+                    name: "google.cr",
+                    type: "cr"
+                },
+                {
+                    name: "google.hr",
+                    type: "hr"
+                },
+                {
+                    name: "google.cy",
+                    type: "cy"
+                },
+                {
+                    name: "google.cz",
+                    type: "cz"
+                },
+                {
+                    name: "google.cd",
+                    type: "cd"
+                },
+                {
+                    name: "google.do",
+                    type: "do"
+                },
+                {
+                    name: "google.ec",
+                    type: "ec"
+                }, {
+                    name: "google.eg",
+                    type: "eg"
+                }, {
+                    name: "google.sv",
+                    type: "sv"
+                }, {
+                    name: "google.bw",
+                    type: "bw"
+                },
+                {
+                    name: "google.ee",
+                    type: "ee"
+                },
+                {
+                    name: "google.et",
+                    type: "et"
+                },
+                {
+                    name: "google.ge",
+                    type: "ge"
+                },
+                {
+                    name: "google.gh",
+                    type: "gh"
+                },
+                {
+                    name: "google.gr",
+                    type: "gr"
+                },
+                {
+                    name: "google.gt",
+                    type: "gt"
+                }, {
+                    name: "google.gt",
+                    type: "gt"
+                }, {
+                    name: "google.gy",
+                    type: "gy"
+                }, {
+                    name: "google.ht",
+                    type: "ht"
+                },
+                {
+                    name: "google.hn",
+                    type: "hn"
+                },
+                {
+                    name: "google.is",
+                    type: "is"
+                },
+                {
+                    name: "google.id",
+                    type: "id"
+                },
+                {
+                    name: "google.jm",
+                    type: "jm"
+                },
+                {
+                    name: "google.jo",
+                    type: "jo"
+                },
+                {
+                    name: "google.kz",
+                    type: "kz"
+                }, {
+                    name: "google.lv",
+                    type: "lv"
+                }, {
+                    name: "google.lb",
+                    type: "lb"
+                }, {
+                    name: "google.lt",
+                    type: "lt"
+                },
+                {
+                    name: "google.lu",
+                    type: "lu"
+                },
+                {
+                    name: "google.mg",
+                    type: "mg"
+                },
+                {
+                    name: "google.my",
+                    type: "my"
+                },
+                {
+                    name: "google.mt",
+                    type: "mt"
+                },
+                {
+                    name: "google.mu",
+                    type: "mu"
+                },
+                {
+                    name: "google.md",
+                    type: "md"
+                }, {
+                    name: "google.mn",
+                    type: "mn"
+                }, {
+                    name: "google.me",
+                    type: "me"
+                }, {
+                    name: "google.ma",
+                    type: "ma"
+                },
+                {
+                    name: "google.mz",
+                    type: "na"
+                },
+                {
+                    name: "google.np",
+                    type: "np"
+                },
+                {
+                    name: "google.nz",
+                    type: "nz"
+                },
+                {
+                    name: "google.ni",
+                    type: "ni"
+                },
+                {
+                    name: "google.ng",
+                    type: "ng"
+                },
+                {
+                    name: "google.om",
+                    type: "om"
+                }, {
+                    name: "google.py",
+                    type: "py"
+                }, {
+                    name: "google.pe",
+                    type: "pe"
+                }, {
+                    name: "google.ph",
+                    type: "ph"
+                },
+                {
+                    name: "google.pt",
+                    type: "pt"
+                },
+                {
+                    name: "google.ro",
+                    type: "ro"
+                },
+                {
+                    name: "google.sa",
+                    type: "sa"
+                },
+                {
+                    name: "google.sn",
+                    type: "sn"
+                },
+                {
+                    name: "google.rs",
+                    type: "rs"
+                },
+                {
+                    name: "google.sk",
+                    type: "sk"
+                }, {
+                    name: "google.si",
+                    type: "si"
+                },
+                {
+                    name: "google.za",
+                    type: "za"
+                },
+                {
+                    name: "google.kr",
+                    type: "kr"
+                },
+                {
+                    name: "google.lk",
+                    type: "lk"
+                },
+                {
+                    name: "google.th",
+                    type: "th"
+                },
+                {
+                    name: "google.bs",
+                    type: "bs"
+                }, {
+                    name: "google.tt",
+                    type: "tt"
+                }, {
+                    name: "google.tn",
+                    type: "tn"
+                }, {
+                    name: "google.ua",
+                    type: "ua"
+                },
+                {
+                    name: "google.ae",
+                    type: "ae"
+                },
+                {
+                    name: "google.uy",
+                    type: "uy"
+                },
+                {
+                    name: "google.ve",
+                    type: "ve"
+                },
+                {
+                    name: "google.vn",
+                    type: "vn"
+                },
+                {
+                    name: "google.zm",
+                    type: "zm"
+                },
+                {
+                    name: "google.zw",
+                    type: "zw"
+                }, {
+                    name: "google.ly",
+                    type: "ly"
+                }, {
+                    name: "google.com.uk-mobile",
+                    type: "mobile-uk"
+                }, {
+                    name: "google.ca-mobile",
+                    type: "mobile-ca"
+                },
+                {
+                    name: "google.de-mobile",
+                    type: "mobile-uk"
+                },
+                {
+                    name: "google.fr-mobile",
+                    type: "mobile-fr"
+                },
+                {
+                    name: "google.es-mobile",
+                    type: "mobile-es"
+                },
+                {
+                    name: "google.it-mobile",
+                    type: "mobile-it"
+                },
+                {
+                    name: "google.com.br-mobile",
+                    type: "mobile-br"
+                },
+                {
+                    name: "google.com.au-mobile",
+                    type: "mobile-au"
+                }, {
+                    name: "google.dk-mobile",
+                    type: "mobile-dk"
+                },
+                {
+                    name: "google.com.mx-mobile",
+                    type: "mobile-mx"
+                },
+                {
+                    name: "google.nl",
+                    type: "mobile-nl"
+                }, {
+                    name: "google.se",
+                    type: "mobile-se"
+                }, {
+                    name: "google.com.tr-mobile",
+                    type: "mobile-tr"
+                },
+
+                {
+                    name: "google.co.in",
+                    type: "mobile-in"
+                }, {
+                    name: "google.co-id",
+                    type: "mobile-id"
+                }, {
+                    name: "google.co.il",
+                    type: "mobile-il"
+                }
+            ]
+        }, {
+            type: 'keyword',
+            name: 'Keyword Report',
+            timeSegments: [
+                {
+                    name: "Keyword Overview - All Databases",
+                    type: "phrase_all"
+                }, {
+                    name: "Keyword Overview - One Database",
+                    type: "phrase_this"
+                }, {
+                    name: " Organic Results",
+                    type: "phrase_organic"
+                }, {
+                    name: "Paid Results",
+                    type: "phrase_adwords"
+                }, {
+                    name: "Related Keywords",
+                    type: "phrase_related"
+                }, {
+                    name: "Keyword Ads History",
+                    type: "phrase_adwords_historical"
+                }, {
+                    name: "Phrase Match Keywords",
+                    type: "phrase_fullsearch"
+                }, {
+                    name: "Keyword Difficulty",
+                    type: "phrase_kdi"
+                }
+            ],
+            productSegments: [
+                {
+                    name: "google.com",
+                    type: "us"
+                },
+                {
+                    name: "google.co.uk",
+                    type: "uk"
+                },
+                {
+                    name: "google.ca",
+                    type: "ca"
+                }, {
+                    name: "google.ru",
+                    type: "ru"
+                },
+                {
+                    name: "google.de",
+                    type: "de"
+                }, {
+                    name: "google.fr",
+                    type: "fr"
+                },
+                {
+                    name: "google.es",
+                    type: "es"
+                },
+                {
+                    name: "google.it",
+                    type: "it"
+                }, {
+                    name: "google.com.br",
+                    type: "br"
+                },
+                {
+                    name: "google.com.au",
+                    type: "au"
+                },
+                {
+                    name: "bing.com",
+                    type: "bing-us"
+                },
+                {
+                    name: "google.com.ar",
+                    type: "ar"
+                },
+                {
+                    name: "google.be",
+                    type: "be"
+                },
+                {
+                    name: "google.ch",
+                    type: "ch"
+                },
+                {
+                    name: "google.dk",
+                    type: "dk"
+                },
+                {
+                    name: "google.fi",
+                    type: "fi"
+                },
+                {
+                    name: "google.com.hk",
+                    type: "hk"
+                },
+                {
+                    name: "google.ie",
+                    type: "ie"
+                },
+                {
+                    name: "google.co.il",
+                    type: "il"
+                },
+                {
+                    name: "google.com.mx",
+                    type: "mx"
+                },
+                {
+                    name: "google.nl",
+                    type: "nl"
+                },
+                {
+                    name: "google.no",
+                    type: "no"
+                }, {
+                    name: "google.pl",
+                    type: "pl"
+                },
+                {
+                    name: "google.se",
+                    type: "se"
+                },
+                {
+                    name: "google.com.sg",
+                    type: "sg"
+                }, {
+                    name: "google.com.tr",
+                    type: "tr"
+                },
+                {
+                    name: "google.com.us-mobile",
+                    type: "mobile-us"
+                },
+                {
+                    name: "google.co.jp",
+                    type: "jp"
+                },
+                {
+                    name: "google.co.in",
+                    type: "in"
+                },
+                {
+                    name: "google.hu",
+                    type: "hu"
+                },
+                {
+                    name: "google.af",
+                    type: "af"
+                },
+                {
+                    name: "google.al",
+                    type: "al"
+                }, {
+                    name: "google.dz",
+                    type: "dz"
+                },
+                {
+                    name: "google.ao",
+                    type: "ao"
+                }, {
+                    name: "google.am",
+                    type: "am"
+                },
+                {
+                    name: "google.at",
+                    type: "at"
+                },
+                {
+                    name: "google.az",
+                    type: "az"
+                },
+                {
+                    name: "google.bh",
+                    type: "bh"
+                },
+                {
+                    name: "google.bd",
+                    type: "bd"
+                },
+                {
+                    name: "google.by",
+                    type: "by"
+                },
+                {
+                    name: "google.bz",
+                    type: "bz"
+                }, {
+                    name: "google.bo",
+                    type: "bo"
+                },
+                {
+                    name: "google.ba",
+                    type: "ba"
+                }, {
+                    name: "google.bw",
+                    type: "bw"
+                },
+                {
+                    name: "google.bn",
+                    type: "bn"
+                },
+                {
+                    name: "google.bg",
+                    type: "bg"
+                },
+                {
+                    name: "google.cv",
+                    type: "cv"
+                },
+                {
+                    name: "google.kh",
+                    type: "kh"
+                },
+                {
+                    name: "google.kh",
+                    type: "kh"
+                },
+                {
+                    name: "google.cm",
+                    type: "cm"
+                }, {
+                    name: "google.cl",
+                    type: "cl"
+                },
+                {
+                    name: "google.co",
+                    type: "co"
+                }, {
+                    name: "google.cr",
+                    type: "cr"
+                },
+                {
+                    name: "google.hr",
+                    type: "hr"
+                },
+                {
+                    name: "google.cy",
+                    type: "cy"
+                },
+                {
+                    name: "google.cz",
+                    type: "cz"
+                },
+                {
+                    name: "google.cd",
+                    type: "cd"
+                },
+                {
+                    name: "google.do",
+                    type: "do"
+                },
+                {
+                    name: "google.ec",
+                    type: "ec"
+                }, {
+                    name: "google.eg",
+                    type: "eg"
+                }, {
+                    name: "google.sv",
+                    type: "sv"
+                }, {
+                    name: "google.bw",
+                    type: "bw"
+                },
+                {
+                    name: "google.ee",
+                    type: "ee"
+                },
+                {
+                    name: "google.et",
+                    type: "et"
+                },
+                {
+                    name: "google.ge",
+                    type: "ge"
+                },
+                {
+                    name: "google.gh",
+                    type: "gh"
+                },
+                {
+                    name: "google.gr",
+                    type: "gr"
+                },
+                {
+                    name: "google.gt",
+                    type: "gt"
+                }, {
+                    name: "google.gt",
+                    type: "gt"
+                }, {
+                    name: "google.gy",
+                    type: "gy"
+                }, {
+                    name: "google.ht",
+                    type: "ht"
+                },
+                {
+                    name: "google.hn",
+                    type: "hn"
+                },
+                {
+                    name: "google.is",
+                    type: "is"
+                },
+                {
+                    name: "google.id",
+                    type: "id"
+                },
+                {
+                    name: "google.jm",
+                    type: "jm"
+                },
+                {
+                    name: "google.jo",
+                    type: "jo"
+                },
+                {
+                    name: "google.kz",
+                    type: "kz"
+                }, {
+                    name: "google.lv",
+                    type: "lv"
+                }, {
+                    name: "google.lb",
+                    type: "lb"
+                }, {
+                    name: "google.lt",
+                    type: "lt"
+                },
+                {
+                    name: "google.lu",
+                    type: "lu"
+                },
+                {
+                    name: "google.mg",
+                    type: "mg"
+                },
+                {
+                    name: "google.my",
+                    type: "my"
+                },
+                {
+                    name: "google.mt",
+                    type: "mt"
+                },
+                {
+                    name: "google.mu",
+                    type: "mu"
+                },
+                {
+                    name: "google.md",
+                    type: "md"
+                }, {
+                    name: "google.mn",
+                    type: "mn"
+                }, {
+                    name: "google.me",
+                    type: "me"
+                }, {
+                    name: "google.ma",
+                    type: "ma"
+                },
+                {
+                    name: "google.mz",
+                    type: "na"
+                },
+                {
+                    name: "google.np",
+                    type: "np"
+                },
+                {
+                    name: "google.nz",
+                    type: "nz"
+                },
+                {
+                    name: "google.ni",
+                    type: "ni"
+                },
+                {
+                    name: "google.ng",
+                    type: "ng"
+                },
+                {
+                    name: "google.om",
+                    type: "om"
+                }, {
+                    name: "google.py",
+                    type: "py"
+                }, {
+                    name: "google.pe",
+                    type: "pe"
+                }, {
+                    name: "google.ph",
+                    type: "ph"
+                },
+                {
+                    name: "google.pt",
+                    type: "pt"
+                },
+                {
+                    name: "google.ro",
+                    type: "ro"
+                },
+                {
+                    name: "google.sa",
+                    type: "sa"
+                },
+                {
+                    name: "google.sn",
+                    type: "sn"
+                },
+                {
+                    name: "google.rs",
+                    type: "rs"
+                },
+                {
+                    name: "google.sk",
+                    type: "sk"
+                }, {
+                    name: "google.si",
+                    type: "si"
+                },
+                {
+                    name: "google.za",
+                    type: "za"
+                },
+                {
+                    name: "google.kr",
+                    type: "kr"
+                },
+                {
+                    name: "google.lk",
+                    type: "lk"
+                },
+                {
+                    name: "google.th",
+                    type: "th"
+                },
+                {
+                    name: "google.bs",
+                    type: "bs"
+                }, {
+                    name: "google.tt",
+                    type: "tt"
+                }, {
+                    name: "google.tn",
+                    type: "tn"
+                }, {
+                    name: "google.ua",
+                    type: "ua"
+                },
+                {
+                    name: "google.ae",
+                    type: "ae"
+                },
+                {
+                    name: "google.uy",
+                    type: "uy"
+                },
+                {
+                    name: "google.ve",
+                    type: "ve"
+                },
+                {
+                    name: "google.vn",
+                    type: "vn"
+                },
+                {
+                    name: "google.zm",
+                    type: "zm"
+                },
+                {
+                    name: "google.zw",
+                    type: "zw"
+                }, {
+                    name: "google.ly",
+                    type: "ly"
+                }, {
+                    name: "google.com.uk-mobile",
+                    type: "mobile-uk"
+                }, {
+                    name: "google.ca-mobile",
+                    type: "mobile-ca"
+                },
+                {
+                    name: "google.de-mobile",
+                    type: "mobile-uk"
+                },
+                {
+                    name: "google.fr-mobile",
+                    type: "mobile-fr"
+                },
+                {
+                    name: "google.es-mobile",
+                    type: "mobile-es"
+                },
+                {
+                    name: "google.it-mobile",
+                    type: "mobile-it"
+                },
+                {
+                    name: "google.com.br-mobile",
+                    type: "mobile-br"
+                },
+                {
+                    name: "google.com.au-mobile",
+                    type: "mobile-au"
+                }, {
+                    name: "google.dk-mobile",
+                    type: "mobile-dk"
+                },
+                {
+                    name: "google.com.mx-mobile",
+                    type: "mobile-mx"
+                },
+                {
+                    name: "google.nl",
+                    type: "mobile-nl"
+                }, {
+                    name: "google.se",
+                    type: "mobile-se"
+                }, {
+                    name: "google.com.tr-mobile",
+                    type: "mobile-tr"
+                },
+
+                {
+                    name: "google.co.in",
+                    type: "mobile-in"
+                }, {
+                    name: "google.co-id",
+                    type: "mobile-id"
+                }, {
+                    name: "google.co.il",
+                    type: "mobile-il"
+                }
+            ]
+        }, {
+            type: 'url',
+            name: 'Url Report',
+            timeSegments: [
+                {
+                    name: "URL Organic Search Keywords",
+                    type: "url_organic"
+                }, {
+                    name: "URL Paid Search Keywords",
+                    type: "url_adwords"
+                }
+            ],
+            productSegments: [
+                {
+                    name: "google.com",
+                    type: "us"
+                },
+                {
+                    name: "google.co.uk",
+                    type: "uk"
+                },
+                {
+                    name: "google.ca",
+                    type: "ca"
+                }, {
+                    name: "google.ru",
+                    type: "ru"
+                },
+                {
+                    name: "google.de",
+                    type: "de"
+                }, {
+                    name: "google.fr",
+                    type: "fr"
+                },
+                {
+                    name: "google.es",
+                    type: "es"
+                },
+                {
+                    name: "google.it",
+                    type: "it"
+                }, {
+                    name: "google.com.br",
+                    type: "br"
+                },
+                {
+                    name: "google.com.au",
+                    type: "au"
+                },
+                {
+                    name: "bing.com",
+                    type: "bing-us"
+                },
+                {
+                    name: "google.com.ar",
+                    type: "ar"
+                },
+                {
+                    name: "google.be",
+                    type: "be"
+                },
+                {
+                    name: "google.ch",
+                    type: "ch"
+                },
+                {
+                    name: "google.dk",
+                    type: "dk"
+                },
+                {
+                    name: "google.fi",
+                    type: "fi"
+                },
+                {
+                    name: "google.com.hk",
+                    type: "hk"
+                },
+                {
+                    name: "google.ie",
+                    type: "ie"
+                },
+                {
+                    name: "google.co.il",
+                    type: "il"
+                },
+                {
+                    name: "google.com.mx",
+                    type: "mx"
+                },
+                {
+                    name: "google.nl",
+                    type: "nl"
+                },
+                {
+                    name: "google.no",
+                    type: "no"
+                }, {
+                    name: "google.pl",
+                    type: "pl"
+                },
+                {
+                    name: "google.se",
+                    type: "se"
+                },
+                {
+                    name: "google.com.sg",
+                    type: "sg"
+                }, {
+                    name: "google.com.tr",
+                    type: "tr"
+                },
+                {
+                    name: "google.com.us-mobile",
+                    type: "mobile-us"
+                },
+                {
+                    name: "google.co.jp",
+                    type: "jp"
+                },
+                {
+                    name: "google.co.in",
+                    type: "in"
+                },
+                {
+                    name: "google.hu",
+                    type: "hu"
+                },
+                {
+                    name: "google.af",
+                    type: "af"
+                },
+                {
+                    name: "google.al",
+                    type: "al"
+                }, {
+                    name: "google.dz",
+                    type: "dz"
+                },
+                {
+                    name: "google.ao",
+                    type: "ao"
+                }, {
+                    name: "google.am",
+                    type: "am"
+                },
+                {
+                    name: "google.at",
+                    type: "at"
+                },
+                {
+                    name: "google.az",
+                    type: "az"
+                },
+                {
+                    name: "google.bh",
+                    type: "bh"
+                },
+                {
+                    name: "google.bd",
+                    type: "bd"
+                },
+                {
+                    name: "google.by",
+                    type: "by"
+                },
+                {
+                    name: "google.bz",
+                    type: "bz"
+                }, {
+                    name: "google.bo",
+                    type: "bo"
+                },
+                {
+                    name: "google.ba",
+                    type: "ba"
+                }, {
+                    name: "google.bw",
+                    type: "bw"
+                },
+                {
+                    name: "google.bn",
+                    type: "bn"
+                },
+                {
+                    name: "google.bg",
+                    type: "bg"
+                },
+                {
+                    name: "google.cv",
+                    type: "cv"
+                },
+                {
+                    name: "google.kh",
+                    type: "kh"
+                },
+                {
+                    name: "google.kh",
+                    type: "kh"
+                },
+                {
+                    name: "google.cm",
+                    type: "cm"
+                }, {
+                    name: "google.cl",
+                    type: "cl"
+                },
+                {
+                    name: "google.co",
+                    type: "co"
+                }, {
+                    name: "google.cr",
+                    type: "cr"
+                },
+                {
+                    name: "google.hr",
+                    type: "hr"
+                },
+                {
+                    name: "google.cy",
+                    type: "cy"
+                },
+                {
+                    name: "google.cz",
+                    type: "cz"
+                },
+                {
+                    name: "google.cd",
+                    type: "cd"
+                },
+                {
+                    name: "google.do",
+                    type: "do"
+                },
+                {
+                    name: "google.ec",
+                    type: "ec"
+                }, {
+                    name: "google.eg",
+                    type: "eg"
+                }, {
+                    name: "google.sv",
+                    type: "sv"
+                }, {
+                    name: "google.bw",
+                    type: "bw"
+                },
+                {
+                    name: "google.ee",
+                    type: "ee"
+                },
+                {
+                    name: "google.et",
+                    type: "et"
+                },
+                {
+                    name: "google.ge",
+                    type: "ge"
+                },
+                {
+                    name: "google.gh",
+                    type: "gh"
+                },
+                {
+                    name: "google.gr",
+                    type: "gr"
+                },
+                {
+                    name: "google.gt",
+                    type: "gt"
+                }, {
+                    name: "google.gt",
+                    type: "gt"
+                }, {
+                    name: "google.gy",
+                    type: "gy"
+                }, {
+                    name: "google.ht",
+                    type: "ht"
+                },
+                {
+                    name: "google.hn",
+                    type: "hn"
+                },
+                {
+                    name: "google.is",
+                    type: "is"
+                },
+                {
+                    name: "google.id",
+                    type: "id"
+                },
+                {
+                    name: "google.jm",
+                    type: "jm"
+                },
+                {
+                    name: "google.jo",
+                    type: "jo"
+                },
+                {
+                    name: "google.kz",
+                    type: "kz"
+                }, {
+                    name: "google.lv",
+                    type: "lv"
+                }, {
+                    name: "google.lb",
+                    type: "lb"
+                }, {
+                    name: "google.lt",
+                    type: "lt"
+                },
+                {
+                    name: "google.lu",
+                    type: "lu"
+                },
+                {
+                    name: "google.mg",
+                    type: "mg"
+                },
+                {
+                    name: "google.my",
+                    type: "my"
+                },
+                {
+                    name: "google.mt",
+                    type: "mt"
+                },
+                {
+                    name: "google.mu",
+                    type: "mu"
+                },
+                {
+                    name: "google.md",
+                    type: "md"
+                }, {
+                    name: "google.mn",
+                    type: "mn"
+                }, {
+                    name: "google.me",
+                    type: "me"
+                }, {
+                    name: "google.ma",
+                    type: "ma"
+                },
+                {
+                    name: "google.mz",
+                    type: "na"
+                },
+                {
+                    name: "google.np",
+                    type: "np"
+                },
+                {
+                    name: "google.nz",
+                    type: "nz"
+                },
+                {
+                    name: "google.ni",
+                    type: "ni"
+                },
+                {
+                    name: "google.ng",
+                    type: "ng"
+                },
+                {
+                    name: "google.om",
+                    type: "om"
+                }, {
+                    name: "google.py",
+                    type: "py"
+                }, {
+                    name: "google.pe",
+                    type: "pe"
+                }, {
+                    name: "google.ph",
+                    type: "ph"
+                },
+                {
+                    name: "google.pt",
+                    type: "pt"
+                },
+                {
+                    name: "google.ro",
+                    type: "ro"
+                },
+                {
+                    name: "google.sa",
+                    type: "sa"
+                },
+                {
+                    name: "google.sn",
+                    type: "sn"
+                },
+                {
+                    name: "google.rs",
+                    type: "rs"
+                },
+                {
+                    name: "google.sk",
+                    type: "sk"
+                }, {
+                    name: "google.si",
+                    type: "si"
+                },
+                {
+                    name: "google.za",
+                    type: "za"
+                },
+                {
+                    name: "google.kr",
+                    type: "kr"
+                },
+                {
+                    name: "google.lk",
+                    type: "lk"
+                },
+                {
+                    name: "google.th",
+                    type: "th"
+                },
+                {
+                    name: "google.bs",
+                    type: "bs"
+                }, {
+                    name: "google.tt",
+                    type: "tt"
+                }, {
+                    name: "google.tn",
+                    type: "tn"
+                }, {
+                    name: "google.ua",
+                    type: "ua"
+                },
+                {
+                    name: "google.ae",
+                    type: "ae"
+                },
+                {
+                    name: "google.uy",
+                    type: "uy"
+                },
+                {
+                    name: "google.ve",
+                    type: "ve"
+                },
+                {
+                    name: "google.vn",
+                    type: "vn"
+                },
+                {
+                    name: "google.zm",
+                    type: "zm"
+                },
+                {
+                    name: "google.zw",
+                    type: "zw"
+                }, {
+                    name: "google.ly",
+                    type: "ly"
+                }, {
+                    name: "google.com.uk-mobile",
+                    type: "mobile-uk"
+                }, {
+                    name: "google.ca-mobile",
+                    type: "mobile-ca"
+                },
+                {
+                    name: "google.de-mobile",
+                    type: "mobile-uk"
+                },
+                {
+                    name: "google.fr-mobile",
+                    type: "mobile-fr"
+                },
+                {
+                    name: "google.es-mobile",
+                    type: "mobile-es"
+                },
+                {
+                    name: "google.it-mobile",
+                    type: "mobile-it"
+                },
+                {
+                    name: "google.com.br-mobile",
+                    type: "mobile-br"
+                },
+                {
+                    name: "google.com.au-mobile",
+                    type: "mobile-au"
+                }, {
+                    name: "google.dk-mobile",
+                    type: "mobile-dk"
+                },
+                {
+                    name: "google.com.mx-mobile",
+                    type: "mobile-mx"
+                },
+                {
+                    name: "google.nl",
+                    type: "mobile-nl"
+                }, {
+                    name: "google.se",
+                    type: "mobile-se"
+                }, {
+                    name: "google.com.tr-mobile",
+                    type: "mobile-tr"
+                },
+
+                {
+                    name: "google.co.in",
+                    type: "mobile-in"
+                }, {
+                    name: "google.co-id",
+                    type: "mobile-id"
+                }, {
+                    name: "google.co.il",
+                    type: "mobile-il"
+                }
+            ]
+        }, {
+            type: 'backlinks',
+            name: 'Backlinks Report',
+            timeSegments: [
+                {
+                    name: " Backlinks Overview",
+                    type: "backlinks_overview"
+                }, {
+                    name: "Backlinks",
+                    type: "backlinks"
+                }, {
+                    name: "Referring Domains",
+                    type: "backlinks_refdomains"
+                }, {
+                    name: "Referring IPs",
+                    type: "backlinks_refips"
+                }, {
+                    name: "TLD Distribution",
+                    type: "backlinks_tld"
+                }, {
+                    name: "Referring Domains by Country",
+                    type: "backlinks_geo"
+                }, {
+                    name: "Anchors",
+                    type: "backlinks_anchors"
+                }, {
+                    name: "Indexed pages",
+                    type: "backlinks_pages"
+                }, {
+                    name: "Comparison by referring domains",
+                    type: "backlinks_matrix"
+                }
+            ],
+            productSegments: [
+                {
+                    name: "Domain",
+                    type: "domain"
+                }, {
+                    name: "Root Domain",
+                    type: "root_domain"
+                }, {
+                    name: "URL",
+                    type: "url"
+                },
+            ]
+        }
+    ];
+
     $scope.getTimeSegements = function (dataSet) {
-        console.log(dataSet);
+        $scope.reportSelected = false;
+        $scope.enableMe = true;
         if ($scope.dataSet.dataSourceId.dataSourceType == "instagram")
         {
             var index = getIndex($scope.dataSet.reportName, $scope.instagramPerformance);
@@ -1730,11 +3984,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSet.productSegment = {name: 'None', type: 'none'};
         }
 
-        if ($scope.dataSet.dataSourceId.dataSourceType == "facebook")
-        {
-            console.log($scope.facebookPerformance);
-            console.log($scope.dataSet.reportName);
-            
+        if ($scope.dataSet.dataSourceId.dataSourceType == "facebook") {
             var index = getIndex($scope.dataSet.reportName, $scope.facebookPerformance);
             $scope.timeSegment = $scope.facebookPerformance[index].timeSegments;
             $scope.productSegment = $scope.facebookPerformance[index].productSegments;
@@ -1917,27 +4167,27 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
-            if ($scope.dataSet.reportName == 'geoPerformance') {
-                if (!dataSet.timeSegment) {
+            if (!dataSet.timeSegment) {
+                if ($scope.dataSet.reportName == 'geoPerformance') {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'City', type: 'city'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             } else {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 } else {
-                    getTimeSegment(timeSegmentList, timeSegmentName)
+                    getTimeSegment(timeSegmentList, timeSegmentName);
                 }
                 if (!dataSet.productSegment) {
                     $scope.dataSet.productSegment = {name: 'None', type: 'none'};
                 } else {
-                    getProductSegment(productList, productSegmentName)
+                    getProductSegment(productList, productSegmentName);
                 }
             }
         }
@@ -1956,14 +4206,28 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = true;
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
+
+            if ($scope.dataSet.reportName == 'placementReport') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.networkType = {name: 'None', type: 'none'};
+            }
+
+            if ($scope.dataSet.reportName == 'videoPerformance') {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.networkType = {name: 'None', type: 'none'};
+            }
+
             if ($scope.dataSet.reportName == 'geoPerformance') {
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
-                $scope.dataSet.productSegment = {name: 'City', type: 'city'};
-//                $scope.networkTypes={name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.networkType = {name: 'None', type: 'none'};
             } else {
                 $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
                 $scope.dataSet.productSegment = {name: 'None', type: 'none'};
-//                $scope.networkTypes={name: 'None', type: 'none'};
+                $scope.dataSet.networkType = {name: 'None', type: 'none'};
+
             }
         }
 
@@ -2010,7 +4274,85 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
         }
+        if ($scope.dataSet.dataSourceId.dataSourceType == "semRush")
+        {
+            var index = getIndex($scope.dataSet.reportName, $scope.semRush);
+            $scope.timeSegment = $scope.semRush[index].timeSegments;
+            $scope.productSegment = $scope.semRush[index].productSegments;
 
+            var productList = $scope.productSegment;
+            var productSegmentName = dataSet.productSegment;
+
+            var timeSegmentList = $scope.timeSegment;
+            var timeSegmentName = dataSet.timeSegment;
+
+            if ($scope.dataSet.reportName !== "") {
+                $scope.nwStatusFlag = false;
+                $scope.timeSegFlag = false;
+                $scope.productSegFlag = false;
+            }
+
+            if ($scope.dataSet.reportName == 'overview') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            if ($scope.dataSet.reportName == 'domain') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            if ($scope.dataSet.reportName == 'keyword') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            if ($scope.dataSet.reportName == 'url') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+            if ($scope.dataSet.reportName == 'backlinks') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
+        }
         function getIndex(data, object)
         {
             for (var i = 0; i < object.length; i++)
@@ -2052,12 +4394,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.searchDataSourceItems = [];
         $scope.dataSources = response;
-        $scope.searchDataSourceItems.unshift({name: 'All Data Source', value: '', id: 0});
+//        $scope.searchDataSourceItems.unshift({dataSourceId:{name: ''}});
         angular.forEach(response, function (value, key) {
-            $scope.searchDataSourceItems.push({name: value.name, value: value.name, id: value.id});
+            $scope.searchDataSourceItems.push({dataSourceId: {name: value.name}});
         });
     });
-    $scope.selectedItems = {name: "All Data Source", value: '', id: 0};
+//    $scope.selectedItems = {dataSourceId: {name: ''}};
 
     $scope.selectXlsSheet = function (dataSource) {
         if (dataSource.dataSourceType == 'xls') {
@@ -2068,9 +4410,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             });
         }
     };
+
+    $scope.columnsHeaderDefs = [];
+    $scope.getDataSetColDefs = function (getDataSetColDefs) {
+        $scope.columnsHeaderDefs = "";
+        $scope.columnsHeaderDefs = getDataSetColDefs;
+    };
+
     $scope.saveDataSet = function () {
         var dataSetList = $scope.dataSet;
-        console.log(dataSetList);
         if (dataSetList.timeSegment != null) {
             dataSetList.timeSegment = dataSetList.timeSegment.type;
         } else {
@@ -2081,8 +4429,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else {
             dataSetList.productSegment = null;
         }
-        console.log(dataSetList.timeSegment);
-
+        if (dataSetList.networkType != null) {
+            dataSetList.networkType = dataSetList.networkType.type;
+        } else {
+            dataSetList.networkType = null;
+        }
         var dataSet = dataSetList;
         if (dataSet.dataSourceId != null) {
             dataSet.dataSourceId = dataSet.dataSourceId.id;
@@ -2090,16 +4441,25 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             dataSet.dataSourceId = null;
         }
         $scope.nwStatusFlag = true;
-        console.log(dataSet);
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
-            getItems();
+//            $scope.columnHeaderByDataSetId = response;
+            var getDataSetId = response.id;
+            var data = $scope.columnsHeaderDefs;
+            console.log(data);
+            var gatDataSourceType = dataSet.dataSourceId ? dataSet.dataSourceId.dataSourceType : null;
+            if (gatDataSourceType != "sql" && data != null) {
+                $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForDataSet/' + getDataSetId, data: data}).success(function (response) {
+                    getItems();
+                });
+            }
         });
         $scope.dataSet = "";
         $scope.showPreviewChart = false;
         $scope.previewData = null;
         $scope.dataSetFlag = false;
+        $scope.columnHeaderByDataSetId = "";
     };
-    
+
 //    $scope.savePublishDataSet = function(dataSet){
 //        console.log(dataSet);
 //        var data = {
@@ -2111,24 +4471,26 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //            getItems();
 //        });
 //    };
-    
+
     $scope.clearTable = function () {
         $scope.dataSet = "";
+        $scope.columnHeaderByDataSetId = "";
     };
     $scope.editDataSet = function (dataSet) {
+        $scope.columnHeaderByDataSetId = dataSet;
         $scope.nwStatusFlag = true;
-        console.log(dataSet.networkType);
-        console.log(dataSet);
+        $scope.childTab = 3;
         var joinDataSetId = null;
         var publish = false;
         if (dataSet.joinDataSetId != null) {
             joinDataSetId = dataSet.joinDataSetId.id;
         }
-        if(dataSet.publish != null){
-            if(dataSet.publish == "Active"){
+        if (dataSet.publish != null) {
+            if (dataSet.publish == "Active") {
                 publish = true;
             }
-        };
+        }
+
         var data = {
             id: dataSet.id,
             name: dataSet.name,
@@ -2144,7 +4506,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             joinDataSetId: joinDataSetId,
             publish: publish
         };
-        console.log(data);
         $scope.dataSet = data;
         var dataSource = null;
         var dataSourceType = null;
@@ -2160,45 +4521,61 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.getTimeSegements();
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "facebook")
             {
                 $scope.report = $scope.facebookPerformance;
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "bing")
             {
                 $scope.report = $scope.bingPerformance;
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "pinterest")
             {
                 $scope.report = $scope.pinterestPerformance;
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "adwords")
             {
                 $scope.report = $scope.adwordsPerformance;
                 $scope.getTimeSegements();
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = true;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "analytics")
             {
                 $scope.report = $scope.analyticsPerformance;
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             } else if (dataSet.dataSourceId.dataSourceType === "linkedin")
             {
                 $scope.report = $scope.linkedinPerformance;
                 $scope.getTimeSegements();
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "semRush")
+            {
+                $scope.report = $scope.semRush;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+                $scope.timeSegFlag = false;
+                $scope.semRushFlag = true;
+                $scope.productSegFlag = false;
             } else {
                 $scope.dataSetFlag = false;
                 $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
             }
         }
 
@@ -2244,17 +4621,25 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         dataSet.productSegment = '';
     };
     $scope.clearDataSet = function (dataSet) {
+        $scope.selected = true;
+        $scope.reportSelected = true;
+        $scope.enableMe = true;
         $scope.dataSet = "";
         $scope.showPreviewChart = false;
         $scope.previewData = null;
         $scope.selectedRow = null;
         $scope.dataSetFlag = false;
+        $scope.columnHeaderByDataSetId = "";
+        $scope.childTab = 3;
     };
     $scope.deleteDataSet = function (dataSet, index) {
         $http({method: 'DELETE', url: 'admin/ui/dataSet/' + dataSet.id}).success(function (response) {
             $scope.dataSets.splice(index, 1);
             getItems();
         });
+        $scope.clearDataSet(dataSet);
+        $scope.selectedRow = null;
+        $scope.columnHeaderByDataSetId = "";
     };
     $scope.selectedRow = null;
     $scope.setClickedRow = function (index) {
@@ -2262,5 +4647,37 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.showPreviewChart = false;
         $scope.previewData = null;
     };
-});
 
+    $scope.saveDataSetFieldSettings = function (columnHeader) {
+        var dataSetId = $scope.columnHeaderByDataSetId
+        var data = {
+            id: columnHeader.id,
+            fieldName: columnHeader.fieldName,
+            displayName: columnHeader.displayName,
+            dataSetId: dataSetId ? dataSetId.id : '',
+            category: columnHeader.category,
+            dataFormat: columnHeader.dataFormat,
+            displayFormat: columnHeader.displayFormat,
+            expression: columnHeader.expression,
+            fieldType: columnHeader.fieldType,
+            functionName: columnHeader.functionName,
+            groupPriority: columnHeader.groupPriority,
+            sortOrder: columnHeader.sortOrder,
+            sortPriority: columnHeader.sortPriority,
+            status: columnHeader.status,
+            userId: columnHeader.userId,
+            widgetId: columnHeader.widgetId
+        };
+
+        console.log(data)
+
+        $http({method: 'POST', url: "admin/ui/createDataSetColumnByDataSet", data: data}).success(function (response) {
+            console.log(response)
+        })
+    }
+
+//    $scope.getDataSetColDefs = function(dataSetColumn){alert(1)
+//        console.log(dataSetColumn);
+//    }
+//    
+});

@@ -141,8 +141,11 @@ public class GaService {
 
     public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments, Integer dataSetId) {
         Map<String, GaReport> gaReports = ApiUtils.getAllGaReports();
+        System.out.println("Ga Reports -----> "+gaReports);
         GaReport gaReport = gaReports.get(reportName);
+        System.out.println("Ga Report ----> "+gaReport);
         String metricsList = gaReport.getFields();
+        System.out.println("MetricList ----> "+metricsList);
         String productSegments = reqProductSegments == null ? null : reqProductSegments;
         if (productSegments == null || productSegments.trim().isEmpty() || productSegments.trim().equalsIgnoreCase("none")) {
             productSegments = null;

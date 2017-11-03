@@ -32,16 +32,27 @@ public class TemplateService {
     private UiDao uiDao;
 
     public ProductAccountUserTemplate create(ProductAccountUserTemplate productAccountUserTemplate) {
-        ProductAccountUserTemplate productAccountUserTemplateId = templateDao.findAccountById(productAccountUserTemplate.getAccountId());
-        if (productAccountUserTemplateId == null) {
-            return (ProductAccountUserTemplate) templateDao.create(productAccountUserTemplate);
+        ProductAccountUserTemplate accountUserTemplate = templateDao.getProductAccountUserTemplateById(productAccountUserTemplate.getUserId(), productAccountUserTemplate.getProductId(), productAccountUserTemplate.getAccountId());
+        if (accountUserTemplate == null) {
+            accountUserTemplate = new ProductAccountUserTemplate();
+            accountUserTemplate.setAccountId(productAccountUserTemplate.getAccountId());
+            accountUserTemplate.setProductId(productAccountUserTemplate.getProductId());
+            accountUserTemplate.setUserId(productAccountUserTemplate.getUserId());
         }
-        if (productAccountUserTemplateId.getAccountId().getId() == productAccountUserTemplate.getAccountId().getId()) {
-            productAccountUserTemplate.setId(productAccountUserTemplateId.getId());
-            return (ProductAccountUserTemplate) templateDao.update(productAccountUserTemplate);
-        } else {
-            return (ProductAccountUserTemplate) templateDao.create(productAccountUserTemplate);
-        }
+        accountUserTemplate.setTemplateId(productAccountUserTemplate.getTemplateId());
+        uiDao.saveOrUpdate(accountUserTemplate);
+        return accountUserTemplate;
+      
+//        ProductAccountUserTemplate productAccountUserTemplateId = templateDao.findAccountById(productAccountUserTemplate.getAccountId());
+//        if (productAccountUserTemplateId == null) {
+//            return (ProductAccountUserTemplate) templateDao.create(productAccountUserTemplate);
+//        }
+//        if (productAccountUserTemplateId.getAccountId().getId() == productAccountUserTemplate.getAccountId().getId()) {
+//            productAccountUserTemplate.setId(productAccountUserTemplateId.getId());
+//            return (ProductAccountUserTemplate) templateDao.update(productAccountUserTemplate);
+//        } else {
+//            return (ProductAccountUserTemplate) templateDao.create(productAccountUserTemplate);
+//        }
     }
 
     public ProductAccountUserTemplate update(ProductAccountUserTemplate productAccountUserTemplate) {
@@ -64,7 +75,7 @@ public class TemplateService {
             template = accountUserTemplate.getTemplateId();
             return template;
         }
-        return product.getTemplateId();        
+        return product.getTemplateId();
         // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
