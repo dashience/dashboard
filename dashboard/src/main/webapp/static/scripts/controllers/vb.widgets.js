@@ -2640,7 +2640,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var widget = obj//$scope.undoWidget;
         
         if (status == true) {
-            alert("true")
             $scope.hideSelectedColumn = true;
             $scope.setWidgetItems(widget);
             setTimeout(function () {
@@ -2648,7 +2647,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }, 1000);
 
         } else {
-            alert("false")
             var undoWidgetObj = angular.copy(widget)
             $scope.undoWidget = undoWidgetObj;
         }
