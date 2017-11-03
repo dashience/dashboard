@@ -258,9 +258,9 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
         report.childItems.push({isEdit: true});
     };
     //Get Reports
-    $http.get('static/datas/report.json').success(function (response) {
-        $scope.reports = response;
-    });
+//    $http.get('static/datas/report.json').success(function (response) {
+//        $scope.reports = response;
+//    });
 //Drag and Drop in Tab
     $scope.moveItem = function (list, from, to) {
         list.splice(to, 0, list.splice(from, 1)[0]);
