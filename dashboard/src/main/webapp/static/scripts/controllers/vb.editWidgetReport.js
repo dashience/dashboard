@@ -118,7 +118,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         {name: 'Min', value: "min"},
         {name: 'Max', value: "max"}
     ];
-    $scope.combinationChartTypes="";
+    $scope.combinationChartTypes = "";
     $scope.combinationChartTypes = [
         {name: 'None', value: ""},
         {name: 'Line Chart', value: "line"},
@@ -176,9 +176,9 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
             widget.lastNmonths = "";
             widget.lastNyears = "";
         }
-    }
+    };
 
-    $http.get('admin/ui/dataSource').success(function (response) {
+    $http.get('admin/dataSources/dataSource').success(function (response) {
         $scope.dataSources = response;
     });
 
@@ -204,11 +204,11 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     $scope.tableDef = function (widget) {
         if (widget.columns) {
             if (widget.dataSetId) {
-                columnHeaderDef(widget)
+                columnHeaderDef(widget);
             }
         } else {
             if (widget.dataSetId) {
-                columnHeaderDef(widget)
+                columnHeaderDef(widget);
             }
         }
     };
@@ -244,7 +244,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     }
 
     $scope.editWidget = function (widget) {    //Edit widget
-        tagWidgetId(widget)
+        tagWidgetId(widget);
         $scope.editPreviewTitle = false;
         $scope.y1Column = [];
         $scope.y2Column = [];
@@ -253,7 +253,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         $scope.tableDef(widget);
         $scope.selectedRow = widget.chartType;
         widget.previewUrl = widget.dataSetId; //widget.directUrl;
-        $scope.selectDataSource(widget.dataSourceId, widget)
+        $scope.selectDataSource(widget.dataSourceId, widget);
         widget.previewType = widget.chartType;
         $scope.editChartType = widget.chartType;
         if (widget.chartType == 'table' || widget.chartType == 'ticker') {
@@ -303,7 +303,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         $scope.editChartType = null;
         widget.previewUrl = dataSet;
         widget.columns = [];
-        var chartType = widget
+        var chartType = widget;
 
         var url = "admin/proxy/getData?";
         if (dataSet.dataSourceId.dataSourceType == "sql") {
@@ -349,8 +349,8 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     });
 
     //DataSource
-    $http.get('admin/datasources').success(function (response) {
-        $scope.datasources = response;
+    $http.get('admin/datasources/dataSource').success(function (response) {
+        $scope.dataSources = response;
     });
 
     $scope.selectedDataSource = function (selectedItem) {
@@ -658,25 +658,23 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         $scope.editChartType = null;
         var chartType = widget;
         $timeout(function () {
-            $scope.previewChart(chartType, widget)
+            $scope.previewChart(chartType, widget);
         }, 50);
-    }
+    };
 
     $scope.tags = [];
     $http.get('admin/tag').success(function (response) {
         $scope.tagsGroups = response;
         angular.forEach(response, function (value, key) {
-            $scope.tags.push(value.tagName)
+            $scope.tags.push(value.tagName);
         });
     });
 
     function tagWidgetId(widget) {
         widget.tagName = [];
         $http.get("admin/tag/widgetTag/" + widget.id).success(function (response) {
-            console.log(response)
             $scope.widgetTags = response;
             angular.forEach(response, function (value, key) {
-                console.log(value)
                 widget.tagName.push(value.tagId.tagName)
             });
         });
@@ -774,14 +772,14 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 $http({method: 'POST', url: "admin/tag/widgetTag", data: tagData});
             }
 //            $state.go("index.report.newOrEdit", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-            $state.go("index.report.newOrEdit", {lan: $stateParams.lan, accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+            $state.go("index.report.newOrEdit", {lan: $stateParams.lan, accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
         });
 
     };
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
 //        $state.go("index.report.newOrEdit", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-        $state.go("index.report.newOrEdit", {lan: $stateParams.lan, accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+        $state.go("index.report.newOrEdit", {lan: $stateParams.lan, accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     };
 
     //Remove Tags
@@ -794,6 +792,39 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         });
     };
 
+    $scope.setLineChartFn = function (lineFn) {
+        $scope.directiveLineFn = lineFn;
+    };
+    $scope.setAreaChartFn = function (areaFn) {
+        $scope.directiveAreaFn = areaFn;
+    };
+    $scope.setBarChartFn = function (barFn) {
+        $scope.directiveBarFn = barFn;
+    };
+    $scope.setGaugeFn = function (gaugeFn) {
+        $scope.directiveGaugeFn = gaugeFn;
+    };
+    $scope.setPieChartFn = function (pieFn) {
+        $scope.directivePieFn = pieFn;
+    };
+    $scope.setStackedBarChartFn = function (stackedBarChartFn) {
+        $scope.directiveStackedBarChartFn = stackedBarChartFn;
+    };
+    $scope.setTableChartFn = function (tableFn) {
+        $scope.directiveTableFn = tableFn;
+    };
+    $scope.setTickerFn = function (tickerFn) {
+        $scope.directiveTickerFn = tickerFn;
+    };
+    $scope.setFunnelFn = function (funnelFn) {
+        $scope.directiveFunnelFn = funnelFn;
+    };
+    $scope.setCustomDatePickerFn = function (customDateFn) {
+        $scope.directiveDateFn = customDateFn;
+    };
+    $scope.setMapFn = function (mapFn) {
+        $scope.directiveMapFn = mapFn;
+    };
     //Query Builder
 //    var data = '{"group": {"operator": "AND","rules": []}}';
 //    function htmlEntities(str) {

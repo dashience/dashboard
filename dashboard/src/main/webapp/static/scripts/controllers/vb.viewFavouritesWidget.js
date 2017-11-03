@@ -7,8 +7,10 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.favouriteId = $stateParams.favouriteId;
     $scope.favouritesWidgets = [];
     $scope.favouriteName = $stateParams.favouriteName;
+    $scope.userId = $cookies.getObject("userId");
 
-    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
+    console.log("User Id ====> " + $scope.userId);
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
@@ -22,7 +24,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
         widgetItems = response;
         $http.get("admin/tag/getAllFav/").success(function (favResponse) {
             widgetItems.forEach(function (value, key) {
-               var favWidget = $.grep(favResponse, function (b) {
+                var favWidget = $.grep(favResponse, function (b) {
                     return b.id === value.widgetId.id;
                 });
                 if (favWidget.length > 0) {
@@ -39,12 +41,20 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
                 }
                 widgetItems.forEach(function (value, key) {
                     value.widgetId.chartColors = widgetColors;
+                    if (value.widgetId.chartType == 'horizontalBar') {
+                        value.widgetId.isHorizontalBar = true;
+                    } else {
+                        value.widgetId.isHorizontalBar = false;
+                    }
                 });
                 $scope.favouritesWidgets = widgetItems;
             }).error(function () {
                 $scope.favouritesWidgets = widgetItems;
+
             });
+            console.log($scope.favouritesWidgets);
         });
+
     });
 
     $scope.toggleFavourite = function (favouritesWidget, index) {
@@ -72,7 +82,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
         } else {
             widget.width = 12;
         }
-        saveWidgetSize(widget, expandchart)
+        saveWidgetSize(widget, expandchart);
     };
 
     $scope.reduceWidget = function (widget) {

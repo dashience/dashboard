@@ -338,7 +338,7 @@
                                                     {{agencyProduct.productName}}
                                                 </td>
                                                 <td data-as-sortable-item-handle class="col-xs-2">
-                                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAgencyProduct{{agencyProduct.id}}">
+                                                    <button class="btn btn-default btn-xs" title="Delete" data-toggle="modal" data-target="#deleteAgencyProduct{{agencyProduct.id}}">
                                                         <i class="fa fa-trash"></i>
                                                     </button>
 
@@ -495,15 +495,15 @@
                                                     </td>
                                                     <td class="col-xs-3">
                                                         <div ng-show="agencyProperty.isEdit">
-                                                            <button class="btn btn-default btn-xs" ng-click="saveAgencyProperty(agencyProperty); agencyProperty.isEdit = false;">
+                                                            <button class="btn btn-default btn-xs" title="Save" ng-click="saveAgencyProperty(agencyProperty); agencyProperty.isEdit = false;">
                                                                 <i class="fa fa-save"></i>
                                                             </button>                                                            
                                                         </div> 
                                                         <div ng-hide="agencyProperty.isEdit">
-                                                            <button class="btn btn-default btn-xs" ng-click="agencyProperty.isEdit = true;">
+                                                            <button class="btn btn-default btn-xs" title="Edit" ng-click="agencyProperty.isEdit = true;">
                                                                 <i class="fa fa-pencil"></i>
                                                             </button>
-                                                            <button class="btn btn-default btn-xs" ng-click="deleteAgencyProperty(agencyProperty, $index)">
+                                                            <button class="btn btn-default btn-xs" title="Delete" ng-click="deleteAgencyProperty(agencyProperty, $index)">
                                                                 <i class="fa fa-trash"></i>
                                                             </button>
                                                         </div>
@@ -562,7 +562,7 @@
                                     {{agency.agencyDashiencePath}}
                                 </td>
                                 <td class="col-xs-1">
-                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAgency{{agency.id}}"><i class="fa fa-trash-o"></i></button>
+                                    <button class="btn btn-default btn-xs" title="Delete" data-toggle="modal" data-target="#deleteAgency{{agency.id}}"><i class="fa fa-trash-o"></i></button>
                                     <div class="modal hmodal-success" id="deleteAgency{{agency.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">

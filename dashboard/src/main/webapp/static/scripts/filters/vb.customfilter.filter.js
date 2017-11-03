@@ -2,12 +2,23 @@ function isNumber(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
+function minutesGreaterThanSixty(minutes) {
+    var minutesInt = parseInt(minutes) - 60;
+    minutes = minutesInt + "";
+    if (parseInt(minutes) >= 60) {
+        minutes = minutesGreaterThanSixty(minutes);
+    }
+    return minutes;
+}
 
 function formatBySecond(second) {
     var minutes = "0" + Math.floor(second / 60);
     var seconds = "0" + (second - minutes * 60);
     var hours = "0" + Math.floor(minutes / 60);
-    return hours.substr(-2) + " : " + minutes.substr(-2) + " : " + seconds.substr(-2);
+    if (parseInt(minutes) >= 60) {
+        minutes = minutesGreaterThanSixty(minutes);
+    }
+    return hours.substr(-2) + ":" + minutes.substr(-2) + ":" + seconds.substr(-2);
 }
 
 function dashboardFormat(column, value) {
@@ -28,7 +39,7 @@ function dashboardFormat(column, value) {
         if (column.displayFormat.indexOf("%") > -1) {
             return d3.format(column.displayFormat)(value / 100);
         } else if (column.displayFormat == 'H:M:S') {
-            return formatBySecond(parseInt(value))
+            return formatBySecond(parseInt(value));
         } else {
             return d3.format(column.displayFormat)(value);
         }

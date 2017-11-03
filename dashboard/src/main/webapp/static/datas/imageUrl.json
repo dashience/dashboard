@@ -13,65 +13,71 @@
     },
     {
         "id": 3,
+        "type": "horizontalBar",
+        "name": "Horizontal Bar Chart",
+        "icon": "fa-bar-chart fa-rotate-90"
+    },
+    {
+        "id": 4,
         "type": "line",
         "name": "Line Chart",
         "icon": "fa-line-chart"
     },
     {
-        "id": 4,
+        "id": 5,
         "type": "pie",
         "name": "Pie Chart",
         "icon": "fa-pie-chart"
     },    
     {
-        "id": 7,
+        "id": 6,
         "url": "static/img/table.png",
         "type": "table",
         "name": "Table",
         "icon": "fa-table"
     },
     {
-        "id": 8,
+        "id": 7,
         "type": "ticker",
         "name": "Tickers",
         "icon": "fa-check"
     },
     {
-        "id": 9,
+        "id": 8,
         "type": "text",
         "name": "Text",
         "icon": "fa-file-text-o"
     },
     {
-        "id": 10,
+        "id": 9,
         "type": "stackedbar",
         "name": "Stacked Bar",
         "icon": "fa-braille"
     },
     {
-       "id": 11,
-       "type": "funnel",
-       "name": "Funnel",
-       "icon": "fa-filter"
+        "id": 10,
+        "type": "funnel",
+        "name": "Funnel",
+        "icon": "fa-filter"
     },
     {
-        "id": 12,
+        "id": 11,
         "url": "static/img/icons/scatter-plot.png",
         "type": "scatter",
         "name": "Scatter",
         "icon": "fa-ellipsis-h"
-   },
-   {
-        "id": 13,
-        "type": "combination",
-        "name": "Combination Chart",
-        "icon": "fa-braille"
     },
     {
-        "id": 14,
+        "id": 12,
+        "type": "combination",
+        "name": "Combination Chart",
+        "icon": "fa-industry"
+    },
+    {
+        "id": 13,
         "url": "static/img/icons/gauge.png",
         "type": "gauge",
         "name": "Gauge",
-        "icon": "fa-clock-o"
+        "icon": "fa-tachometer"
     }
 ]

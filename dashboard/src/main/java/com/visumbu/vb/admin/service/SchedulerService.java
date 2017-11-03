@@ -133,6 +133,7 @@ public class SchedulerService {
         scheduler.setReportId(schedulerBean.getReportId());
         scheduler.setAgencyId(schedulerBean.getAgencyId());
         scheduler.setAccountId(schedulerBean.getAccountId());
+        scheduler.setCreatedBy(schedulerBean.getCreatedBy());
 
         return (Scheduler) schedulerDao.create(scheduler);
     }

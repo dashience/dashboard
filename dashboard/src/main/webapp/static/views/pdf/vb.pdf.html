@@ -123,6 +123,9 @@
         page-break-inside:avoid;
     }
     @media print  {
+        .table-responsive{
+            overflow: hidden !important;
+        }
         .pdfButton {
             display:none !important;
         }
@@ -157,7 +160,7 @@
             <img src="{{userAccountLogo}}" width="100"> 
         </div>
         <div class="head-title">
-            <h2 class="pdf-title-color">{{userProductName?userProductName:templateName}}</h2>
+            <h2 class="pdf-title-color">{{userProductName}}</h2>
             <div class="pdfButton pull-right">
                 <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button>
             </div>
@@ -215,6 +218,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="panel-body pageBreak" ng-if="widget.chartType === 'horizontalBar'">
+                        <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}"
+                                 is-Horizontal-Bar="{{widget.isHorizontalBar}}">                                     
+                            </div>
+                        </div>
+                    </div>
                         <div class="panel-body pageBreak" ng-if="widget.chartType === 'pie'">
                             <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
@@ -290,6 +304,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="hpanel col-fixed-{{widget.width}} pageBreak" ng-if="widget.chartType == 'gauge'">
+                        <div set-Gauge-Fn="setGaugeFn(gaugeFn)" 
+                             gauge-Directive 
+                             widget-Obj="{{widget}}"
+                             gauge-Source="{{widget.dataSetId}}" 
+                             gauge-Title-Name="{{widget.widgetTitle}}" 
+                             gauge-Id="{{widget.id}}" 
+                             gauge-Columns="{{widget.columns}}">
+                        </div>
+                    </div>
+                        
                     </div>
                 </div>
             </div>

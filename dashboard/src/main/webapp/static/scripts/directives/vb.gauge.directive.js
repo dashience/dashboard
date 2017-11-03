@@ -1,7 +1,7 @@
 app.directive('gaugeDirective', function ($http, $stateParams) {
     return{
         restrict: 'AE',
-        template: '<div ng-show="loadingGauge" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
+        template: '<div ng-show="loadingGauge" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-hide="loadingGauge" class="panel panel-default relative pnl-aln">' +
                 '<div class="m-b-10" ng-hide="hideEmptyGauge">' +
                 '<span>{{gaugeTitle}}</span><br>' +
@@ -12,29 +12,18 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
         scope: {
             setGaugeChartFn: '&',
             getSelectedFilterItem: '&',
-            gaugeChartSource: '@',
+            gaugeSource: '@',
             gaugeChartId: '@',
-            widgetColumns: '@',
+            gaugeColumns: '@',
             loadingGauge: '&',
             widgetObj: '@',
             defaultChartColor: '@'
         },
         link: function (scope, element, attr) {
-
-//            console.log(scope.setGaugeChartFn);
-//            console.log(scope.getSelectedFilterItem);
-//            console.log(scope.gaugeChartSource);
-//            console.log(scope.widgetColumns);
-//            console.log(scope.widgetObj);
-//            var gaugeName;
-
-
             scope.loadingGauge = true;
 
-//            console.log(scope.widgetColumns);
-            var gaugeColumnsObj = JSON.parse(scope.widgetColumns);
+            var gaugeColumnsObj = JSON.parse(scope.gaugeColumns);
             var fieldName = gaugeColumnsObj[0].fieldName;
-            console.log(fieldName);
 
 
 
@@ -42,8 +31,8 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
             var data = [];
 
 
-            var gaugeChartDataSource = JSON.parse(scope.gaugeChartSource);
-            if (scope.gaugeChartSource) {
+            var gaugeChartDataSource = JSON.parse(scope.gaugeSource);
+            if (scope.gaugeSource) {
                 var url = "admin/proxy/getData?";
 
                 var dataSourcePassword;
@@ -118,23 +107,18 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
 
                     //array of object
                     var gaugeDataArray = response.data;
-                    console.log(gaugeDataArray);
 
                     var gaugeDataObj = gaugeDataArray[0];
-                    console.log(gaugeDataObj);
 
                     var arrayGaugeData = [];
 
                     //array of array
                     arrayGaugeData.push(fieldName, gaugeDataObj[fieldName]);
 
-                    console.log(gaugeDataObj[fieldName]);
 
-                    console.log(arrayGaugeData);
 
 
 //                    var groups = gaugeData;
-//                    console.log(groups)
 
                     var chart = c3.generate({
                         bindto: element[0],

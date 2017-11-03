@@ -1,4 +1,4 @@
-app.directive('previewTable', function ($http, $filter, $stateParams) {
+app.directive('previewTable', function ($http, $filter, $stateParams, $translate) {
     return{
         restrict: 'A',
         scope: {
@@ -13,24 +13,24 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div ng-if="ajaxLoadingCompleted">' +
                 '<div class="message" ng-if="showMessage">No Data Found</div>' +
                 '<div ng-if="tableRows!=null&&dataSetId!=null" class="pull-right">' +
-                '<button class="btn btn-warning btn-xs" title="Delete Derived Columns" ng-click="resetDataSetColumn()">Reset</button>' +
-                '<button class="btn btn-success btn-xs" title="Add Derived Column" data-toggle="modal" data-target="#dataSet" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
+                '<button class="btn btn-warning btn-xs" ng-click="resetDataSetColumn()" translate>Reset</button>' +
+                '<button class="btn btn-success btn-xs" data-toggle="modal" data-target="#dataSet" title="{{\'Add Column\' | translate}}" ng-click="dataSetFieldsClose(dataSetColumn)"><i class="fa fa-plus"></i></button>' +
                 '<div id="dataSet" class="modal" role="dialog">' +
                 '<div class="modal-dialog modal-lg">' +
                 '<div class="modal-content">' +
                 '<div class="modal-header">' +
                 '<button type="button" class="close" ng-click="dataSetFieldsClose(dataSetColumn)" data-dismiss="modal">&times;</button>' +
-                '<h4 class="modal-title">Derived Column</h4>' +
+                '<h4 class="modal-title" translate>Derived Column</h4>' +
                 '</div>' +
                 '<div class="modal-body" style="overflow: visible;">' +
                 '<form name="dataSetForm" class="form-horizontal">' +
                 '<div class="form-group">' +
-                '<label class="col-md-3">Field Name</label>' +
+                '<label class="col-md-3" translate>Field Name</label>' +
                 '<div class="col-md-3">' +
                 '<input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
                 '</div>' +
                 '<div class="col-md-3">' +
-                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
+                '<span ng-show="dataSetError" style="color:red" translate>Field Name Already Exists</span>' +
                 '</div>' +
 //                '<label class="col-md-2">Base Field</label>' +
 //                '<div class="col-md-4">' +
@@ -125,7 +125,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                '</div>' +
 //                '</div>' +
                 '<div class="form-group">' +
-                '<label class="col-md-3">Expression</label>' +
+                '<label class="col-md-3" translate>Expression</label>' +
                 '<div class="col-md-8">' +
                 '<textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config" ' +
                 'class="form-control code expression" ng-model="dataSetColumn.expression" ng-disabled="dataSetColumn.functionName?true:false" rows="5"></textarea>' +
@@ -135,7 +135,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                '<label class="col-md-3">Field Type</label>' +
+                '<label class="col-md-3" translate>Field Type</label>' +
                 '<div class="col-md-3">' +
                 '<select class="form-control" ng-model="dataSetColumn.fieldType">' +
                 '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
@@ -143,7 +143,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</option>' +
                 '</select>' +
                 '</div>' +
-                '<label class="col-md-2">Format</label>' +
+                '<label class="col-md-2" translate>Format</label>' +
                 '<div class="col-md-4">' +
                 '<select class="form-control" ng-model="dataSetColumn.displayFormat">' +
                 '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
@@ -155,8 +155,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="dataSetError||!((dataSetColumn.expression||(dataSetColumn.functionName&&dataSetColumn.columnName))&&dataSetColumn.fieldName&&dataSetColumn.fieldType)" ng-click="saveDataSetColumn(dataSetColumn)">Save</button>' +
-                '<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dataSetFieldsClose(dataSetColumn)" >Close</button>' +
+                '<button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="dataSetError||!((dataSetColumn.expression||(dataSetColumn.functionName&&dataSetColumn.columnName))&&dataSetColumn.fieldName&&dataSetColumn.fieldType)" ng-click="saveDataSetColumn(dataSetColumn)" translate>Save</button>' +
+                '<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dataSetFieldsClose(dataSetColumn)" translate>Close</button>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -174,17 +174,17 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '<div class="modal-content">' +
                 '<div class="modal-header">' +
                 '<button type="button" class="close" ng-click="dataSetFieldsClose(dataSetColumn)" data-dismiss="modal">&times;</button>' +
-                '<h4 class="modal-title">Derived Column</h4>' +
+                '<h4 class="modal-title" translate>Derived Column</h4>' +
                 '</div>' +
                 '<div class="modal-body" style="overflow: visible;">' +
                 '<form name="dataSetForm" class="form-horizontal">' +
                 '<div class="form-group">' +
-                '<label class="col-md-3">Field Name</label>' +
+                '<label class="col-md-3" translate>Field Name</label>' +
                 '<div class="col-md-3">' +
                 '<input class="form-control" ng-model="dataSetColumn.fieldName"  ng-change="checkFieldName(dataSetColumn.fieldName)" type="text">' +
                 '</div>' +
                 '<div class="col-md-3">' +
-                '<span ng-show="dataSetError" style="color:red">Field Name Already Exists</span>' +
+                '<span ng-show="dataSetError" style="color:red" translate>Field Name Already Exists</span>' +
                 '</div>' +
 //                '<label class="col-md-2">Base Field</label>' +
 //                '<div class="col-md-4">' +
@@ -280,7 +280,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
 //                '</div>' +
 //                '</div>' +
                 '<div class="form-group">' +
-                '<label class="col-md-3">Expression</label>' +
+                '<label class="col-md-3" translate>Expression</label>' +
                 '<div class="col-md-8">' +
                 '<textarea name="expression" ng-trim="false" spellcheck="false" smart-area="config" ' +
                 'class="form-control code expression" ng-model="dataSetColumn.expression" ng-disabled="dataSetColumn.functionName?true:false" rows="5"></textarea>' +
@@ -290,7 +290,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</div>' +
                 '</div>' +
                 '<div class="form-group">' +
-                '<label class="col-md-3">Field Type</label>' +
+                '<label class="col-md-3" translate>Field Type</label>' +
                 '<div class="col-md-3">' +
                 '<select class="form-control" ng-model="dataSetColumn.fieldType">' +
                 '<option ng-repeat="fieldType in fieldTypes" value="{{fieldType.value}}">' +
@@ -298,7 +298,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</option>' +
                 '</select>' +
                 '</div>' +
-                '<label class="col-md-2">Format</label>' +
+                '<label class="col-md-2" translate>Format</label>' +
                 '<div class="col-md-4">' +
                 '<select class="form-control" ng-model="dataSetColumn.displayFormat">' +
                 '<option  ng-repeat="formatType in formats" value="{{formatType.value}}">' +
@@ -310,8 +310,8 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                 '</form>' +
                 '</div>' +
                 '<div class="modal-footer">' +
-                '<button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="dataSetError || !((dataSetColumn.expression || (dataSetColumn.functionName && dataSetColumn.columnName)) && dataSetColumn.fieldName && dataSetColumn.fieldType)" ng-click="saveDataSetColumn(dataSetColumn)">Save</button>' +
-                '<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dataSetFieldsClose(dataSetColumn)">Close</button>' +
+                '<button type="button" class="btn btn-success" data-dismiss="modal" ng-disabled="dataSetError || !((dataSetColumn.expression || (dataSetColumn.functionName && dataSetColumn.columnName)) && dataSetColumn.fieldName && dataSetColumn.fieldType)" ng-click="saveDataSetColumn(dataSetColumn)" translate>Save</button>' +
+                '<button type="button" class="btn btn-default" data-dismiss="modal" ng-click="dataSetFieldsClose(dataSetColumn)" translate>Close</button>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -492,10 +492,11 @@ app.directive('previewTable', function ($http, $filter, $stateParams) {
                         scope.getDataSetColumns({dataSetColumnDef: scope.dataSetColumns});
                     }
                     scope.tableColumns = response.columnDefs;
-                    if (response.data == null || response.data.length == 0) {
+                    if (response.data === null || response.data.length == 0) {
                         scope.ajaxLoadingCompleted = true;
                         scope.loadingTable = false;
                         scope.showMessage = true;
+                        return;
                     } else {
                         scope.tableRows = response.data.slice(0, 5);
                     }

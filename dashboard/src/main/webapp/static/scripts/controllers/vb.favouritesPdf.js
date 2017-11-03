@@ -3,6 +3,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
     $scope.favPdfStartDate = $filter('date')(new Date($stateParams.startDate), 'MMM dd yyyy');//$filter(new Date($stateParams.startDate, 'MM/dd/yyyy'));
     $scope.favPdfEndDate = $filter('date')(new Date($stateParams.endDate), 'MMM dd yyyy'); //$filter(new Date($stateParams.endDate, 'MM/dd/yyyy'));
     $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+    console.log("userId>>>>>>>>" + $stateParams.userId);
 
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
@@ -21,7 +22,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
     $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
 //        $scope.favPdfWidgets = response;
         var widgetItems = response;
-        $http.get("admin/ui/getChartColorByUserId").success(function (response) {
+        $http.get("admin/ui/getChartColorByUserId/" + $stateParams.userId).success(function (response) {
             $scope.userChartColors = response;
             var widgetColors;
             if (response.optionValue) {
@@ -29,6 +30,11 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
             }
             widgetItems.forEach(function (value, key) {
                 value.widgetId.chartColors = widgetColors;
+                if (value.widgetId.chartType == 'horizontalBar') {
+                    value.widgetId.isHorizontalBar = true;
+                } else {
+                    value.widgetId.isHorizontalBar = false;
+                }
             });
             $scope.favPdfWidgets = widgetItems;
         }).error(function () {
@@ -36,7 +42,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
         });
         setInterval(function () {
             window.status = "done";
-        }, 10000);
+        }, 15000);
     });
 
 

@@ -178,6 +178,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
+                
                 var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
@@ -243,7 +244,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj);
                             var chartData = response.data;
-                            if (sortFields.length > 0) {
+                            if (sortFields.length > 0) { 
                                 angular.forEach(sortFields, function (value, key) {
                                     if (value.fieldType != 'day') {
 //                                    chartData = scope.orderData(chartData, sortFields);
@@ -253,13 +254,13 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                         } else {
                                             chartData = sortingObj;
                                         }
-                                    } else {
+                                    } else { 
                                         var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
                                         sortingObj = orderByFilter(chartData, function (item) {
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
                                             } else if (value.sortOrder === 'desc') {
-                                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                                                return dateOrders.indexOf(item[value.fieldName]) * -1;
                                             }
                                         });
                                         if (chartMaxRecord.maxRecord) {
@@ -269,9 +270,13 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                         }
                                     }
                                 });
+                            } 
+                            if (chartMaxRecord.maxRecord > 0) {
+                                chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
 //                        chartData = orderData(chartData, sortFields);
                             xTicks = [xAxis.fieldName];
+                            
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;
@@ -334,6 +339,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     x: {
                                         tick: {
                                             format: function (x) {
+                                               
                                                 return xData[x];
                                             },
                                             culling: false

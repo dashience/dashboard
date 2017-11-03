@@ -5,15 +5,12 @@
  */
 package com.visumbu.vb.admin.controller;
 
-import com.visumbu.vb.admin.dao.UiDao;
-import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.TabWidgetBean;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.DashboardTabs;
 import com.visumbu.vb.model.DataSet;
-import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.TabWidget;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.UserPermission;
@@ -47,9 +44,7 @@ import com.visumbu.vb.model.DataSetColumns;
 
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.DashboardTemplate;
-import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
-import com.visumbu.vb.model.TemplateTabs;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserPreferences;
 import com.visumbu.vb.model.WidgetTag;
@@ -66,7 +61,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.eclipse.persistence.annotations.ReadOnly;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
@@ -83,11 +77,6 @@ public class UiController extends BaseController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private FacebookService facebookService;
-
-    private Rest rest;
 
     @RequestMapping(value = "product", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
@@ -350,23 +339,6 @@ public class UiController extends BaseController {
 //    ReportWidget deleteReportWidget(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer reportId) {
 //        return uiService.deleteReportWidget(reportId);
 //    }
-    @RequestMapping(value = "dataSource", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody
-    DataSource create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSourceBean dataSource) {
-        VbUser user = userService.findByUsername(getUser(request));
-        dataSource.setUserId(user);
-        dataSource.setAgencyId(user.getAgencyId());
-        return uiService.saveDataSource(dataSource);
-    }
-
-    @RequestMapping(value = "joinDataSource", method = RequestMethod.POST, produces = "application/json")
-    public @ResponseBody
-    DataSource createDataSourceForJoinDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSourceBean dataSource) {
-        VbUser user = userService.findByUsername(getUser(request));
-        dataSource.setUserId(user);
-        dataSource.setAgencyId(user.getAgencyId());
-        return uiService.createDataSourceForJoinDataSet(dataSource);
-    }
 
     @RequestMapping(value = "fileUpload", method = RequestMethod.POST)
     public @ResponseBody
@@ -394,33 +366,6 @@ public class UiController extends BaseController {
         Map returnMap = new HashMap();
         returnMap.put("filename", returnFilename);
         return returnMap;
-    }
-
-    @RequestMapping(value = "dataSource", method = RequestMethod.PUT, produces = "application/json")
-    public @ResponseBody
-    DataSource update(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSource dataSource) {
-        return uiService.update(dataSource);
-    }
-
-    @RequestMapping(value = "dataSource", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    List getDataSource(HttpServletRequest request, HttpServletResponse response) {
-        VbUser user = userService.findByUsername(getUser(request));
-        if (user == null) {
-            return null;
-        }
-        return uiService.getDataSourceByUser(user);
-    }
-
-//    @RequestMapping(value = "dataSource", method = RequestMethod.GET, produces = "application/json")
-//    public @ResponseBody
-//    List getDataSource(HttpServletRequest request, HttpServletResponse response) {
-//        return uiService.getDataSource();
-//    }
-    @RequestMapping(value = "dataSource/{id}", method = RequestMethod.DELETE, produces = "application/json")
-    public @ResponseBody
-    DataSource delete(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
-        return uiService.deleteDataSource(id);
     }
 
     @RequestMapping(value = "dataSet", method = RequestMethod.POST, produces = "application/json")

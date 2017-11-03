@@ -190,7 +190,7 @@ public class TimerService {
             Date schedulerExecutedDate = new Date();
             schedulerHistory.setExecutedDate(schedulerExecutedDate);
             schedulerService.createSchedulerHistory(schedulerHistory);
-            
+
 //            } else {
 //                System.out.println("Scheduler is InActive");
 //            }
@@ -324,7 +324,10 @@ public class TimerService {
             TextMailWithAttachment sender = new TextMailWithAttachment(mailProps);
             String[] attachments = {filename};
             System.out.println("Sending mail to " + to);
-            sender.sendMail(to, subject, message, Arrays.asList(attachments));
+            String result = sender.sendMail(to, subject, message, Arrays.asList(attachments));
+            if (result.equalsIgnoreCase("Sent")) {
+                return true;
+            }
         } catch (IOException ex) {
             Logger.getLogger(TimerService.class.getName()).log(Level.SEVERE, null, ex);
             return false;

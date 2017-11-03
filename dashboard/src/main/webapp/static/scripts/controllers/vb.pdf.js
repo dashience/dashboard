@@ -2,8 +2,8 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter, 
     $scope.reportStartDate = $filter('date')(new Date($stateParams.startDate), 'MMM dd yyyy');//$filter(new Date($stateParams.startDate, 'MM/dd/yyyy'));
     $scope.reportEndDate = $filter('date')(new Date($stateParams.endDate), 'MMM dd yyyy'); //$filter(new Date($stateParams.endDate, 'MM/dd/yyyy'));
     $scope.pdfWidget = [];
-console.log("userId>>>>>>>>"+$stateParams.userId);
-    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
+    console.log("userId>>>>>>>>" + $stateParams.userId);
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
@@ -19,7 +19,7 @@ console.log("userId>>>>>>>>"+$stateParams.userId);
         });
     });
 
-    $http.get('admin/ui/dashboardTemplates/' + $stateParams.productId+ "/"+$stateParams.userId+"/"+$stateParams.agencyId).success(function (response) {
+    $http.get('admin/ui/dashboardTemplates/' + $stateParams.productId + "/" + $stateParams.userId + "/" + $stateParams.agencyId).success(function (response) {
         $scope.templates = response;
         var template = $filter('filter')(response, {id: $stateParams.templateId})[0];
         $scope.templateName = template ? template.templateName : null;
@@ -30,13 +30,18 @@ console.log("userId>>>>>>>>"+$stateParams.userId);
         $scope.userProductName = pdfProductName;
         var pdfWidgetItems = [];
         pdfWidgetItems = response;
-        $http.get("admin/ui/getChartColorByUserId/"+$stateParams.userId).success(function (response) {
+        $http.get("admin/ui/getChartColorByUserId/" + $stateParams.userId).success(function (response) {
             var widgetColors;
             if (response.optionValue) {
                 widgetColors = response.optionValue.split(',');
             }
             pdfWidgetItems.forEach(function (value, key) {
                 value.chartColors = widgetColors;
+                if (value.chartType == 'horizontalBar') {
+                    value.isHorizontalBar = true;
+                } else {
+                    value.isHorizontalBar = false;
+                }
             });
             $scope.pdfWidgets = pdfWidgetItems;
         }).error(function (response) {
@@ -44,7 +49,7 @@ console.log("userId>>>>>>>>"+$stateParams.userId);
         });
         setInterval(function () {
             window.status = "done";
-        }, 10000);
+        }, 15000);
     });
 
     $scope.downloadUiPdf = function () {

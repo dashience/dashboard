@@ -173,15 +173,13 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         }
 
         $scope.showSchedulerMsg = false
-        $scope.showErrorDateRangeMessage = ""
-
-        console.log(scheduler)
-    }
+        $scope.showErrorDateRangeMessage = "";
+    };
     $scope.saveScheduler = function (scheduler) {
         scheduler.dateRangeName = $("#customDateRangeName").text();
 
         if (scheduler.dateRangeName == "Select Date Duration") {
-            scheduler.dateRangeName = ""
+            scheduler.dateRangeName = "";
         }
 
         try {
@@ -269,17 +267,16 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             scheduler.customEndDate = "";
         }
 
-
         if (!scheduler.dateRangeName) {
             $scope.showSchedulerMsg = true;
-            $scope.showErrorDateRangeMessage = "Select Date Duration"
+            $scope.showErrorDateRangeMessage = "Select Date Duration";
         } else {
             $scope.showSchedulerMsg = false;
             scheduler.schedulerEmail = emails;
             $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
             });
             $scope.scheduler = "";
-            $scope.showErrorDateRangeMessage = ""
+            $scope.showErrorDateRangeMessage = "";
         }
 
     };

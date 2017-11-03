@@ -8,6 +8,7 @@ package com.visumbu.vb.bean;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.Report;
+import com.visumbu.vb.model.VbUser;
 
 /**
  *
@@ -42,6 +43,7 @@ public class SchedulerBean {
     private Report reportId;
     private Agency agencyId;
     private Account accountId;
+    private VbUser createdBy;
 
     public Integer getId() {
         return id;
@@ -258,6 +260,15 @@ public class SchedulerBean {
     public void setAccountId(Account accountId) {
         this.accountId = accountId;
     }
+
+    public VbUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(VbUser createdBy) {
+        this.createdBy = createdBy;
+    }
+    
 
     @Override
     public String toString() {

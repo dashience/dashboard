@@ -123,7 +123,7 @@
                                     <tr>
                                         <th class="col-xs-9" translate>Account Name</th>                                                
                                         <th class="col-xs-3">
-                                            <button class="btn btn-success btn-xs" ng-click="addUserAccount()"><i class="fa fa-plus"></i></button>
+                                            <button class="btn btn-success btn-xs" title="Add" ng-click="addUserAccount()"><i class="fa fa-plus"></i></button>
                                         </th>
                                     </tr>
                                 </thead>
@@ -141,9 +141,9 @@
                                             </div>
                                         </td>                                                
                                         <td class="col-xs-3">
-                                            <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="saveUserAccount(userAccount)"><i class="fa fa-save"></i></button>
-                                            <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" ng-click="removeUserAccount($index)"><i class="fa fa-times"></i></button>
-                                            <button ng-hide="userAccount.isEdit" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUserAccount{{userAccount.id}}"><i class="fa fa-trash-o"></i></button>
+                                            <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" title="Save" ng-click="saveUserAccount(userAccount)"><i class="fa fa-save"></i></button>
+                                            <button ng-show="userAccount.isEdit" class="btn btn-default btn-xs" title="Cancel" ng-click="removeUserAccount($index)"><i class="fa fa-times"></i></button>
+                                            <button ng-hide="userAccount.isEdit" class="btn btn-default btn-xs" title="Delete" data-toggle="modal" data-target="#deleteUserAccount{{userAccount.id}}"><i class="fa fa-trash-o"></i></button>
                                             <div class="modal hmodal-success" id="deleteUserAccount{{userAccount.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
@@ -189,7 +189,7 @@
                                 <form class="form-horizontal">
                                     <div>
                                         <div class="all-permissions" ng-show="allPermissions">
-                                            <label>All Permissions</label>
+                                            <label translate>All Permissions</label>
                                             <div class="checkbox checkbox-slider--b">
                                                 <label>
                                                     <input type="checkbox" ng-model="allPermissionStatus" ng-true-value="1" ng-false-value="0" 
@@ -266,7 +266,7 @@
                                 <td class="col-xs-3" ng-click="editUser(user, $index)">{{user.email?user.email:'-'}}</td>
                                 <!--<td class="col-xs-2" ng-click="editUser(user, $index)">{{user.primaryPhone?user.primaryPhone:'-'}}</td>-->
                                 <td class="col-xs-1">
-                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteUser{{user.id}}"><i class="fa fa-trash"></i></button>
+                                    <button class="btn btn-default btn-xs" data-toggle="modal" title="Delete" data-target="#deleteUser{{user.id}}"><i class="fa fa-trash"></i></button>
                                     <div class="modal hmodal-success" id="deleteUser{{user.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">

@@ -1,12 +1,13 @@
-app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout,$cookies,$translate) {
+app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout, $cookies, $translate) {
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportId = $stateParams.reportId;
+    $scope.userId = $cookies.getObject("userId");
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.reportWidgets = [];
-    
+
     $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
@@ -42,10 +43,16 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             }
             widgetItems.forEach(function (value, key) {
                 value.widgetId.chartColors = widgetColors;
+                if (value.widgetId.chartType == 'horizontalBar') {
+                    value.widgetId.isHorizontalBar = true;
+                } else {
+                    value.widgetId.isHorizontalBar = false;
+                }
             });
             $scope.reportWidgets = widgetItems;
         }).error(function () {
             $scope.reportWidgets = widgetItems;
+
         });
     });
 
@@ -88,8 +95,8 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             $scope.editReport = false;
         });
     };
-    
-    $scope.editReportData = function(){
+
+    $scope.editReportData = function () {
         $scope.editReport = true;
     }
 
@@ -141,7 +148,9 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 content: widget.content,
                 width: widget.width,
                 jsonData: widget.jsonData,
-                queryFilter: widget.queryFilter
+                queryFilter: widget.queryFilter,
+                productSegment: widget.productSegment,
+                timeSegment: widget.timeSegment
             };
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             });

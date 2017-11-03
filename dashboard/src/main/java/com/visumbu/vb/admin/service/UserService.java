@@ -6,6 +6,7 @@
 package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.DealerDao;
+import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import com.visumbu.vb.bean.AgencyBean;
 import com.visumbu.vb.bean.LoginUserBean;
@@ -18,6 +19,7 @@ import com.visumbu.vb.model.AgencyProperty;
 import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dealer;
+import com.visumbu.vb.model.LastUserAccount;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
@@ -97,8 +99,9 @@ public class UserService {
             user = userDao.findAdminUserByName(userBean.getUsername());
             userBean.setIsAdmin("true");
         } else {
+            String userName = userBean.getUsername();
             Agency agency = userDao.findAgencyByDashiencePath(dashiencePath);
-            user = userDao.findUser(dashiencePath, agency);
+            user = userDao.findUser(dashiencePath, userName, agency);
         }
 
         LoginUserBean loginUserBean = null;
@@ -402,5 +405,26 @@ public class UserService {
 
     public AgencyProperty deleteAgencyPropertyId(Integer agencyPropertyId) {
         return userDao.deleteAgencyPropertyId(agencyPropertyId);
+    }
+
+    public LastUserAccount createLastUserAccount(Integer productId, Integer accountId, VbUser user) {
+        AgencyProduct agencyProduct = userDao.getAgencyProductOrderId(productId);
+        Account account = userDao.getAccountById(accountId);
+        LastUserAccount lastUserAccount = userDao.checkLastUserAccount(user);
+        if (lastUserAccount == null) {
+            lastUserAccount = new LastUserAccount();
+        } else {
+            lastUserAccount.setId(lastUserAccount.getId());
+        }
+
+        lastUserAccount.setAccountId(account);
+        lastUserAccount.setProductId(agencyProduct);
+        lastUserAccount.setUserId(user);
+        userDao.saveOrUpdate(lastUserAccount);
+        return lastUserAccount;
+    }
+
+    public LastUserAccount getLastUserAccount(VbUser user) {
+        return userDao.checkLastUserAccount(user);
     }
 }

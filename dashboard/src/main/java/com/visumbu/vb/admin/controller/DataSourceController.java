@@ -5,17 +5,15 @@
  */
 package com.visumbu.vb.admin.controller;
 
-import com.visumbu.vb.admin.service.DashboardService;
+import com.visumbu.vb.admin.dao.bean.DataSourceBean;
 import com.visumbu.vb.admin.service.DataSourceService;
-import com.visumbu.vb.admin.service.DealerService;
+import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ReportPage;
+import com.visumbu.vb.controller.BaseController;
+import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.VbUser;
-import com.visumbu.vb.utils.DateUtils;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +37,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @Controller
 @RequestMapping("datasources")
-public class DataSourceController {
+public class DataSourceController extends BaseController {
 
     @Autowired
     private DataSourceService dataSourceService;
+
+    @Autowired
+    private UserService userService;
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
@@ -80,7 +81,52 @@ public class DataSourceController {
         return dataSourceService.getData(dataSourceName, dataSet, options, page);
     }
 
-    private ReportPage getPage(HttpServletRequest request) {
+    @RequestMapping(value = "dataSource", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DataSource create(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSourceBean dataSource) {
+        VbUser user = userService.findByUsername(getUser(request));
+        dataSource.setUserId(user);
+        dataSource.setAgencyId(user.getAgencyId());
+        return dataSourceService.saveDataSource(dataSource);
+    }
+
+    @RequestMapping(value = "joinDataSource", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    DataSource createDataSourceForJoinDataSet(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSourceBean dataSource) {
+        VbUser user = userService.findByUsername(getUser(request));
+        dataSource.setUserId(user);
+        dataSource.setAgencyId(user.getAgencyId());
+        return dataSourceService.createDataSourceForJoinDataSet(dataSource);
+    }
+
+    @RequestMapping(value = "dataSource", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    DataSource update(HttpServletRequest request, HttpServletResponse response, @RequestBody DataSource dataSource) {
+        return dataSourceService.update(dataSource);
+    }
+
+    @RequestMapping(value = "dataSource", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getDataSource(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user = userService.findByUsername(getUser(request));
+        if (user == null) {
+            return null;
+        }
+        return dataSourceService.getDataSourceByUser(user);
+    }
+
+//    @RequestMapping(value = "dataSource", method = RequestMethod.GET, produces = "application/json")
+//    public @ResponseBody
+//    List getDataSource(HttpServletRequest request, HttpServletResponse response) {
+//        return uiService.getDataSource();
+//    }
+    @RequestMapping(value = "dataSource/{id}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    DataSource delete(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer id) {
+        return dataSourceService.deleteDataSource(id);
+    }
+
+    public ReportPage getPage(HttpServletRequest request) {
         ReportPage reportPage = new ReportPage();
         if (request.getParameter("page") == null && request.getParameter("count") == null) {
             return null;

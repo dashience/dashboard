@@ -40,6 +40,9 @@ public class WidgetColumnBean {
     private String combinationType;
     private Integer derivedId;
     private String category;
+    private Boolean isLocation;
+    private Boolean isLatitude;
+    private Boolean isLongitude;
     
 
     public Integer getId() {
@@ -273,6 +276,31 @@ public class WidgetColumnBean {
     public void setCategory(String category) {
         this.category = category;
     }
+
+    public Boolean getIsLocation() {
+        return isLocation;
+    }
+
+    public void setIsLocation(Boolean isLocation) {
+        this.isLocation = isLocation;
+    }
+
+    public Boolean getIsLatitude() {
+        return isLatitude;
+    }
+
+    public void setIsLatitude(Boolean isLatitude) {
+        this.isLatitude = isLatitude;
+    }
+
+    public Boolean getIsLongitude() {
+        return isLongitude;
+    }
+
+    public void setIsLongitude(Boolean isLongitude) {
+        this.isLongitude = isLongitude;
+    }
+    
 
     @Override
     public String toString() {

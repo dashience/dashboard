@@ -135,8 +135,12 @@
         clear: both;
     }
     @media print  {
+        .table-responsive{
+            overflow: hidden !important;
+        }
         .pdfButton {
             display:none !important;
+            margin-top: -20px !important;
         }
         .pdf-title-color span{
             background: transparent !important;
@@ -160,6 +164,7 @@
     @media screen {
         .pdfButton {
             display:block;
+            margin-top: -20px !important;
         }
     }
 </style>
@@ -235,6 +240,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'horizontalBar'">
+                            <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">>
+                                <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                     bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{reportWidget.widgetId.id}}" 
+                                     widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}" default-chart-color="{{defaultChartColor}}"
+                                     is-Horizontal-Bar="{{reportWidget.widgetId.isHorizontalBar}}">                                     
+                                </div>
+                            </div>
+                        </div>
                         <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'pie'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
@@ -304,6 +320,15 @@
                                      funnel-Id="{{reportWidget.widgetId.id}}"
                                      funnel-Columns="{{reportWidget.widgetId.columns}}">
                                 </div>
+                            </div>
+                        </div>
+                        <div class="hpanel col-fixed-{{reportWidget.widgetId.width}} pageBreak" ng-if="reportWidget.widgetId.chartType == 'gauge'">
+                            <div set-Gauge-Fn="setGaugeFn(gaugeFn)" 
+                                 widget-Obj="{{reportWidget.widgetId}}"
+                                 gauge-Directive gauge-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                 gauge-Title-Name="{{reportWidget.widgetId.widgetTitle}}" 
+                                 gauge-Id="{{reportWidget.widgetId.id}}" 
+                                 gauge-Columns="{{reportWidget.widgetId.columns}}">                                 
                             </div>
                         </div>
                     </div>

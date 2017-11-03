@@ -22,6 +22,7 @@ import com.visumbu.vb.model.AgencyProperty;
 import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dealer;
+import com.visumbu.vb.model.LastUserAccount;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
@@ -626,6 +627,21 @@ public class UserController extends BaseController {
     AgencyProperty deleteAgencyPropertyId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyPropertyId) {
         return userService.deleteAgencyPropertyId(agencyPropertyId);
     }
+    
+    //last selected user account
+     @RequestMapping(value = "lastUserAccount/{productId}/{accountId}", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    LastUserAccount createLastUserAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId,@PathVariable Integer accountId) {
+        VbUser user=userService.findByUsername(getUser(request));
+        return userService.createLastUserAccount(productId,accountId,user);
+    }
+    @RequestMapping(value = "getLastUserAccount", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    LastUserAccount getLastUserAccount(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user=userService.findByUsername(getUser(request));
+        return userService.getLastUserAccount(user);
+    }
+    
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)

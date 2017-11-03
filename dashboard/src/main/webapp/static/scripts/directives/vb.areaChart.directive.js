@@ -1,5 +1,5 @@
 app.directive('areaChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
-    return{
+    return {
         restrict: 'A',
         template: '<div ng-show="loadingArea" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
                 '<div ng-show="hideEmptyArea" class="text-center">{{areaEmptyMessage}}</div>',
@@ -68,6 +68,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (value.yAxis) {
                     yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
+//                    axes[value.fieldName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {
                     y2 = {show: true, label: ''};
@@ -78,6 +79,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (value.combinationType) {
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
+
+                console.log("Line chart combination type");
+                console.log(combinationTypes);
             });
             var xData = [];
             var xTicks = [];
@@ -130,7 +134,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
-                                return -1 * parsedValue;
+                                return -1 * parsedValue; 
                             });
                         }
                     } else {
@@ -234,14 +238,14 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             var loopCount = 0;
                             var sortingObj;
                             var gridData = JSON.parse(scope.widgetObj);
-                            var chartMaxRecord = JSON.parse(scope.widgetObj)
-                            var chartData;// = response.data;
+                            var chartMaxRecord = JSON.parse(scope.widgetObj);
+                            var chartData = response.data;
                             if (sortFields.length > 0) {
                                 angular.forEach(sortFields, function (value, key) {
                                     if (value.fieldType != 'day') {
                                         sortingObj = scope.orderData(chartData, sortFields);
                                         if (chartMaxRecord.maxRecord) {
-                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj);
                                         } else {
                                             chartData = sortingObj;
                                         }
@@ -251,11 +255,11 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
                                             } else if (value.sortOrder === 'desc') {
-                                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                                                return dateOrders.indexOf(item[value.fieldName]) * -1;
                                             }
                                         });
                                         if (chartMaxRecord.maxRecord) {
-                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj);
                                         } else {
                                             chartData = sortingObj;
                                         }
@@ -264,9 +268,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             } else {
                                 var responseObject = response.data;
                                 if (chartMaxRecord.maxRecord) {
-                                    chartData = maximumRecord(chartMaxRecord, responseObject)
+                                    chartData = maximumRecord(chartMaxRecord, responseObject);
                                 } else {
-                                    chartData = responseObject
+                                    chartData = responseObject;
                                 }
                             }
                             xTicks = [xAxis.fieldName];
@@ -275,17 +279,36 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 loopCount++;
                                 return a[xAxis.fieldName];
                             });
+                            console.log("Xtics");
+                            console.log(xTicks);
                             columns.push(xTicks);
                             angular.forEach(yAxis, function (value, key) {
                                 ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
-                                ySeriesData.unshift(value.displayName);
+//                                ySeriesData.unshift(value.displayName);
+                                ySeriesData.unshift(value.fieldName);
                                 columns.push(ySeriesData);
                             });
+                            var combined={};
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
+                                console.log(chartCombinationtypes);
                             });
+                            
+                            console.log("chartCombinationtypes")
+                            console.log(chartCombinationtypes)
+                            
+                            var data= {
+                                    x: xAxis.fieldName,
+                                    columns: columns,
+                                    labels: labels,
+                                    type: 'area',
+                                    axes: axes,
+                                    types: combined
+                                };
+                            console.log("data");
+                            console.log(data);
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {
                                 gridLine = true;
@@ -297,7 +320,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     top: 10,
                                     right: 50,
                                     bottom: 10,
-                                    left: 50,
+                                    left: 50
                                 },
                                 bindto: element[0],
                                 data: {
@@ -334,7 +357,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             });
                         }
                     });
-                }
+                };
                 scope.setAreaChartFn({areaFn: scope.refreshAreaChart});
                 scope.refreshAreaChart();
             }

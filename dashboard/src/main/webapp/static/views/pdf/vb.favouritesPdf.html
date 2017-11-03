@@ -123,6 +123,9 @@
         page-break-inside:avoid;
     }
     @media print  {
+        .table-responsive{
+            overflow: hidden !important;
+        }
         .pdfButton {
             display:none !important;
         }
@@ -216,6 +219,17 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'horizontalBar'">
+                            <div class="col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
+                                <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                     bar-Chart-Directive bar-Chart-Source="{{favPdfWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{favPdfWidget.widgetId.id}}" 
+                                     widget-Columns="{{favPdfWidget.widgetId.columns}}" 
+                                     widget-Obj="{{favPdfWidget.widgetId}}" default-chart-color="{{defaultChartColor}}"
+                                     is-Horizontal-Bar="{{favPdfWidget.widgetId.isHorizontalBar}}">                                     
+                                </div>
+                            </div>
+                        </div>
                         <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'pie'">
                             <div class="col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
                                 <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
@@ -287,6 +301,15 @@
                                      funnel-Id="{{favPdfWidget.widgetId.id}}"
                                      funnel-Columns="{{favPdfWidget.widgetId.columns}}">
                                 </div>
+                            </div>
+                        </div>
+                        <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'gauge'">
+                            <div>
+                                <div gauge-Directive 
+                                     gauge-Source="{{favPdfWidget.widgetId.dataSetId}}" 
+                                     widget-Obj="{{favPdfWidget.widgetId}}" 
+                                     gauge-Id="{{favPdfWidget.widgetId.id}}" 
+                                     gauge-Columns="{{favPdfWidget.widgetId.columns}}"></div>
                             </div>
                         </div>
                     </div>

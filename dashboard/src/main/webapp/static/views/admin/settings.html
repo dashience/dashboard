@@ -163,7 +163,7 @@
                                                 </td>
                                                 <td>
                                                     <div ng-show="fileList.isEdit">
-                                                        <button class="btn btn-primary btn-xs" 
+                                                        <button class="btn btn-primary btn-xs" title="Save"
                                                                 ng-click="saveSettings(fileList); fileList.isEdit = false;" 
                                                                 ng-disabled="myForm.string{{$index + 1}}.$dirty && myForm.string{{$index + 1}}.$invalid || myForm.int{{$index + 1}}.$dirty && myForm.int{{$index + 1}}.$invalid || myForm.email{{$index + 1}}.$dirty && myForm.email{{$index + 1}}.$invalid || myForm.date{{$index + 1}}.$dirty && myForm.date{{$index + 1}}.$invalid || myForm.url{{$index + 1}}.$dirty && myForm.url{{$index + 1}}.$invalid || myForm.time{{$index + 1}}.$dirty && myForm.time{{$index + 1}}.$invalid || myForm.datetime{{$index + 1}}.$dirty && myForm.datetime{{$index + 1}}.$invalid || myForm.month{{$index + 1}}.$dirty && myForm.month{{$index + 1}}.$invalid || myForm.week{{$index + 1}}.$dirty && myForm.week{{$index + 1}}.$invalid || myForm.range{{$index + 1}}.$dirty && myForm.range{{$index + 1}}.$invalid">
                                                             <i class="fa fa-save"></i>
@@ -171,7 +171,7 @@
                                                     </div>
 
                                                     <div ng-hide="fileList.isEdit">
-                                                        <button class="btn btn-primary btn-xs" 
+                                                        <button class="btn btn-primary btn-xs" title="Edit"
                                                                 ng-click="fileList.isEdit = true;">
                                                             <i class="fa fa-pencil"></i>
                                                         </button>

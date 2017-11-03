@@ -9,7 +9,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
             .state("index.dashboard", {
                 url: "/dashboard/:lan/:accountId/:accountName/:productId/:templateId",
                 templateUrl: "static/views/dashboard/dashboard.html",
-                controller: "UiController",
+                controller: "UiController"
             })
 
             .state("index.dashboard.widget", {
@@ -121,12 +121,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 controller: 'PdfController'
             })
             .state("viewReportPdf", {
-                url: "/viewReportPdf/:lan/:accountId/:reportId?:startDate/:endDate",
+                url: "/viewReportPdf/:lan/:accountId/:userId/:reportId?:startDate/:endDate",
                 templateUrl: "static/views/pdf/vb.reportPdf.html",
                 controller: 'ReportPdfController'
             })
             .state("viewFavouritesPdf", {
-                url: "/viewFavouritesPdf/:lan/:accountId/:favouriteName?:startDate/:endDate",
+                url: "/viewFavouritesPdf/:lan/:accountId/:userId/:favouriteName?:startDate/:endDate",
                 templateUrl: "static/views/pdf/vb.favouritesPdf.html",
                 controller: 'FavouritesPdfController'
             });

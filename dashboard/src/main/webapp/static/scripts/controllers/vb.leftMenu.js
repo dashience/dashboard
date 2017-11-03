@@ -38,9 +38,9 @@ app.controller("MenuController", function ($scope, $http, $stateParams, $filter,
     $scope.save = function (item) {
         console.log("Item Name : " + item);
     };
-    $http.get('static/datas/report.json').success(function (response) {
-        $scope.reports = response;
-    });
+//    $http.get('static/datas/report.json').success(function (response) {
+//        $scope.reports = response;
+//    });
 
     $http.get('admin/ui/product/' + $stateParams.locationId).success(function (response) {
         $scope.products = response;

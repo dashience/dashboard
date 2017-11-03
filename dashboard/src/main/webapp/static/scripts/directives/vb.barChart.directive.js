@@ -10,7 +10,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             barChartId: '@',
             widgetColumns: '@',
             widgetObj: '@',
-            defaultChartColor: '@'
+            defaultChartColor: '@',
+            isHorizontalBar: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -255,7 +256,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
                                             } else if (value.sortOrder === 'desc') {
-                                                return dateOrders.indexOf(item[value.fieldName] * -1);
+                                                return dateOrders.indexOf(item[value.fieldName]) * -1;
                                             }
                                         });
 
@@ -266,6 +267,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                         }
                                     }
                                 });
+                            }
+                            if (chartMaxRecord.maxRecord > 0) {
+                                chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
                             xTicks = [xAxis.fieldName];
                             xData = chartData.map(function (a) {
@@ -292,12 +296,24 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             } else {
                                 gridLine = false;
                             }
+
+                            try {
+                                var isRotate = JSON.parse(scope.isHorizontalBar);
+
+                            } catch (exception) {
+                            }
+                            var left;
+                            if (isRotate === true) {
+                                left = 75;
+                            } else {
+                                left = 50;
+                            }
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
                                     right: 50,
                                     bottom: 10,
-                                    left: 50,
+                                    left: left,
                                 },
                                 bindto: element[0],
                                 data: {
@@ -313,11 +329,14 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 },
                                 tooltip: {show: false},
                                 axis: {
+                                    rotated: isRotate,
                                     x: {
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
                                             },
+                                            multiline: true,
+                                            fit: true,
                                             culling: false
                                         }
                                     },

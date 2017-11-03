@@ -133,15 +133,15 @@
 
                                 </div>
                                 <div ng-show="isSet(2)" class="license">
-                                    <div class="col-lg-12" ng-hide="showEditPage">
-                                        <table class="table table-responsive table-fixed">
+                                    <div class="col-lg-12 table-responsive" ng-hide="showEditPage">
+                                        <table class="table table-fixed">
                                             <thead>
                                                 <tr>
                                                     <th class="col-xs-5" translate>Name</th>
                                                     <!--<th class="col-xs-4">Account Name</th>-->
                                                     <th class="col-xs-6" translate>Value</th>
                                                     <th class="col-xs-1">
-                                                        <button class="btn btn-success btn-xs" ng-click="addProperty()"><i class="fa fa-plus"></i></button>
+                                                        <button class="btn btn-success btn-xs" title="Add" ng-click="addProperty()"><i class="fa fa-plus"></i></button>
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -157,13 +157,13 @@
                                                         {{property.propertyValue}}
                                                     </td>
                                                     <td class="col-xs-1">
-                                                        <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteProperty{{property.id}}"><i class="fa fa-trash-o"></i></button>
+                                                        <button class="btn btn-default btn-xs" title="Delete" data-toggle="modal" data-target="#deleteProperty{{property.id}}"><i class="fa fa-trash-o"></i></button>
                                                         <div class="modal hmodal-success" id="deleteProperty{{property.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <div class="color-line"></div>
                                                                     <div class="modal-header">
-                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                        <button type="button" title="Cancel" class="close" data-dismiss="modal">&times;</button>
                                                                         <h4 class="modal-title" translate>Delete</h4>
                                                                         <small class="font-bold"></small>
                                                                     </div>
@@ -238,15 +238,15 @@
                                 </div>
                                 <div ng-show="isSet(3)" class="license">
 
-                                    <div class="col-lg-12">
-                                        <table class="table table-responsive table-fixed">
+                                    <div class="col-lg-12 table-responsive">
+                                        <table class="table table-fixed">
                                             <thead>
                                                 <tr>
                                                     <!--<th class="col-xs-4">Account Name</th>-->
                                                     <th class="col-xs-6" translate>User Name</th>
                                                     <th class="col-xs-4" translate>Status</th>
                                                     <th class="col-xs-2">
-                                                        <button class="btn btn-success btn-xs" ng-click="addAccountUser()"><i class="fa fa-plus"></i></button>
+                                                        <button class="btn btn-success btn-xs" title="Add" ng-click="addAccountUser()"><i class="fa fa-plus"></i></button>
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -278,15 +278,15 @@
                                                         <!--<i class="fa" ng-class="{'fa-times': !accountUser.status, 'text-danger':!accountUser.status, 'fa-circle': accountUser.status, 'text-success':accountUser.status}"></i>-->
                                                     </td>
                                                     <td class="col-xs-2">
-                                                        <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="saveAccountUser(accountUser)"><i class="fa fa-save"></i></button>
-                                                        <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" ng-click="removeAccountUser($index)"><i class="fa fa-times"></i></button>
-                                                        <button ng-hide="accountUser.isEdit" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccountUser{{accountUser.id}}"><i class="fa fa-trash-o"></i></button>
+                                                        <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" title="Save"ng-click="saveAccountUser(accountUser)"><i class="fa fa-save"></i></button>
+                                                        <button ng-show="accountUser.isEdit" class="btn btn-default btn-xs" title="Cancel" ng-click="removeAccountUser($index)"><i class="fa fa-times"></i></button>
+                                                        <button ng-hide="accountUser.isEdit" class="btn btn-default btn-xs" title="Delete" data-toggle="modal" data-target="#deleteAccountUser{{accountUser.id}}"><i class="fa fa-trash-o"></i></button>
                                                         <div class="modal hmodal-success" id="deleteAccountUser{{accountUser.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                                             <div class="modal-dialog">
                                                                 <div class="modal-content">
                                                                     <div class="color-line"></div>
                                                                     <div class="modal-header">
-                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                        <button type="button" title="Cancel" class="close" data-dismiss="modal">&times;</button>
                                                                         <h4 class="modal-title" translate>Delete</h4>
                                                                         <small class="font-bold"></small>
                                                                     </div>

@@ -4191,7 +4191,6 @@ span.add-title {
     border: 1px solid #ddd;
 }
 
-
 .temp-manage .input-group {
     width: 100%;
     min-width: 175px;
@@ -4204,4 +4203,8 @@ span.add-title {
 
 .text-field-manage {
     min-width: 180px;
+}
+
+.tickerMessage{
+    min-height: 30px;
 }
