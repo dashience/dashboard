@@ -21,7 +21,7 @@
     .table-fixed tr td {
         cursor:pointer;
     }
-    .account-new{
+    .account-new {
         margin-bottom: 10px;
     }
 
@@ -357,7 +357,7 @@
                                             {{account.agencyId.agencyName?account.agencyId.agencyName:'-'}}
                                         </td>
                                         <td class="col-xs-1">
-                                            <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccount{{account.id}}"><i class="fa fa-trash-o"></i></button>
+                                            <button title="{{'Delete'|translate}}" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteAccount{{account.id}}"><i class="fa fa-trash-o"></i></button>
                                             <div class="modal hmodal-success" id="deleteAccount{{account.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
