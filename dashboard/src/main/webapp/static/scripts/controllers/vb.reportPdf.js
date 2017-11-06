@@ -49,6 +49,9 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
                 } else {
                     value.widgetId.isHorizontalBar = false;
                 }
+                angular.forEach(value.widgetId.columns, function (value, key) {
+                    value.expand = true;
+                });
             });
             $scope.reportWidgets = widgetItems;
         }).error(function () {

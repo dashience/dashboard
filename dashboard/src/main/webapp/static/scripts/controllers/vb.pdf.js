@@ -48,6 +48,9 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter, 
                 } else {
                     value.isHorizontalBar = false;
                 }
+                angular.forEach(value.columns, function (value, k) {
+                    value.expand = true;
+                });
             });
             $scope.pdfWidgets = pdfWidgetItems;
         }).error(function (response) {

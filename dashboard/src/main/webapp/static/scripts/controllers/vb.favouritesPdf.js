@@ -41,6 +41,9 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
                 } else {
                     value.widgetId.isHorizontalBar = false;
                 }
+                angular.forEach(value.widgetId.columns, function (value, key) {
+                    value.expand = true;
+                });
             });
             $scope.favPdfWidgets = widgetItems;
         }).error(function () {
