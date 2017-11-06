@@ -524,8 +524,8 @@
                     </button>
                     <button ng-hide="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'" class="btn btn-default" 
                             ng-click="showPreview(widgetObj, userChartColors)"> <span translate>Preview</span>
-                    </button>{{undoWidget.columns}}
-                    <button class="btn btn-default" ng-if="widgetObj.id" ng-click="undo(undoWidget, true)"><i class="fa fa-undo"></i></button>
+                    </button>
+                    <!--<button class="btn btn-default" ng-if="widgetObj.id" ng-click="undo(undoWidget, true)"><i class="fa fa-undo"></i></button>-->
                     <button class="btn btn-default" id="btn-cancel" 
                             ng-click="cancel(widgetObj)">
                         <i class="fa fa-close"></i> <span translate>Cancel</span>

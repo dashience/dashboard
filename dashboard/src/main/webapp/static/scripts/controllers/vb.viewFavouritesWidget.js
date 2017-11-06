@@ -1,4 +1,4 @@
-app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state, $cookies, $translate) {
+app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state, $cookies, $translate, $rootScope, localStorageService) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.productId = $stateParams.productId;
@@ -19,6 +19,37 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
         $translate.use(key);
     }
 
+    var tableTypeByDateRange = localStorageService.get("selectedTableType") ? localStorageService.get("selectedTableType") : "compareOff";
+    console.log(tableTypeByDateRange);
+    if (tableTypeByDateRange == 'compareOn') {
+        $scope.selectedTablesType = 'compareOn';
+        $scope.compareDateRangeType = true;
+    } else {
+        $scope.selectedTablesType = 'compareOff';
+        $scope.compareDateRangeType = false;
+    }
+    $scope.loadStatus = true;
+    $rootScope.$on("loadStatusChanged", function (event, loadStatus) {
+        $scope.loadStatus = "";
+        $timeout(function () {
+            var tableTypeByDateRange = localStorageService.get("selectedTableType") ? localStorageService.get("selectedTableType") : "compareOff";
+            $scope.getTableType = tableTypeByDateRange ? tableTypeByDateRange : "compareOff";
+            var compareStartDate = localStorageService.get("comparisonStartDate");
+            var compareEndDate = localStorageService.get("comparisonEndDate");
+            $scope.compareDateRange = {
+                startDate: compareStartDate,
+                endDate: compareEndDate
+            };
+            $scope.loadStatus = loadStatus;
+        }, 20);
+    });
+    $scope.getTableType = tableTypeByDateRange ? tableTypeByDateRange : "compareOff";
+    var compareStartDate = localStorageService.get("comparisonStartDate");
+    var compareEndDate = localStorageService.get("comparisonEndDate");
+    $scope.compareDateRange = {
+        startDate: compareStartDate,
+        endDate: compareEndDate
+    };
     $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
         var widgetItems = [];
         widgetItems = response;

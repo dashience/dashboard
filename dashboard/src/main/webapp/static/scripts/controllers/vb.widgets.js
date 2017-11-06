@@ -16,7 +16,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetStartDate = $stateParams.startDate;
     $rootScope.tabStartDate = $stateParams.startDate;
     $rootScope.tabEndDate = $stateParams.endDate;
-
+    
     $scope.userId = $cookies.getObject("userId");
     $scope.widgetEndDate = $stateParams.endDate;
 //    $scope.userId = $cookies.getObject("userId");
@@ -40,7 +40,21 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     } else {
         $scope.showCreateReport = false;
     }
-
+    var tableTypeByDateRange = localStorageService.get("selectedTableType") ? localStorageService.get("selectedTableType") : "compareOff";
+    if (tableTypeByDateRange == 'compareOn') {
+        $scope.selectedTablesType = 'compareOn';
+        $scope.compareDateRangeType = true;
+    } else {
+        $scope.selectedTablesType = 'compareOff';
+        $scope.compareDateRangeType = false;
+    }
+    var compareStartDate = localStorageService.get("comparisonStartDate");
+    var compareEndDate = localStorageService.get("comparisonEndDate");
+    $scope.compareDateRange = {
+        startDate: compareStartDate,
+        endDate: compareEndDate
+    };
+    $scope.getTableType = tableTypeByDateRange ? tableTypeByDateRange : "compareOff";
     //Geo Map
     $scope.cities = [
         {id: 1, name: 'Oslo', pos: [59.923043, 10.752839]},
@@ -462,6 +476,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
+        console.log("set widget Item");
         console.log(widget);
         $scope.dispHideBuilder = true;
         firstPreviewAfterEdit = 1;
@@ -2532,9 +2547,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.undo = function (obj, status) {
         console.log(obj.columns)
         var widget = obj//$scope.undoWidget;
-        
+
         if (status == true) {
-            alert("true")
             $scope.hideSelectedColumn = true;
             $scope.setWidgetItems(widget);
             setTimeout(function () {
@@ -2542,7 +2556,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }, 1000);
 
         } else {
-            alert("false")
             var undoWidgetObj = angular.copy(widget)
             $scope.undoWidget = undoWidgetObj;
         }
@@ -2831,6 +2844,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnPieXAxis = [];
             $scope.columnPieYAxis = [];
         }
+        
+        $scope.dataSets=[];
+        $scope.timeSegments=[];
+        $scope.productSegments=[];
+        
         $scope.chartTypeName = "";
         $scope.xColumn = "";
         $scope.tickerItem = "";

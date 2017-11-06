@@ -210,6 +210,7 @@
                              ticker-Directive ticker-Source="{{reportWidget.widgetId.dataSetId}}" 
                              ticker-Title-Name="{{reportWidget.widgetId.widgetTitle}}" 
                              ticker-Id="{{reportWidget.widgetId.id}}" 
+                             
                              ticker-Columns="{{reportWidget.widgetId.columns}}">                                 
                         </div>
                     </div>
@@ -224,6 +225,8 @@
                                      line-Chart-Directive 
                                      line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
                                      widget-Obj="{{reportWidget.widgetId}}">                                         
                                 </div>
@@ -235,6 +238,8 @@
                                      bar-Chart-Directive 
                                      bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
                                      widget-Obj="{{reportWidget.widgetId}}">                                         
                                 </div>
@@ -245,6 +250,8 @@
                                 <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                      bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
                                      widget-Obj="{{reportWidget.widgetId}}" default-chart-color="{{defaultChartColor}}"
                                      is-Horizontal-Bar="{{reportWidget.widgetId.isHorizontalBar}}">                                     
@@ -268,6 +275,8 @@
                                      area-Chart-Directive 
                                      area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
                                      widget-Obj="{{reportWidget.widgetId}}"></div>
                             </div>
@@ -277,6 +286,8 @@
                                 <div scatter-Chart-Directive 
                                      scatter-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
                                      widget-Obj="{{reportWidget.widgetId}}">                                     
                                 </div>
@@ -284,13 +295,23 @@
                         </div>                       
                         <div class="list pageBreak" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
                             <div class="table-responsive project-list" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
-                                <div id="changes-height" class="project-list">
+                                <div id="changes-height" class="project-list" ng-if="getTableType=='compareOff'">
                                     <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
                                          dynamic-Table pdf-function="addToPdf(test)" 
                                          dynamic-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
                                          widget-Id="{{reportWidget.widgetId.id}}" widget-Obj="{{reportWidget.widgetId}}" 
                                          table-Footer="{{reportWidget.widgetId.tableFooter}}" 
                                          widget-Columns="{{reportWidget.widgetId.columns}}"></div>
+                                </div>
+                                <div id="changes-height" class="project-list" ng-if="getTableType=='compareOn'">
+                                     <div compare-Range-Table 
+                                     compare-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Id="{{reportWidget.widgetId.id}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}" 
+                                     table-Footer="{{reportWidget.widgetId.tableFooter}}" 
+                                     widget-Columns="{{reportWidget.widgetId.columns}}">                                         
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -307,6 +328,8 @@
                                      stacked-Bar-Chart-Directive 
                                      stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
                                      widget-Obj="{{reportWidget.widgetId}}">                                         
                                 </div>

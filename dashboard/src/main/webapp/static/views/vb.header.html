@@ -25,9 +25,9 @@
         padding-left:5px;
         text-transform: capitalize;
     }
-    .daterangepicker.dropdown-menu.ltr.show-calendar.opensright {
+/*    .daterangepicker.dropdown-menu.ltr.show-calendar.opensright {
         display: none !important;
-    }
+    }*/
     .logout{
         padding-left: 20px;
     }
@@ -73,6 +73,147 @@
     }
     .datasource{
         color: #0275d8;
+    }
+    .dropdown-dealer{
+        margin-top: 20px;
+        padding: 0px;
+        margin-right: 18px;
+    }
+
+    .triangle:after {
+        border-bottom-color: #fff;
+        border-top-width: 0;
+        top: 1px;
+        margin-left: -10px;
+    }
+    .triangle:after {
+        content: " ";
+        display: block;
+        width: 0;
+        height: 0;
+        border: solid 10px;
+        border-color: transparent;
+        position: absolute;
+    }
+
+    .dropdown-dealer a {
+        color: rgba(90, 113, 122, 0.57);
+        font-family: 'proxima_nova_ltsemibold';
+        font-size: 13px;
+        text-transform: uppercase;
+        cursor: pointer;
+    }
+
+    .ns-popover-tooltip-theme .ns-popover-tooltip {
+        box-sizing: border-box;
+        border: solid 1px #d2d2d2;
+        border-radius: 3px;
+        background-color: #fff;
+        padding: 0.5625rem 0.875rem;
+        max-width: 28rem;
+        font-size: 12px;
+        -webkit-box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2);
+        -moz-box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2);
+        box-shadow: 0 0.3125rem 0.625rem rgba(0, 0, 0, 0.2);
+        margin: 10px;
+    }
+    .calendarOuter {
+        cursor: pointer;
+    }
+    .calendarInner{
+        border: 1px solid #D2D8DB;
+        padding: 4px 13px 3px 11px;
+    }
+    .calendarStartdate{
+        padding-right: 5px;
+        margin-right: 13px;
+        margin-left: 13px;
+    }
+    .calendarEnddate{
+        padding-left: 5px;
+        padding-right: 4px;
+        margin-right: 13px;
+        margin-left: 13px;
+    }
+    .custom-dynamic-popover-class-header > .popover-inner{
+        width:105px;
+    }
+
+    .custom-dynamic-popover-class-header div.arrow{
+        left:34.5px !important;
+    }  
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 45px;
+        height: 22px;
+    }
+
+    .switch input {display:none;}
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #E6E6E6;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 18px;
+        width: 18px;.switch {
+            position: relative;
+            display: inline-block;
+            width: 45px;
+            height: 22px;
+        }
+        .switch input {
+            display: none;
+        }
+        left: 4px;
+        bottom: 2px;
+        background-color: white;
+        -webkit-transition: .4s;
+        transition: .4s;
+    }
+
+    input:checked + .slider {
+        background-color: #83A958;
+    }
+
+    input:focus + .slider {
+        box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before {
+        -webkit-transform: translateX(20px);
+        -ms-transform: translateX(20px);
+        transform: translateX(20px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 28px;
+    }
+
+    .slider.round:before {
+        border-radius: 50%;
+    }
+    .date-header-picker {
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .date-picker-footer {
+        padding: 10px 2px 6px 2px;
+        text-align: right;
+        border-top: 1px solid #e5e5e5;
+        margin: 10px 0px 0px 0px;
     }
 </style>
 <div class="fixed-navbar" ng-controller="HeaderController">
@@ -238,15 +379,92 @@
                     <h4 class="lanLabel-btn"><span class="label label-default lanLabelColor" ng-click="changeAgencyLang(showLangBtn)">{{showLangBtn| filterLanguage}}</span></h4>
                 </li>
                 <!--<button class="btn btn-default" ng-click="changeAgencyLang(showLangBtn)">{{showLangBtn| filterLanguage}}</button>-->
-                <!--</li>-->
-                <li class="dropdown">
-                    <a class="pull-right" id="daterange-btn">
-                        <span class="date-border">
-                            {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
-                        </span> 
-                    </a>
+                <li class="dropdown dropdown-dealer picker-1">
+                    <span ns-popover="" 
+                          ns-popover-template="close" 
+                          ns-popover-trigger="click" 
+                          ns-popover-theme="ns-popover-tooltip-theme" 
+                          ns-popover-timeout="2000" 
+                          ns-popover-hide-on-inside-click="false" 
+                          ns-popover-hide-on-outside-click="false" 
+                          ns-popover-hide-on-button-click="true">
+                        <a class="calendarOuter">
+                            <div class="calendarInner">
+                                <i class="fa fa-calendar calendarIcon" id="date"></i>
+                                <span class="date-border">
+                                    <span class="calendarStartdate">
+                                        {{firstDate| date: "MM/dd/yyyy"}}
+                                    </span> - <span class="calendarEnddate">{{lastDate| date: "MM/dd/yyyy"}}</span> 
+                                    <!--<i class="fa fa-caret-down"></i>-->
+                                </span>
+                            </div>                                    
+                        </a> 
+                    </span>
+                    <script type="text/ng-template" id="close">
+                        <div class = "triangle" style="left: 30px !important;"> </div>
+                        <div class="ns-popover-tooltip" style="height:auto !important;overflow-y:unset !important;width:281px">
+                       
+                        <div class="row">
+                        <div class="col-md-12 date-header-picker">                                    
+                        <span id="daterange-btn" class="calendarOuter">
+                        <div class="calendarInner" style="padding:4px">
+                        <i class="fa fa-calendar calendarIcon" id="date"></i>
+                        <span class="date-border" style="color: #000;">
+                        <span class="calendarStartdate">
+                        {{firstDate| date: "MM/dd/yyyy"}}
+                        </span> - <span class="calendarEnddate">{{lastDate| date: "MM/dd/yyyy"}}</span> 
+
+                        </span>
+                        </div>                                    
+                        </span>
+                        </div>
+                        </div>
+
+                        <span>
+                        <label style="font-size: 14px;margin-bottom: 5px !important;">Compare</label></span>
+                        <span class="pull-right">
+                        <label class="switch" for="compareDateRange">
+                        <input id="compareDateRange" 
+                        type="checkbox"  
+                        ng-model="compareDateRangeType" 
+                        ng-click="unCheckButton(compareDateRangeType)"
+                        ng-checked="selectedTablesType == 'compareOn'">
+                        <div class="slider round"></div>
+                        </label>
+                        </span>
+                        <div class="row">
+                        <div class="col-md-12">
+                        <span id="" class="calendarOuter">
+                        <div ng-show="compareDateRangeType == true" class="calendarInner" id="compare-daterange-btn" style="padding: 4px">
+                        <i class="fa fa-calendar calendarIcon" id="date"></i>
+                        <span class="date-border" style="color: #000;">
+                        <span class="calendarStartdate">{{compare_startDate| date: "MM/dd/yyyy"}}</span> - <span class="calendarEnddate">{{compare_endDate| date: "MM/dd/yyyy"}}</span>
+                        </span>
+                        </div>
+                        </span>
+
+                        <div class="row col-md-12 date-picker-footer">
+                        <div class="pull-left">
+                        <button type="button" class="btn btn-default btn-xs" ng-click="hidePopover()">Cancel</button>
+                          </div>
+                        <div class="pull-right">
+                         <button  class="btn btn-success btn-xs" ng-click="selectTableOptions(compareDateRangeType,true); hidePopover()">Submit</button>
+                        </div>
+                        </div>                                    
+                        </div>
+                        </div>
+                    </script>
                 </li>
-                <li class="dropdown go"><span class="label label-success" ng-click="loadNewUrl()" translate>Go</span></li>
+
+                <!--</li>-->
+                <!--                <li class="dropdown">
+                                    <a class="pull-right" id="daterange-btn">
+                                        <span class="date-border">
+                                            {{firstDate| date: "MM/dd/yyyy"}} - {{lastDate| date: "MM/dd/yyyy"}} <i class="fa fa-caret-down"></i>
+                                        </span> 
+                                    </a>
+                                </li>-->
+                <!--<li class="dropdown go"><span class="label label-success" ng-click="loadNewUrl()" translate>Go</span></li>-->
 
 
                 <li class="dropdown">
@@ -282,7 +500,7 @@
                                     <ul class="col-lg-3 icon-dash">                                    
                                         <li class="product-dashboard-icon" ng-click="setParams()">
                                             <a data-ui-sref="index.dataSource({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                                 <i class="fa fa-database datasource" aria-hidden="true"></i> <h5 translate>DataSource</h5>
+                                                <i class="fa fa-database datasource" aria-hidden="true"></i> <h5 translate>DataSource</h5>
                                             </a>
                                         </li>
                                     </ul>

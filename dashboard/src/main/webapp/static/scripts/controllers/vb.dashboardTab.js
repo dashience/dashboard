@@ -7,6 +7,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.userId = $cookies.getObject("userId");
     $scope.tempStartDate = $stateParams.startDate;
     $scope.tempEndDate = $stateParams.endDate;
+
     $scope.agencyLanguage = $stateParams.lan;
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
@@ -14,6 +15,13 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     function changeLanguage(key) {
         $translate.use(key);
     }
+    $scope.loadStatus = true;
+    $rootScope.$on("loadStatusChanged", function (event,loadStatus) {
+        $scope.loadStatus = "";
+        $timeout(function () {
+            $scope.loadStatus=loadStatus;
+        }, 20);
+    });
 
     //get Templates
     $scope.selectTemplate = {};
