@@ -467,6 +467,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
+
+        console.log("set widget items");
+        console.log(widget);
         $scope.dispHideBuilder = true;
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
@@ -520,7 +523,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         $scope.widgetObj.previewTitle = widget.widgetTitle;
         var getDataSourceId = widget.dataSourceId;
+        console.log(getDataSourceId);
         $scope.selectWidgetDataSource(getDataSourceId);
+        console.log(setDefaultWidgetObj);
         getSegments(widget);
         getNetworkTypebyObj(widget);
         $scope.y1Column = [];
@@ -896,6 +901,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectWidgetDataSource = function (dataSourceName) {
+        
+        console.log(dataSourceName);
 
         if (!dataSourceName) {
             return;
@@ -915,6 +922,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.gaugeItem = "";
         $http.get('admin/ui/dataSet/publishDataSet').success(function (response) {
             $scope.dataSets = [];
+            
             angular.forEach(response, function (value, key) {
                 if (!value.dataSourceId) {
                     return;
@@ -923,23 +931,58 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.dataSets.push(value);
                 }
             });
+            console.log($scope.dataSets);
         });
     };
 
     function getSegments(widget) {
         var timeSegmentType = widget.timeSegment;
         var productSegmentType = widget.productSegment;
+
+        console.log("time segment -->" + timeSegmentType);
+        console.log("product segment -->" + productSegmentType);
+
         var getDataSourceType = widget.dataSourceId ? widget.dataSourceId.dataSourceType : null;
+        console.log("dataSourceType--->" + widget.dataSourceId.dataSourceType);
         if (getDataSourceType === 'csv' || getDataSourceType === 'sql' || getDataSourceType === 'xls' || getDataSourceType === "") {
             return;
         }
         var getReportName = widget.dataSetId ? widget.dataSetId.reportName : null;
+       
+        console.log("ReportName -->"+getReportName)
         $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
             var getDataSetObjs = response;
             var getDataSetPerformance = getDataSetObjs[getDataSourceType];
+            console.log("getDataSetPerformance");
+            console.log(getDataSetPerformance);
+
             if (!getDataSetPerformance) {
                 return;
             }
+
+            getDataSetPerformance.forEach(function (val, key) {
+                var getPerformanceType = val.type;
+                if (getReportName === getPerformanceType) {
+                    $scope.timeSegments = val.timeSegments;
+                    $scope.productSegments = val.productSegments;
+
+                    $scope.timeSegments.forEach(function (val, key) {
+                        if (val.type === timeSegmentType) {
+                            $scope.widgetObj.timeSegment = val;
+                        }
+                    });
+
+                    $scope.productSegments.forEach(function (val, key) {
+                        if (val.type === productSegmentType) {
+                            $scope.widgetObj.productSegment = val;
+                        }
+                    });
+                }
+            });
+
+
+
+
             getDataSetPerformance.forEach(function (val, key) {
                 var getPerformanceType = val.type;
                 if (getReportName === getPerformanceType) {
@@ -2478,7 +2521,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         });
                     }
                 })
-
             }
         }
         widget.columns.splice(index, 1);
@@ -2648,7 +2690,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         fieldType: val.fieldType,
                         displayName: val.displayName,
                         icon: val.icon
-
                     };
                     $scope.columnHeaderColuction.push(collectionFieldDefs);
                 });
@@ -2737,9 +2778,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         addColor = [];
         deleteColumns = [];
         $('.showEditWidget').modal('hide');
-        console.log("cancel widget");
-        console.log(widgetObj);
-        console.log(setDefaultWidgetObj);
         angular.forEach(setDefaultWidgetObj, function (val, key) {
             $scope.widgetObj.id = val.id;
             $scope.widgetObj.previewTitle = val.widgetTitle;
@@ -2759,6 +2797,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetObj.lastNyears = val.lastNyears;
             $scope.widgetObj.allAccount = val.accountId;
             $scope.widgetObj.selectAll = val.selectAll;
+            
         });
         if ($scope.widgetObj.dataSourceId && $scope.widgetObj.dataSetId) {
             $scope.collectionFields = [];
@@ -2768,10 +2807,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnPieXAxis = [];
             $scope.columnPieYAxis = [];
         }
-        $scope.widgetObj.dataSetId="";
-        $scope.widgetObj.productSegment="";
-        $scope.widgetObj.timeSegment="";
-        $scope.widgetObj.networkType="";
+
+
         $scope.chartTypeName = "";
         $scope.xColumn = "";
         $scope.tickerItem = "";

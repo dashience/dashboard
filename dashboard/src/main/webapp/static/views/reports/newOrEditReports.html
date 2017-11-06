@@ -218,7 +218,7 @@
                                                         ui-sref="index.widgetEditByReport({accountId: accountId, accountName: accountName, reportId: reportId, reportWidgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>-->
-                            <a class="closebox" data-toggle="modal" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
+                            <a title="{{'Delete'|translate}}" class="closebox" data-toggle="modal" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
 
                             <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
                             <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>

@@ -282,7 +282,7 @@
                                     <ul class="col-lg-3 icon-dash">                                    
                                         <li class="product-dashboard-icon" ng-click="setParams()">
                                             <a data-ui-sref="index.dataSource({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})">
-                                                 <i class="fa fa-database datasource" aria-hidden="true"></i> <h5 translate>DataSource</h5>
+                                                <i class="fa fa-database datasource" aria-hidden="true"></i> <h5 translate>DataSource</h5>
                                             </a>
                                         </li>
                                     </ul>
@@ -375,7 +375,7 @@
                     </div>
                 </li>
                 <li class="dropdown" ng-if="isAdmin !== 'admin'">
-                    <a class="dropdown-toggle" data-toggle="dropdown">
+                    <a  title="{{'Settings'|translate}}" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-cog"></i>
                     </a>
                     <div class="dropdown-menu themeSettings">
