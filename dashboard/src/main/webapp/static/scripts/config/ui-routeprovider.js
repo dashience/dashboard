@@ -121,12 +121,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 controller: 'PdfController'
             })
             .state("viewReportPdf", {
-                url: "/viewReportPdf/:lan/:accountId/:userId/:reportId?:startDate/:endDate",
+                url: "/viewReportPdf/:lan/:accountId/:userId/:reportId?:startDate/:endDate/:getTableType",
                 templateUrl: "static/views/pdf/vb.reportPdf.html",
                 controller: 'ReportPdfController'
             })
             .state("viewFavouritesPdf", {
-                url: "/viewFavouritesPdf/:lan/:accountId/:userId/:favouriteName?:startDate/:endDate",
+                url: "/viewFavouritesPdf/:lan/:accountId/:userId/:favouriteName?:startDate/:endDate/:getTableType",
                 templateUrl: "static/views/pdf/vb.favouritesPdf.html",
                 controller: 'FavouritesPdfController'
             });
