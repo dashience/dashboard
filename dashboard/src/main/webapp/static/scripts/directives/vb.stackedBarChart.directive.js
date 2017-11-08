@@ -272,6 +272,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                         } else {
                             var loopCount = 0;
                             var sortingObj;
+                            var groupingNames = [];
                             var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj);
                             var chartData = response.data;
@@ -341,6 +342,11 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     ySeriesData2.unshift(joinCompare2);
                                     columns.push(ySeriesData1);
                                     columns.push(ySeriesData2);
+                                    console.log(ySeriesData1);
+                                    console.log(ySeriesData2);
+
+                                    groupingNames.unshift(joinCompare1);
+                                    groupingNames.unshift(joinCompare2);
 //                            labels["format"][joinCompare1] = function (value) {
 //                                return value;
 //                            };
@@ -382,6 +388,9 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 } else {
                                     ySeriesData.unshift(value.displayName);
                                     columns.push(ySeriesData);
+                                    angular.forEach(groupingFields, function (value, key) {
+                                        groupingNames.push(value.displayName);
+                                    });
                                 }
 
 //                            angular.forEach(yAxis, function (value, key) {
@@ -392,10 +401,8 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
 //                                columns.push(ySeriesData);
                             });
 
-                            var groupingNames = [];
-                            angular.forEach(groupingFields, function (value, key) {
-                                groupingNames.push(value.displayName);
-                            });
+//                            var groupingNames = [];
+
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });

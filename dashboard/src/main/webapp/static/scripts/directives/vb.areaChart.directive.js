@@ -257,7 +257,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
                         scope.loadingArea = false;
-                        console.log(response);
                         if (!response) {
                             scope.areaEmptyMessage = "No Data Found";
                             scope.hideEmptyArea = true;
@@ -335,8 +334,8 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 if (isCompare == 'compareOn') {
                                     var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
                                     var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
-                                    var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
-                                    var joinCompare2 = value.displayName + " (" + sumaryRange2 + ")";
+                                    var joinCompare1 = value.fieldName + " (" + sumaryRange1 + ")";
+                                    var joinCompare2 = value.fieldName + " (" + sumaryRange2 + ")";
                                     ySeriesData1.unshift(joinCompare1);
                                     ySeriesData2.unshift(joinCompare2);
                                     columns.push(ySeriesData1);
@@ -380,7 +379,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                         };
                                     }
                                 } else {
-                                    ySeriesData.unshift(value.displayName);
+                                    ySeriesData.unshift(value.fieldName);
                                     columns.push(ySeriesData);
                                 }
 //                            angular.forEach(yAxis, function (value, key) {
@@ -394,12 +393,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             var combined = {};
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
-                                console.log(chartCombinationtypes);
                             });
-
-                            console.log("chartCombinationtypes")
-                            console.log(chartCombinationtypes)
-
                             var data = {
                                 x: xAxis.fieldName,
                                 columns: columns,

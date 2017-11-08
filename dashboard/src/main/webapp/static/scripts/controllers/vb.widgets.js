@@ -2883,9 +2883,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.columnPieYAxis = [];
         }
         
-        $scope.dataSets=[];
-        $scope.timeSegments=[];
-        $scope.productSegments=[];
         
         $scope.chartTypeName = "";
         $scope.xColumn = "";
