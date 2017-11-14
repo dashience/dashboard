@@ -5,10 +5,12 @@
  */
 package test;
 
+import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -21,11 +23,28 @@ public class GoogleSpreadsheet {
 
     public static final String key = "AIzaSyDhyM1DBSeEO2KkcjiQnz0UBYAra3GSkmw";
     public static final String SHEET_URL = "https://sheets.googleapis.com/v4/spreadsheets/";
-    
-    
-    
 
-    public static List<Map<String, Object>> getSpreadSheetById(String spreadSheetId, String range) throws ParseException {
+    public static List<Map<String, Object>> getSheets(String spreadSheetId) throws ParseException {
+
+        String url=SHEET_URL+spreadSheetId+key;
+//        String url = "https://sheets.googleapis.com/v4/spreadsheets/1bK7AdycQgbfyT83jdA9KvGUNf8rb5v4cRcYH70LqLE8?key=AIzaSyDhyM1DBSeEO2KkcjiQnz0UBYAra3GSkmw";
+        String sheetData = Rest.getData(url);
+        JSONParser parser = new JSONParser();
+        Object jsonObj = parser.parse(sheetData);
+        JSONObject object = (JSONObject) jsonObj;
+
+        List<Map<String, Object>> returnMap = new ArrayList<>();
+        List<Map<String,Object>> data=(List)object.get("sheets");
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> next = iterator.next();
+            Map mapData=new HashMap();
+            mapData.put("title",((Map) next.get("properties")).get("title"));
+            returnMap.add(mapData);
+        }
+        return returnMap;
+    }
+
+    public static List<Map<String, Object>> getSpreadSheetDataById(String spreadSheetId, String range) throws ParseException {
 
         String url = SHEET_URL + spreadSheetId + "/values/" + range + "?key=" + key;
 
@@ -66,7 +85,8 @@ public class GoogleSpreadsheet {
         try {
             String spreadSheetId = "1G6psxsWtZ7ItOaDySqVqRRcumo8ZEugBEWZhXawfm-Q";
             String range = "A1:Z999";
-            List<Map<String, Object>> spreadSheetData = getSpreadSheetById(spreadSheetId, range);
+//            List<Map<String, Object>> spreadSheetData = getSpreadSheetById(spreadSheetId, range);
+            getSheets(spreadSheetId);
         } catch (ParseException ex) {
             Logger.getLogger(GoogleSpreadsheet.class.getName()).log(Level.SEVERE, null, ex);
         }
