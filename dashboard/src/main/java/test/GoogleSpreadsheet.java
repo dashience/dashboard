@@ -29,12 +29,10 @@ public class GoogleSpreadsheet {
         JSONParser parser = new JSONParser();
         Object jsonObj = parser.parse(spreadSheetData);
         JSONObject object = (JSONObject) jsonObj;
-
         List values = (List) object.get("values");
         int len = values.size();
         List colsHeader = (List) values.get(0);
         List colsData = (List) values.subList(1, len);
-
         Map<String, Object> dataMap = new HashMap<>();
         for (int i = 0; i < colsData.size(); i++) {
             List temp = (List) colsData.get(i);

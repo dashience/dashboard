@@ -11,6 +11,7 @@ import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.GaService;
 import com.visumbu.vb.admin.service.GooglePlusService;
+import com.visumbu.vb.admin.service.GoogleSpreadSheetService;
 import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
 import com.visumbu.vb.admin.service.SemrushService;
@@ -124,6 +125,9 @@ public class ProxyController {
 
     @Autowired
     private GooglePlusService googlePlusService;
+    
+    @Autowired
+    private GoogleSpreadSheetService googleSpreadSheetService;
 
     PropertyReader propReader = new PropertyReader();
 
@@ -846,7 +850,11 @@ public class ProxyController {
             List<Map<String, Object>> dataList = getGooglePlusData(request, response);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
-        } else if (dataSourceType.equalsIgnoreCase("csv")) {
+        }else if (dataSourceType.equalsIgnoreCase("googlespreadsheet")) {
+            List<Map<String, Object>> dataList = getGoogleSpreadSheetData(request, response);
+            returnMap.put("data", dataList);
+            returnMap.put("columnDefs", getColumnDefObject(dataList));
+        }else if (dataSourceType.equalsIgnoreCase("csv")) {
             returnMap = (Map) getCsvData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("semRush")) {
             returnMap = (Map) getSemRushData(request, response);
@@ -2212,7 +2220,69 @@ public class ProxyController {
             return null;
         }
     }
+    
+    //google spread sheet service
+    List<Map<String, Object>> getGoogleSpreadSheetData(MultiValueMap<String, String> request, HttpServletResponse response) {
 
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(request, "timeSegment");
+        String productSegment = getFromMultiValueMap(request, "productSegment");
+
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+
+        Integer dataSetIdInt = null;
+        DataSet dataSet = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+            if (dataSetIdInt != null) {
+                dataSet = uiService.readDataSet(dataSetIdInt);
+            }
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+            }
+        }
+
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+        String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
+            }
+        }
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+
+        String googleSpreadSheetApiKey = getAccountId(accountProperty, "googleSpreadSheetApiKey");
+
+        try {
+//            long gPlusAccountId = Long.parseLong(googlePlusAccountId);
+            List<Map<String, Object>> gSpreadSheetReport = googleSpreadSheetService.get(googleSpreadSheetApiKey);
+            return gSpreadSheetReport;
+        } catch (NumberFormatException e) {
+            System.out.println("Exception occured");
+            return null;
+        }
+    }
+    
     List<Map<String, Object>> getTwitterData(MultiValueMap<String, String> request, HttpServletResponse response) {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
