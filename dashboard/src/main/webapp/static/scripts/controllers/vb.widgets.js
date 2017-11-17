@@ -1491,6 +1491,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.expandWidget = function (widget) {
+        console.log(widget);
         var expandchart = widget.chartType;
 
         widget.chartType = null;
@@ -1511,6 +1512,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     };
     $scope.reduceWidget = function (widget) {
+        console.log(widget)
         var expandchart = widget.chartType;
 
         widget.chartType = null;

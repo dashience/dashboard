@@ -470,7 +470,7 @@
                         <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
 
                     </div>
-                    <div class="panel-body" ng-if="widget.chartType === 'line' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                    <div class="panel-body" ng-if="widget.chartType ==='line'&&(getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
                             <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                  line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
@@ -484,8 +484,8 @@
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'bar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
-                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                             <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
                                  widget-Id="{{widget.id}}" 
                                  widget-Columns="{{widget.columns}}" 
                                  url-type="{{getTableType}}"
@@ -496,33 +496,45 @@
                     </div>
                     <div class="panel-body" ng-if="widget.chartType === 'horizontalBar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
-                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
                                  widget-Id="{{widget.id}}" 
                                  widget-Columns="{{widget.columns}}" 
                                  url-type="{{getTableType}}"
                                  compare-Date-Range="{{compareDateRange}}"
-                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}"
-                                 is-Horizontal-Bar="{{widget.isHorizontalBar}}">                                     
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
                             </div>
                         </div>
                     </div>
 
                     <div class="panel-body" ng-if="widget.chartType === 'pie'">
                         <div>
-                            <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
-                                 pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' 
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
                                  widget-Id="{{widget.id}}" 
                                  widget-Columns="{{widget.columns}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
                                  widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body"  ng-if="(widget.chartType === 'area' || widget.chartType === 'combination') && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                    <div class="panel-body"  ng-if="(widget.chartType === 'area' ) && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
-                                 area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
-                                 widget-Id="{{widget.id}}"
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                            </div>
+                        </div>
+                    </div> <div class="panel-body"  ng-if="(widget.chartType === 'combination' ) && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                        <div>
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
                                  widget-Columns="{{widget.columns}}" 
                                  url-type="{{getTableType}}"
                                  compare-Date-Range="{{compareDateRange}}"
@@ -533,9 +545,8 @@
 
                     <div class="panel-body" ng-if="widget.chartType === 'scatter' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-Scatter-Chart-Fn="setScatterChartFn(scatterFn)" 
-                                 get-Scatter-Widget-Obj="getWidgetObjScatter(obj)"
-                                 scatter-Chart-Directive scatter-Chart-Source="{{widget.dataSetId}}" 
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
                                  widget-Id="{{widget.id}}" 
                                  widget-Columns="{{widget.columns}}" 
                                  url-type="{{getTableType}}"
@@ -578,10 +589,10 @@
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'stackedbar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
-                                 stacked-Bar-Chart-Directive 
-                                 stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
-                                 widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" 
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
                                  url-type="{{getTableType}}"
                                  compare-Date-Range="{{compareDateRange}}"
                                  widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
@@ -606,7 +617,7 @@
                              gauge-Id="{{widget.id}}"
                              gauge-Columns="{{widget.columns}}"
                              default-chart-color="{{defaultChartColor}}">
-                        </div>
+                            </div>
                     </div>  
 
                     <div class='panel-body' ng-if="widget.chartType === 'map' && (getTableType == 'compareOn' || getTableType == 'compareOff')">

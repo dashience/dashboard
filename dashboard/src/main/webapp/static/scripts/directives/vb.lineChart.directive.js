@@ -309,6 +309,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 });
                                 columns.push(xTicks);
                             }
+                            console.log(xData)
                             angular.forEach(yAxis, function (value, key) {
                                 var ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
@@ -327,6 +328,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                         return 0;
                                     }
                                 });
+                                
                                 if (isCompare == 'compareOn') {
                                     var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
                                     var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
@@ -377,8 +379,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 } else {
                                     ySeriesData.unshift(value.displayName);
                                     columns.push(ySeriesData);
+                                    console.log(ySeriesData);
                                 }
-                            //yaxis mapping data
+                                //yaxis mapping data
 //                            angular.forEach(yAxis, function (value, key) {
 //                                ySeriesData = chartData.map(function (a) {
 //                                    return a[value.fieldName] || "0";
@@ -397,7 +400,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             } else {
                                 gridLine = false;
                             }
-
+                            
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
