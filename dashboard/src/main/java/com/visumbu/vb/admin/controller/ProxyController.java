@@ -2275,7 +2275,7 @@ public class ProxyController {
 
         try {
 //            long gPlusAccountId = Long.parseLong(googlePlusAccountId);
-            List<Map<String, Object>> gSpreadSheetReport = googleSpreadSheetService.get(googleSpreadSheetApiKey,"");
+            List<Map<String, Object>> gSpreadSheetReport = googleSpreadSheetService.get(dataSetReportName,startDate,endDate,timeSegment,productSegment,googleSpreadSheetApiKey,"");
             return gSpreadSheetReport;
         } catch (NumberFormatException e) {
             System.out.println("Exception occured");
