@@ -53,7 +53,6 @@ public class GoogleSpreadsheet {
         JSONParser parser = new JSONParser();
         Object jsonObj = parser.parse(spreadSheetData);
         JSONObject object = (JSONObject) jsonObj;
-
         List values = (List) object.get("values");
         int len = values.size();
         List colsHeader = (List) values.get(0);
