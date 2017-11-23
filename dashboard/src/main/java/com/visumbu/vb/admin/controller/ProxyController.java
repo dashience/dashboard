@@ -13,6 +13,7 @@ import com.visumbu.vb.admin.service.GaService;
 import com.visumbu.vb.admin.service.GooglePlusService;
 import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
+import com.visumbu.vb.admin.service.ReviewTrackerService;
 import com.visumbu.vb.admin.service.SemrushService;
 import com.visumbu.vb.admin.service.SettingsService;
 import com.visumbu.vb.admin.service.TwitterService;
@@ -124,6 +125,9 @@ public class ProxyController {
 
     @Autowired
     private GooglePlusService googlePlusService;
+    
+    @Autowired
+    private ReviewTrackerService reviewTrackerService;
 
     PropertyReader propReader = new PropertyReader();
 
@@ -848,6 +852,10 @@ public class ProxyController {
             returnMap.put("columnDefs", getColumnDefObject(dataList));
         } else if (dataSourceType.equalsIgnoreCase("csv")) {
             returnMap = (Map) getCsvData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("reviewTracker")) {
+            List<Map<String, Object>> dataList = getReviewTrackerData(request, response);
+            returnMap.put("data", dataList);
+            returnMap.put("columnDefs", getColumnDefObject(dataList));
         } else if (dataSourceType.equalsIgnoreCase("semRush")) {
             returnMap = (Map) getSemRushData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("adwords")) {
@@ -2209,6 +2217,67 @@ public class ProxyController {
             return gPlusReport;
         } catch (NumberFormatException e) {
             System.out.println("Exception occured");
+            return null;
+        }
+    }
+
+    List<Map<String, Object>> getReviewTrackerData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(request, "timeSegment");
+        String productSegment = getFromMultiValueMap(request, "productSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
+
+        Integer dataSetIdInt = null;
+        DataSet dataSet = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+            if (dataSetIdInt != null) {
+                dataSet = uiService.readDataSet(dataSetIdInt);
+            }
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+            }
+        }
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+        String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
+            }
+        }
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String reviewTrackerAcessToken = getAccountId(accountProperty, "reviewTrackerAcessToken");
+        String reviewTrackerAccountId = getAccountId(accountProperty, "reviewTrackerAccountId");
+
+        try {
+            List<Map<String, Object>> reviewTrackerReport = reviewTrackerService.get(dataSetReportName, reviewTrackerAcessToken, 
+                    reviewTrackerAccountId, startDate, endDate, timeSegment, productSegment);
+            return reviewTrackerReport;
+        } catch (NumberFormatException ex) {
             return null;
         }
     }
