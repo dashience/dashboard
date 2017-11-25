@@ -46,8 +46,8 @@ public class ReviewTrackerService {
         return null;
     }
 
-    public static List<Map<String, Object>> getAccountReviews(String accountId, String authorizationHeaders, Date startDate, Date endDate,
-            String timeSegment, String productSegment) {
+    public static List<Map<String, Object>> getAccountReviews(String accountId, String authorizationHeaders, 
+            Date startDate, Date endDate,String timeSegment, String productSegment) {
         String url = BASE_URL + "reviews";
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         valueMap.put("account_id", Arrays.asList(accountId));
