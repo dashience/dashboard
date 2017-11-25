@@ -42,6 +42,66 @@
         position: relative;
     }
 
+    .arrow-up {
+        display: inline-block;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 12px !important;
+        position: relative !important;
+        top: 3px !important;
+        color: #25d643 !important;
+        right: 0px !important;
+    }
+    .arrow-down {
+        display: inline-block;
+        font-style: normal;
+        font-weight: normal;
+        line-height: 1;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        font-size: 12px !important;
+        position: relative !important;
+        top: 3px !important;
+        color: #f41000 !important;
+        right: 0px !important;
+    }
+
+    .small-box h3 {
+        font-size: 50px;
+        margin: 0px 0 10px 8px;
+        white-space: nowrap;
+        color: #6d6e71;
+        padding: 7px 0px;
+    }
+    .small-box p {
+        font-size: 15px
+    }
+    .small-box p>small {
+        display: block;
+        color: #f9f9f9;
+        font-size: 13px;
+        margin-top: 5px
+    }
+    .small-box h3, .small-box p {
+        z-index: 5
+    }
+    .small-box .icon {
+        -webkit-transition: all .3s linear;
+        -o-transition: all .3s linear;
+        transition: all .3s linear;
+        float: right;
+        margin-top: 5px;
+        margin-right: 10px;
+        z-index: 0;
+        font-size: 40px;
+        color: #efefef;
+    }
+    .small-box:hover {
+        text-decoration: none;
+    }
 
 </style>
 <div>
@@ -49,7 +109,7 @@
         <div class="hpanel">
             <div class="panel-body header-title">
                 <div id="hbreadcrumb" class="pull-right">
-                   
+
                     <div class="col-sm-12" ng-if="isAdmin != 'admin'">
 
                         <div class="form-group select-template">
@@ -194,10 +254,10 @@
                             </div>
                         </div>
                     </ul>
-                    <div class="tab-content" ng-if="tabs.length > 0">
-                        <div class="row" ngsf-fullscreen="fullscreenCtrl">
-                            <div id="tab-1" class="tab-pane active">
-                                <ui-view></ui-view>
+                    <div class="tab-content"  ng-if="tabs.length > 0">
+                        <div class="row" ngsf-fullscreen="fullscreenCtrl" ui-if="loadStatus===true">
+                            <div id="tab-1"  class="tab-pane active" >
+                                <ui-view ></ui-view>
                             </div>
                         </div>
                     </div>

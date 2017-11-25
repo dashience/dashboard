@@ -500,7 +500,7 @@
                 </div>
             </div>
         </div>
-        <div class="row" ng-hide="showWidgeDateRange" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
+        <div class="row" ng-hide="showWidgetDateRange" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) !== 'text'">
             <div class="form-group">
                 <div class="col-sm-6">
                     <div class="input-group"> <div class="add-widget-title" translate>Date Range</div>
@@ -514,7 +514,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-6 pull-right widget-button-right">
+            <div class="col-md-8 pull-right widget-button-right">
                 <div class="form-group">
                     <button class="btn btn-default" id="btn-save" 
                             ng-click="save(widgetObj)">
@@ -523,6 +523,7 @@
                     <button ng-hide="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'text'" class="btn btn-default" 
                             ng-click="showPreview(widgetObj, userChartColors)"> <span translate>Preview</span>
                     </button>
+                    <!--<button class="btn btn-default" ng-if="widgetObj.id" ng-click="undo(undoWidget, true)"><i class="fa fa-undo"></i></button>-->
                     <button class="btn btn-default" id="btn-cancel" 
                             ng-click="cancel(widgetObj)">
                         <i class="fa fa-close"></i> <span translate>Cancel</span>
@@ -755,8 +756,8 @@
 
                     <div class="col-sm-12">
                         <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge'">
-                            <label translate>Gauge</label>
-                            <select class="form-control"  ng-model="gaugeItem" ng-options="collectionField.fieldName for collectionField in collectionFields track by collectionField.fieldName" 
+                            <label ng-if="hideSelectedColumn === false;" translate>Gauge</label>
+                            <select ng-if="hideSelectedColumn === false;" class="form-control"  ng-model="gaugeItem" ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
                                     ng-change="gauge(widgetObj, gaugeItem)">                
                             </select>
                         </div>    
@@ -768,11 +769,11 @@
                 <div class="col-sm-12 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'ticker'" ng-show="showColumnDefs" >
                     <div class="form-group">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true">
-                            <label translate>Ticker Items</label>
-                            <ui-select multiple ng-model="tickerItem" limit='3' theme="bootstrap"
+                            <label ng-if="hideSelectedColumn === false;" translate>Ticker Items</label>
+                            <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="tickerItem" limit='3' theme="bootstrap"
                                        on-select="ticker(widgetObj, tickerItem)" 
                                        on-remove="removedByTicker(widgetObj, $item, tickerItem)">
-                                <ui-select-match placeholder="{{'Ticker Value'|translate}}">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match allow-clear="true" placeholder="{{'Ticker Value'|translate}}">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
                                     {{currentColumn.displayName}}
                                 </ui-select-choices>
@@ -806,11 +807,11 @@
                 <div class="col-sm-8 form-group button-ok" ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'funnel'" ng-show="showColumnDefs">
                     <div class="form-group">
                         <div class="col-md-12" ng-if="afterLoadWidgetColumns == true;">
-                            <label translate>Funnel Items</label>
-                            <ui-select multiple ng-model="funnelItem"  theme="bootstrap"
+                            <label ng-if="hideSelectedColumn === false;" translate>Funnel Items</label>
+                            <ui-select ng-if="hideSelectedColumn === false;" multiple ng-model="funnelItem"  theme="bootstrap"
                                        on-select="funnel(widgetObj, funnelItem)" 
                                        on-remove="removedByFunnel(widgetObj,$item,funnelItem)">
-                                <ui-select-match placeholder="{{'Funnel Value'|translate}}">{{$item.displayName}}</ui-select-match>
+                                <ui-select-match allow-clear="true" placeholder="{{'Funnel Value'|translate}}">{{$item.displayName}}</ui-select-match>
                                 <ui-select-choices repeat="collectionField in collectionFields  | filter:$select.search">
                                     {{collectionField.displayName}}
                                 </ui-select-choices>
@@ -948,12 +949,12 @@
                                                 <div ng-show="currentColumn.isEdit">
                                                     <span class="btn btn-default btn-xs" title="Save" ng-click="currentColumn.isEdit = false"><i class="fa fa-save"></i></span>
                                                     <span class="btn btn-default btn-xs" title="Close" ng-click="currentColumn.isEdit = false"><i class="fa fa-close"></i></span>
-                                                    <span class="btn btn-default btn-xs" title="Delete" ng-click="deleteColumn(widgetObj, $index)"><i class="fa fa-trash"></i></span>
+                                                    <span class="btn btn-default btn-xs" title="Delete" ng-click="deleteColumn(widgetObj, chartTypeName, $index)"><i class="fa fa-trash"></i></span>
                                                 </div>
 
                                                 <div ng-hide="currentColumn.isEdit">
                                                     <span class="btn btn-default btn-xs" title="Edit" ng-click="currentColumn.isEdit = true"><i class="fa fa-pencil"></i></span>
-                                                    <span class="btn btn-default btn-xs" title="Delete" ng-click="deleteColumn(widgetObj, $index)"><i class="fa fa-trash"></i></span>
+                                                    <span class="btn btn-default btn-xs" title="Delete" ng-click="deleteColumn(widgetObj, chartTypeName, $index)"><i class="fa fa-trash"></i></span>
                                                 </div>
                                             </span>
                                         </td>

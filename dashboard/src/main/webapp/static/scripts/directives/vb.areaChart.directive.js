@@ -10,7 +10,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             widgetColumns: '@',
             pieChartId: '@',
             widgetObj: '@',
-            defaultChartColor: '@'
+            defaultChartColor: '@',
+            compareDateRange: '@',
+            urlType: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -24,8 +26,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             var displayDataFormat = {};
             var y2 = {show: false, label: ''};
             var axes = {};
-            var startDate = "";
-            var endDate = "";
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
@@ -134,7 +134,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
-                                return -1 * parsedValue; 
+                                return -1 * parsedValue;
                             });
                         }
                     } else {
@@ -162,9 +162,39 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 }
                 return maxData;
             }
+            var startDates1 = (moment().subtract(1, 'months').startOf('month'));
+            var endDates1 = (moment().subtract(1, 'months').endOf('month'));
+            var startDates2 = (moment().subtract(2, 'months').startOf('month'));
+            var endDates2 = (moment().subtract(2, 'months').endOf('month'));
+            var startDate1 = $filter('date')(new Date(startDates1), 'MM/dd/yyyy');
+            var endDate1 = $filter('date')(new Date(endDates1), 'MM/dd/yyyy');
+            var startDate2 = $filter('date')(new Date(startDates2), 'MM/dd/yyyy');
+            var endDate2 = $filter('date')(new Date(endDates2), 'MM/dd/yyyy');
+            var url;
+            var urlPath;
+            var getCompareStatus;
+            var dateRangeType;
+            var compareDateRangeDates = "&startDate1=" + startDate1 + "&endDate1=" + endDate1 + "&startDate2=" + startDate2 + "&endDate2=" + endDate2;
+            var monthEndWithoutCompare = "&startDate=" + startDate1 + "&endDate=" + endDate1;
+            var compareRange = JSON.parse(scope.compareDateRange);
+            var isCompare = scope.urlType;
+            var url;
+            if (isCompare == 'compareOn') {
+                var compareStartDate = compareRange.startDate;
+                var compareEndDate = compareRange.endDate;
+                dateRangeType = '&startDate1=' + $stateParams.startDate +
+                        "&endDate1=" + $stateParams.endDate +
+                        "&startDate2=" + compareStartDate +
+                        "&endDate2=" + compareEndDate;
+                url = "admin/proxy/getCompareData?";
+            } else {
+                dateRangeType = '&startDate=' + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+                url = "admin/proxy/getData?";
+            }
+
             var areaChartDataSource = JSON.parse(scope.areaChartSource);
             if (scope.areaChartSource) {
-                var url = "admin/proxy/getData?";
+//                var url = "admin/proxy/getData?";
 //                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
 //                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
 //                }
@@ -215,8 +245,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
 //                            "&location=" + $stateParams.locationId +
-                            "&startDate=" + $stateParams.startDate +
-                            "&endDate=" + $stateParams.endDate +
+//                            "&startDate=" + $stateParams.startDate +
+//                            "&endDate=" + $stateParams.endDate +
+                            dateRangeType +
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
@@ -283,30 +314,94 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             console.log(xTicks);
                             columns.push(xTicks);
                             angular.forEach(yAxis, function (value, key) {
-                                ySeriesData = chartData.map(function (a) {
+                                var ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
-//                                ySeriesData.unshift(value.displayName);
-                                ySeriesData.unshift(value.fieldName);
-                                columns.push(ySeriesData);
+                                var ySeriesData1 = chartData.map(function (a) {
+                                    if (a.metrics1) {
+                                        return a.metrics1[value.fieldName] || "0";
+                                    } else {
+                                        return 0;
+                                    }
+                                });
+                                var ySeriesData2 = chartData.map(function (a) {
+                                    if (a.metrics2) {
+                                        return a.metrics2[value.fieldName] || "0";
+                                    } else {
+                                        return 0;
+                                    }
+                                });
+                                if (isCompare == 'compareOn') {
+                                    var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
+                                    var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
+                                    var joinCompare1 = value.fieldName + " (" + sumaryRange1 + ")";
+                                    var joinCompare2 = value.fieldName + " (" + sumaryRange2 + ")";
+                                    ySeriesData1.unshift(joinCompare1);
+                                    ySeriesData2.unshift(joinCompare2);
+                                    columns.push(ySeriesData1);
+                                    columns.push(ySeriesData2);
+//                            labels["format"][joinCompare1] = function (value) {
+//                                return value;
+//                            };
+//                            labels["format"][joinCompare2] = function (value) {
+//                                return value;
+//                            };
+                                    var displayName = value.displayName;
+                                    if (value.displayFormat) {
+                                        var format = value.displayFormat;
+                                        if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                                            labels["format"][joinCompare1] = function (value) {
+                                                if (format.indexOf("%") > -1) {
+                                                    return d3.format(format)(value / 100);
+                                                }
+                                                return d3.format(format)(value);
+                                            };
+                                            labels["format"][joinCompare2] = function (value) {
+                                                if (format.indexOf("%") > -1) {
+                                                    return d3.format(format)(value / 100);
+                                                }
+                                                return d3.format(format)(value);
+                                            };
+                                        } else {
+                                            labels["format"][displayName] = function (value) {
+                                                return formatBySecond(parseInt(value))
+                                            };
+                                        }
+                                    } else {
+                                        labels["format"][joinCompare1] = function (value) {
+                                            return value;
+                                        };
+                                        labels["format"][joinCompare2] = function (value) {
+                                            return value;
+                                        };
+                                        labels["format"][displayName] = function (value) {
+                                            return value;
+                                        };
+                                    }
+                                } else {
+                                    ySeriesData.unshift(value.fieldName);
+                                    columns.push(ySeriesData);
+                                }
+//                            angular.forEach(yAxis, function (value, key) {
+//                                ySeriesData = chartData.map(function (a) {
+//                                    return a[value.fieldName] || "0";
+//                                });
+////                                ySeriesData.unshift(value.displayName);
+//                                ySeriesData.unshift(value.fieldName);
+//                                columns.push(ySeriesData);
                             });
-                            var combined={};
+                            var combined = {};
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
-                                console.log(chartCombinationtypes);
                             });
-                            
-                            console.log("chartCombinationtypes")
-                            console.log(chartCombinationtypes)
-                            
-                            var data= {
-                                    x: xAxis.fieldName,
-                                    columns: columns,
-                                    labels: labels,
-                                    type: 'area',
-                                    axes: axes,
-                                    types: combined
-                                };
+                            var data = {
+                                x: xAxis.fieldName,
+                                columns: columns,
+                                labels: labels,
+                                type: 'area',
+                                axes: axes,
+                                types: combined
+                            };
                             console.log("data");
                             console.log(data);
                             var gridLine = false;

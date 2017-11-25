@@ -160,7 +160,7 @@
             <img src="{{userAccountLogo}}" width="100"> 
         </div>
         <div class="head-title">
-            <h2 class="pdf-title-color">{{userProductName?userProductName:templateName}}</h2>
+            <h2 class="pdf-title-color">{{userProductName}}</h2>
             <div class="pdfButton pull-right">
                 <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button>
             </div>
@@ -189,6 +189,8 @@
                              ticker-Source="{{widget.dataSetId}}" 
                              ticker-Title-Name="{{widget.widgetTitle}}" 
                              ticker-Id="{{widget.id}}" 
+                             url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
                              ticker-Columns="{{widget.columns}}">
                         </div>
                     </div>
@@ -201,7 +203,9 @@
                                 <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                      line-Chart-Directive 
                                      line-Chart-Source="{{widget.dataSetId}}" 
-                                     widget-Id="{{widget.id}}" 
+                                     widget-Id="{{widget.id}}"
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{widget.columns}}" 
                                      widget-Obj="{{widget}}">                                         
                                 </div>
@@ -212,23 +216,27 @@
                                 <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                      bar-Chart-Directive 
                                      bar-Chart-Source="{{widget.dataSetId}}" 
-                                     widget-Id="{{widget.id}}" 
+                                     widget-Id="{{widget.id}}"
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{widget.columns}}" 
                                      widget-Obj="{{widget}}">                                         
                                 </div>
                             </div>
                         </div>
                         <div class="panel-body pageBreak" ng-if="widget.chartType === 'horizontalBar'">
-                        <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
-                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
-                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
-                                 widget-Id="{{widget.id}}" 
-                                 widget-Columns="{{widget.columns}}" 
-                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}"
-                                 is-Horizontal-Bar="{{widget.isHorizontalBar}}">                                     
+                            <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
+                                <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                     bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}" 
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Columns="{{widget.columns}}" 
+                                     widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}"
+                                     is-Horizontal-Bar="{{widget.isHorizontalBar}}">                                     
+                                </div>
                             </div>
                         </div>
-                    </div>
                         <div class="panel-body pageBreak" ng-if="widget.chartType === 'pie'">
                             <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
@@ -245,7 +253,9 @@
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" 
                                      area-Chart-Directive 
                                      area-Chart-Source="{{widget.dataSetId}}" 
-                                     widget-Id="{{widget.id}}" 
+                                     widget-Id="{{widget.id}}"
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{widget.columns}}" 
                                      widget-Obj="{{widget}}">                                         
                                 </div>
@@ -256,6 +266,8 @@
                                 <div scatter-Chart-Directive 
                                      scatter-Chart-Source="{{widget.dataSetId}}" 
                                      widget-Id="{{widget.id}}" 
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{widget.columns}}" 
                                      widget-Obj="{{widget}}">                                     
                                 </div>
@@ -263,7 +275,7 @@
                         </div>
                         <div class="list pageBreak" ng-if="widget.chartType === 'table'" adjust-height>
                             <div class="table-responsive project-list col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
-                                <div id="changes-height" class="project-list">
+                                <div id="changes-height" class="project-list" ng-if="getTableType=='compareOff'">
                                     <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
                                          dynamic-Table 
                                          pdf-function="addToPdf(test)" 
@@ -273,6 +285,16 @@
                                          table-Footer="{{widget.tableFooter}}" 
                                          widget-Columns="{{widget.columns}}">                                             
                                     </div>
+                                </div>
+                                <div id="changes-height" class="project-list" ng-if="getTableType=='compareOn'">
+                                     <div compare-Range-Table 
+                                     compare-Table-Source="{{widget.dataSetId}}" 
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Id="{{widget.id}}" 
+                                     widget-Obj="{{widget}}" 
+                                     table-Footer="{{widget.tableFooter}}" 
+                                     widget-Columns="{{widget.columns}}">                                         
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -289,6 +311,8 @@
                                      stacked-Bar-Chart-Directive 
                                      stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
                                      widget-Id="{{widget.id}}" 
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{widget.columns}}" 
                                      widget-Obj="{{widget}}">                                         
                                 </div>
@@ -305,16 +329,16 @@
                             </div>
                         </div>
                         <div class="hpanel col-fixed-{{widget.width}} pageBreak" ng-if="widget.chartType == 'gauge'">
-                        <div set-Gauge-Fn="setGaugeFn(gaugeFn)" 
-                             gauge-Directive 
-                             widget-Obj="{{widget}}"
-                             gauge-Source="{{widget.dataSetId}}" 
-                             gauge-Title-Name="{{widget.widgetTitle}}" 
-                             gauge-Id="{{widget.id}}" 
-                             gauge-Columns="{{widget.columns}}">
+                            <div set-Gauge-Fn="setGaugeFn(gaugeFn)" 
+                                 gauge-Directive 
+                                 widget-Obj="{{widget}}"
+                                 gauge-Source="{{widget.dataSetId}}" 
+                                 gauge-Title-Name="{{widget.widgetTitle}}" 
+                                 gauge-Id="{{widget.id}}" 
+                                 gauge-Columns="{{widget.columns}}">
+                            </div>
                         </div>
-                    </div>
-                        
+
                     </div>
                 </div>
             </div>

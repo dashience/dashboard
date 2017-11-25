@@ -42,6 +42,9 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "AgencyProduct.findByStatus", query = "SELECT a FROM AgencyProduct a WHERE a.status = :status")})
 public class AgencyProduct implements Serializable {
 
+    @OneToMany(mappedBy = "productId")
+    private Collection<LastUserAccount> lastUserAccountCollection;
+
     @OneToMany(mappedBy = "agencyProductId")
     private Collection<DashboardTemplate> dashboardTemplateCollection;
 
@@ -169,6 +172,16 @@ public class AgencyProduct implements Serializable {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<LastUserAccount> getLastUserAccountCollection() {
+        return lastUserAccountCollection;
+    }
+
+    public void setLastUserAccountCollection(Collection<LastUserAccount> lastUserAccountCollection) {
+        this.lastUserAccountCollection = lastUserAccountCollection;
     }
     
 }

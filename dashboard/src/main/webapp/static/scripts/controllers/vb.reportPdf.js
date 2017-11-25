@@ -1,4 +1,4 @@
-app.controller('ReportPdfController', function ($stateParams, $http, $scope, $filter, $cookies, $translate) {
+app.controller('ReportPdfController', function ($stateParams, $http, $scope, $filter, $cookies, $translate,localStorageService) {
 
     $scope.reportPdfStartDate = $filter('date')(new Date($stateParams.startDate), 'MMM dd yyyy');//$filter(new Date($stateParams.startDate, 'MM/dd/yyyy'));
     $scope.reportPdfEndDate = $filter('date')(new Date($stateParams.endDate), 'MMM dd yyyy'); //$filter(new Date($stateParams.endDate, 'MM/dd/yyyy'));
@@ -12,7 +12,13 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
     function changeLanguage(key) {
         $translate.use(key);
     }
-
+    $scope.getTableType = $stateParams.getTableType;
+    var compareStartDate = localStorageService.get("comparisonStartDate");
+    var compareEndDate = localStorageService.get("comparisonEndDate");
+    $scope.compareDateRange = {
+        startDate: compareStartDate,
+        endDate: compareEndDate
+    };
     $http.get('admin/ui/getAccount/' + $stateParams.accountId).success(function (response) {
         console.log(response);
         response.forEach(function (val, key) {
@@ -43,6 +49,9 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
                 } else {
                     value.widgetId.isHorizontalBar = false;
                 }
+                angular.forEach(value.widgetId.columns, function (value, key) {
+                    value.expand = true;
+                });
             });
             $scope.reportWidgets = widgetItems;
         }).error(function () {
@@ -50,7 +59,7 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
         });
         setInterval(function () {
             window.status = "done";
-        }, 14000);
+        }, 15000);
     });
     $scope.downloadUiPdf = function () {
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));

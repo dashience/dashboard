@@ -1,7 +1,8 @@
-app.directive('tickerDirective', function ($http, $stateParams) {
+app.directive('tickerDirective', function ($http, $stateParams, $filter) {
     return{
         restrict: 'AE',
-        template: '<div ng-show="loadingTicker"><img width="40" src="static/img/logos/loader.gif"></div>' +
+        template:
+                '<div ng-show="loadingTicker"><img width="40" src="static/img/logos/loader.gif"></div>' +
                 '<div  ng-hide="loadingTicker" >' +
                 '<div ng-hide="hideEmptyTicker" class="hpanel stats">' +
                 '<div class="panel-body h-150">' +
@@ -12,7 +13,24 @@ app.directive('tickerDirective', function ($http, $stateParams) {
 //                        '<i class="pe-7s-share fa-4x"></i>' +
                 '</div>' +
                 '<div class="m-t-xl">' +
-                '<h3 class="m-b-xs text-success" style="color:{{colorName}};">{{firstLevelTicker.totalValue}}' +
+                '<h3 class="m-b-xs text-success" style="color:{{colorName}};">{{firstLevelTicker}}' +
+                '<span ng-click="changeComparisonType(\'firstLevel\')" ' +
+                'style="cursor:pointer" ng-if="percent(formatColumn, firstLevelTicker,secondLevelTicker) && showDifference == true" ' +
+                'ng-class="{\'arrow-up\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) > 0), \'arrow-down\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                '<i class="fa" ng-class="{\'fa-arrow-up\':percent(formatColumn, firstLevelTicker,secondLevelTicker) > 0, \'fa-arrow-down\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}"></i>' +
+                '<span ng-class="{\'leads-up\':percent(formatColumn, firstLevelTicker,secondLevelTicker) > 0, \'leads-down\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}" ng-show="showDifference">' +
+                '{{percent(formatColumn, firstLevelTicker,secondLevelTicker)}}' + "%" +
+                '</span>' +
+                '</span>' +
+                '<span class="empty-ticker arrow-up" ng-click="changeComparisonType(\'firstLevel\')" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, firstLevelTicker,secondLevelTicker)) && showDifference == true">0 </span>' +
+                //Diff
+                '<span ng-click="changeComparisonType(\'firstLevel\')" ' +
+                'style="cursor:pointer" ng-if="sub(formatColumn, firstLevelTicker,secondLevelTicker) != 0 && showDifference != true && firstLevelTicker != 0 && secondLevelTicker != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumn, firstLevelTicker,secondLevelTicker) > 0), \'arrow-down\':(sub(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                '<i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumn, firstLevelTicker,secondLevelTicker) > 0, \'fa-arrow-down\':(sub(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}"></i>' +
+                '<span class="leads" ng-hide="showDifference">' + '{{differ(formatColumn, firstLevelTicker,secondLevelTicker)}}' +
+                '<span class="leads-name" ng-if="sub(formatColumn, firstLevelTicker,secondLevelTicker)"> {{secondFormatName}}</span>' +
+                '</span>' +
+                '</span>' +
                 '<div class="icon pull-right" ng-hide="hideEmptyTicker"><i class="{{selectedChartIcon}}" aria-hidden="true"></i></div>' +
                 '</h3>' +
                 '<span class="font-bold no-margins">' +
@@ -20,12 +38,48 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 '</span>' +
                 '<div class="row">' +
                 '<div class="col-xs-6">' +
-                '<small class="stats-label">{{secondLevelTicker.tickerTitle}}</small>' +
-                '<h4>{{secondLevelTicker.totalValue}}</h4>' +
+                '<small class="stats-label">{{secondLevelTicker.tickerTitle?secondLevelTicker.tickerTitle:secondLevelTickerTitle}}</small>' +
+                '<h4>{{secondLevelTicker.totalValue?secondLevelTicker.totalValue:secondLevelTickerValue}}' +
+                '<span ng-click="changeComparisonType(\'secondLevel\')" ' +
+                'style="cursor:pointer" ng-if="percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) && showSecondDifference == true" ' +
+                'ng-class="{\'arrow-up\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0), \'arrow-down\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                '<i class="fa" ng-class="{\'fa-arrow-up\':percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'fa-arrow-down\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}"></i>' +
+                '<span ng-class="{\'leads-up\':percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'leads-down\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-show="showSecondDifference">' +
+                '{{percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue)}}' + "%" +
+                '</span>' +
+                '</span>' +
+                '<span class="empty-ticker arrow-up" ng-click="changeComparisonType(\'secondLevel\')" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, firstLevelTicker,secondLevelTicker)) && showSecondDifference == true">0 </span>' +
+                //Diff
+                '<span ng-click="changeComparisonType(\'secondLevel\')" ' +
+                'style="cursor:pointer" ng-if="sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) != 0 && showSecondDifference != true && firstLevelTicker != 0 && secondLevelTicker != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                '<i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'fa-arrow-down\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}"></i>' +
+                '<span class="leads" ng-hide="showSecondDifference">' + '{{differ(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1)}}' +
+                '<span class="leads-name" ng-if="sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1)"> {{secondFormatNameSecond}}</span>' +
+                '</span>' +
+                '</span>' +
+                '</h4>' +
                 '</div>' +
                 '<div class="col-xs-6 count">' +
-                '<small class="stats-label">{{thirdLevelTicker.tickerTitle}}</small>' +
-                '<h4>{{thirdLevelTicker.totalValue}}</h4>' +
+                '<small class="stats-label">{{thirdLevelTicker.tickerTitle?thirdLevelTicker.tickerTitle:thirdLevelTickerTitle}}</small>' +
+                '<h4>{{thirdLevelTicker.totalValue?thirdLevelTicker.totalValue:secondLevelTickerValue}}' +
+                '<span ng-click="changeComparisonType(\'thirdLevel\')" ' +
+                'style="cursor:pointer" ng-if="percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) && showThirdDifference == true" ' +
+                'ng-class="{\'arrow-up\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) > 0), \'arrow-down\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                '<i class="fa" ng-class="{\'fa-arrow-up\':percent(formatColumn, thirdLevelTickerValue,thirdLevelTickerValue1) > 0, \'fa-arrow-down\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}"></i>' +
+                '<span ng-class="{\'leads-up\':percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) > 0, \'leads-down\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}" ng-show="showThirdDifference">' +
+                '{{percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1)}}' + "%" +
+                '</span>' +
+                '</span>' +
+                '<span class="empty-ticker arrow-up" ng-click="changeComparisonType(\'thirdLevel\')" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, thirdLevelTickerValue,thirdLevelTickerValue1)) && showThirdDifference == true">0 </span>' +
+                //Diff
+                '<span ng-click="changeComparisonType(\'thirdLevelLevel\')" ' +
+                'style="cursor:pointer" ng-if="sub(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) != 0 && showThirdDifference != true && thirdLevelTickerValue != 0 && thirdLevelTickerValue1 != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumn, thirdLevelTickerValue,thirdLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumn, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                '<i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) > 0, \'fa-arrow-down\':(sub(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}"></i>' +
+                '<span class="leads" ng-hide="showThirdDifference">' + '{{differ(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1)}}' +
+                '<span class="leads-name" ng-if="sub(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1)"> {{secondFormatNameThird}}</span>' +
+                '</span>' +
+                '</span>' +
+                '</h4>' +
                 '</div>' +
                 '</div>' +
                 '</div>' +
@@ -40,7 +94,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
             tickerColumns: '@',
             tickerTitleName: '@',
             widgetObj: '@',
-            defaultChartColor: '@'
+            defaultChartColor: '@',
+            compareDateRange: '@',
+            urlType: '@'
         },
         link: function (scope, element, attr) {
             if (!scope.widgetObj) {
@@ -57,7 +113,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat, icon: value.icon});
             });
 
-            var format = function (column, value) {
+            scope.format = function (column, value) {
                 if (!value) {
                     return "-";
                 }
@@ -73,15 +129,189 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 }
                 return value;
             };
+            scope.differ = function (column, firstLevel, secondLevel) {
+                if (!column) {
+                    column = "";
+                }
+                if (!firstLevel) {
+                    firstLevel = 0;
+                }
+                if (!secondLevel) {
+                    secondLevel = 0;
+                }
+                var firstLevelTicker = firstLevel;
+                var secondLevelTicker = secondLevel;
+                if (column.fieldType === "date" || column.fieldType === "string") {
+                    return "-";
+                }
+                var sub;
+                if ((firstLevelTicker || firstLevelTicker == 0) && (secondLevelTicker || secondLevelTicker == 0)) {
+                    sub = firstLevelTicker - secondLevelTicker;
+                    sub = sub + "";
+                    if (sub.substr(0, 1) == "-") {
+                        sub = sub.replace("-", "");
+                        sub = parseFloat(sub);
+                        if (isNumber(sub)) {
+                            return "-" + scope.format(column, sub);
+                        } else {
+                            return "-";
+                        }
+                    } else {
+                        sub = parseFloat(sub);
+                        if (isNumber(sub)) {
+                            return  scope.format(column, sub);
+                        } else {
+                            return "-";
+                        }
+                    }
+                }
+                if (firstLevelTicker && (!secondLevelTicker && secondLevelTicker != 0)) {
+                    return scope.format(column, firstLevelTicker);
+                }
+                if ((!firstLevelTicker && firstLevelTicker != 0) && secondLevelTicker) {
+                    if (scope.format(column, secondLevelTicker) != "-") {
+                        return "-" + scope.format(column, secondLevelTicker);
+                    }
+                    return  scope.format(column, secondLevelTicker);
+                }
+                if (!firstLevelTicker && !secondLevelTicker) {
+                    return "-";
+                }
+            };
 
+            scope.sub = function (column, firstLevel, secondLevel) {
+                if (!column) {
+                    column = "";
+                }
+                if (!firstLevel) {
+                    firstLevel = 0;
+                }
+                if (!secondLevel) {
+                    secondLevel = 0;
+                }
+                var firstLevelTicker = firstLevel;
+                var secondLevelTicker = secondLevel;
+                if (column.fieldType === "date" || column.fieldType === "string") {
+                    return;
+                }
+                var sub;
+                if ((firstLevelTicker || firstLevelTicker == 0) && (secondLevelTicker || secondLevelTicker == 0)) {
+                    sub = firstLevelTicker - secondLevelTicker;
+                    return sub;
+                }
+                if (firstLevelTicker && (!secondLevelTicker && secondLevelTicker != 0)) {
+                    return firstLevelTicker;
+                }
+                if ((!firstLevelTicker && firstLevelTicker != 0) && secondLevelTicker) {
+                    return secondLevelTicker;
+                }
+                if (!firstLevelTicker && !secondLevelTicker) {
+                    return;
+                }
+            };
+
+            scope.percent = function (column, firstLevel, secondLevel) {
+                if (!column) {
+                    column = "";
+                }
+
+                if (column.fieldType === "date" || column.fieldType === "string") {
+                    return 0;
+                }
+
+//                if (column && column.displayFormat) {
+//                    if (column.displayFormat === "H:M:S" || column.displayFormat === "M:S") {
+//                        return;
+//                    }
+//                }
+
+                if (firstLevel && secondLevel) {
+                    var percent = ((firstLevel - secondLevel) / secondLevel) * 100;
+                    if (percent.toFixed(2) != 0.00) {
+                        return percent.toFixed(2);
+                    } else {
+                        return;
+                    }
+                } else {
+                    return;
+                }
+            };
+
+            scope.changeComparisonType = function (type) {
+                console.log(type)
+                if (type == "firstLevel") {
+                    if (scope.showDifference) {
+                        scope.showDifference = false;
+                    } else {
+                        scope.showDifference = true;
+                    }
+                } else if (type == "secondLevel") {
+                    if (scope.showSecondDifference) {
+                        scope.showSecondDifference = false;
+                    } else {
+                        scope.showSecondDifference = true;
+                    }
+                } else {
+                    if (scope.showThirdDifference) {
+                        scope.showThirdDifference = false;
+                    } else {
+                        scope.showThirdDifference = true;
+                    }
+                }
+            };
             scope.selectedChartIcon = getWidgetObj.icon;
             var setData = [];
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
-            var url = "admin/proxy/getData?";
+            var getCompareStatus = getWidgetObj.compareTableype;
+            var isCompare = getCompareStatus ? getCompareStatus : scope.urlType;
+            var url;
+
 //            if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
 //                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
 //            }
+
+            function calTotal(val) {
+                if (!val) {
+                    return;
+                }
+                var total = 0;
+                for (var i = 0; i < val.length; i++) {
+                    if (val[i]) {
+                        if (val[i].toString().indexOf(',') !== -1) {
+                            val[i] = val[i].replace(/\,/g, '');
+                        }
+                        total += parseFloat(val[i]);
+                    }
+                }
+                return total;
+            }
+            var dateRangeType;
+            if (isCompare == 'compareOn') {
+                var compareRange = JSON.parse(scope.compareDateRange);
+                var compareStartDate = compareRange.startDate;
+                var compareEndDate = compareRange.endDate;
+                dateRangeType = '&startDate1=' + $stateParams.startDate +
+                        "&endDate1=" + $stateParams.endDate +
+                        "&startDate2=" + compareStartDate +
+                        "&endDate2=" + compareEndDate;
+                url = "admin/proxy/getCompareData?";
+            } else {
+                dateRangeType = '&startDate=' + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+                url = "admin/proxy/getData?";
+            }
+
+            var startDates1 = (moment().subtract(1, 'months').startOf('month'));//$stateParams.startDate//new Date(moment().subtract(2, 'month').startOf('month')).toLocaleDateString('en-US');
+            var endDates1 = (moment().subtract(1, 'months').endOf('month'));//$stateParams.endDate//new Date(moment().subtract(2, 'month').endOf('month')).toLocaleDateString('en-US');
+            var startDates2 = (moment().subtract(2, 'months').startOf('month'));//$stateParams.startDate//new Date(moment().subtract(1, 'month').startOf('month')).toLocaleDateString('en-US');
+            var endDates2 = (moment().subtract(2, 'months').endOf('month'));//$stateParams.endDate//new Date(moment().subtract(1, 'month').endOf('month')).toLocaleDateString('en-US');
+            var startDate1 = $filter('date')(new Date(startDates1), 'MM/dd/yyyy');
+            var endDate1 = $filter('date')(new Date(endDates1), 'MM/dd/yyyy');
+            var startDate2 = $filter('date')(new Date(startDates2), 'MM/dd/yyyy');
+            var endDate2 = $filter('date')(new Date(endDates2), 'MM/dd/yyyy');
+
+            var compareDateRangeDates = "&startDate1=" + startDate1 + "&endDate1=" + endDate1 + "&startDate2=" + startDate2 + "&endDate2=" + endDate2;
+
             var dataSourcePassword;
             if (tickerDataSource.dataSourceId.password) {
                 dataSourcePassword = tickerDataSource.dataSourceId.password;
@@ -134,8 +364,9 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         "&driver=" + tickerDataSource.dataSourceId.sqlDriver +
                         "&dataSetReportName=" + tickerDataSource.reportName +
                         "&location=" + $stateParams.locationId +
-                        "&startDate=" + $stateParams.startDate +
-                        "&endDate=" + $stateParams.endDate +
+//                        "&startDate=" + $stateParams.startDate +
+//                        "&endDate=" + $stateParams.endDate +
+                        dateRangeType +
                         "&productSegment=" + setProductSegment +
                         "&timeSegment=" + setTimeSegment +
                         "&networkType=" + setNetworkType +
@@ -146,6 +377,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
                     scope.tickers = [];
                     scope.loadingTicker = false;
+                    var tickerData = response.data;
                     if (!response) {
                         scope.tickerEmptyMessage = "No Data Found";
                         scope.hideEmptyTicker = true;
@@ -155,32 +387,552 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                         scope.tickerEmptyMessage = "No Data Found";
                         scope.hideEmptyTicker = true;
                     } else {
-                        angular.forEach(tickerName, function (value, key) {
-                            var tickerData = response.data;
-                            var loopCount = 0;
-                            data = [value.fieldName];
-                            setData = tickerData.map(function (a) {
-                                data.push(loopCount);
-                                loopCount++;
-                                return a[value.fieldName];
-                            });
-                            var total = 0;
-                            for (var i = 0; i < setData.length; i++) {
-                                if (setData[i].toString().indexOf(',') !== -1) {
-                                    setData[i] = setData[i].replace(/\,/g, '');
+
+                        if (isCompare == 'compareOn') {
+                            var returnDimensionData = [];
+                            var returnMetricsData1 = [];
+                            var returnMetricsData2 = [];
+                            angular.forEach(tickerName, function (value, key) {
+                                angular.forEach(tickerData, function (val) {
+                                    if (val && val[value.fieldName]) {
+                                        returnDimensionData.push(val[value.fieldName]);
+                                    }
+                                    if (val.metrics1) {
+                                        returnMetricsData1.push(val.metrics1[value.fieldName]);
+                                    }
+                                    if (val.metrics2) {
+                                        returnMetricsData2.push(val.metrics2[value.fieldName]);
+                                    }
+                                });
+                                var timeFormat = "";
+                                if (value.displayFormat) {
+                                    if (value.displayFormat == "M:S") {
+                                        timeFormat = "min";
+                                    }
                                 }
-                                total += parseFloat(setData[i]);
+                                scope.tickers.push({tickerTitle: value.displayName,
+                                    dimensionData: calTotal(returnDimensionData),
+                                    metricsData1: calTotal(returnMetricsData1),
+                                    metricsData2: calTotal(returnMetricsData2),
+                                    column: value,
+                                    valueFormat1: timeFormat,
+                                    valueFormat2: timeFormat
+                                });
+                            });
+                            console.log(scope.tickers);
+                            scope.firstLevelTicker = scope.tickers[0].metricsData1 ? scope.tickers[0].metricsData1 : scope.tickers[0].dimensionData;
+                            console.log(scope.firstLevelTicker);
+                            scope.secondLevelTicker = scope.tickers[0].metricsData2;
+                            scope.secondLevelTickerTitle = scope.tickers[1].tickerTitle;
+                            scope.secondLevelTickerValue = scope.tickers[1].metricsData1
+                            scope.secondLevelTickerValue1 = scope.tickers[1].metricsData2
+                            scope.thirdLevelTickerTitle = scope.tickers[2].tickerTitle;
+                            scope.thirdLevelTickerValue = scope.tickers[2].metricsData1;
+                            scope.thirdLevelTickerValue1 = scope.tickers[2].metricsData2;
+//                            scope.secondLevelTicker = scope.tickers[1];
+//                            scope.secondLevelTicker = scope.tickers[1];
+//                            scope.thirdLevelTicker = scope.tickers[2];
+                            console.log(scope.secondLevelTicker)
+                            scope.formatColumn = scope.tickers[0].column;
+                            scope.firstFormatName = scope.tickers[0].metricsData1 ? scope.tickers[0].valueFormat1 : "";
+                            scope.secondFormatName = scope.tickers[0].metricsData1 ? scope.tickers[0].valueFormat2 : "";
+                            scope.formatColumnSecond = scope.tickers[1].column;
+                            scope.firstFormatNameSecond = scope.tickers[1].metricsData1 ? scope.tickers[1].valueFormat1 : "";
+                            scope.secondFormatNameSecond = scope.tickers[1].metricsData1 ? scope.tickers[1].valueFormat2 : "";
+                            scope.formatColumnThird = scope.tickers[2].column;
+                            scope.firstFormatNameThird = scope.tickers[2].metricsData1 ? scope.tickers[2].valueFormat1 : "";
+                            scope.secondFormatNameThird = scope.tickers[2].metricsData1 ? scope.tickers[2].valueFormat2 : "";
+                            if (!scope.secondFormatName) {
+                                scope.secondFormatName = scope.tickers[0].metricsData2 ? scope.tickers[0].valueFormat2 : "";
                             }
-                            scope.tickers.push({tickerTitle: value.displayName, totalValue: format(value, total)});
-                        });
+                            if (scope.secondLevelTicker) {
+                                scope.hideEmptyTickerSecondLevel = false;
+                            }
+                            if (!scope.secondFormatNameSecond) {
+                                scope.secondFormatNameSecond = scope.tickers[1].metricsData2 ? scope.tickers[1].valueFormat2 : "";
+                            }
+                            if (scope.secondLevelTickerValue1) {
+                                scope.hideEmptyTickerSecondLevel = false;
+                            }
+                            if (!scope.secondFormatNameThird) {
+                                scope.secondFormatNameThird = scope.tickers[2].metricsData2 ? scope.tickers[2].valueFormat2 : "";
+                            }
+                            if (scope.thirdLevelTickerValue1) {
+                                scope.hideEmptyTickerSecondLevel = false;
+                            }
+                        } else {
+                            angular.forEach(tickerName, function (value, key) {
+                                var loopCount = 0;
+                                data = [value.fieldName];
+                                setData = tickerData.map(function (a) {
+                                    data.push(loopCount);
+                                    loopCount++;
+                                    if (!a[value.fieldName]) {
+                                        return "";
+                                    }
+                                    return a[value.fieldName];
+                                });
+                                var timeFormat = "";
+                                if (value.displayFormat) {
+                                    if (value.displayFormat == "M:S") {
+                                        timeFormat = "min";
+                                    }
+                                }
+                                scope.tickers.push({tickerTitle: value.displayName, totalValue: calTotal(setData), column: value, valueFormat: timeFormat});
+                            });
+                            scope.showDifference = false;
+                            scope.firstLevelTicker = scope.tickers[0].totalValue;
+                            console.log(scope.firstLevelTicker);
+                            scope.secondLevelTicker = scope.tickers[1];
+                            scope.thirdLevelTicker = scope.tickers[2];
+                            scope.formatColumn = scope.tickers[0].column;
+                            scope.firstFormatName = scope.tickers[0].totalValue ? scope.tickers[0].valueFormat : "";
+                            if (!scope.secondLevelTicker) {
+                                scope.secondFormatName = "";
+                                scope.hideEmptyTickerSecondLevel = true;
+                            }
+                        }
                     }
-                    scope.firstLevelTicker = scope.tickers[0];
-                    scope.secondLevelTicker = scope.tickers[1];
-                    scope.thirdLevelTicker = scope.tickers[2];
                 });
-            };
+            }
             scope.setTickerFn({tickerFn: scope.refreshTicker});
             scope.refreshTicker();
         }
-    };
+    }
+
 });
+
+
+
+
+
+
+//                        angular.forEach(tickerName, function (value, key) {
+//                            var tickerData = response.data;
+//                            var loopCount = 0;
+//                            data = [value.fieldName];
+//                            setData = tickerData.map(function (a) {
+//                                data.push(loopCount);
+//                                loopCount++;
+//                                return a[value.fieldName];
+//                            });
+//                            var total = 0;
+//                            for (var i = 0; i < setData.length; i++) {
+//                                if (setData[i].toString().indexOf(',') !== -1) {
+//                                    setData[i] = setData[i].replace(/\,/g, '');
+//                                }
+//                                total += parseFloat(setData[i]);
+//                            }
+//                            scope.tickers.push({tickerTitle: value.displayName, totalValue: format(value, total)});
+//                        });
+//                    }
+//                    scope.firstLevelTicker = scope.tickers[0];
+//                    scope.secondLevelTicker = scope.tickers[1];
+//                    scope.thirdLevelTicker = scope.tickers[2];
+//                });
+//            };
+//            scope.setTickerFn({tickerFn: scope.refreshTicker});
+//            scope.refreshTicker();
+//        }
+//    };
+//});
+
+
+
+//app.directive('tickerDirective', function ($http, $stateParams, $filter) {
+//    return{
+//        restrict: 'AE',
+//        template: '<div ng-show="loadingTicker" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>' +
+//                '<div ng-hide="loadingTicker" class="">' +
+//                '<div class="inner" ng-hide="hideEmptyTicker">' +
+//                '<div class="col-md-9 ticker-value">{{format(formatColumn, firstLevelTicker)}}<span class="ticker-time">{{firstFormatName}}</span></div>' +
+//                '</div>' +
+//                '<div class="inner text-center text-empty" ng-show="hideEmptyTicker">' +
+//                '<span ng-bind-html="tickerEmptyType | setTextMessageColor"></span>' +
+//                '<p>{{tickerEmptyDescription | uppercase}}</p>' +
+//                '</div>' +
+//                '<div class="icon" ng-hide="hideEmptyTicker"><i class="{{selectedChartIcon}}" aria-hidden="true"></i></div>' +
+//                '<div class="small-box-footer">' +
+//                '<span class="pull-left col-md-7 row ticker-title">{{tickerTitle}}</span>' +
+//                //Percentage
+//                '<div class="col-md-5 pull-right">' +
+//                '<span ng-click="changeComparisonType()" ' +
+//                'style="cursor:pointer" ng-if="percent(formatColumn, firstLevelTicker,secondLevelTicker) && showDifference == true" ' +
+//                'ng-class="{\'arrow-up\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) > 0), \'arrow-down\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+//                '<i class="fa" ng-class="{\'fa-arrow-up\':percent(formatColumn, firstLevelTicker,secondLevelTicker) > 0, \'fa-arrow-down\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}"></i>' +
+//                '<span ng-class="{\'leads-up\':percent(formatColumn, firstLevelTicker,secondLevelTicker) > 0, \'leads-down\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}" ng-show="showDifference">' +
+//                '{{percent(formatColumn, firstLevelTicker,secondLevelTicker)}}' + "%" +
+//                '</span>' +
+//                '</span>' +
+//                '<span class="empty-ticker arrow-up" ng-click="changeComparisonType()" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, firstLevelTicker,secondLevelTicker)) && showDifference == true">0 </span>' +
+//                //Diff
+//                '<span ng-click="changeComparisonType()" ' +
+//                'style="cursor:pointer" ng-if="sub(formatColumn, firstLevelTicker,secondLevelTicker) != 0 && showDifference != true && firstLevelTicker != 0 && secondLevelTicker != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumn, firstLevelTicker,secondLevelTicker) > 0), \'arrow-down\':(sub(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+//                '<i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumn, firstLevelTicker,secondLevelTicker) > 0, \'fa-arrow-down\':(sub(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}"></i>' +
+//                '<span class="leads" ng-hide="showDifference">' + '{{differ(formatColumn, firstLevelTicker,secondLevelTicker)}}' +
+//                '<span class="leads-name" ng-if="sub(formatColumn, firstLevelTicker,secondLevelTicker)"> {{secondFormatName}}</span>' +
+//                '</span>' +
+//                '</span>' +
+//                '<span class="empty-ticker arrow-up" ng-click="changeComparisonType()"  ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="(((sub(formatColumn, firstLevelTicker,secondLevelTicker) != 0) && (firstLevelTicker == 0  ||  secondLevelTicker == 0))  ||  (sub(formatColumn, firstLevelTicker,secondLevelTicker) == 0)) && showDifference != true">0 </span>' + '</div>' +
+//                '</div>' +
+//                '</div>',
+//        scope: {
+//            tickerUrl: '@',
+//            tickerId: '@',
+//            tickerColumns: '@',
+//            tickerDateDuration: '@',
+//            tickerFrequencyDuration: '@',
+//            tickerCustomRange: '@',
+//            tickerObj: '@',
+//            monthEndReport: '@',
+//            compareDateRange: '@',
+//            urlType: '@',
+//            forceClose: '&'
+//        },
+//        link: function (scope, element, attr) {
+//            scope.loadingTicker = true;
+//            scope.showDifference = true;
+//            var getWidgetObj = JSON.parse(scope.tickerObj);
+//            var tickerName = [];
+//            angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
+//                scope.tickerTitle = value.displayName;
+//                tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
+//            });
+//
+//            scope.format = function (column, value) {
+//                if (!value) {
+//                    return "-";
+//                }
+//                if (column.displayFormat) {
+//                    return dashboardFormat(column, value);
+//                }
+//                return value;
+//            };
+//
+//            scope.differ = function (column, firstLevel, secondLevel) {
+//                if (!column) {
+//                    column = "";
+//                }
+//                if (!firstLevel) {
+//                    firstLevel = 0;
+//                }
+//                if (!secondLevel) {
+//                    secondLevel = 0;
+//                }
+//                var firstLevelTicker = firstLevel;
+//                var secondLevelTicker = secondLevel;
+//                if (column.fieldType === "date" || column.fieldType === "string") {
+//                    return "-";
+//                }
+//                var sub;
+//                if ((firstLevelTicker || firstLevelTicker == 0) && (secondLevelTicker || secondLevelTicker == 0)) {
+//                    sub = firstLevelTicker - secondLevelTicker;
+//                    sub = sub + "";
+//                    if (sub.substr(0, 1) == "-") {
+//                        sub = sub.replace("-", "");
+//                        sub = parseFloat(sub);
+//                        if (isNumber(sub)) {
+//                            return "-" + scope.format(column, sub);
+//                        } else {
+//                            return "-";
+//                        }
+//                    } else {
+//                        sub = parseFloat(sub);
+//                        if (isNumber(sub)) {
+//                            return  scope.format(column, sub);
+//                        } else {
+//                            return "-";
+//                        }
+//                    }
+//                }
+//                if (firstLevelTicker && (!secondLevelTicker && secondLevelTicker != 0)) {
+//                    return scope.format(column, firstLevelTicker);
+//                }
+//                if ((!firstLevelTicker && firstLevelTicker != 0) && secondLevelTicker) {
+//                    if (scope.format(column, secondLevelTicker) != "-") {
+//                        return "-" + scope.format(column, secondLevelTicker);
+//                    }
+//                    return  scope.format(column, secondLevelTicker);
+//                }
+//                if (!firstLevelTicker && !secondLevelTicker) {
+//                    return "-";
+//                }
+//            };
+//
+//            scope.sub = function (column, firstLevel, secondLevel) {
+//                if (!column) {
+//                    column = "";
+//                }
+//                if (!firstLevel) {
+//                    firstLevel = 0;
+//                }
+//                if (!secondLevel) {
+//                    secondLevel = 0;
+//                }
+//                var firstLevelTicker = firstLevel;
+//                var secondLevelTicker = secondLevel;
+//                if (column.fieldType === "date" || column.fieldType === "string") {
+//                    return;
+//                }
+//                var sub;
+//                if ((firstLevelTicker || firstLevelTicker == 0) && (secondLevelTicker || secondLevelTicker == 0)) {
+//                    sub = firstLevelTicker - secondLevelTicker;
+//                    return sub;
+//                }
+//                if (firstLevelTicker && (!secondLevelTicker && secondLevelTicker != 0)) {
+//                    return firstLevelTicker;
+//                }
+//                if ((!firstLevelTicker && firstLevelTicker != 0) && secondLevelTicker) {
+//                    return secondLevelTicker;
+//                }
+//                if (!firstLevelTicker && !secondLevelTicker) {
+//                    return;
+//                }
+//            };
+//
+//            scope.percent = function (column, firstLevel, secondLevel) {
+//                if (!column) {
+//                    column = "";
+//                }
+//
+//                if (column.fieldType === "date" || column.fieldType === "string") {
+//                    return 0;
+//                }
+//
+////                if (column && column.displayFormat) {
+////                    if (column.displayFormat === "H:M:S" || column.displayFormat === "M:S") {
+////                        return;
+////                    }
+////                }
+//
+//                if (firstLevel && secondLevel) {
+//                    var percent = ((firstLevel - secondLevel) / secondLevel) * 100;
+//                    if (percent.toFixed(2) != 0.00) {
+//                        return percent.toFixed(2);
+//                    } else {
+//                        return;
+//                    }
+//                } else {
+//                    return;
+//                }
+//            };
+//
+//            scope.changeComparisonType = function () {
+//                if (scope.showDifference) {
+//                    scope.showDifference = false;
+//                } else {
+//                    scope.showDifference = true;
+//                }
+//            };
+//
+//            var setData = [];
+//            var data = [];
+//
+//            scope.tickerTitle = getWidgetObj.widgetTitle;
+//            scope.selectedChartIcon = getWidgetObj.chartIcon;
+//            var getWidgetId = getWidgetObj.id;
+//            var getWidgetUrl = getWidgetObj.directUrl;
+//            var getWidgetLevel = (getWidgetObj.reportLevel ? (getWidgetObj.reportLevel.reportLevel ? getWidgetObj.reportLevel.reportLevel : getWidgetObj.reportLevel) : ""); //getWidgetObj.reportLevel;
+//            var getWidgetSegment = (getWidgetObj.reportSegment ? (getWidgetObj.reportSegment.reportSegment ? getWidgetObj.reportSegment.reportSegment : getWidgetObj.reportSegment) : ""); //getWidgetObj.reportSegment;
+//            var getProductName = getWidgetObj.productName;
+//            var monthEndReport = scope.monthEndReport;
+//            var getCompareStatus = getWidgetObj.compareTableype;
+//            var isCompare = getCompareStatus ? getCompareStatus : scope.urlType;
+//            var url;
+//            var urlPath;
+//
+//            function calTotal(val) {
+//                if (!val) {
+//                    return;
+//                }
+//                var total = 0;
+//                for (var i = 0; i < val.length; i++) {
+//                    if (val[i]) {
+//                        if (val[i].toString().indexOf(',') !== -1) {
+//                            val[i] = val[i].replace(/\,/g, '');
+//                        }
+//                        total += parseFloat(val[i]);
+//                    }
+//                }
+//                return total;
+//            }
+//            var dateRangeType;
+//            if (isCompare == 'compareOn') {
+//                var compareRange = JSON.parse(scope.compareDateRange);
+//                var compareStartDate = compareRange.startDate;
+//                var compareEndDate = compareRange.endDate;
+//                dateRangeType = '&startDate1=' + $stateParams.startDate +
+//                        "&endDate1=" + $stateParams.endDate +
+//                        "&startDate2=" + compareStartDate +
+//                        "&endDate2=" + compareEndDate;
+//            } else {
+//                dateRangeType = '&startDate=' + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+//            }
+//
+//            var startDates1 = (moment().subtract(1, 'months').startOf('month'));//$stateParams.startDate//new Date(moment().subtract(2, 'month').startOf('month')).toLocaleDateString('en-US');
+//            var endDates1 = (moment().subtract(1, 'months').endOf('month'));//$stateParams.endDate//new Date(moment().subtract(2, 'month').endOf('month')).toLocaleDateString('en-US');
+//            var startDates2 = (moment().subtract(2, 'months').startOf('month'));//$stateParams.startDate//new Date(moment().subtract(1, 'month').startOf('month')).toLocaleDateString('en-US');
+//            var endDates2 = (moment().subtract(2, 'months').endOf('month'));//$stateParams.endDate//new Date(moment().subtract(1, 'month').endOf('month')).toLocaleDateString('en-US');
+//            var startDate1 = $filter('date')(new Date(startDates1), 'MM/dd/yyyy');
+//            var endDate1 = $filter('date')(new Date(endDates1), 'MM/dd/yyyy');
+//            var startDate2 = $filter('date')(new Date(startDates2), 'MM/dd/yyyy');
+//            var endDate2 = $filter('date')(new Date(endDates2), 'MM/dd/yyyy');
+//
+//            var compareDateRangeDates = "&startDate1=" + startDate1 + "&endDate1=" + endDate1 + "&startDate2=" + startDate2 + "&endDate2=" + endDate2;
+//
+//            if (getProductName == 'Overall') {
+//                if (isCompare != 'compareOn') {
+//                    urlPath = "admin/mapdata/" + getWidgetUrl + "/json?";
+//                } else {
+//                    if (scope.monthEndReport == 'MonthEndReport') {
+//                        if (getWidgetLevel == 'PERFORMANCE') {
+//                            getWidgetUrl = "overallCmp/performance";
+//                        }
+//                        if (getWidgetLevel == 'BYPRODUCT') {
+//                            getWidgetUrl = 'overallCmp/byProduct';
+//                        }
+//                        urlPath = "admin/mapdata/" + getWidgetUrl + "/json?" + compareDateRangeDates;
+//                    } else {
+//                        if (getWidgetLevel == 'PERFORMANCE') {
+//                            getWidgetUrl = "overallCmp/performance";
+//                        }
+//                        if (getWidgetLevel == 'BYPRODUCT') {
+//                            getWidgetUrl = 'overallCmp/byProduct';
+//                        }
+//                        urlPath = "admin/mapdata/" + getWidgetUrl + "/json?" + dateRangeType;
+//                    }
+//                }
+//            } else {
+//                if (isCompare != 'compareOn') {
+//                    urlPath = "admin/mapdata/getMapData?urlPath=" + getWidgetUrl;
+//                } else {
+//                    if (scope.monthEndReport == 'MonthEndReport') {
+//                        urlPath = "admin/mapdata/compareMapData?urlPath=" + getWidgetUrl + compareDateRangeDates;
+//                    } else {
+//                        urlPath = "admin/mapdata/compareMapData?urlPath=" + getWidgetUrl + dateRangeType;
+//                    }
+//                }
+//            }
+//
+//            if (getWidgetLevel == 'COMPAREBYPRODUCT') {
+//                url = urlPath +
+//                        "&widgetId=" + getWidgetId +
+//                        "&productName=" + getProductName +
+//                        "&level=" + getWidgetLevel +
+//                        "&segment=" + (getWidgetSegment ? getWidgetSegment : "") + dateRangeType +
+//                        "&dealerIds=" + $stateParams.dealerId +
+//                        "&date = " + new Date();
+//            } else {
+//                url = urlPath +
+//                        "&widgetId=" + getWidgetId +
+//                        "&productName=" + getProductName +
+//                        "&level=" + getWidgetLevel +
+//                        "&segment=" + (getWidgetSegment ? getWidgetSegment : "") +
+//                        "&startDate=" + $stateParams.startDate +
+//                        "&endDate=" + $stateParams.endDate +
+//                        "&dealerIds=" + $stateParams.dealerId +
+//                        "&date = " + new Date();
+//            }
+//
+//            $http.get(url).success(function (response) {
+//                scope.tickers = [];
+//                scope.loadingTicker = false;
+//                var errors = response.errors;
+//                if (response && response.meta) {
+//                    scope.forceClose({meta: response.meta});
+//                } else {
+//                    scope.forceClose({meta: false});
+//                }
+//                if (!response.data) {
+//                    scope.tickerEmptyType = errors ? (errors[0] ? errors[0].type : "ERROR") : "ERROR";
+//                    scope.tickerEmptyDescription = errors ? (errors[0] ? errors[0].description : "NO DATA FOUND") : "NO DATA FOUND";
+//                    scope.hideEmptyTicker = true;
+//                    scope.hideEmptyTickerSecondLevel = true;
+//                    return;
+//                }
+//                if (response.data === null || response.data.length === 0) {
+//                    scope.tickerEmptyType = errors ? (errors[0] ? errors[0].type : "ERROR") : "ERROR";
+//                    scope.tickerEmptyDescription = errors ? (errors[0] ? errors[0].description : "NO DATA FOUND") : "NO DATA FOUND";
+//                    scope.hideEmptyTicker = true;
+//                    scope.hideEmptyTickerSecondLevel = true;
+//                } else {
+//                    if (!response) {
+//                        return;
+//                    }
+//                    var tickerData = response.data;
+//                    if (isCompare == 'compareOn') {
+//                        var returnDimensionData = [];
+//                        var returnMetricsData1 = [];
+//                        var returnMetricsData2 = [];
+//                        angular.forEach(tickerName, function (value, key) {
+//                            angular.forEach(tickerData, function (val) {
+//                                if (val && val[value.fieldName]) {
+//                                    returnDimensionData.push(val[value.fieldName]);
+//                                }
+//                                if (val.metrics1) {
+//                                    returnMetricsData1.push(val.metrics1[value.fieldName]);
+//                                }
+//                                if (val.metrics2) {
+//                                    returnMetricsData2.push(val.metrics2[value.fieldName]);
+//                                }
+//                            });
+//                            var timeFormat = "";
+//                            if (value.displayFormat) {
+//                                if (value.displayFormat == "M:S") {
+//                                    timeFormat = "min";
+//                                }
+//                            }
+//                            scope.tickers.push({tickerTitle: value.displayName,
+//                                dimensionData: calTotal(returnDimensionData),
+//                                metricsData1: calTotal(returnMetricsData1),
+//                                metricsData2: calTotal(returnMetricsData2),
+//                                column: value,
+//                                valueFormat1: timeFormat,
+//                                valueFormat2: timeFormat
+//                            });
+//                        });
+//                        scope.firstLevelTicker = scope.tickers[0].metricsData1 ? scope.tickers[0].metricsData1 : scope.tickers[0].dimensionData;
+//                        scope.secondLevelTicker = scope.tickers[0].metricsData2;
+//                        scope.formatColumn = scope.tickers[0].column;
+//                        scope.firstFormatName = scope.tickers[0].metricsData1 ? scope.tickers[0].valueFormat1 : "";
+//                        scope.secondFormatName = scope.tickers[0].metricsData1 ? scope.tickers[0].valueFormat2 : "";
+//                        if (!scope.secondFormatName) {
+//                            scope.secondFormatName = scope.tickers[0].metricsData2 ? scope.tickers[0].valueFormat2 : "";
+//                        }
+//                        if (scope.secondLevelTicker) {
+//                            scope.hideEmptyTickerSecondLevel = false;
+//                        }
+//                    } else {
+//                        angular.forEach(tickerName, function (value, key) {
+//                            var loopCount = 0;
+//                            data = [value.fieldName];
+//                            setData = tickerData.map(function (a) {
+//                                data.push(loopCount);
+//                                loopCount++;
+//                                if (!a[value.fieldName]) {
+//                                    return "";
+//                                }
+//                                return a[value.fieldName];
+//                            });
+//                            var timeFormat = "";
+//                            if (value.displayFormat) {
+//                                if (value.displayFormat == "M:S") {
+//                                    timeFormat = "min";
+//                                }
+//                            }
+//                            scope.tickers.push({tickerTitle: value.displayName, totalValue: calTotal(setData), column: value, valueFormat: timeFormat});
+//                        });
+//                        scope.firstLevelTicker = scope.tickers[0].totalValue;
+//                        scope.secondLevelTicker = scope.tickers[1];
+//                        scope.formatColumn = scope.tickers[0].column;
+//                        scope.firstFormatName = scope.tickers[0].totalValue ? scope.tickers[0].valueFormat : "";
+//                        if (!scope.secondLevelTicker) {
+//                            scope.secondFormatName = "";
+//                            scope.hideEmptyTickerSecondLevel = true;
+//                        }
+//                    }
+//                }
+//            });
+//        }
+//    };
+//});
