@@ -131,7 +131,7 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                 return value;
             };
             scope.columns = [];
-                console.log(JSON.parse(scope.widgetColumns))
+            console.log(JSON.parse(scope.widgetColumns))
             if (scope.widgetColumns) {
                 angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                     scope.columns.push(value);
@@ -229,8 +229,8 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                     "&networkType=" + setNetworkType +
                     "&startDate1=" + $stateParams.startDate +
                     "&endDate1=" + $stateParams.endDate +
-                    '&startDate2=2/5/2017' +
-                    '&endDate2=9/8/2017' +
+                    '&startDate2=' + compareStartDate +
+                    '&endDate2=' + compareEndDate +
                     '&username=' + compareTableDataSource.dataSourceId.userName +
                     "&dataSetReportName=" + compareTableDataSource.reportName +
                     '&password=' + dataSourcePassword +

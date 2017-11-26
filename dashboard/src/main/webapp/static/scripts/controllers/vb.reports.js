@@ -22,6 +22,13 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
     function changeLanguage(key) {
         $translate.use(key);
     }
+    $scope.getTableType = $stateParams.getTableType;
+    var compareStartDate = localStorageService.get("comparisonStartDate");
+    var compareEndDate = localStorageService.get("comparisonEndDate");
+    $scope.compareDateRange = {
+        startDate: compareStartDate,
+        endDate: compareEndDate
+    };
 
     $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly"];
 //    $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly", "Yearly", "Year Of Week"];

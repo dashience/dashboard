@@ -10,7 +10,9 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             widgetColumns: '@',
             pieChartId: '@',
             widgetObj: '@',
-            defaultChartColor: '@'
+            defaultChartColor: '@',
+            compareDateRange: '@',
+            urlType: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -163,10 +165,38 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 }
                 return maxData;
             }
-
+            var startDates1 = (moment().subtract(1, 'months').startOf('month'));
+            var endDates1 = (moment().subtract(1, 'months').endOf('month'));
+            var startDates2 = (moment().subtract(2, 'months').startOf('month'));
+            var endDates2 = (moment().subtract(2, 'months').endOf('month'));
+            var startDate1 = $filter('date')(new Date(startDates1), 'MM/dd/yyyy');
+            var endDate1 = $filter('date')(new Date(endDates1), 'MM/dd/yyyy');
+            var startDate2 = $filter('date')(new Date(startDates2), 'MM/dd/yyyy');
+            var endDate2 = $filter('date')(new Date(endDates2), 'MM/dd/yyyy');
+            var url;
+            var urlPath;
+            var getCompareStatus;
+            var dateRangeType;
+            var compareDateRangeDates = "&startDate1=" + startDate1 + "&endDate1=" + endDate1 + "&startDate2=" + startDate2 + "&endDate2=" + endDate2;
+            var monthEndWithoutCompare = "&startDate=" + startDate1 + "&endDate=" + endDate1;
+            var compareRange = JSON.parse(scope.compareDateRange);
+            var isCompare = scope.urlType;
+            var url;
+            if (isCompare == 'compareOn') {
+                var compareStartDate = compareRange.startDate;
+                var compareEndDate = compareRange.endDate;
+                dateRangeType = '&startDate1=' + $stateParams.startDate +
+                        "&endDate1=" + $stateParams.endDate +
+                        "&startDate2=" + compareStartDate +
+                        "&endDate2=" + compareEndDate;
+                url = "admin/proxy/getCompareData?";
+            } else {
+                dateRangeType = '&startDate=' + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+                url = "admin/proxy/getData?";
+            }
             var stackedBarChartDataSource = JSON.parse(scope.stackedBarChartSource);
             if (scope.stackedBarChartSource) {
-                var url = "admin/proxy/getData?";
+//                var url = "admin/proxy/getData?";
 //                if (stackedBarChartDataSource.dataSourceId.dataSourceType == "sql") {
 //                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
 //                }
@@ -178,7 +208,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     dataSourcePassword = '';
                 }
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                
+
                 var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
@@ -219,8 +249,9 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             "&dataSetReportName=" + stackedBarChartDataSource.reportName +
                             "&driver=" + stackedBarChartDataSource.dataSourceId.sqlDriver +
                             "&location=" + $stateParams.locationId +
-                            "&startDate=" + $stateParams.startDate +
-                            "&endDate=" + $stateParams.endDate +
+//                            "&startDate=" + $stateParams.startDate +
+//                            "&endDate=" + $stateParams.endDate +
+                            dateRangeType +
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
@@ -241,10 +272,11 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                         } else {
                             var loopCount = 0;
                             var sortingObj;
+                            var groupingNames = [];
                             var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj);
                             var chartData = response.data;
-                            if (sortFields.length > 0) { 
+                            if (sortFields.length > 0) {
                                 angular.forEach(sortFields, function (value, key) {
                                     if (value.fieldType != 'day') {
 //                                    chartData = scope.orderData(chartData, sortFields);
@@ -254,7 +286,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                         } else {
                                             chartData = sortingObj;
                                         }
-                                    } else { 
+                                    } else {
                                         var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
                                         sortingObj = orderByFilter(chartData, function (item) {
                                             if (value.sortOrder === 'asc') {
@@ -270,13 +302,13 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                         }
                                     }
                                 });
-                            } 
+                            }
                             if (chartMaxRecord.maxRecord > 0) {
                                 chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
 //                        chartData = orderData(chartData, sortFields);
                             xTicks = [xAxis.fieldName];
-                            
+
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;
@@ -284,17 +316,93 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             });
                             columns.push(xTicks);
                             angular.forEach(yAxis, function (value, key) {
-                                ySeriesData = chartData.map(function (a) {
+                                var ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
-                                ySeriesData.unshift(value.displayName);
-                                columns.push(ySeriesData);
+                                var ySeriesData1 = chartData.map(function (a) {
+                                    if (a.metrics1) {
+                                        return a.metrics1[value.fieldName] || "0";
+                                    } else {
+                                        return 0;
+                                    }
+                                });
+                                var ySeriesData2 = chartData.map(function (a) {
+                                    if (a.metrics2) {
+                                        return a.metrics2[value.fieldName] || "0";
+                                    } else {
+                                        return 0;
+                                    }
+                                });
+                                if (isCompare == 'compareOn') {
+                                    var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
+                                    var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
+                                    var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
+                                    var joinCompare2 = value.displayName + " (" + sumaryRange2 + ")";
+                                    ySeriesData1.unshift(joinCompare1);
+                                    ySeriesData2.unshift(joinCompare2);
+                                    columns.push(ySeriesData1);
+                                    columns.push(ySeriesData2);
+                                    console.log(ySeriesData1);
+                                    console.log(ySeriesData2);
+
+                                    groupingNames.unshift(joinCompare1);
+                                    groupingNames.unshift(joinCompare2);
+//                            labels["format"][joinCompare1] = function (value) {
+//                                return value;
+//                            };
+//                            labels["format"][joinCompare2] = function (value) {
+//                                return value;
+//                            };
+                                    var displayName = value.displayName;
+                                    if (value.displayFormat) {
+                                        var format = value.displayFormat;
+                                        if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                                            labels["format"][joinCompare1] = function (value) {
+                                                if (format.indexOf("%") > -1) {
+                                                    return d3.format(format)(value / 100);
+                                                }
+                                                return d3.format(format)(value);
+                                            };
+                                            labels["format"][joinCompare2] = function (value) {
+                                                if (format.indexOf("%") > -1) {
+                                                    return d3.format(format)(value / 100);
+                                                }
+                                                return d3.format(format)(value);
+                                            };
+                                        } else {
+                                            labels["format"][displayName] = function (value) {
+                                                return formatBySecond(parseInt(value))
+                                            };
+                                        }
+                                    } else {
+                                        labels["format"][joinCompare1] = function (value) {
+                                            return value;
+                                        };
+                                        labels["format"][joinCompare2] = function (value) {
+                                            return value;
+                                        };
+                                        labels["format"][displayName] = function (value) {
+                                            return value;
+                                        };
+                                    }
+                                } else {
+                                    ySeriesData.unshift(value.displayName);
+                                    columns.push(ySeriesData);
+                                    angular.forEach(groupingFields, function (value, key) {
+                                        groupingNames.push(value.displayName);
+                                    });
+                                }
+
+//                            angular.forEach(yAxis, function (value, key) {
+//                                ySeriesData = chartData.map(function (a) {
+//                                    return a[value.fieldName] || "0";
+//                                });
+//                                ySeriesData.unshift(value.displayName);
+//                                columns.push(ySeriesData);
                             });
 
-                            var groupingNames = [];
-                            angular.forEach(groupingFields, function (value, key) {
-                                groupingNames.push(value.displayName);
-                            });
+//                            var groupingNames = [];
+
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
@@ -339,7 +447,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     x: {
                                         tick: {
                                             format: function (x) {
-                                               
+
                                                 return xData[x];
                                             },
                                             culling: false

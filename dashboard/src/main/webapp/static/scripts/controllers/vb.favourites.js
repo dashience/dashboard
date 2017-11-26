@@ -1,4 +1,4 @@
-app.controller('FavouritesController', function ($http, $scope, $stateParams, $cookies, $translate) {
+app.controller('FavouritesController', function ($http, $scope, $stateParams, $cookies, $translate,$rootScope) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
@@ -13,7 +13,7 @@ app.controller('FavouritesController', function ($http, $scope, $stateParams, $c
 
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
-
+    
     function changeLanguage(key) {
         $translate.use(key);
     }

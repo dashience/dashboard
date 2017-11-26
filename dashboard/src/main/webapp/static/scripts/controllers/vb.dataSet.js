@@ -21,6 +21,53 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         return $scope.childTab === tabNum;
     };
 
+    /*
+     * 
+     * @param {type} widget
+     * @returns {json type}
+     */
+
+//    function getSegments(widget) {
+//        console.log(widget);
+//        var timeSegmentType = widget.timeSegment;
+//        var productSegmentType = widget.productSegment;
+//        var getDataSourceType = widget.dataSourceId ? widget.dataSourceId.dataSourceType : null;
+//        if (getDataSourceType === 'csv' || getDataSourceType === 'sql' || getDataSourceType === 'xls' || getDataSourceType === "") {
+//            return;
+//        }
+//        var getReportName = widget.dataSetId ? widget.dataSetId.reportName : null;
+//        $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
+//            var getDataSetObjs = response;
+//            var getDataSetPerformance = getDataSetObjs[getDataSourceType];
+//            if (!getDataSetPerformance) {
+//                return;
+//            }
+//            getDataSetPerformance.forEach(function (val, key) {
+//                var getPerformanceType = val.type;
+//                if (getReportName === getPerformanceType) {
+//                    $scope.timeSegments = val.timeSegments;
+//                    $scope.productSegments = val.productSegments;
+//                    if (!$scope.timeSegments) {
+//                        return;
+//                    }
+//                    $scope.timeSegments.forEach(function (val, key) {
+//                        if (val.type === timeSegmentType) {
+//                            $scope.widgetObj.timeSegment = val;
+//                        }
+//                    });
+//                    if (!$scope.productSegments) {
+//                        return;
+//                    }
+//                    $scope.productSegments.forEach(function (val, key) {
+//                        if (val.type === productSegmentType) {
+//                            $scope.widgetObj.productSegment = val;
+//                        }
+//                    });
+//                }
+//            });
+//        });
+//    }
+
     $scope.selectAggregations = [
         {name: 'None', value: ""},
         {name: 'Sum', value: "sum"},
@@ -66,10 +113,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     ];
 
     $scope.deleteField = function (index) {
-        console.log("index is"+index);
+        console.log("index is" + index);
         console.log($scope.columnsHeaderDefs);
         $scope.columnsHeaderDefs.splice(index, 1);
-        
+
     };
 
 
@@ -4144,6 +4191,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
 
         if ($scope.dataSet.dataSourceId.dataSourceType === "linkedin") {
+            
             var index = getIndex($scope.dataSet.reportName, $scope.linkedinPerformance);
             $scope.timeSegment = $scope.linkedinPerformance[index].timeSegments;
             $scope.productSegment = $scope.linkedinPerformance[index].productSegments;

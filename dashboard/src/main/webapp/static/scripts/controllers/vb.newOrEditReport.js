@@ -1,8 +1,9 @@
-app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout, $cookies, $translate) {
+app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout, $cookies, $translate,$rootScope) {
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportId = $stateParams.reportId;
+    $scope.userId = $cookies.getObject("userId");
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.reportWidgets = [];
@@ -14,7 +15,37 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     function changeLanguage(key) {
         $translate.use(key);
     }
-
+    $scope.loadStatus = true;
+    $rootScope.$on("loadStatusChanged", function (event, loadStatus) {
+        $scope.loadStatus = "";
+        $timeout(function () {
+            var tableTypeByDateRange = localStorageService.get("selectedTableType") ? localStorageService.get("selectedTableType") : "compareOff";
+            $scope.getTableType = tableTypeByDateRange ? tableTypeByDateRange : "compareOff";
+            var compareStartDate = localStorageService.get("comparisonStartDate");
+            var compareEndDate = localStorageService.get("comparisonEndDate");
+            $scope.compareDateRange = {
+                startDate: compareStartDate,
+                endDate: compareEndDate
+            };
+            $scope.loadStatus = loadStatus;
+        }, 20);
+    });
+     var tableTypeByDateRange = localStorageService.get("selectedTableType") ? localStorageService.get("selectedTableType") : "compareOff";
+    $scope.getTableType = tableTypeByDateRange ? tableTypeByDateRange : "compareOff";
+    if (tableTypeByDateRange == 'compareOn') {
+        $scope.selectedTablesType = 'compareOn';
+        $scope.compareDateRangeType = true;
+    } else {
+        $scope.selectedTablesType = 'compareOff';
+        $scope.compareDateRangeType = false;
+    }
+    
+    var compareStartDate = localStorageService.get("comparisonStartDate");
+    var compareEndDate = localStorageService.get("comparisonEndDate");
+    $scope.compareDateRange = {
+        startDate: compareStartDate,
+        endDate: compareEndDate
+    };
     $http.get("admin/report/" + $stateParams.reportId).success(function (response) {
         $scope.reports = response;
         if (!response) {
@@ -41,18 +72,14 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 widgetColors = response.optionValue.split(',');
             }
             widgetItems.forEach(function (value, key) {
-                console.log(value);
                 value.widgetId.chartColors = widgetColors;
                 if (value.widgetId.chartType == 'horizontalBar') {
                     value.widgetId.isHorizontalBar = true;
                 } else {
                     value.widgetId.isHorizontalBar = false;
                 }
-                console.log(value);
             });
             $scope.reportWidgets = widgetItems;
-            console.log("report widgets");
-            console.log($scope.reportWidgets);
         }).error(function () {
             $scope.reportWidgets = widgetItems;
 
@@ -152,8 +179,8 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
                 width: widget.width,
                 jsonData: widget.jsonData,
                 queryFilter: widget.queryFilter,
-                productSegment:widget.productSegment,
-                timeSegment:widget.timeSegment
+                productSegment: widget.productSegment,
+                timeSegment: widget.timeSegment
             };
             $http({method: widget.id ? 'PUT' : 'POST', url: 'admin/ui/dbWidget/' + widget.tabId.id, data: data}).success(function (response) {
             });

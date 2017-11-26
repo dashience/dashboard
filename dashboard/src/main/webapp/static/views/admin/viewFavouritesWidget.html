@@ -138,12 +138,12 @@
 <div class="row">    
     <div class="col-sm-12 ">
         <div class="btn-group pull-right pdf-fav"> 
-            <a style="cursor: pointer;" ng-href="#viewFavouritesPdf/{{agencyLanguage}}/{{accountId}}/{{userId}}/{{favouriteName}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
+            <a style="cursor: pointer;" ng-href="#viewFavouritesPdf/{{agencyLanguage}}/{{accountId}}/{{userId}}/{{favouriteName}}?startDate={{startDate}}&endDate={{endDate}}&getTableType={{getTableType}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
         </div>
     </div>
 </div>
 
-<div class="row content">
+<div class="row content" ui-if="loadStatus===true">
     <div ng-repeat="favouritesWidget in favouritesWidgets">
         <div ng-if="favouritesWidget.widgetId.chartType === 'ticker'">
             <div class="col-sm-{{favouritesWidget.widgetId.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
@@ -163,6 +163,8 @@
                          ticker-Title-Name="{{favouritesWidget.widgetId.widgetTitle}}"
                          ticker-Source="{{favouritesWidget.widgetId.dataSetId}}"
                          ticker-Id="{{favouritesWidget.widgetId.id}}" 
+                         url-type="{{getTableType}}"
+                         compare-Date-Range="{{compareDateRange}}"
                          ticker-Columns="{{favouritesWidget.widgetId.columns}}">
                     </div>
                 </div>
@@ -210,20 +212,26 @@
                         <!--<span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle}}</span>-->
                         <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle?favouritesWidget.widgetId.widgetTitle:'Widget'}}</span>
                     </div>
-                    <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'line'">
-                        <div set-Line-Chart-Fn="setLineChartFn(lineFn)"
-                             line-Chart-Directive 
-                             line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}"
+                    <div class="box-body" ng-if="(favouritesWidget.widgetId.chartType === 'line') && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+{{compareDateRange}}
+{{getTableType}}
+<div set-Line-Chart-Fn="setLineChartFn(lineFn)"
+     line-Chart-Directive 
+     line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}"
                              widget-Id="{{favouritesWidget.widgetId.id}}"
+                             url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
                              widget-Columns="{{favouritesWidget.widgetId.columns}}" 
                              widget-Obj="{{favouritesWidget.widgetId}}">
                         </div>
                     </div> 
-                    <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'bar'">
+                    <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'bar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                              bar-Chart-Directive 
                              bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
                              widget-Id="{{favouritesWidget.widgetId.id}}" 
+                             url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
                              widget-Columns="{{favouritesWidget.widgetId.columns}}"
                              widget-Obj="{{favouritesWidget.widgetId}}">
                         </div>
@@ -231,15 +239,21 @@
                     <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'pie'">
                         <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{favouritesWidget.widgetId.dataSetId}}' widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
                     </div> 
-                    <div class="box-body" ng-if="(favouritesWidget.widgetId.chartType === 'area' || favouritesWidget.widgetId.chartType === 'combination')">
-                        <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                    <div class="box-body" ng-if="(favouritesWidget.widgetId.chartType === 'area' || favouritesWidget.widgetId.chartType === 'combination') && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                        <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" 
+                             widget-Columns="{{favouritesWidget.widgetId.columns}}" 
+                             widget-Obj="{{favouritesWidget.widgetId}}"
+                             url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"></div>
                     </div> 
-                    <div class="box-body"  ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'">
+                    <div class="box-body"  ng-if="favouritesWidget.widgetId.chartType === 'stackedbar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
                             <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
                                  stacked-Bar-Chart-Directive
                                  stacked-Bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
                                  widget-Id="{{favouritesWidget.widgetId.id}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
                                  widget-Columns="{{favouritesWidget.widgetId.columns}}" 
                                  widget-Obj="{{favouritesWidget.widgetId}}">                                 
                             </div>
@@ -255,11 +269,13 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body" ng-if="favouritesWidget.widgetId.chartType === 'scatter'">
+                    <div class="panel-body" ng-if="favouritesWidget.widgetId.chartType === 'scatter' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
                             <div scatter-Chart-Directive 
                                  scatter-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
                                  widget-Id="{{favouritesWidget.widgetId.id}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
                                  widget-Columns="{{favouritesWidget.widgetId.columns}}" 
                                  widget-Obj="{{favouritesWidget.widgetId}}">                                     
                             </div>
@@ -275,11 +291,13 @@
                                  gauge-Columns="{{favouritesWidget.widgetId.columns}}"></div>
                         </div>
                     </div>
-                    <div class="panel-body" ng-if="favouritesWidget.widgetId.chartType === 'horizontalBar'">
+                    <div class="panel-body" ng-if="favouritesWidget.widgetId.chartType === 'horizontalBar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
                             <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                  bar-Chart-Directive bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
                                  widget-Id="{{favouritesWidget.widgetId.id}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
                                  widget-Columns="{{favouritesWidget.widgetId.columns}}" 
                                  widget-Obj="{{favouritesWidget.widgetId}}" default-chart-color="{{defaultChartColor}}"
                                  is-Horizontal-Bar="{{favouritesWidget.widgetId.isHorizontalBar}}"> {{favouritesWidget.widgetId.isHorizontalBar}}                                    
@@ -288,8 +306,23 @@
                     </div>
                     <div class="box-body list" ng-if="favouritesWidget.widgetId.chartType === 'table'" adjust-height>
                         <div class="table-responsive project-list">
-                            <div id="changes-height" class="project-list">
-                                <div set-Table-Chart-Fn="setTableChartFn(tableFn)" dynamic-Table dynamic-Table-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Obj="{{favouritesWidget.widgetId}}" table-Footer="{{favouritesWidget.widgetId.tableFooter}}" widget-Columns="{{favouritesWidget.widgetId.columns}}"></div> 
+                            <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOff'">
+                                <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
+                                     dynamic-Table dynamic-Table-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{favouritesWidget.widgetId.id}}" 
+                                     widget-Obj="{{favouritesWidget.widgetId}}" 
+                                     table-Footer="{{favouritesWidget.widgetId.tableFooter}}" 
+                                     widget-Columns="{{favouritesWidget.widgetId.columns}}"></div> 
+                            </div> 
+                             <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
+                                <div compare-Range-Table 
+                                     compare-Table-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Id="{{favouritesWidget.widgetId.id}}" 
+                                     widget-Obj="{{favouritesWidget.widgetId}}" 
+                                     table-Footer="{{favouritesWidget.widgetId.tableFooter}}" 
+                                     widget-Columns="{{favouritesWidget.widgetId.columns}}">                                         
+                                </div>
                             </div> 
                         </div>
                     </div>

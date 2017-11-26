@@ -1,4 +1,4 @@
-app.controller('ReportIndexController', function ($scope, $stateParams, $state, $cookies, $translate) {
+app.controller('ReportIndexController', function ($scope, $stateParams, $state, $cookies, $translate,$rootScope) {
     $scope.$state = $state;//Find Active Tabs
     $scope.productId = $stateParams.productId ? $stateParams.productId : 0;
     $scope.reportId = $stateParams.reportId ? $stateParams.reportId : 0;
@@ -10,8 +10,7 @@ app.controller('ReportIndexController', function ($scope, $stateParams, $state, 
 
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
-
-    function changeLanguage(key) {
+       function changeLanguage(key) {
         $translate.use(key);
     }
 });

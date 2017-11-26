@@ -90,7 +90,7 @@
                                 <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.sqlDriver?dataSource.sqlDriver:'-'}}</td>
                                 <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.userName?dataSource.userName:'-'}}</td>
                                 <td class="col-xs-1">
-                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteDataSource{{dataSource.id}}"><i class="fa fa-trash-o"></i></button>
+                                    <button class="btn btn-default btn-xs" title="{{'Delete'|translate}}" data-toggle="modal" data-target="#deleteDataSource{{dataSource.id}}"><i class="fa fa-trash-o"></i></button>
                                     <div class="modal hmodal-success" id="deleteDataSource{{dataSource.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
@@ -111,7 +111,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <div class="col-sm-12">
-                                                        <button type="button" class="btn btn-primary btn-xs " 
+                                                        <button  type="button" class="btn btn-primary btn-xs " 
                                                                 ng-click="deleteDataSource(dataSource, $index)" 
                                                                 data-dismiss="modal">
                                                             <span class="fa fa-trash"></span><span translate> Yes</span>
