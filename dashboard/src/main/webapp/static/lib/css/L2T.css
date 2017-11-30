@@ -4208,3 +4208,33 @@ span.add-title {
 .tickerMessage{
     min-height: 30px;
 }
+
+.arrow-up {
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 12px !important;
+    position: relative !important;
+    top: 3px !important;
+    color: #25d643 !important;
+    right: 0px !important;
+}
+.arrow-down {
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 12px !important;
+    position: relative !important;
+    top: 3px !important;
+    color: #f41000 !important;
+    right: 0px !important;
+}
+.count{
+    text-align: right;
+}

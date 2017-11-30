@@ -516,7 +516,7 @@
         <div class="row">
             <div class="col-md-8 pull-right widget-button-right">
                 <div class="form-group">
-                    <button class="btn btn-default" id="btn-save" 
+                    <button ng-disabled="saveBtnIsDisable" class="btn btn-default" id="btn-save" 
                             ng-click="save(widgetObj)">
                         <i class="fa fa-save"></i> <span translate>Save</span>
                     </button>
@@ -553,10 +553,10 @@
                                     <a ng-click="editDerivedColumn(collectionField, widgetObj)">{{collectionField.displayName}} <span ng-if="collectionField.category">- {{collectionField.category}}</span></a>
                                 </label>
                                 <span class="pull-right" ng-if="collectionField.expression">
-                                    <a class="btn btn-default btn-xs" ng-click="editDerivedColumn(collectionField, widgetObj)">
+                                    <a title="Edit" class="btn btn-default btn-xs" ng-click="editDerivedColumn(collectionField, widgetObj)">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <a class="btn btn-default btn-xs" ng-click="removeDerivedColumn(collectionField, widgetObj)">
+                                    <a title="Delete" class="btn btn-default btn-xs" ng-click="removeDerivedColumn(collectionField, widgetObj)">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </span>
@@ -578,7 +578,7 @@
                                         </a>
                                     </span>
                                     <span class="pull-right" ng-show="columns.columnsButtons">
-                                        <a class="btn btn-default btn-xs" ng-click="removeSelectedValue(widgetObj, columns, $index)">
+                                        <a title="Delete" class="btn btn-default btn-xs" ng-click="removeSelectedValue(widgetObj, columns, $index)">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </span>
@@ -620,12 +620,12 @@
                             </select>
                         </div>
                         <div class="form-group col-xs-12">
-                            <button class="btn btn-info" id="btn-save" 
+                            <button title="Save" class="btn btn-info" id="btn-save" 
                                     ng-click="saveDerivedColumn(dataSetColumn, widgetObj)"
                                     ng-disabled="dataSetError">
                                 <i class="fa fa-save"></i> <span translate>Save</span>
                             </button>
-                            <button class="btn btn-default" id="btn-cancel" 
+                            <button title="Cancel" class="btn btn-default" id="btn-cancel" 
                                     ng-click="hideTextArea = false; cancelDerivedColumn(dataSetColumn)">
                                 <i class="fa fa-close"></i> <span translate>Cancel</span>
                             </button>
@@ -748,12 +748,7 @@
                                 </select>
                             </div>
                         </div>
-
                     </div>
-
-
-
-
                     <div class="col-sm-12">
                         <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge'">
                             <label ng-if="hideSelectedColumn === false;" translate>Gauge</label>
@@ -1254,13 +1249,17 @@
             <div class="panel panel-default">
                 <div class="panel-heading btnAddon5">
                     <h3 class="panel-title">
-                        <span translate>Color</span> <button class="btn btn-success  pull-right" ng-click="addColors(widgetObj)"><i class="fa fa-plus"></i></button></h3>
+                        <span translate>Color</span> 
+                        <button title="Add Color" class="btn btn-success  pull-right" ng-click="addColors(widgetObj)">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </h3>
                 </div>
                 <div class="container" ng-repeat="widgetColor in widgetObj.targetColors">
                     <span translate>Color</span>: <ui-colorpicker ng-model="widgetColor.color"  style="width:40%;padding: 10px;height"></ui-colorpicker>
                     <span translate>Code</span>: <input ng-model="widgetColor.color" ng-change="selectColorInPicker(widgetColor)"/>
                     <!--<button class="btn btn-primary btn-xs" ng-click="editColorOption(targetColors)"><i class="fa fa-edit"></i></button>-->
-                    <button class="btn btn-danger btn-xs" ng-click="deleteColorOption(widgetColor.color, $index)"><i class="fa fa-minus"></i></button>
+                    <button title="Remove" class="btn btn-danger btn-xs" ng-click="deleteColorOption(widgetColor.color, $index)"><i class="fa fa-minus"></i></button>
                     <br/>
                 </div>
                 <br>

@@ -213,11 +213,11 @@
                         <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle?favouritesWidget.widgetId.widgetTitle:'Widget'}}</span>
                     </div>
                     <div class="box-body" ng-if="(favouritesWidget.widgetId.chartType === 'line') && (getTableType == 'compareOn' || getTableType == 'compareOff')">
-{{compareDateRange}}
-{{getTableType}}
-<div set-Line-Chart-Fn="setLineChartFn(lineFn)"
-     line-Chart-Directive 
-     line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}"
+                        {{compareDateRange}}
+                        {{getTableType}}
+                        <div set-Line-Chart-Fn="setLineChartFn(lineFn)"
+                             line-Chart-Directive 
+                             line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}"
                              widget-Id="{{favouritesWidget.widgetId.id}}"
                              url-type="{{getTableType}}"
                              compare-Date-Range="{{compareDateRange}}"
@@ -314,7 +314,7 @@
                                      table-Footer="{{favouritesWidget.widgetId.tableFooter}}" 
                                      widget-Columns="{{favouritesWidget.widgetId.columns}}"></div> 
                             </div> 
-                             <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
+                            <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
                                 <div compare-Range-Table 
                                      compare-Table-Source="{{favouritesWidget.widgetId.dataSetId}}" 
                                      compare-Date-Range="{{compareDateRange}}"

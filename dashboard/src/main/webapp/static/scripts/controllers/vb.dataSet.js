@@ -9,7 +9,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.childTab = 3;
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
-    };
+    }; 
     $scope.setChildTab = function (newTab) {
         $scope.childTab = newTab;
     };
