@@ -1930,15 +1930,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
         var value1;
         $scope.ticker(widgetObj, tickerItem);
-        console.log("remove ticker",widgetObj.columns.length)
-        
-        widgetObj.columns.filter(function (val) {
-            if (val.fieldName !== "") {
-                value1 = val.fieldName;
-            }
-        });
 
-
+        if (widgetObj.columns.length > 0) {
+            widgetObj.columns.filter(function (val) {
+                if (val.fieldName !== "") {
+                    value1 = val.fieldName;
+                }
+            });
+        }
         $scope.saveBtnIsDisable = checkValidationBySaveBtn("ticker", value1);
     };
     // Funnel Format
@@ -1968,8 +1967,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(widget.chartType, value1);
     };
     $scope.removedByFunnel = function (widget, removeItem, funnelItem) {
+        var value1;
         var getIndex = widget.columns.indexOf(removeItem);
         widget.columns.splice(getIndex, 1);
+
+        if (widget.columns.length > 0) {
+            widget.columns.filter(function (val) {
+                if (val.fieldName !== "") {
+                    value1 = val.fieldName;
+                }
+            });
+        }
+        $scope.saveBtnIsDisable = checkValidationBySaveBtn("funnel", value1);
+
     };
     $scope.selectPieChartX = function (widget, column) {
         var value1 = "";
