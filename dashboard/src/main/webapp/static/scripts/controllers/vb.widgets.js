@@ -1048,6 +1048,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         }
 
+        console.log("charttype-->", widgetObj);
         $timeout(function () {
             $scope.hideSelectedColumn = false;
         }, 50);
@@ -1805,6 +1806,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.removedByY1Column = function (widgetObj, column, yAxisItems) {
         //        if (yAxisItems.length > 0) {
+        var value1, value2;
         $scope.columnY2Axis.push(column);
         var index = $scope.columnY1Axis.indexOf(column);
         var indexX = $scope.columnXAxis.indexOf(column);
@@ -1816,10 +1818,25 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
 
         yAxisItems.removeItem = column.fieldName;
+        console.log("remove Y1 column -->");
+        console.log("widgetObj-->", widgetObj);
+        console.log("yAxisItems-->", yAxisItems);
         $scope.selectY1Axis(widgetObj, yAxisItems, widgetObj.chartType);
 //        } else {
         var getIndex = widgetObj.columns.indexOf(column);
         widgetObj.columns.splice(getIndex, 1);
+
+        widgetObj.columns.filter(function (val) {
+            if (val.xAxis == 1) {
+                value1 = val;
+            }
+            if (val.yAxis == 1) {
+                value2 = val;
+            }
+        });
+        $scope.saveBtnIsDisable = checkValidationBySaveBtn(widgetObj.chartType, value1, value2);
+
+
         //            angular.forEach(widgetObj.columns, function (val, key) {
 //                if (val.fieldName == column.fieldName) {
         //                    val.yAxis = null;
@@ -1829,6 +1846,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     $scope.removedByY2Column = function (widgetObj, column, yAxisItems) {
         //        if (yAxisItems.length > 0) {
+        var value1, value2, value3;
         $scope.columnY1Axis.push(column);
         var index = $scope.columnY2Axis.indexOf(column);
         var indexX = $scope.columnXAxis.indexOf(column);
@@ -1843,6 +1861,22 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 //        } else {
         var getIndex = widgetObj.columns.indexOf(column);
         widgetObj.columns.splice(getIndex, 1);
+
+        widgetObj.columns.filter(function (val) {
+            if (val.xAxis == 1) {
+                value1 = val;
+            }
+            if (val.yAxis == 1) {
+                value2 = val;
+            }
+            if (val.yAxis == 2) {
+                value3 = val;
+            }
+        });
+
+        $scope.saveBtnIsDisable = checkValidationBySaveBtn(widgetObj.chartType, value1, value2);
+
+
         //            angular.forEach(widgetObj.columns, function (val, key) {
 //                if (val.fieldName == column.fieldName) {
 //                    val.yAxis = null;
@@ -1894,7 +1928,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
+        var value1;
         $scope.ticker(widgetObj, tickerItem);
+        console.log("remove ticker",widgetObj.columns.length)
+        
+        widgetObj.columns.filter(function (val) {
+            if (val.fieldName !== "") {
+                value1 = val.fieldName;
+            }
+        });
+
+
+        $scope.saveBtnIsDisable = checkValidationBySaveBtn("ticker", value1);
     };
     // Funnel Format
     $scope.funnel = function (widget, column) {
@@ -2471,7 +2516,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
     }
     function checkValidationBySaveBtn(chartType, value1, value2, value3) {
-        var selectedChart = chartType?chartType:$scope.chartTypeName;
+        var selectedChart = chartType ? chartType : $scope.chartTypeName;
         var returnStatus = false;
         console.log('chartType', selectedChart);
         console.log('xColumn', value1);
@@ -2487,7 +2532,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log('funnelItem', value1);
 
 
-        if (value1 && value2) {
+        if (selectedChart !== "pie" && (value1 && (value2 || value3))) {
             returnStatus = false;
         } else if ((selectedChart == 'ticker' || selectedChart === 'funnel' || selectedChart === 'gauge') && value1) {
             returnStatus = false;
