@@ -1209,7 +1209,10 @@
                 <div class="row" ng-if="chartTypeName === 'text'">
                     <div class="panel-body editor">
                         <div>
-                            <textarea ck-Editor ng-model="widgetObj.content" rows="10" cols="99"></textarea>
+                            <textarea ck-Editor ng-change="setTextContent(ckEditorcontent)" 
+                                      ng-model="ckEditorcontent" 
+                                      rows="10" 
+                                      cols="99"></textarea>
                         </div>  
                     </div>                                      
                 </div>
