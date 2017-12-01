@@ -281,7 +281,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                             chartData = sortingObj;
                                         }
                                     } else {
-                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                                         sortingObj = orderByFilter(chartData, function (item) {
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
