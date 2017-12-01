@@ -476,6 +476,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
+        console.log("******************* EDIT WIDGET ****************");
+        console.log(widget);
+
+        console.log("******************* EDIT WIDGET ****************");
+
+
         $scope.dispHideBuilder = true;
         firstPreviewAfterEdit = 1;
         widget.targetColors = [];
@@ -588,6 +594,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             if (widget.chartType === 'gauge') {
                 value1 = val;
                 $scope.gaugeItem = val;
+            }
+            if (widget.chartType === 'table') {
+                value1 = val;
             }
         });
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(widget.chartType, value1, value2, value3);
@@ -1013,7 +1022,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.selectChart = function (chartType, widgetObj) {
-        console.log(chartType)
+        console.log("**************************** SELECT CHART ******************");
+        console.log("chartType -->", chartType);
+        console.log("widgetobj -->", widgetObj);
+        console.log("**************************** SELECT CHART ******************");
         addColor = [];
         $scope.hideSelectedColumn = true;
         $scope.showSortBy = false;
@@ -1047,11 +1059,20 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             });
         }
-
+        $scope.xColumn = "";
+        $scope.selectPieChartXAxis = "";
+        $scope.selectPieChartYAxis = "";
+        $scope.y1Column = "";
+        $scope.y2Column = "";
+        console.log("collection fields",$scope.collectionFields);
+        console.log("widgetColumns -->", widgetObj.columns);
         console.log("charttype-->", widgetObj);
+
         $timeout(function () {
             $scope.hideSelectedColumn = false;
         }, 50);
+        
+        $scope.saveBtnIsDisable=true;
     };
 
     $scope.showListOfColumns = function () {
@@ -1175,6 +1196,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     $scope.selectAllColumns = function (columns, widget) {
 //        $scope.dispHideBuilder = true;
+        var value1;
         var exists = false;
         if (widget.selectAll == 1) {
             angular.forEach(columns, function (obj, key) {
@@ -1211,11 +1233,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     widget.columns.push(data);
                 }
             });
+            value1 = widget.columns[0].fieldName;
+            $scope.saveBtnIsDisable = checkValidationBySaveBtn("table", value1);
         } else {
             widget.columns = [];
             angular.forEach(columns, function (val, key) {
                 val.selectColumnDef = 0;
             });
+            $scope.saveBtnIsDisable = checkValidationBySaveBtn("table", value1);
         }
 //        $timeout(function () {
 //            $scope.queryBuilderList = widget;
@@ -1224,6 +1249,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectColumnItem = function (obj, widget) {
+        var value1;
+        console.log("**************************8 TABLE ********************************");
+        console.log("object", obj);
+        console.log("widget", widget);
 //        $scope.dispHideBuilder = true;
         obj.columnsButtons = true;
         var checkColumnDef = obj.selectColumnDef;
@@ -1266,6 +1295,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if ($scope.collectionFields.length == widget.columns.length) {
             widget.selectAll = 1;
         }
+
+        if (widget.columns.length > 0 || widget.selectAll === 1) {
+            value1 = widget.columns[0].fieldName;
+            $scope.saveBtnIsDisable = checkValidationBySaveBtn("table", value1);
+        } else {
+            $scope.saveBtnIsDisable = checkValidationBySaveBtn("table", value1);
+        }
+
+        console.log("widget columns ", widget.columns);
+        console.log("************************************************************* TABLE ENDS ***********");
 //        $timeout(function () {
 //            $scope.queryBuilderList = widget;
 //            resetQueryBuilder();
@@ -1810,6 +1849,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.columnY2Axis.push(column);
         var index = $scope.columnY1Axis.indexOf(column);
         var indexX = $scope.columnXAxis.indexOf(column);
+
         if (index == -1) {
             $scope.columnY1Axis.push(column);
         }
@@ -1818,9 +1858,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
 
         yAxisItems.removeItem = column.fieldName;
-        console.log("remove Y1 column -->");
-        console.log("widgetObj-->", widgetObj);
-        console.log("yAxisItems-->", yAxisItems);
         $scope.selectY1Axis(widgetObj, yAxisItems, widgetObj.chartType);
 //        } else {
         var getIndex = widgetObj.columns.indexOf(column);
@@ -1835,7 +1872,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         });
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(widgetObj.chartType, value1, value2);
-
 
         //            angular.forEach(widgetObj.columns, function (val, key) {
 //                if (val.fieldName == column.fieldName) {
@@ -1906,8 +1942,26 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.tickerItem = widgetObj.columns;
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(widgetObj.chartType, value1);
     };
+    /*
+     * 
+     * @param {type} widgetObj
+     * @param {type} text
+     * @returns {undefined}
+     */
+    $scope.setTextContent = function (text) {
+        var value1;
+        console.log("****************** TEXT ********************");
+        console.log("text -->", text);
+        console.log("****************** TEXT ********************");
+        if (text !== "") {
+            value1 = text;
+        }
+        $scope.saveBtnIsDisable = checkValidationBySaveBtn("text", value1);
+    };
 
     $scope.gauge = function (widgetObj, gaugeItem) {
+
+        var value1;
         $scope.gaugeItem = gaugeItem;
         $scope.dispHideBuilder = true;
         var newColumns = [];
@@ -1924,7 +1978,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             });
             widgetObj.columns = newColumns;
+            value1 = gaugeItem.fieldName;
         }
+        $scope.saveBtnIsDisable = checkValidationBySaveBtn("gauge", value1);
     };
 
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
@@ -1978,6 +2034,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             });
         }
+        console.log("widget columns length -->", widget.columns.length)
+        console.log("widget columns  -->", widget.columns)
         $scope.saveBtnIsDisable = checkValidationBySaveBtn("funnel", value1);
 
     };
@@ -2544,7 +2602,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
         if (selectedChart !== "pie" && (value1 && (value2 || value3))) {
             returnStatus = false;
-        } else if ((selectedChart == 'ticker' || selectedChart === 'funnel' || selectedChart === 'gauge') && value1) {
+        } else if (selectedChart === "pie" && (value1 && value2)) {
+            returnStatus = false;
+        } else if ((selectedChart == 'ticker' || selectedChart === 'funnel' ||
+                selectedChart === 'gauge' || selectedChart === 'table' || selectedChart === 'text') && value1) {
             returnStatus = false;
         } else {
             returnStatus = true;
@@ -3076,11 +3137,17 @@ app.directive('ckEditor', function () {
             });
             if (!ngModel)
                 return;
+
+            ck.on('instanceReady', function () {
+                ck.setData(ngModel.$viewValue);
+            });
             ck.on('pasteState', function () {
                 scope.$apply(function () {
                     ngModel.$setViewValue(ck.getData());
                 });
             });
+
+
             ngModel.$render = function (value) {
                 ck.setData(ngModel.$viewValue);
             };
