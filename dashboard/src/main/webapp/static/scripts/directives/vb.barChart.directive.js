@@ -303,7 +303,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             if (chartMaxRecord.maxRecord > 0) {
                                 chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             } else {
-                                chartData = responseObject;
+//                                chartData = responseObject;
                             }
                             xTicks = [xAxis.fieldName];
                             xData = chartData.map(function (a) {
