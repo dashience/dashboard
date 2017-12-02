@@ -601,6 +601,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(widget.chartType, value1, value2, value3);
         tableDef(widget, $scope.y1Column, $scope.y2Column);
+        console.log("Edit widget object -->", $scope.widgetObj);
     };
 
     function getNetworkTypebyObj(widget) {
@@ -1582,6 +1583,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectX1Axis = function (widgetObj, column) {
+        console.log("********* SELECT X1AXIS ******************");
+        console.log(" widgetObj --->", widgetObj);
+        console.log("columns -->", column);
+        console.log("********* SELECT X1AXIS ******************");
         var value1;
         var value2;
         if (!column) {
@@ -1602,8 +1607,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             }
         });
         angular.forEach(widgetObj.columns, function (value, key) {
+
+
             if (value.xAxis == 1 && value.yAxis != 1 && value.yAxis != 2) {
+                var index = widgetObj.columns.indexOf(value);
+                widgetObj.columns.splice(index, 1);
                 value.xAxis = "";
+
                 $scope.columnY1Axis.push(value);
                 $scope.columnY2Axis.push(value);
             }
@@ -1858,7 +1868,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.columnY2Axis.push(column);
         var index = $scope.columnY1Axis.indexOf(column);
         var indexX = $scope.columnXAxis.indexOf(column);
-
         if (index == -1) {
             $scope.columnY1Axis.push(column);
         }
@@ -2050,6 +2059,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     };
     $scope.selectPieChartX = function (widget, column) {
+        console.log("************ PIE CHART **********");
         var value1 = "";
         var value2 = "";
         $scope.selectPieChartXAxis = column;
@@ -2490,8 +2500,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.advanced = false;
     }
     $scope.deleteColumn = function (widget, chartTypeName, index) {
+        //console.log(chartTypeName);
+
+        /*
+         * 
+         * @type @var;chartTypeName
+         * The below two lines are used for edit widget. Chartype will be undefined..So while editing we are checking
+         */
+        var chartType = chartTypeName ? chartTypeName : widget.chartType;
+        chartTypeName = chartType;
+
+        console.log("************************ ADVANCED COLUMNS DELETE************");
+
+        console.log("widget -->", widget);
+        console.log("chartTypeName -->", chartTypeName);
+        console.log("index -->", index);
+        console.log("y1 column -->", $scope.y1Column);
+        console.log("************************ ADVANCED COLUMNS DELETE************");
+
+
 
         var widgetObj = widget.columns[index];
+        console.log("widgetObj -->", widgetObj);
         if (widget.chartType === 'table' || chartTypeName === 'table') {
 
             $scope.collectionFields.forEach(function (val, key) {
@@ -2504,11 +2534,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.hideSelectedColumn = true;
                 if ($scope.selectPieChartXAxis.displayName === widgetObj.displayName) {
                     $scope.selectPieChartXAxis = "";
+                    $scope.columnPieYAxis.push(widgetObj);
                     setTimeout(function () {
                         $scope.hideSelectedColumn = false
                     }, 1000);
                 }
                 if ($scope.selectPieChartYAxis.displayName === widgetObj.displayName) {
+                    $scope.columnPieXAxis.push(widgetObj);
                     $scope.selectPieChartYAxis = "";
                     setTimeout(function () {
                         $scope.hideSelectedColumn = false
@@ -2519,17 +2551,25 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 if ($scope.gaugeItem.displayName === widgetObj.displayName) {
                     $scope.gaugeItem = "";
                 }
-
-
             } else if (widget.chartType === 'ticker' || chartTypeName === 'ticker') {
+                console.log("tickerItem -->", $scope.tickerItem);
                 $scope.tickerItem.forEach(function (val, key) {
-                    $scope.hideSelectedColumn = true
+                    $scope.hideSelectedColumn = true;
+                    console.log("ticker value -->", val.displayName);
+                    console.log("widget object -->", widgetObj.displayName);
+
                     if (val.displayName === widgetObj.displayName) {
-                        var chartIndex = $scope.tickerItem.indexOf(val);
-                        $scope.tickerItem.splice(chartIndex, 1);
-                        setTimeout(function () {
-                            $scope.hideSelectedColumn = false
-                        }, 1000);
+                        console.log("val -->", val);
+                        /*
+                         *  Removed because of issue in create widget
+                         */
+
+//                        var chartIndex = $scope.tickerItem.indexOf(val);
+//                        console.log("chartIndex", chartIndex);
+//                        $scope.tickerItem.splice(chartIndex, 1);
+//                        setTimeout(function () {
+//                            $scope.hideSelectedColumn = false;
+//                        }, 1000);
 
                     }
                 });
@@ -2538,46 +2578,57 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.hideSelectedColumn = true
                     if (val.displayName === widgetObj.displayName) {
                         var chartIndex = $scope.funnelItem.indexOf(val);
-                        $scope.funnelItem.splice(chartIndex, 1);
-                        setTimeout(function () {
-                            $scope.hideSelectedColumn = false
-                        }, 1000);
+//                        $scope.funnelItem.splice(chartIndex, 1);
+//                        setTimeout(function () {
+//                            $scope.hideSelectedColumn = false;
+//                        }, 1000);
                     }
                 });
             } else {
+                console.log("delete inside if loop -->", widget.columns);
+
                 widget.columns.forEach(function (value, key) {
-                    if (value.yAxis === 1) {
+                    if (parseInt(value.yAxis) === 1) {
                         $scope.y1Column.forEach(function (val, key) {
                             if (val.displayName === widgetObj.displayName) {
                                 var chartIndex = $scope.y1Column.indexOf(val);
                                 $scope.y1Column.splice(chartIndex, 1);
-
+                                $scope.columnY2Axis.push(val);
+                                $scope.columnXAxis.push(val);
                             }
                         });
-                    } else if (value.yAxis === 2) {
+                    } else if (parseInt(value.yAxis) === 2) {
                         $scope.y2Column.forEach(function (val, key) {
                             if (val.displayName === widgetObj.displayName) {
                                 var chartIndex = $scope.y2Column.indexOf(val);
                                 $scope.y2Column.splice(chartIndex, 1);
+                                $scope.columnY1Axis.push(val);
+                                $scope.columnXAxis.push(val);
                             }
 
 
                         })
-                    } else if (value.xAxis === 1) {
+                    } else if (parseInt(value.xAxis) === 1) {
                         if ($scope.xColumn.displayName === widgetObj.displayName) {
                             $scope.hideSelectedColumn = true;
                             $scope.xColumn = "";
                             setTimeout(function () {
                                 $scope.hideSelectedColumn = false;
                             }, 1000);
-
                         }
                     }
+
                 });
             }
         }
 
         widget.columns.splice(index, 1);
+        console.log("leng -->", widget.columns.length);
+        if (widget.columns.length > 0) {
+            $scope.saveBtnIsDisable = false;
+        } else {
+            $scope.saveBtnIsDisable = true;
+        }
     };
     $scope.undo = function (obj, status) {
         var widget = obj//$scope.undoWidget;
@@ -2608,8 +2659,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log('gaugeItem', value1);
         console.log('tickerItem', value1);
         console.log('funnelItem', value1);
-
-
         if (selectedChart !== "pie" && (value1 && (value2 || value3))) {
             returnStatus = false;
         } else if (selectedChart === "pie" && (value1 && value2)) {
