@@ -207,6 +207,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 } else {
                     dataSourcePassword = '';
                 }
+                
                 var getWidgetObj = JSON.parse(scope.widgetObj);
 
                 var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";

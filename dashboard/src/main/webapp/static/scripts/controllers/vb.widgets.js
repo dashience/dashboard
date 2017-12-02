@@ -2049,6 +2049,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     };
     $scope.selectPieChartX = function (widget, column) {
+        console.log("************ PIE CHART **********");
         var value1 = "";
         var value2 = "";
         $scope.selectPieChartXAxis = column;
@@ -2552,7 +2553,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         /*
                          *  Removed because of issue in create widget
                          */
-                        
+
 //                        var chartIndex = $scope.tickerItem.indexOf(val);
 //                        console.log("chartIndex", chartIndex);
 //                        $scope.tickerItem.splice(chartIndex, 1);
@@ -2575,15 +2576,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 });
             } else {
                 console.log("delete inside if loop -->", widget.columns);
+
                 widget.columns.forEach(function (value, key) {
-                    console.log("value -->", value);
                     if (parseInt(value.yAxis) === 1) {
                         $scope.y1Column.forEach(function (val, key) {
                             if (val.displayName === widgetObj.displayName) {
                                 var chartIndex = $scope.y1Column.indexOf(val);
-                                console.log("y1column -->", $scope.y1Column);
                                 $scope.y1Column.splice(chartIndex, 1);
-
                                 $scope.columnY2Axis.push(val);
                                 $scope.columnXAxis.push(val);
                             }
@@ -2606,16 +2605,20 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                             setTimeout(function () {
                                 $scope.hideSelectedColumn = false;
                             }, 1000);
-
                         }
-                        var xAxisIndex = widget.columns.indexOf(value);
-                        console.log("value is -->", value, " & index is -->", xAxisIndex);
                     }
+
                 });
             }
         }
 
         widget.columns.splice(index, 1);
+        console.log("leng -->", widget.columns.length);
+        if (widget.columns.length > 0) {
+            $scope.saveBtnIsDisable = false;
+        } else {
+            $scope.saveBtnIsDisable = true;
+        }
     };
     $scope.undo = function (obj, status) {
         var widget = obj//$scope.undoWidget;
@@ -2646,8 +2649,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log('gaugeItem', value1);
         console.log('tickerItem', value1);
         console.log('funnelItem', value1);
-
-
         if (selectedChart !== "pie" && (value1 && (value2 || value3))) {
             returnStatus = false;
         } else if (selectedChart === "pie" && (value1 && value2)) {
