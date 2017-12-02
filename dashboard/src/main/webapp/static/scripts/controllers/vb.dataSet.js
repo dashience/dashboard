@@ -4676,7 +4676,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     });
 //    $scope.selectedItems = {dataSourceId: {name: ''}};
 
-    $scope.selectXlsSheet = function (dataSource) {
+    $scope.selectXlsSheet = function (dataSource) { 
+        
         if (dataSource.dataSourceType == 'xls') {
             var url = "admin/proxy/getSheets?";
             var dataSourceId = dataSource.id;

@@ -860,7 +860,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $scope.getTableType = "";
 //            $rootScope.loadStatus="";
         }
-//        $rootScope.loadStatus=true;
+        $scope.firstDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY');
+        $scope.lastDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY');
         var selectTableType;
         if (type == true) {
             selectTableType = "compareOn";

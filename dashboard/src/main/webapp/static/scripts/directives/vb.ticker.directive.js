@@ -53,9 +53,9 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '</span>' +
                 '</span>' +
 //                '<span class="empty-ticker arrow-up" ng-click="changeComparisonType(\'secondLevel\')" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, firstLevelTicker,secondLevelTicker)) && showSecondDifference == true">0 </span>' +
-                
-                
-                
+
+
+
                 //Diff
                 '<span ng-click="changeComparisonType(\'secondLevel\')" ' +
                 'style="cursor:pointer" ng-if="sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) != 0 && showSecondDifference != true && firstLevelTicker != 0 && secondLevelTicker != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
@@ -65,12 +65,6 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '</span>' +
                 '</span>' +
                 '</h4>' +
-                
-                
-                
-                
-                
-                
                 '</div>' +
                 //Third Level
                 '<div class="col-xs-6 count">' +
@@ -101,7 +95,16 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '</div>' +
                 '</div>' +
                 '</div>' +
-                '<div class="tickerMessage" ng-show="hideEmptyTicker">{{tickerEmptyMessage}}</div>',
+                '<div class="tickerMessage" ng-show="hideEmptyTicker">' +
+                '<div class="panel-body h-150">' +
+                '<div class="stats-title pull-left">' +
+                '<h4>{{tickerTitleName}}</h4>' +
+                '</div>' +
+                '<div class="stats-icon pull-right">' +
+                '</div>' +
+                '<div class="m-t-xl" style="text-align:center">{{tickerEmptyMessage}}' + '</div>' +
+                '</div>'+ 
+                '</div>',
         scope: {
             setTickerFn: '&',
             tickerSource: '@',
