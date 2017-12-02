@@ -282,7 +282,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                             chartData = sortingObj;
                                         }
                                     } else {
-                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
                                         sortingObj = orderByFilter(chartData, function (item) {
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
@@ -294,16 +294,16 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                         if (chartMaxRecord.maxRecord) {
                                             chartData = maximumRecord(chartMaxRecord, sortingObj)
                                         } else {
-                                            
+                                            console.log("sortingobj -->", sortingObj);
                                             chartData = sortingObj;
                                         }
                                     }
                                 });
+                            } else {
+                                console.log("ome");
                             }
                             if (chartMaxRecord.maxRecord > 0) {
                                 chartData = chartData.slice(0, chartMaxRecord.maxRecord);
-                            } else {
-                                chartData = responseObject;
                             }
                             xTicks = [xAxis.fieldName];
                             xData = chartData.map(function (a) {
@@ -382,6 +382,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     ySeriesData.unshift(value.displayName);
                                     columns.push(ySeriesData);
                                 }
+                                
+
 //                            angular.forEach(yAxis, function (value, key) {
 //                                ySeriesData = chartData.map(function (a) {
 //                                    return a[value.fieldName] || "0";

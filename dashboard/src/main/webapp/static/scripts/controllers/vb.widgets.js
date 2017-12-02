@@ -700,16 +700,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
             var getWidgetColumns = widget.columns;
 
-            $scope.collectionFields.forEach(function (value, k) {
-                var machField = $.grep(getWidgetColumns, function (b) {
-                    return b.fieldName === value.fieldName;
-                });
-                if (machField.length > 0) {
-                    value.selectColumnDef = 1;
-                } else {
-                    value.selectColumnDef = 0;
-                }
-            });
+            console.log("Ticker Edit collection Fields", $scope.collectionFields);
+            console.log("widget Columns -->", getWidgetColumns);
+
             $scope.afterLoadWidgetColumns = true;
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
@@ -724,6 +717,22 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.columnXAxis.push(value);
                 $scope.columnPieXAxis.push(value);
                 $scope.columnPieYAxis.push(value);
+            });
+
+            $scope.collectionFields.forEach(function (value, k) {
+                var machField = $.grep(getWidgetColumns, function (b) {
+                    return b.fieldName === value.fieldName;
+                });
+                if (machField.length > 0) {
+                    value.selectColumnDef = 1;
+                } else {
+                    value.selectColumnDef = 0;
+                }
+                console.log("machField -->",machField);
+                var index = $scope.collectionFields.indexOf(machField);
+                console.log($scope.collectionFields[index]);
+//                $scope.collectionFields.splice(index, 1);
+//                console.log("Remove collection Fields", $scope.collectionFields);
             });
 
             if ($scope.xColumn) {
@@ -1064,15 +1073,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.selectPieChartYAxis = "";
         $scope.y1Column = "";
         $scope.y2Column = "";
-        console.log("collection fields",$scope.collectionFields);
+        console.log("collection fields", $scope.collectionFields);
         console.log("widgetColumns -->", widgetObj.columns);
         console.log("charttype-->", widgetObj);
 
         $timeout(function () {
             $scope.hideSelectedColumn = false;
         }, 50);
-        
-        $scope.saveBtnIsDisable=true;
+
+        $scope.saveBtnIsDisable = true;
     };
 
     $scope.showListOfColumns = function () {
@@ -1928,6 +1937,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (column.length == 0) {
             widgetObj.columns = "";
         } else {
+
             angular.forEach(column, function (value, key) {
                 angular.forEach($scope.collectionFields, function (val, header) {
                     if (val.fieldName === value.fieldName) {
