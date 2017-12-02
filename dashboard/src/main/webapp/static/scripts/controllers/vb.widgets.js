@@ -35,6 +35,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $translate.use(key);
     }
 
+    function getUnMatchedColumns(allColumns, columns) {
+        return allColumns.filter(function (value) {
+            return isUnmatchedColumn(value, columns);
+        })
+    }
+
+    function isUnmatchedColumn(val, columns) {
+        return columns.every(function (matched) {
+            return val.fieldName !== matched.fieldName;
+        });
+    }
+
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {
@@ -704,12 +716,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 var machField = $.grep(getWidgetColumns, function (b) {
                     return b.fieldName === value.fieldName;
                 });
+
                 if (machField.length > 0) {
                     value.selectColumnDef = 1;
                 } else {
                     value.selectColumnDef = 0;
                 }
+
             });
+
+
+
+
+
             $scope.afterLoadWidgetColumns = true;
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
@@ -759,6 +778,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.columnPieXAxis.splice(indexX, 1);
                 $scope.columnPieYAxis.splice(indexY, 1);
             }
+
+            if (widget.chartType === 'ticker') {
+                $scope.collectionFields = getUnMatchedColumns($scope.collectionFields, getWidgetColumns);
+            }
+
+            if (widget.chartType === 'funnel') {
+                $scope.collectionFields = getUnMatchedColumns($scope.collectionFields, getWidgetColumns);
+            }
+
+
+
 
             angular.forEach(y1Column, function (value, key) {
                 var dataY1 = $scope.columnY1Axis.find(function (item, i) {
@@ -1064,15 +1094,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.selectPieChartYAxis = "";
         $scope.y1Column = "";
         $scope.y2Column = "";
-        console.log("collection fields",$scope.collectionFields);
+        console.log("collection fields", $scope.collectionFields);
         console.log("widgetColumns -->", widgetObj.columns);
         console.log("charttype-->", widgetObj);
 
         $timeout(function () {
             $scope.hideSelectedColumn = false;
         }, 50);
-        
-        $scope.saveBtnIsDisable=true;
+
+        $scope.saveBtnIsDisable = true;
     };
 
     $scope.showListOfColumns = function () {
@@ -1922,6 +1952,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.ticker = function (widgetObj, column) {
+
+        console.log("ticker widgetobj -->", widgetObj);
+        console.log("ticker widgetobj column -->", column);
+
         var value1;
         //        $scope.dispHideBuilder = true;
         var newColumns = [];
@@ -1941,6 +1975,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         value1 = widgetObj.columns;
         $scope.tickerItem = widgetObj.columns;
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(widgetObj.chartType, value1);
+        console.log("ticker widget columns -->",$scope.collectionFields);
     };
     /*
      * 
@@ -1986,7 +2021,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
         var value1;
         $scope.ticker(widgetObj, tickerItem);
-
         if (widgetObj.columns.length > 0) {
             widgetObj.columns.filter(function (val) {
                 if (val.fieldName !== "") {

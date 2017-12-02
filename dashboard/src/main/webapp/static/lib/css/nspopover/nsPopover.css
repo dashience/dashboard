@@ -28,7 +28,8 @@
 .ns-popover-tooltip-theme {
     box-sizing: border-box;
     z-index: 100;
-    background-color: transparent; }
+    background-color: transparent;
+    top: 47.5667px !important; }
 /* line 129, ../sass/ns-popover.scss */
 .ns-popover-tooltip-theme .ns-popover-tooltip {
     box-sizing: border-box;
@@ -78,7 +79,7 @@
     border-color: transparent;
     position: absolute;
     border-bottom-color: #d2d2d2;
-    left: 50%;
+    left: 50% !important;
     top: -11px;
     z-index: 99;
     margin-left: -11px; }
