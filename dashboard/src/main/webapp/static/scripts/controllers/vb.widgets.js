@@ -35,6 +35,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $translate.use(key);
     }
 
+    function getUnMatchedColumns(allColumns, columns) {
+        return allColumns.filter(function (value) {
+            return isUnmatchedColumn(value, columns);
+        })
+    }
+
+    function isUnmatchedColumn(val, columns) {
+        return columns.every(function (matched) {
+            return val.fieldName !== matched.fieldName;
+        });
+    }
+
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {
@@ -701,16 +713,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
             var getWidgetColumns = widget.columns;
 
-            $scope.collectionFields.forEach(function (value, k) {
-                var machField = $.grep(getWidgetColumns, function (b) {
-                    return b.fieldName === value.fieldName;
-                });
-                if (machField.length > 0) {
-                    value.selectColumnDef = 1;
-                } else {
-                    value.selectColumnDef = 0;
-                }
-            });
             $scope.afterLoadWidgetColumns = true;
             $scope.columnY1Axis = [];
             $scope.columnY2Axis = [];
@@ -725,6 +727,22 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.columnXAxis.push(value);
                 $scope.columnPieXAxis.push(value);
                 $scope.columnPieYAxis.push(value);
+            });
+
+            $scope.collectionFields.forEach(function (value, k) {
+                var machField = $.grep(getWidgetColumns, function (b) {
+                    return b.fieldName === value.fieldName;
+                });
+                if (machField.length > 0) {
+                    value.selectColumnDef = 1;
+                } else {
+                    value.selectColumnDef = 0;
+                }
+                console.log("machField -->", machField);
+                var index = $scope.collectionFields.indexOf(machField);
+                console.log($scope.collectionFields[index]);
+//                $scope.collectionFields.splice(index, 1);
+//                console.log("Remove collection Fields", $scope.collectionFields);
             });
 
             if ($scope.xColumn) {
@@ -760,6 +778,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.columnPieXAxis.splice(indexX, 1);
                 $scope.columnPieYAxis.splice(indexY, 1);
             }
+
+//            if (widget.chartType === 'ticker') {
+//                $scope.collectionFields = getUnMatchedColumns($scope.collectionFields, getWidgetColumns);
+//            }
+//
+            if (widget.chartType === 'funnel') {
+                $scope.collectionFields = getUnMatchedColumns($scope.collectionFields, getWidgetColumns);
+            }
+
+
+
 
             angular.forEach(y1Column, function (value, key) {
                 var dataY1 = $scope.columnY1Axis.find(function (item, i) {
@@ -1931,12 +1960,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.ticker = function (widgetObj, column) {
+
+        console.log("ticker widgetobj -->", widgetObj);
+        console.log("ticker widgetobj column -->", column);
+
         var value1;
         //        $scope.dispHideBuilder = true;
         var newColumns = [];
         if (column.length == 0) {
             widgetObj.columns = "";
         } else {
+
             angular.forEach(column, function (value, key) {
                 angular.forEach($scope.collectionFields, function (val, header) {
                     if (val.fieldName === value.fieldName) {
@@ -1949,7 +1983,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         value1 = widgetObj.columns;
         $scope.tickerItem = widgetObj.columns;
+        if (widgetObj.columns.length > 0) {
+            value1 = 1;
+        }
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(widgetObj.chartType, value1);
+        console.log("ticker widget columns -->", $scope.collectionFields);
     };
     /*
      * 
@@ -1995,7 +2033,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.removedByTicker = function (widgetObj, column, tickerItem) {
         var value1;
         $scope.ticker(widgetObj, tickerItem);
-
         if (widgetObj.columns.length > 0) {
             widgetObj.columns.filter(function (val) {
                 if (val.fieldName !== "") {
@@ -2508,7 +2545,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log("y1 column -->", $scope.y1Column);
         console.log("************************ ADVANCED COLUMNS DELETE************");
 
-
+        var value1, value2, value3;
 
         var widgetObj = widget.columns[index];
         console.log("widgetObj -->", widgetObj);
@@ -2585,7 +2622,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 $scope.columnY2Axis.push(val);
                                 $scope.columnXAxis.push(val);
                             }
+
                         });
+//                        if ($scope.y1Column.length > 0) {
+//                            $scope.y1Column.forEach(function (val, key) {
+//                                value2 = val;
+//                            });
+//                        }
+
                     } else if (parseInt(value.yAxis) === 2) {
                         $scope.y2Column.forEach(function (val, key) {
                             if (val.displayName === widgetObj.displayName) {
@@ -2594,7 +2638,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 $scope.columnY1Axis.push(val);
                                 $scope.columnXAxis.push(val);
                             }
-                        });
+
+                        })
+//                        if ($scope.y2Column.length > 0) {
+//                            $scope.y2Column.forEach(function (val, key) {
+//                                value3 = val;
+//                            });
+//                        }
                     } else if (parseInt(value.xAxis) === 1) {
                         if ($scope.xColumn.displayName === widgetObj.displayName) {
                             $scope.hideSelectedColumn = true;
@@ -2603,17 +2653,34 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 $scope.hideSelectedColumn = false;
                             }, 1000);
                         }
+//                        else {
+//                            value1 = $scope.xColumn.displayName;
+//                        }
                     }
                 });
             }
         }
-        widget.columns.splice(index, 1);        
-        console.log("leng -->", widget.columns.length);
-        if (widget.columns.length > 0) {
-            $scope.saveBtnIsDisable = false;
-        } else {
-            $scope.saveBtnIsDisable = true;
-        }
+
+        widget.columns.splice(index, 1);
+        widget.columns.filter(function (val) {
+            if (val.xAxis == 1) {
+                value1 = val;
+            }
+            if (val.yAxis == 1) {
+                value2 = val;
+            }
+            if (val.yAxis == 2) {
+                value3 = val;
+            }
+        });
+        console.log("***************** DELETE COLUMNS ADVANCED MENU ***********************");
+        console.log("chart Type -->", chartTypeName);
+        console.log("XColumn -->", value1);
+        console.log("y1column -->", value2);
+        console.log("y2column -->", value3);
+        console.log("***************** DELETE COLUMNS ADVANCED MENU ***********************");
+        $scope.saveBtnIsDisable = checkValidationBySaveBtn(chartTypeName, value1, value2, value3);
+        console.log("Save Btn Status -->", $scope.saveBtnIsDisable);
     };
     $scope.undo = function (obj, status) {
         var widget = obj//$scope.undoWidget;
@@ -2644,8 +2711,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log('gaugeItem', value1);
         console.log('tickerItem', value1);
         console.log('funnelItem', value1);
-        if (selectedChart !== "pie" && (value1 && (value2 || value3))) {
-            returnStatus = false;
+        if ((selectedChart === "area" || selectedChart === "line" || selectedChart === "bar" ||
+                selectedChart === "horizontal" || selectedChart === "stackedbar" || selectedChart === "scatter") && value1) {
+            if (!value2 && value3) {
+                returnStatus = true;
+            } else if (value2 && !value3) {
+                returnStatus = false;
+            } else if (!value2 && !value3) {
+                returnStatus = true;
+            }
         } else if (selectedChart === "pie" && (value1 && value2)) {
             returnStatus = false;
         } else if ((selectedChart == 'ticker' || selectedChart === 'funnel' ||
