@@ -2576,7 +2576,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 });
             } else {
                 console.log("delete inside if loop -->", widget.columns);
-
                 widget.columns.forEach(function (value, key) {
                     if (parseInt(value.yAxis) === 1) {
                         $scope.y1Column.forEach(function (val, key) {
@@ -2595,9 +2594,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 $scope.columnY1Axis.push(val);
                                 $scope.columnXAxis.push(val);
                             }
-
-
-                        })
+                        });
                     } else if (parseInt(value.xAxis) === 1) {
                         if ($scope.xColumn.displayName === widgetObj.displayName) {
                             $scope.hideSelectedColumn = true;
@@ -2607,12 +2604,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                             }, 1000);
                         }
                     }
-
                 });
             }
         }
-
-        widget.columns.splice(index, 1);
+        widget.columns.splice(index, 1);        
         console.log("leng -->", widget.columns.length);
         if (widget.columns.length > 0) {
             $scope.saveBtnIsDisable = false;
