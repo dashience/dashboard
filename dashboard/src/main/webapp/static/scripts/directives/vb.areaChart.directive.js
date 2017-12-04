@@ -256,6 +256,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             '&widgetId=' + scope.widgetId +
                             '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
+                                
+                                
+                                
+                                console.log(response)
+                                
+                                
                         scope.loadingArea = false;
                         if (!response) {
                             scope.areaEmptyMessage = "No Data Found";
@@ -297,6 +303,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     }
                                 });
                             } else {
+                                console.log("max recode -->", chartMaxRecord.maxRecord);
                                 var responseObject = response.data;
                                 if (chartMaxRecord.maxRecord) {
                                     chartData = maximumRecord(chartMaxRecord, responseObject);
@@ -304,6 +311,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     chartData = responseObject;
                                 }
                             }
+                            console.log("chartData -->", chartData);
                             xTicks = [xAxis.fieldName];
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
@@ -382,6 +390,8 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     ySeriesData.unshift(value.fieldName);
                                     columns.push(ySeriesData);
                                 }
+                                console.log("********** bar chart directive **************");
+                                console.log("columns -->", columns);
 //                            angular.forEach(yAxis, function (value, key) {
 //                                ySeriesData = chartData.map(function (a) {
 //                                    return a[value.fieldName] || "0";
@@ -390,17 +400,19 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 //                                ySeriesData.unshift(value.fieldName);
 //                                columns.push(ySeriesData);
                             });
-                            var combined = {};
+
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+                            console.log("chartCombinationtypes -->", chartCombinationtypes);
+
                             var data = {
                                 x: xAxis.fieldName,
                                 columns: columns,
                                 labels: labels,
                                 type: 'area',
                                 axes: axes,
-                                types: combined
+                                types: chartCombinationtypes
                             };
                             console.log("data");
                             console.log(data);

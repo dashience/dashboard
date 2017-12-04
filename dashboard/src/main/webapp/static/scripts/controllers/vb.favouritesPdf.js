@@ -3,8 +3,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
     $scope.favPdfStartDate = $filter('date')(new Date($stateParams.startDate), 'MMM dd yyyy');//$filter(new Date($stateParams.startDate, 'MM/dd/yyyy'));
     $scope.favPdfEndDate = $filter('date')(new Date($stateParams.endDate), 'MMM dd yyyy'); //$filter(new Date($stateParams.endDate, 'MM/dd/yyyy'));
     $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
-    console.log("userId>>>>>>>>" + $stateParams.userId);
-
+  
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);
 
