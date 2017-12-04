@@ -1342,6 +1342,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.removeSelectedValue = function (widget, obj, index) {
+        var value1;
         widget.selectAll = 0;
 //        $scope.dispHideBuilder = true;
         widget.columns.splice(index, 1);
@@ -1353,6 +1354,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $timeout(function () {
             resetQueryBuilder();
         }, 40);
+
+        if (widget.columns.length > 0 || widget.selectAll === 1) {
+            value1 = widget.columns;
+            $scope.saveBtnIsDisable = checkValidationBySaveBtn("table", value1);
+        } else {
+            $scope.saveBtnIsDisable = checkValidationBySaveBtn("table", value1);
+        }
     };
 
     $scope.targetColors = [];
@@ -2543,19 +2551,20 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log("chartTypeName -->", chartTypeName);
         console.log("index -->", index);
         console.log("y1 column -->", $scope.y1Column);
-        console.log("************************ ADVANCED COLUMNS DELETE************");
+
 
         var value1, value2, value3;
 
         var widgetObj = widget.columns[index];
-        console.log("widgetObj -->", widgetObj);
         if (widget.chartType === 'table' || chartTypeName === 'table') {
-
             $scope.collectionFields.forEach(function (val, key) {
                 if (val.displayName === widgetObj.displayName) {
                     val.selectColumnDef = 0;
                 }
             });
+
+
+            console.log("************************ ADVANCED COLUMNS DELETE************");
         } else {
             if (widget.chartType === 'pie' || chartTypeName === 'pie') {
                 $scope.hideSelectedColumn = true;
@@ -2579,14 +2588,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.gaugeItem = "";
                 }
             } else if (widget.chartType === 'ticker' || chartTypeName === 'ticker') {
-                console.log("tickerItem -->", $scope.tickerItem);
                 $scope.tickerItem.forEach(function (val, key) {
                     $scope.hideSelectedColumn = true;
-                    console.log("ticker value -->", val.displayName);
-                    console.log("widget object -->", widgetObj.displayName);
 
                     if (val.displayName === widgetObj.displayName) {
-                        console.log("val -->", val);
                         /*
                          *  Removed because of issue in create widget
                          */
@@ -2612,7 +2617,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     }
                 });
             } else {
-                console.log("delete inside if loop -->", widget.columns);
                 widget.columns.forEach(function (value, key) {
                     if (parseInt(value.yAxis) === 1) {
                         $scope.y1Column.forEach(function (val, key) {
@@ -2663,18 +2667,28 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
 
         widget.columns.splice(index, 1);
-        widget.columns.filter(function (val) {
-            if (val.xAxis == 1) {
-                value1 = val;
+        if (chartTypeName === "table") {
+            if (widget.columns.length > 0 || widget.selectAll === 1) {
+                value1 = widget.columns;
+                $scope.saveBtnIsDisable = checkValidationBySaveBtn("table", value1);
+            } else {
+                $scope.saveBtnIsDisable = checkValidationBySaveBtn("table", value1);
             }
-            if (val.yAxis == 1) {
-                value2 = val;
-            }
-            if (val.yAxis == 2) {
-                value3 = val;
-            }
-        });
+        } else {
+            widget.columns.filter(function (val) {
+                if (val.xAxis == 1) {
+                    value1 = val;
+                }
+                if (val.yAxis == 1) {
+                    value2 = val;
+                }
+                if (val.yAxis == 2) {
+                    value3 = val;
+                }
+            });
+        }
         console.log("***************** DELETE COLUMNS ADVANCED MENU ***********************");
+        console.log("Widget Columns -->", widget.columns);
         console.log("chart Type -->", chartTypeName);
         console.log("XColumn -->", value1);
         console.log("y1column -->", value2);
