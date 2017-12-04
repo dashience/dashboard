@@ -61,7 +61,7 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '</div>' +
                 '<div class="col-xs-6 count">' +
                 '<small class="stats-label">{{thirdLevelTicker.tickerTitle?thirdLevelTicker.tickerTitle:thirdLevelTickerTitle}}</small>' +
-                '<h4>{{thirdLevelTicker.totalValue?thirdLevelTicker.totalValue:secondLevelTickerValue}}' +
+                '<h4>{{thirdLevelTicker.totalValue?thirdLevelTicker.totalValue:thirdLevelTickerValue}}' +
                 '<span ng-click="changeComparisonType(\'thirdLevel\')" ' +
                 'style="cursor:pointer" ng-if="percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) && showThirdDifference == true" ' +
                 'ng-class="{\'arrow-up\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) > 0), \'arrow-down\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
