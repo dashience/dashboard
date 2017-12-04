@@ -738,7 +738,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 } else {
                     value.selectColumnDef = 0;
                 }
-                console.log("machField -->",machField);
+                console.log("machField -->", machField);
                 var index = $scope.collectionFields.indexOf(machField);
                 console.log($scope.collectionFields[index]);
 //                $scope.collectionFields.splice(index, 1);
@@ -779,10 +779,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.columnPieYAxis.splice(indexY, 1);
             }
 
-            if (widget.chartType === 'ticker') {
-                $scope.collectionFields = getUnMatchedColumns($scope.collectionFields, getWidgetColumns);
-            }
-
+//            if (widget.chartType === 'ticker') {
+//                $scope.collectionFields = getUnMatchedColumns($scope.collectionFields, getWidgetColumns);
+//            }
+//
             if (widget.chartType === 'funnel') {
                 $scope.collectionFields = getUnMatchedColumns($scope.collectionFields, getWidgetColumns);
             }
@@ -1983,8 +1983,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
         value1 = widgetObj.columns;
         $scope.tickerItem = widgetObj.columns;
+        if (widgetObj.columns.length > 0) {
+            value1 = 1;
+        }
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(widgetObj.chartType, value1);
-        console.log("ticker widget columns -->",$scope.collectionFields);
+        console.log("ticker widget columns -->", $scope.collectionFields);
     };
     /*
      * 
@@ -2542,7 +2545,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log("y1 column -->", $scope.y1Column);
         console.log("************************ ADVANCED COLUMNS DELETE************");
 
-
+        var value1, value2, value3;
 
         var widgetObj = widget.columns[index];
         console.log("widgetObj -->", widgetObj);
@@ -2610,7 +2613,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 });
             } else {
                 console.log("delete inside if loop -->", widget.columns);
-
                 widget.columns.forEach(function (value, key) {
                     if (parseInt(value.yAxis) === 1) {
                         $scope.y1Column.forEach(function (val, key) {
@@ -2620,7 +2622,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 $scope.columnY2Axis.push(val);
                                 $scope.columnXAxis.push(val);
                             }
+
                         });
+//                        if ($scope.y1Column.length > 0) {
+//                            $scope.y1Column.forEach(function (val, key) {
+//                                value2 = val;
+//                            });
+//                        }
+
                     } else if (parseInt(value.yAxis) === 2) {
                         $scope.y2Column.forEach(function (val, key) {
                             if (val.displayName === widgetObj.displayName) {
@@ -2630,8 +2639,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 $scope.columnXAxis.push(val);
                             }
 
-
                         })
+//                        if ($scope.y2Column.length > 0) {
+//                            $scope.y2Column.forEach(function (val, key) {
+//                                value3 = val;
+//                            });
+//                        }
                     } else if (parseInt(value.xAxis) === 1) {
                         if ($scope.xColumn.displayName === widgetObj.displayName) {
                             $scope.hideSelectedColumn = true;
@@ -2640,6 +2653,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 $scope.hideSelectedColumn = false;
                             }, 1000);
                         }
+//                        else {
+//                            value1 = $scope.xColumn.displayName;
+//                        }
                     }
 
                 });
@@ -2647,12 +2663,25 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         }
 
         widget.columns.splice(index, 1);
-        console.log("leng -->", widget.columns.length);
-        if (widget.columns.length > 0) {
-            $scope.saveBtnIsDisable = false;
-        } else {
-            $scope.saveBtnIsDisable = true;
-        }
+        widget.columns.filter(function (val) {
+            if (val.xAxis == 1) {
+                value1 = val;
+            }
+            if (val.yAxis == 1) {
+                value2 = val;
+            }
+            if (val.yAxis == 2) {
+                value3 = val;
+            }
+        });
+        console.log("***************** DELETE COLUMNS ADVANCED MENU ***********************");
+        console.log("chart Type -->", chartTypeName);
+        console.log("XColumn -->", value1);
+        console.log("y1column -->", value2);
+        console.log("y2column -->", value3);
+        console.log("***************** DELETE COLUMNS ADVANCED MENU ***********************");
+        $scope.saveBtnIsDisable = checkValidationBySaveBtn(chartTypeName, value1, value2, value3);
+        console.log("Save Btn Status -->", $scope.saveBtnIsDisable);
     };
     $scope.undo = function (obj, status) {
         var widget = obj//$scope.undoWidget;
@@ -2683,8 +2712,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log('gaugeItem', value1);
         console.log('tickerItem', value1);
         console.log('funnelItem', value1);
-        if (selectedChart !== "pie" && (value1 && (value2 || value3))) {
-            returnStatus = false;
+        if ((selectedChart === "area" || selectedChart === "line" || selectedChart === "bar" ||
+                selectedChart === "horizontal" || selectedChart === "stackedbar" || selectedChart === "scatter") && value1) {
+            if (!value2 && value3) {
+                returnStatus = true;
+            } else if (value2 && !value3) {
+                returnStatus = false;
+            } else if (!value2 && !value3) {
+                returnStatus = true;
+            }
         } else if (selectedChart === "pie" && (value1 && value2)) {
             returnStatus = false;
         } else if ((selectedChart == 'ticker' || selectedChart === 'funnel' ||
