@@ -778,7 +778,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.columnPieXAxis.splice(indexX, 1);
                 $scope.columnPieYAxis.splice(indexY, 1);
             }
-
             if (widget.chartType === 'ticker') {
                 $scope.collectionFields = getUnMatchedColumns($scope.collectionFields, getWidgetColumns);
             }
@@ -786,10 +785,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             if (widget.chartType === 'funnel') {
                 $scope.collectionFields = getUnMatchedColumns($scope.collectionFields, getWidgetColumns);
             }
-
-
-
-
             angular.forEach(y1Column, function (value, key) {
                 var dataY1 = $scope.columnY1Axis.find(function (item, i) {
                     if (item.fieldName === value.fieldName) {
@@ -1975,7 +1970,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         value1 = widgetObj.columns;
         $scope.tickerItem = widgetObj.columns;
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(widgetObj.chartType, value1);
-        console.log("ticker widget columns -->",$scope.collectionFields);
+        console.log("ticker widget columns -->", $scope.collectionFields);
     };
     /*
      * 
@@ -2003,6 +1998,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (!gaugeItem) {
             return;
         }
+        collectionFields
         if (gaugeItem.length === 0) {
             widgetObj.columns = "";
         } else {
