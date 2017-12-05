@@ -1099,7 +1099,8 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              line-Chart-Directive 
-                             widget-Obj="{{displayPreviewChart}}">                                            
+                             widget-Obj="{{displayPreviewChart}}"
+                             compare-Date-Range="{{compareDateRange}}">
                         </div>
                     </div>
                 </div>
@@ -1109,7 +1110,8 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              area-Chart-Directive 
-                             widget-Obj="{{displayPreviewChart}}">                         
+                             widget-Obj="{{displayPreviewChart}}"
+                             compare-Date-Range="{{compareDateRange}}">
                         </div>
                     </div>
                 </div>
@@ -1120,7 +1122,8 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              widget-Obj="{{displayPreviewChart}}"
-                             is-Horizontal-Bar="{{displayPreviewChart.isHorizontalBar}}">                         
+                             is-Horizontal-Bar="{{displayPreviewChart.isHorizontalBar}}"
+                             compare-Date-Range="{{compareDateRange}}">
                         </div>
                     </div>
                 </div>                
@@ -1131,7 +1134,8 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              widget-Obj="{{displayPreviewChart}}"
-                             is-Horizontal-Bar="{{displayPreviewChart.isHorizontalBar}}">                         
+                             is-Horizontal-Bar="{{displayPreviewChart.isHorizontalBar}}"
+                             compare-Date-Range="{{compareDateRange}}">
                         </div>
                     </div>
                 </div>
@@ -1147,11 +1151,11 @@
                 </div> 
                 <div ng-if="chartTypeName === 'stackedbar'">
                     <div>
-                        <div stacked-Bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 
+                        <div stacked-Bar-Chart-Directive stacked-Bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
-                             stacked-Bar-Chart-Directive 
-                             widget-Obj="{{displayPreviewChart}}">                         
+                             widget-Obj="{{displayPreviewChart}}"
+                             compare-Date-Range="{{compareDateRange}}"> 
                         </div>
                     </div>                            
                 </div>
@@ -1161,7 +1165,8 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              scatter-Chart-Directive 
-                             widget-Obj="{{displayPreviewChart}}">                                            
+                             widget-Obj="{{displayPreviewChart}}"
+                             compare-Date-Range="{{compareDateRange}}">                                            
                         </div>
                     </div>
                 </div>
