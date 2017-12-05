@@ -752,7 +752,8 @@
                     <div class="col-sm-12">
                         <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge'">
                             <label ng-if="hideSelectedColumn === false;" translate>Gauge</label>
-                            <select ng-if="hideSelectedColumn === false;" class="form-control"  ng-model="gaugeItem" ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                            <select ng-if="hideSelectedColumn === false;" class="form-control"  ng-model="gaugeItem" 
+                                    ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
                                     ng-change="gauge(widgetObj, gaugeItem)">                
                             </select>
                         </div>    
