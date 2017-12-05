@@ -405,17 +405,14 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
                             console.log("chartCombinationtypes -->", chartCombinationtypes);
-                            var types = {
-                                sessions: "bar",
-                                visits: "line"
-                            };
+
                             var data = {
                                 x: xAxis.fieldName,
                                 columns: columns,
                                 labels: labels,
                                 type: 'area',
                                 axes: axes,
-                                types: types
+                                types: chartCombinationtypes
                             };
                             console.log("data");
                             console.log(data);

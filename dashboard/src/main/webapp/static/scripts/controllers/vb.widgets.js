@@ -1344,6 +1344,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.removeSelectedValue = function (widget, obj, index) {
+        var value1;
         widget.selectAll = 0;
 //        $scope.dispHideBuilder = true;
         widget.columns.splice(index, 1);
@@ -1355,6 +1356,13 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $timeout(function () {
             resetQueryBuilder();
         }, 40);
+
+        if (widget.columns.length > 0 || widget.selectAll === 1) {
+            value1 = widget.columns;
+            $scope.saveBtnIsDisable = checkValidationBySaveBtn("table", value1);
+        } else {
+            $scope.saveBtnIsDisable = checkValidationBySaveBtn("table", value1);
+        }
     };
 
     $scope.targetColors = [];
@@ -1822,6 +1830,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 value2 = val;
             }
         });
+
+        console.log("Y1 axis -->", widget.columns);
+        console.log("chartType Name -->", chartTypeName);
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(widget.chartType, value1, value2);
     };
     $scope.y2Column = [];
@@ -2529,8 +2540,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.advanced = false;
     }
     $scope.deleteColumn = function (widget, chartTypeName, index) {
-        //console.log(chartTypeName);
-
         /*
          * 
          * @type @var;chartTypeName
@@ -2540,24 +2549,22 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         chartTypeName = chartType;
 
         console.log("************************ ADVANCED COLUMNS DELETE************");
-
         console.log("widget -->", widget);
         console.log("chartTypeName -->", chartTypeName);
         console.log("index -->", index);
         console.log("y1 column -->", $scope.y1Column);
-        console.log("************************ ADVANCED COLUMNS DELETE************");
+
 
         var value1, value2, value3;
 
         var widgetObj = widget.columns[index];
-        console.log("widgetObj -->", widgetObj);
         if (widget.chartType === 'table' || chartTypeName === 'table') {
-
             $scope.collectionFields.forEach(function (val, key) {
                 if (val.displayName === widgetObj.displayName) {
                     val.selectColumnDef = 0;
                 }
             });
+            console.log("************************ ADVANCED COLUMNS DELETE************");
         } else {
             if (widget.chartType === 'pie' || chartTypeName === 'pie') {
                 $scope.hideSelectedColumn = true;
@@ -2578,17 +2585,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
             } else if (widget.chartType === 'gauge' || chartTypeName === 'gauge') {
                 if ($scope.gaugeItem.displayName === widgetObj.displayName) {
+                    $scope.hideSelectedColumn = true;
                     $scope.gaugeItem = "";
+                    setTimeout(function () {
+                        $scope.hideSelectedColumn = false;
+                    }, 1000);
                 }
             } else if (widget.chartType === 'ticker' || chartTypeName === 'ticker') {
-                console.log("tickerItem -->", $scope.tickerItem);
                 $scope.tickerItem.forEach(function (val, key) {
                     $scope.hideSelectedColumn = true;
-                    console.log("ticker value -->", val.displayName);
-                    console.log("widget object -->", widgetObj.displayName);
-
                     if (val.displayName === widgetObj.displayName) {
-                        console.log("val -->", val);
                         /*
                          *  Removed because of issue in create widget
                          */
@@ -2607,14 +2613,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.hideSelectedColumn = true
                     if (val.displayName === widgetObj.displayName) {
                         var chartIndex = $scope.funnelItem.indexOf(val);
-//                        $scope.funnelItem.splice(chartIndex, 1);
-//                        setTimeout(function () {
-//                            $scope.hideSelectedColumn = false;
-//                        }, 1000);
                     }
                 });
             } else {
-                console.log("delete inside if loop -->", widget.columns);
                 widget.columns.forEach(function (value, key) {
                     if (parseInt(value.yAxis) === 1) {
                         $scope.y1Column.forEach(function (val, key) {
@@ -2624,13 +2625,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 $scope.columnY2Axis.push(val);
                                 $scope.columnXAxis.push(val);
                             }
-
                         });
-//                        if ($scope.y1Column.length > 0) {
-//                            $scope.y1Column.forEach(function (val, key) {
-//                                value2 = val;
-//                            });
-//                        }
+                        /*
+                         * 
+                         * @type type
+                         * The below code is use for edit widget
+                         * In edit widget if we remove y1axis in advanced menu, its removed from yaxis but not pushing in the list
+                         */
+                        var index = $scope.columnY1Axis.indexOf(widgetObj);
+                        if (index === -1) {
+                            $scope.columnY1Axis.push(widgetObj);
+                        }
 
                     } else if (parseInt(value.yAxis) === 2) {
                         $scope.y2Column.forEach(function (val, key) {
@@ -2640,13 +2645,17 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 $scope.columnY1Axis.push(val);
                                 $scope.columnXAxis.push(val);
                             }
-
-                        })
-//                        if ($scope.y2Column.length > 0) {
-//                            $scope.y2Column.forEach(function (val, key) {
-//                                value3 = val;
-//                            });
-//                        }
+                        });
+                        /*
+                         * 
+                         * @type type
+                         * The below code is use for edit widget
+                         * In edit widget if we remove y1axis in advanced menu, its removed from yaxis but not pushing in the list
+                         */
+                        var index = $scope.columnY2Axis.indexOf(widgetObj);
+                        if (index === -1) {
+                            $scope.columnY2Axis.push(widgetObj);
+                        }
                     } else if (parseInt(value.xAxis) === 1) {
                         if ($scope.xColumn.displayName === widgetObj.displayName) {
                             $scope.hideSelectedColumn = true;
@@ -2655,27 +2664,34 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                                 $scope.hideSelectedColumn = false;
                             }, 1000);
                         }
-//                        else {
-//                            value1 = $scope.xColumn.displayName;
-//                        }
                     }
                 });
             }
         }
 
         widget.columns.splice(index, 1);
-        widget.columns.filter(function (val) {
-            if (val.xAxis == 1) {
-                value1 = val;
+        if (chartTypeName === "table" || chartTypeName === "ticker" || chartTypeName === "funnel") {
+            if (widget.columns.length > 0 || widget.selectAll === 1) {
+                value1 = widget.columns;
+                $scope.saveBtnIsDisable = checkValidationBySaveBtn(chartTypeName, value1);
+            } else {
+                $scope.saveBtnIsDisable = checkValidationBySaveBtn(chartTypeName, value1);
             }
-            if (val.yAxis == 1) {
-                value2 = val;
-            }
-            if (val.yAxis == 2) {
-                value3 = val;
-            }
-        });
+        } else {
+            widget.columns.filter(function (val) {
+                if (val.xAxis == 1) {
+                    value1 = val;
+                }
+                if (val.yAxis == 1) {
+                    value2 = val;
+                }
+                if (val.yAxis == 2) {
+                    value3 = val;
+                }
+            });
+        }
         console.log("***************** DELETE COLUMNS ADVANCED MENU ***********************");
+        console.log("Widget Columns -->", widget.columns);
         console.log("chart Type -->", chartTypeName);
         console.log("XColumn -->", value1);
         console.log("y1column -->", value2);
@@ -2714,7 +2730,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         console.log('tickerItem', value1);
         console.log('funnelItem', value1);
         if ((selectedChart === "area" || selectedChart === "line" || selectedChart === "bar" ||
-                selectedChart === "horizontal" || selectedChart === "stackedbar" || selectedChart === "scatter") && value1) {
+                selectedChart === "horizontalBar" || selectedChart === "combination" || selectedChart === "stackedbar" ||
+                selectedChart === "scatter") && value1) {
             if (!value2 && value3) {
                 returnStatus = true;
             } else if (value2 && !value3) {

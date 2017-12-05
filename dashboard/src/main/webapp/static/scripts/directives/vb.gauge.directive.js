@@ -22,6 +22,9 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
         link: function (scope, element, attr) {
             scope.loadingGauge = true;
 
+            if (!scope.gaugeColumns) {
+                return;
+            }
             var gaugeColumnsObj = JSON.parse(scope.gaugeColumns);
             var fieldName = gaugeColumnsObj[0].fieldName;
 
