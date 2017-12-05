@@ -878,7 +878,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //       
         localStorageService.set("selectedTableType", selectTableType);
 //        localStorageService.set("loadStatus", loadStatus);
-
+        console.log("")
 //            
         $scope.getTableType = selectTableType;
 

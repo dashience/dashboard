@@ -2044,7 +2044,8 @@ public class ProxyController {
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String linkedinAccessToken = getAccountId(accountProperty, "linkedinAccessToken");
+       String linkedinAccessToken = getAccountId(accountProperty, "linkedinAccessToken");
+ //       String linkedinAccessToken = "AQUdoyU6zxDDcLR8b0FLkAfQPsTiwsy5UUccA15GRRtx-U3cP_VRf8nUdfkM5iDlUGT6ECYE4k8ibguWvOgWwKY8yn5KGvduAob-VXvP5qyJKb8ZxDgnJixyHOMzf4f3ReMWBHK2p9vGuENCG5iP8Iqr_K6qN-1dwGJw3WnQ-YasfhnQ19JN9I9lhHXWGbPZajNjAtcV4VkuduCNfF2UhaHYQgbZtA3XIc8_dvF3P0Npg-tD8BsLQOVfKpWFcMZ0SrFdNzOjq9OK4NkD1Y9Kb2TTIccOZQ7rQnqLUcVevI1joOambAhO4uxn4AmMCym8VsXBe6grJYgbJtDbB8EzJz1bhsN-hA";
         String linkedinCompanyId = getAccountId(accountProperty, "linkedinCompanyId");
 
         try {
