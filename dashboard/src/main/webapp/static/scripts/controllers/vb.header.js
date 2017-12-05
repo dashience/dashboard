@@ -359,6 +359,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
         } catch (e) {
         }
+        console.log("StartDate-------->",startDate);
+        console.log("EndDate--------->",endDate);
         $stateParams.startDate = startDate;
         $stateParams.endDate = endDate;
         if ($scope.getCurrentPage() === "dashboard") {
@@ -742,7 +744,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         });
 
         $(document).on('click', '.applyBtn', function () {
-            //$scope.loadNewUrl();
+            $scope.loadNewUrl();
         });
         $(".ranges ul").find("li").addClass("custom-picker-dashboard");
         $(document).on("click", ".ranges ul li", function (e) {
@@ -862,6 +864,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         $scope.firstDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY');
         $scope.lastDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY');
+        
+//        $stateParams.startDate = $scope.firstDate;
+//        $stateParams.endDate = $scope.lastDate;
         var selectTableType;
         if (type == true) {
             selectTableType = "compareOn";
