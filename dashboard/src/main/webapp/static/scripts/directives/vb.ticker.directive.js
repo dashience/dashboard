@@ -13,6 +13,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 '</div>' +
                 '<div class="m-t-xl">' +
                 '<h3 class="m-b-xs text-success" style="color:{{colorName}};">{{firstLevelTicker.totalValue}}' +
+                '<span class="vertical"></span>'+'<span class="icon">'+'5%'+'</span>'+'<span><i class="fa fa-caret-up fa-1x"></i></span>'+
                 '<div class="icon pull-right" ng-hide="hideEmptyTicker"><i class="{{selectedChartIcon}}" aria-hidden="true"></i></div>' +
                 '</h3>' +
                 '<span class="font-bold no-margins">' +
