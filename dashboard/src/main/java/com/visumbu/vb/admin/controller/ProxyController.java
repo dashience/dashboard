@@ -2400,14 +2400,23 @@ public class ProxyController {
         String twitterAccountId = getAccountId(accountProperty, "twitterAccountId");
         String twitterScreenName = getAccountId(accountProperty, "twitterScreenName");
         String twitterOauthToken = getAccountId(accountProperty, "twitterOauthToken");
-        String twitterOauthSignature = getAccountId(accountProperty, "twitterOauthSignature");
-        String twitterOauthNonce = getAccountId(accountProperty, "twitterOauthNonce");
+//        String twitterOauthSignature = getAccountId(accountProperty, "twitterOauthSignature");
+//        String twitterOauthNonce = getAccountId(accountProperty, "twitterOauthNonce");
         String twitterOauthConsumerKey = getAccountId(accountProperty, "twitterConsumerKey");
+        String twitterOauthConsumerSecretKey = getAccountId(accountProperty, "twitterConsumerSecret");
+        String twitterOauthTokenSecretKey = getAccountId(accountProperty, "twitterTokenSecret");
+        
+        Map<String,String> properties = new LinkedHashMap<>();
+        properties.put("oauth_consumer_key",twitterOauthConsumerKey);
+        properties.put("oauth_token",twitterOauthToken);
+        properties.put("user_id",twitterAccountId);
+        properties.put("screen_name", twitterScreenName);
+        properties.put("consumerSecret", twitterOauthConsumerSecretKey);
+        properties.put("tokenSecret", twitterOauthTokenSecretKey);
 
         try {
             Long twitterOganicAccountId = Long.parseLong(twitterAccountId);
-            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, twitterAccountId, twitterScreenName,
-                    twitterOauthToken, twitterOauthSignature, twitterOauthNonce, twitterOauthConsumerKey, startDate, endDate, timeSegment, productSegment);
+            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName,properties, startDate, endDate, timeSegment, productSegment);
             return twitterReport;
         } catch (NumberFormatException ex) {
             return null;

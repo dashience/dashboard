@@ -843,6 +843,12 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
 
+    $scope.resetTimeProduct = function () {
+        console.log("reset--------->");
+        $scope.timeSegments = [];
+        $scope.productSegments = [];
+    };
+
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
         $scope.hideSelectedColumn = true;
         $scope.queryBuilderList = "";
@@ -877,7 +883,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             dataSourcePassword = '';
         }
-
         var setTimeSegment = widget.timeSegment ? widget.timeSegment.type : null;
         var setProductSegment = widget.productSegment ? widget.productSegment.type : null;
         var setNetworkType = widget.networkType ? widget.networkType.type : null;
@@ -941,7 +946,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             resetQueryBuilder();
         });
     };
-
     $scope.selectWidgetDataSource = function (dataSourceName) {
         if (!dataSourceName) {
             return;
@@ -961,7 +965,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.gaugeItem = "";
         $http.get('admin/ui/dataSet/publishDataSet').success(function (response) {
             $scope.dataSets = [];
-
             angular.forEach(response, function (value, key) {
                 if (!value.dataSourceId) {
                     return;
@@ -972,7 +975,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         });
     };
-
     function getSegments(widget) {
         var timeSegmentType = widget.timeSegment;
         var productSegmentType = widget.productSegment;
@@ -981,8 +983,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             return;
         }
         var getReportName = widget.dataSetId ? widget.dataSetId.reportName : null;
-
         $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
+            console.log("response ------", response)
             var getDataSetObjs = response;
             var getDataSetPerformance = getDataSetObjs[getDataSourceType];
             if (!getDataSetPerformance) {

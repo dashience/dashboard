@@ -1544,15 +1544,45 @@
     "pinterest": [
         {
             "type": "getTopBoards",
-            "name": "getTopBoards"
+            "name": "getTopBoards",
+            "timeSegments": [
+                {
+                    "name": "none",
+                    "type": "None"
+                }],
+            "productSegments": [
+                {
+                    "name": "none",
+                    "type": "None"
+                }]     
         },
         {
             "type": "getTopPins",
-            "name": "getTopPins"
+            "name": "getTopPins",
+            "timeSegments": [
+                {
+                    "name": "none",
+                    "type": "None"
+                }],
+            "productSegments": [
+                {
+                    "name": "none",
+                    "type": "None"
+                }]
         }, 
         {
             "type": "getOrganicData",
-            "name": "getOrganicData"
+            "name": "getOrganicData",
+            "timeSegments": [
+                {
+                    "name": "none",
+                    "type": "None"
+                }],
+            "productSegments": [
+                {
+                    "name": "none",
+                    "type": "None"
+                }]
         }
     ],
     "semRush": [

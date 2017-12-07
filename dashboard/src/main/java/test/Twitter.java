@@ -10,44 +10,136 @@ package test;
  * @author deeta
  */
 import com.visumbu.vb.bean.ColumnDef;
-import com.visumbu.vb.utils.JsonSimpleUtils;
+import com.visumbu.vb.utils.DateUtils;
+import static com.visumbu.vb.utils.DateUtils.dateToTimeStamp;
 import com.visumbu.vb.utils.Rest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.SignatureException;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
+import org.json.simple.parser.ParseException;
+import org.springframework.util.MultiValueMap;
+import com.visumbu.vb.utils.OauthAuthentication;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponents;
-import org.springframework.web.util.UriComponentsBuilder;
-import static test.Linkedin.getColumnDefObject;
+import org.springframework.util.LinkedMultiValueMap;
 
 public class Twitter {
 
-    private StringBuilder baseStringBuilder = new StringBuilder();
+//    private static String twitter_consumer_key = "3oaqt0QK31AGCAzHlX3c9xPbL";
+//    private static String twitter_consumer_secret = "AuVaSXpGPJWLYMCzDiera1avN8MfChN2mGysCmWeDXPzVlDVZC";
+//    private static String oauth_token = "780021988039335936-mst1OUPP5411m4YSiIEDYCUPUVhwjmm";
+//    private static String oauth_token_secret = "jhrtiSSryo6jF3Kj9z1cWKDGiUtrKyIQUZ44eG3xRI6rg";
+//    private static String oauth_version = "1.0";
+//    private static String oauth_signature_method = "HMAC-SHA1";
+//    private static String twitter_accountId = "780021988039335936";
+//    private static String twitter_screenName = "JungleSabari";
+//    private static String httpMethod = "GET";
 
-    public static void main(String args[]) throws ParseException {
+    public static void main(String args[]) throws ParseException, GeneralSecurityException, UnsupportedEncodingException {
+//        String httpMethod = "GET";
+//
+////        try {
+////        String Signature = generateSignature(signatureBaseString, consumerSecret, OAuthTokenSecret);
+//
+//        /*
+//             * - Working url 
+//         */
+////        String url = "https://api.twitter.com/1.1/statuses/mentions_timeline.json?&"
+////                + "oauth_consumer_key=3oaqt0QK31AGCAzHlX3c9xPbL&"
+////                + "oauth_signature_method=HMAC-SHA1&"
+////                + "oauth_timestamp=" + oauth_timestamp + "&"
+////                + "oauth_nonce=" + oauth_nonce + "&"
+////                + "oauth_version=1.0&"
+////                + "oauth_token=" + oauth_token + "&"
+////                + "oauth_signature=" + OauthAuthentication.encode(signature);
+////
+////        System.out.println("url --->" + url);
+////
+////        MultiValueMap<String, String> valueMap = null;
+////        String data = Rest.getData(url, valueMap);
+////
+////        System.out.println("*************************************");
+////        System.out.println(data);
+////        System.out.println("*************************************");
+////        String url = "https://api.twitter.com/1.1/users/lookup.json";
+//        String url = "https://api.twitter.com/1.1/users/lookup.json";
+//        getPagePerformanceReport(twitter_accountId, twitter_screenName, url);
+//
+ }
 
-//        String url = "https://api.twitter.com/1.1/users/lookup.json?screen_name=Enlivant&user_id=2964932975&oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1493999004&oauth_nonce=458542271&oauth_version=1.0&oauth_token=2964932975-RlNIi6QnoQtydUosFxNWUTuWgJlsJKCuGX4HmZS&oauth_signature=bfeMg7mE0MiRLT5xvvcb9fYa7KA%3D";
+//    private static List<Map<String, Object>> getPagePerformanceReport(String twitterAccountId, String twitterScreenName, String url) {
+//
+////        String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
+////        String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
+////        Long timeStamp = dateToTimeStamp(endDateStr);//to be added in feature 
+//        String queryString="screen_name=JungleSabari&user_id=780021988039335936";
+//        Map<String, Object> parameters = getAuthentionData(url,queryString);
+//        String twitterUrl = url
+//                + "?screen_name="+twitterScreenName+"&user_id="+twitter_accountId
+//                + "&oauth_consumer_key=" + parameters.get("twitter_consumer_key")
+//                + "&oauth_signature_method=" + parameters.get("oauth_signature_method")
+//                + "&oauth_timestamp=" + parameters.get("oauth_timestamp")
+//                + "&oauth_nonce=" + parameters.get("oauth_nonce")
+//                + "&oauth_version=1.0"
+//                + "&oauth_token=" + parameters.get("oauth_token")
+//                + "&oauth_signature=" + parameters.get("signature");
+//
+//        System.out.println("Twitter Url =====> " + twitterUrl);
+//
+//        String twitterData = Rest.getData(twitterUrl);
+//        System.out.println("twitterData--------" + twitterData);
+//        return null;
+//    }
+
+//    public static List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
+//        List<ColumnDef> columnDefs = new ArrayList<>();
+//        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+//            Map<String, Object> mapData = iterator.next();
+//            for (Map.Entry<String, Object> entrySet : mapData.entrySet()) {
+//                String key = entrySet.getKey();
+//
+//                Object value = entrySet.getValue();
+////                System.out.println(value.getClass());
+//                columnDefs.add(new ColumnDef(key, "string", key));
+//
+//            }
+//            return columnDefs;
+//        }
+//        return columnDefs;
+//    }
+
+    public static Map<String, String> getAuthentionData(Map<String, String> properties) {
+        String oauth_nonce = OauthAuthentication.oauthNonce();
+        String oauth_timestamp = OauthAuthentication.getTimeStamp();
+        properties.put("oauth_nonce", oauth_nonce);
+        properties.put("oauth_timestamp", oauth_timestamp);
+
+        String signature = OauthAuthentication.generateSignature(properties);
+        properties.put("oauth_signature", signature);
+        return properties;
+
+    }
+
+//        String url = "https://api.twitter.com/1.1/users/lookup.json?screen_name=Enlivant&user_id=2964932975&"
+//                + "oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1493999004&"
+//                + "oauth_nonce=458542271&oauth_version=1.0&"
+//                + "oauth_token=2964932975-RlNIi6QnoQtydUosFxNWUTuWgJlsJKCuGX4HmZS&"
+//                + "oauth_signature=bfeMg7mE0MiRLT5xvvcb9fYa7KA%3D";
+//
+//        String url="https://api.twitter.com/1.1/users/lookup.json?screen_name=Enlivant&user_id=2964932975&&"
+//                + "oauth_consumer_key=3oaqt0QK31AGCAzHlX3c9xPbL&"
+//                + "oauth_signature_method=HMAC-SHA1&"
+//                + "oauth_timestamp="+generateTimeStamp()+"&"
+//                +"oauth_nonce="+nonceGenerator()+"&"
+//                +"oauth_token="+oauthToken+"&"
+//                +"oauth_signature=";
 //
 //        MultiValueMap<String, String> valueMap = null;
 //        String data = Rest.getData(url, valueMap);
@@ -69,156 +161,17 @@ public class Twitter {
 //            twitterData.add(twitterMapData);
 //
 //        }
-        String httpMethod = "POST";
-        String baseUrl = "https://api.twitter.com/1.1/statuses/update.json";
-        String status =	"Hello Ladies + Gentlemen, a signed OAuth request!";
-        String includeEntities = "true";
-        String oauthSignatureMethod = "HMAC-SHA1";
-        String oauthConsumerKey = "3oaqt0QK31AGCAzHlX3c9xPbL";
-        String oauthVersion = "1.0";
-        String oauthToken = "780021988039335936-mst1OUPP5411m4YSiIEDYCUPUVhwjmm";
-        String timeStamp = new Twitter().generateTimeStamp();
-        String nonce = new Twitter().nonceGenerator();
-        String SigningKey = new Twitter().generateSigningKey();
-        Map<String, String> parameterList = new TreeMap<>();
-        parameterList.put("include_entities", includeEntities);
-        parameterList.put("oauth_consumer_key", oauthConsumerKey);
-        parameterList.put("oauth_nonce", nonce);
-        parameterList.put("oauth_signature_method", oauthSignatureMethod);
-        parameterList.put("oauth_timestamp", timeStamp);
-        parameterList.put("oauth_token", oauthToken);
-        parameterList.put("oauth_version", oauthVersion);
-        parameterList.put("status", status);
-        String baseString = new Twitter().GenerateBaseString(parameterList);
-        System.out.println("baseString------------------->"+baseString);
-        String signatureBaseString = new Twitter().SignatureBaseString(baseString, httpMethod, baseUrl);
-        System.out.println("baseString------------------->"+signatureBaseString);
-        try {
-            String Signature = HmacSha1Signature.calculateRFC2104HMAC(baseString, signatureBaseString);
-                    System.out.println("signature--------"+Signature);
-//        List<ColumnDef> columnDefObject = getColumnDefObject(twitterData);
-//        Map returnMap = new HashMap();
-//        returnMap.put("columnDef", columnDefObject);
-//        returnMap.put("data", twitterData);
-        } catch (SignatureException ex) {
-            Logger.getLogger(Twitter.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(Twitter.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InvalidKeyException ex) {
-            Logger.getLogger(Twitter.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-
-    public static List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
-        List<ColumnDef> columnDefs = new ArrayList<>();
-        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
-            Map<String, Object> mapData = iterator.next();
-            for (Map.Entry<String, Object> entrySet : mapData.entrySet()) {
-                String key = entrySet.getKey();
-
-                Object value = entrySet.getValue();
-//                System.out.println(value.getClass());
-                columnDefs.add(new ColumnDef(key, "string", key));
-
-            }
-            return columnDefs;
-        }
-        return columnDefs;
-    }
-
-    public static String getResponse(String url, String authorizationHeaders, org.springframework.util.MultiValueMap<String, String> params) {
-        String urlString = url;
-        if (params != null) {
-            UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(url).queryParams(params).build();
-            urlString = uriComponents.toUriString();
-        }
-        System.out.println("url -->" + urlString);
-        String jsonResponse = null;
-        try {
-            URL myURL = new URL(url);
-            HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
-            conn.setRequestProperty("Authorization", authorizationHeaders);
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Content-Type", "application/vnd.rtx.auth.v2.hal+json");
-            conn.setRequestProperty("Content-Language", "en-US");
-            conn.setUseCaches(false);
-            conn.setDoInput(true);
-            conn.setDoOutput(true);
-            int responseCode = conn.getResponseCode();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    (conn.getInputStream())));
-            String output;
-            while ((output = br.readLine()) != null) {
-                jsonResponse += output;
-            }
-        } catch (IOException e) {
-        }
-        return jsonResponse;
-    }
-
-    public String buildBasicAuthorizationString(String username, String password) {
-        String credentials = username + ":" + password;
-        return "Basic " + encodeData(credentials);
-    }
-
-    public static String encodeData(String encodeData) {
-        try {
-            String asB64 = Base64.getEncoder().encodeToString(encodeData.getBytes("utf-8"));
-            return asB64;
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(ReviewTracker.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public String nonceGenerator() {
-        SecureRandom secureRandom = new SecureRandom();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < 15; i++) {
-            stringBuilder.append(secureRandom.nextInt(10));
-        }
-        String randomNumber = stringBuilder.toString();
-        return randomNumber;
-    }
-
-    public String generateSigningKey() {
-        String consumerSecret = "AuVaSXpGPJWLYMCzDiera1avN8MfChN2mGysCmWeDXPzVlDVZC";
-        String encodedConsumerSecret = PercentEncoder.encode(consumerSecret);
-        String OAuthTokenSecret = "jhrtiSSryo6jF3Kj9z1cWKDGiUtrKyIQUZ44eG3xRI6rg";
-        String encodedOAuthToken = PercentEncoder.encode(OAuthTokenSecret);
-        return encodedConsumerSecret + "&" + encodedOAuthToken;
-    }
-
-    public String generateTimeStamp() {
-        Calendar tempcal = Calendar.getInstance();
-        long ts = tempcal.getTimeInMillis();// get current time in milliseconds
-        String oauth_timestamp = (new Long(ts / 1000)).toString();
-        return oauth_timestamp;
-    }
-
-    public String GenerateBaseString(Map<String, String> parameterList) {
-
-        for (Map.Entry<String, String> entry : parameterList.entrySet()) {
-            baseStringBuilder.append(PercentEncoder.encode(entry.getKey()));
-            baseStringBuilder.append("=");
-            baseStringBuilder.append(PercentEncoder.encode(entry.getValue()));
-            baseStringBuilder.append("&");
-        }
-        baseStringBuilder.deleteCharAt(baseStringBuilder.lastIndexOf("&"));
-        return baseStringBuilder.toString();
-    }
-
-    public String SignatureBaseString(String baseString, String httpMethod, String baseUrl) {
-        baseStringBuilder.replace(0, baseStringBuilder.length(),PercentEncoder.encode(baseString));
-        System.out.println("baseStringBuilder------------------->"+baseStringBuilder);
-        baseStringBuilder.insert(0, "&");
-        baseStringBuilder.insert(0, PercentEncoder.encode(baseUrl));
-        baseStringBuilder.insert(0, "&");
-        baseStringBuilder.insert(0, httpMethod.toUpperCase());
-        System.out.println("baseStringBuilder end------------------->"+baseStringBuilder);
-        return baseStringBuilder.toString();
-        
-    }
+//        String SigningKey = generateSigningKey();
+//        String consumerSecret = "AuVaSXpGPJWLYMCzDiera1avN8MfChN2mGysCmWeDXPzVlDVZC";
+//        String OAuthTokenSecret = "jhrtiSSryo6jF3Kj9z1cWKDGiUtrKyIQUZ44eG3xRI6rg";
+//        Map<String, String> parameterList = new TreeMap<>();
+//        parameterList.put("include_entities", includeEntities);
+//        parameterList.put("oauth_consumer_key", oauthConsumerKey);
+//        parameterList.put("oauth_nonce", nonce);
+//        parameterList.put("oauth_signature_method", oauthSignatureMethod);
+//        parameterList.put("oauth_timestamp", timeStamp);
+//        parameterList.put("oauth_token", oauthToken);
+//        parameterList.put("oauth_version", oauthVersion);
+//        String baseString = new Twitter().GenerateBaseString(parameterList);
+//        String signatureBaseString = new Twitter().SignatureBaseString(baseString, httpMethod, baseUrl);
 }
