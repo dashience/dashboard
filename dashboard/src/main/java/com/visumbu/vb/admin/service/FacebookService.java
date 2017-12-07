@@ -48,11 +48,11 @@ public class FacebookService {
     public final String APP_SECRET = "b6659b47ba7b2b11179247bb3cd84f70";
     // public final Long ACCOUNT_ID = ExampleConfig.ACCOUNT_ID;
 //    public final String APP_SECRET = ExampleConfig.APP_SECRET;
-    public final String BASE_URL = "https://graph.facebook.com/v2.9/act_";
-    public final String BASE_URL_FEED = "https://graph.facebook.com/v2.9/";
+    public final String BASE_URL = "https://graph.facebook.com/v2.11/act_";
+    public final String BASE_URL_FEED = "https://graph.facebook.com/v2.11/";
     //public final APIContext context = new APIContext(ACCESS_TOKEN).enableDebug(true);
-    
-    public  String ACCESS_TOKEN="";
+
+    public String ACCESS_TOKEN = "";
 
     public List<Map<String, Object>> get(String dataSet, Long accountId, Long organicAccountId, Date startDate, Date endDate, String aggregation, String productSegement) {
 //        this.ACCESS_TOKEN = accessToken;
@@ -60,7 +60,7 @@ public class FacebookService {
         //code to get access token from settings
         List<Settings> facebookAccessToken = settingsDao.getProperty("facebookAccessToken");
         String fbAccessToken = SettingsProperty.getSettingsProperty(facebookAccessToken, "facebookAccessToken");
-        this.ACCESS_TOKEN=fbAccessToken;
+        this.ACCESS_TOKEN = fbAccessToken;
 
         if (aggregation == null) {
             aggregation = "";

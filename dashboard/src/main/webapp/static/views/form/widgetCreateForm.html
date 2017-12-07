@@ -770,7 +770,7 @@
                                        on-select="ticker(widgetObj, tickerItem)" 
                                        on-remove="removedByTicker(widgetObj, $item, tickerItem)">
                                 <ui-select-match allow-clear="true" placeholder="{{'Ticker Value'|translate}}">{{$item.displayName}}</ui-select-match>
-                                <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
+                                <ui-select-choices repeat="currentColumn in tickerAxis  | filter:$select.search">
                                     {{currentColumn.displayName}}
                                 </ui-select-choices>
                             </ui-select>

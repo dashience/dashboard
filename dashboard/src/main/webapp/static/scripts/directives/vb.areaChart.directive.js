@@ -42,6 +42,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
+                            alert();
                             if (format.indexOf("%") > -1) {
                                 return d3.format(format)(value / 100);
                             }
@@ -54,7 +55,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     }
                 } else {
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
+                    labels["format"][displayName] = function (value) { 
                         return value;
                     };
                 }
@@ -256,12 +257,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             '&widgetId=' + scope.widgetId +
                             '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
-                                
-                                
-                                
-                                console.log(response)
-                                
-                                
+
+
+
+                        console.log(response)
+
+
                         scope.loadingArea = false;
                         if (!response) {
                             scope.areaEmptyMessage = "No Data Found";
