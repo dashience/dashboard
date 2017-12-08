@@ -2044,7 +2044,8 @@ public class ProxyController {
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String linkedinAccessToken = getAccountId(accountProperty, "linkedinAccessToken");
+       String linkedinAccessToken = getAccountId(accountProperty, "linkedinAccessToken");
+ //       String linkedinAccessToken = "AQUdoyU6zxDDcLR8b0FLkAfQPsTiwsy5UUccA15GRRtx-U3cP_VRf8nUdfkM5iDlUGT6ECYE4k8ibguWvOgWwKY8yn5KGvduAob-VXvP5qyJKb8ZxDgnJixyHOMzf4f3ReMWBHK2p9vGuENCG5iP8Iqr_K6qN-1dwGJw3WnQ-YasfhnQ19JN9I9lhHXWGbPZajNjAtcV4VkuduCNfF2UhaHYQgbZtA3XIc8_dvF3P0Npg-tD8BsLQOVfKpWFcMZ0SrFdNzOjq9OK4NkD1Y9Kb2TTIccOZQ7rQnqLUcVevI1joOambAhO4uxn4AmMCym8VsXBe6grJYgbJtDbB8EzJz1bhsN-hA";
         String linkedinCompanyId = getAccountId(accountProperty, "linkedinCompanyId");
 
         try {
@@ -2399,14 +2400,23 @@ public class ProxyController {
         String twitterAccountId = getAccountId(accountProperty, "twitterAccountId");
         String twitterScreenName = getAccountId(accountProperty, "twitterScreenName");
         String twitterOauthToken = getAccountId(accountProperty, "twitterOauthToken");
-        String twitterOauthSignature = getAccountId(accountProperty, "twitterOauthSignature");
-        String twitterOauthNonce = getAccountId(accountProperty, "twitterOauthNonce");
+//        String twitterOauthSignature = getAccountId(accountProperty, "twitterOauthSignature");
+//        String twitterOauthNonce = getAccountId(accountProperty, "twitterOauthNonce");
         String twitterOauthConsumerKey = getAccountId(accountProperty, "twitterConsumerKey");
+        String twitterOauthConsumerSecretKey = getAccountId(accountProperty, "twitterConsumerSecret");
+        String twitterOauthTokenSecretKey = getAccountId(accountProperty, "twitterTokenSecret");
+        
+        Map<String,String> properties = new LinkedHashMap<>();
+        properties.put("oauth_consumer_key",twitterOauthConsumerKey);
+        properties.put("oauth_token",twitterOauthToken);
+        properties.put("user_id",twitterAccountId);
+        properties.put("screen_name", twitterScreenName);
+        properties.put("consumerSecret", twitterOauthConsumerSecretKey);
+        properties.put("tokenSecret", twitterOauthTokenSecretKey);
 
         try {
             Long twitterOganicAccountId = Long.parseLong(twitterAccountId);
-            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, twitterAccountId, twitterScreenName,
-                    twitterOauthToken, twitterOauthSignature, twitterOauthNonce, twitterOauthConsumerKey, startDate, endDate, timeSegment, productSegment);
+            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName,properties, startDate, endDate, timeSegment, productSegment);
             return twitterReport;
         } catch (NumberFormatException ex) {
             return null;

@@ -791,6 +791,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.collectionFields = getUnMatchedColumns($scope.collectionFields, getWidgetColumns);
             }
 
+
             /*
              * This code to remove selected column from ticker when use click Edit Widget
              */
@@ -805,6 +806,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.tickerAxis.splice(index, 1);
             });
             console.log("tickerAxis -->", $scope.tickerAxis);
+
             angular.forEach(y1Column, function (value, key) {
                 var dataY1 = $scope.columnY1Axis.find(function (item, i) {
                     if (item.fieldName === value.fieldName) {
@@ -862,6 +864,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     }
 
+    $scope.resetTimeProduct = function () {
+        $scope.timeSegments = [];
+        $scope.productSegments = [];
+    };
+
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
         $scope.hideSelectedColumn = true;
         $scope.queryBuilderList = "";
@@ -897,7 +904,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             dataSourcePassword = '';
         }
-
         var setTimeSegment = widget.timeSegment ? widget.timeSegment.type : null;
         var setProductSegment = widget.productSegment ? widget.productSegment.type : null;
         var setNetworkType = widget.networkType ? widget.networkType.type : null;
@@ -964,8 +970,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             resetQueryBuilder();
         });
     };
-
     $scope.selectWidgetDataSource = function (dataSourceName) {
+        $scope.dataSets = [];
         if (!dataSourceName) {
             return;
         }
@@ -983,8 +989,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.funnelItem = "";
         $scope.gaugeItem = "";
         $http.get('admin/ui/dataSet/publishDataSet').success(function (response) {
-            $scope.dataSets = [];
-
             angular.forEach(response, function (value, key) {
                 if (!value.dataSourceId) {
                     return;
@@ -995,7 +999,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             });
         });
     };
-
     function getSegments(widget) {
         var timeSegmentType = widget.timeSegment;
         var productSegmentType = widget.productSegment;
@@ -1004,8 +1007,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             return;
         }
         var getReportName = widget.dataSetId ? widget.dataSetId.reportName : null;
-
         $http.get("static/datas/dataSets/dataSets.json").success(function (response) {
+            console.log("response ------", response)
             var getDataSetObjs = response;
             var getDataSetPerformance = getDataSetObjs[getDataSourceType];
             if (!getDataSetPerformance) {
@@ -2042,6 +2045,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (!gaugeItem) {
             return;
         }
+        collectionFields
         if (gaugeItem.length === 0) {
             widgetObj.columns = "";
         } else {
