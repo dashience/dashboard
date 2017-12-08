@@ -575,22 +575,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        }, {
-            type: 'screenName',
-            name: 'Screen Name',
-            timeSegments: [
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ]
-        }, {
+        },  {
             type: 'userTimeLine',
             name: 'User Performance Metrics',
             timeSegments: [

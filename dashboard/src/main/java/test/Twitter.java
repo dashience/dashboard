@@ -115,7 +115,7 @@ public class Twitter {
 //        return columnDefs;
 //    }
 
-    public static Map<String, String> getAuthentionData(Map<String, String> properties) {
+    public static Map<String, Object> getAuthentionData(Map<String, Object> properties) {
         String oauth_nonce = OauthAuthentication.oauthNonce();
         String oauth_timestamp = OauthAuthentication.getTimeStamp();
         properties.put("oauth_nonce", oauth_nonce);
