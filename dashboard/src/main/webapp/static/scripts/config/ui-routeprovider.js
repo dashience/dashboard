@@ -13,12 +13,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
             })
 
             .state("index.dashboard.widget", {
-                url: "/widget/:tabId?:startDate/:endDate",
+                url: "/widget/:tabId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/dashboard/widgets.html",
                 controller: 'WidgetController'
             })
             .state("index.editWidget", {
-                url: "/editWidget/:lan/:accountId/:accountName/:productId/:tabId/:widgetId?:startDate/:endDate",
+                url: "/editWidget/:lan/:accountId/:accountName/:productId/:tabId/:widgetId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/dashboard/editWidget.html",
                 controller: 'EditWidgetController'
             })
@@ -28,19 +28,19 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 controller: 'ReportIndexController'
             })
             .state("index.report.reports", {
-                url: "/report?:startDate/:endDate",
+                url: "/report?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/reports/reports.html",
                 controller: 'ReportController',
                 activetab: 'report'
             })
             .state("index.report.newOrEdit", {
-                url: "/newOrEdit/:reportId?:startDate/:endDate",
+                url: "/newOrEdit/:reportId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/reports/newOrEditReports.html",
                 controller: 'NewOrEditReportController',
                 activetab: 'report'
             })
             .state("index.widgetEditByReport", {
-                url: "/updateReportWidget/:lan/:accountId/:accountName/:reportId/:reportWidgetId?:startDate/:endDate",
+                url: "/updateReportWidget/:lan/:accountId/:accountName/:reportId/:reportWidgetId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/reports/editReportWidget.html",
                 controller: 'WidgetEditReportController'
             })
@@ -51,12 +51,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 //                activetab: 'template'
 //            })
             .state("index.dataSource", {
-                url: "/dataSource/:lan/:accountId/:accountName?:startDate/:endDate",
+                url: "/dataSource/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/source/dataSource.html",
                 controller: 'DataSourceController'
             })
             .state("index.dataSet", {
-                url: "/dataSet/:lan/:accountId/:accountName?:startDate/:endDate",
+                url: "/dataSet/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/source/dataSet.html",
                 controller: 'DataSetController'
             })
@@ -71,32 +71,32 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 //                controller: 'SchedulerController'
             })
             .state("index.schedulerIndex.scheduler", {
-                url: "/scheduler?:startDate/:endDate",
+                url: "/scheduler?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/scheduler/scheduler.html",
                 controller: 'SchedulerController'
             })
             .state("index.schedulerIndex.editOrNewScheduler", {
-                url: "/editOrNewScheduler/:schedulerId?:startDate/:endDate",
+                url: "/editOrNewScheduler/:schedulerId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/scheduler/newOrEditScheduler.html",
                 controller: 'NewOrEditSchedulerController'
             })
             .state("index.user", {
-                url: "/user/:lan/:accountId/:accountName?:startDate/:endDate",
+                url: "/user/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/admin/user.html",
                 controller: 'UserController'
             })
             .state("index.account", {
-                url: "/account/:lan/:accountId/:accountName?:startDate/:endDate",
+                url: "/account/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/admin/account.html",
                 controller: 'AccountController'
             })
             .state("index.agency", {
-                url: "/agency/:lan/:accountId/:accountName?:startDate/:endDate",
+                url: "/agency/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/admin/agency.html",
                 controller: 'AgencyController'
             })
             .state("index.fieldSettings", {
-                url: "/fieldSettings/:lan/:accountId/:accountName?:startDate/:endDate",
+                url: "/fieldSettings/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/fieldSettings/fieldSettings.html",
                 controller: 'FieldSettingsController'
             })
@@ -106,12 +106,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 //                controller: 'FavouritesController'
 //            })
             .state("index.viewFavouritesWidget", {
-                url: "/viewFavouritesWidget/:lan/:accountId/:accountName/:productId/:favouriteName?:startDate/:endDate",
+                url: "/viewFavouritesWidget/:lan/:accountId/:accountName/:productId/:favouriteName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/admin/viewFavouritesWidget.html",
                 controller: 'ViewFavouritesWidgetController'
             })
             .state("index.settings", {
-                url: "/settings?:startDate/:endDate",
+                url: "/settings?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/admin/settings.html",
                 controller: 'SettingsController'
             })

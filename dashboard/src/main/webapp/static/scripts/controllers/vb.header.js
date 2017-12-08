@@ -57,7 +57,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     templateId: $stateParams.templateId,
                     tabId: setTabId,
                     startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
+                    endDate: $stateParams.endDate,
+                    compareStatus: $scope.selectedTablesType,
+                    compareStartDate:  $scope.compare_startDate,
+                    compareEndDate:  $scope.compare_endDate
                 });
             });
         } else {
@@ -77,6 +80,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.accountName = $stateParams.accountName;
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
+        $scope.compareStatus= $scope.selectedTablesType;
+        $scope.compareStartDate=  $scope.compare_startDate;
+        $scope.compareEndDate=  $scope.compare_endDate;
     };
     $scope.product = [];
     $scope.selectAccount = {};
@@ -209,7 +215,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 templateId: $stateParams.templateId,
                 tabId: $stateParams.tabId,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "editWidget") {
             $state.go("index.editWidget", {
@@ -219,7 +228,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 tabId: $stateParams.tabId,
                 widgetId: $stateParams.widgetId,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "reports") {
             $state.go("index.report.reports", {
@@ -229,7 +241,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 productId: $stateParams.productId,
                 tabId: $stateParams.tabId,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "newOrEdit") {
             $state.go("index.report.newOrEdit", {
@@ -238,7 +253,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountName: $stateParams.accountName,
                 reportId: $stateParams.reportId,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "updateReportWidget") {
             $state.go("index.widgetEditByReport", {
@@ -248,7 +266,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 reportId: $stateParams.reportId,
                 reportWidgetId: $stateParams.reportWidgetId,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "dataSource") {
             $state.go("index.dataSource", {
@@ -256,7 +277,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "dataSet") {
             $state.go("index.dataSet", {
@@ -264,7 +288,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "scheduler") {
             $state.go("index.schedulerIndex.scheduler", {
@@ -272,7 +299,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
             $state.go("index.schedulerIndex.editOrNewScheduler", {
@@ -281,7 +311,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountName: $stateParams.accountName,
                 schedulerId: $stateParams.schedulerId,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "user") {
             $state.go("index.user", {
@@ -289,7 +322,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "account") {
             $state.go("index.account", {
@@ -297,7 +333,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "agency") {
             $state.go("index.agency", {
@@ -305,7 +344,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "fieldSettings") {
             $state.go("index.fieldSettings", {
@@ -313,7 +355,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
-                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate
+                endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "favourites") {
             $state.go("index.favourites", {
@@ -321,7 +366,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
             $state.go("index.viewFavouritesWidget", {
@@ -331,13 +379,19 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 productId: $stateParams.productId,
                 favouriteName: $stateParams.favouriteName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "settings") {
             $state.go("index.settings", {
                 lan: $stateParams.lan,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
@@ -359,8 +413,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
         } catch (e) {
         }
-        console.log("StartDate-------->",startDate);
-        console.log("EndDate--------->",endDate);
         $stateParams.startDate = startDate;
         $stateParams.endDate = endDate;
         if ($scope.getCurrentPage() === "dashboard") {
@@ -372,7 +424,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 templateId: $stateParams.templateId,
                 tabId: $stateParams.tabId,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "editWidget") {
             $state.go("index.editWidget", {
@@ -382,7 +437,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 tabId: $stateParams.tabId,
                 widgetId: $stateParams.widgetId,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "reports") {
             $state.go("index.report.reports", {
@@ -392,7 +450,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 productId: $stateParams.productId,
                 tabId: $stateParams.tabId,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "newOrEdit") {
             $state.go("index.report.newOrEdit", {
@@ -401,7 +462,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountName: $stateParams.accountName,
                 reportId: $stateParams.reportId,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "updateReportWidget") {
             $state.go("index.widgetEditByReport", {
@@ -411,7 +475,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 reportId: $stateParams.reportId,
                 reportWidgetId: $stateParams.reportWidgetId,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         }
 //        else if ($scope.getCurrentPage() === "franchiseMarketing") {
@@ -429,7 +496,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "dataSet") {
             $state.go("index.dataSet", {
@@ -437,7 +507,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "scheduler") {
             $state.go("index.schedulerIndex.scheduler", {
@@ -445,7 +518,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
             $state.go("index.schedulerIndex.editOrNewScheduler", {
@@ -454,7 +530,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountName: $stateParams.accountName,
                 schedulerId: $stateParams.schedulerId,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "user") {
             $state.go("index.user", {
@@ -462,7 +541,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "account") {
             $state.go("index.account", {
@@ -470,7 +552,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "agency") {
             $state.go("index.agency", {
@@ -478,7 +563,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "fieldSettings") {
             $state.go("index.fieldSettings", {
@@ -486,7 +574,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         }
 //        else if ($scope.getCurrentPage() === "tag") {
@@ -503,7 +594,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 accountId: $stateParams.accountId,
                 accountName: $stateParams.accountName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
             $state.go("index.viewFavouritesWidget", {
@@ -514,13 +608,19 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 //favouriteId: $stateParams.favouriteId,
                 favouriteName: $stateParams.favouriteName,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "settings") {
             $state.go("index.settings", {
                 lan: $stateParams.lan,
                 startDate: $stateParams.startDate,
-                endDate: $stateParams.endDate
+                endDate: $stateParams.endDate,
+                compareStatus: $scope.selectedTablesType,
+                compareStartDate:  $scope.compare_startDate,
+                compareEndDate:  $scope.compare_endDate
             });
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
@@ -744,7 +844,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         });
 
         $(document).on('click', '.applyBtn', function () {
-            $scope.loadNewUrl();
+//            $scope.loadNewUrl();
         });
         $(".ranges ul").find("li").addClass("custom-picker-dashboard");
         $(document).on("click", ".ranges ul li", function (e) {
@@ -864,7 +964,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         $scope.firstDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY');
         $scope.lastDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY');
-        
 //        $stateParams.startDate = $scope.firstDate;
 //        $stateParams.endDate = $scope.lastDate;
         var selectTableType;
@@ -886,8 +985,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
 //            
         $scope.getTableType = selectTableType;
-
-        $rootScope.$broadcast('loadStatusChanged', loadStatus);
+        $scope.selectedTablesType=selectTableType;
+        $scope.loadNewUrl();
+//        $rootScope.$broadcast('loadStatusChanged', loadStatus);
 //            
 
     };
