@@ -55,14 +55,19 @@ public class TwitterService {
     private List<Map<String, Object>> getScreenName(Map<String, String> properties) {
 
 //      String url = "https://api.twitter.com/1.1/account/settings.json?oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_token=780021988039335936-vO7cttPuJ84WByUjEGFySScV1BVGsW5&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1506527941&oauth_nonce=-400194625&oauth_version=1.0&oauth_signature=qDZoWATd7XwCuXuMNzNxZHPGAog%3D";
+        properties.put("baseUrl", "https://api.twitter.com/1.1/account/settings.json");
+        properties.put("oauth_signature_method", "HMAC-SHA1");
+        properties.put("oauth_version", "1.0");
+        properties.put("httpMethod", "GET");
+        Twitter.getAuthentionData(properties);
         String url = "https://api.twitter.com/1.1/account/settings.json?"
                 + "oauth_consumer_key=" + properties.get("oauth_consumer_key")
                 + "&oauth_token=" + properties.get("oauth_token")
                 + "&oauth_version=1.0"
                 + "&oauth_signature_method=HMAC-SHA1"
-                + "&oauth_timestamp="+ properties.get("oauth_timestamp")
-                + "&oauth_nonce="+ properties.get("oauth_nonce")
-                + "&oauth_signature="+properties.get("oauth_signature");
+                + "&oauth_timestamp=" + properties.get("oauth_timestamp")
+                + "&oauth_nonce=" + properties.get("oauth_nonce")
+                + "&oauth_signature=" + properties.get("oauth_signature");
 
         System.out.println("page performance url is -->" + url);
 
@@ -88,8 +93,11 @@ public class TwitterService {
             Date startDate, Date endDate, String timeSegment, String productSegment) {
         properties.put("baseUrl", "https://api.twitter.com/1.1/users/lookup.json");
         properties.put("queryString", "&screen_name=" + properties.get("screen_name") + "&user_id=" + properties.get("user_id"));
+        System.out.println("queryString-----" + properties.get("queryString"));
         properties.put("oauth_signature_method", "HMAC-SHA1");
         properties.put("oauth_version", "1.0");
+        properties.put("httpMethod", "GET");
+
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -101,10 +109,10 @@ public class TwitterService {
                     + "&oauth_consumer_key=" + properties.get("oauth_consumer_key")
                     + "&oauth_token=" + properties.get("oauth_token")
                     + "&oauth_signature_method=HMAC-SHA1"
-                    + "&oauth_timestamp="+ properties.get("oauth_timestamp")
-                    + "&oauth_nonce="+properties.get("oauth_timestamp")
+                    + "&oauth_timestamp=" + properties.get("oauth_timestamp")
+                    + "&oauth_nonce=" + properties.get("oauth_nonce")
                     + "&oauth_version=1.0"
-                    + "&oauth_signature="+properties.get("oauth_signature");
+                    + "&oauth_signature=" + properties.get("oauth_signature");
 
             System.out.println("Twitter Url =====> " + twitterUrl);
 
@@ -147,17 +155,22 @@ public class TwitterService {
         int ownTweet = 0, retweet = 0;
         long ownTweetLikes = 0, retweetLikes = 0;
 //        String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=SivanesanGovind&user_id=2526475147&oauth_consumer_key=FH0z2IiKd46IHVrftBXhyyGjY&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1506528376&oauth_nonce=EwlN94AhGNf&oauth_version=1.0&oauth_token=2526475147-SJeXiGSn6P9Fg1N4AZtACrzdANEz0y9wQ32pncu&oauth_signature=3zFPKetFk6O0Hzyo5ClCVksLW5Q%3D";
-
+        properties.put("baseUrl", "https://api.twitter.com/1.1/statuses/user_timeline.json");
+        properties.put("queryString", "&screen_name=" + properties.get("screen_name") + "&user_id=" + properties.get("user_id"));
+        properties.put("oauth_signature_method", "HMAC-SHA1");
+        properties.put("oauth_version", "1.0");
+        properties.put("httpMethod", "GET");
+        Twitter.getAuthentionData(properties);
         String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?"
                 + "screen_name=" + properties.get("screen_name")
                 + "&user_id=" + properties.get("user_id")
                 + "&oauth_consumer_key=" + properties.get("oauth_consumer_key")
                 + "&oauth_token=" + properties.get("oauth_token")
                 + "&oauth_signature_method=HMAC-SHA1"
-                + "&oauth_timestamp="+ properties.get("oauth_timestamp")
-                + "&oauth_nonce="+ properties.get("oauth_nonce")
+                + "&oauth_timestamp=" + properties.get("oauth_timestamp")
+                + "&oauth_nonce=" + properties.get("oauth_nonce")
                 + "&oauth_version=1.0"
-                + "&oauth_signature="+ properties.get("oauth_signature");
+                + "&oauth_signature=" + properties.get("oauth_signature");
         MultiValueMap<String, String> valueMap = null;
         String data = Rest.getData(url, valueMap);
 

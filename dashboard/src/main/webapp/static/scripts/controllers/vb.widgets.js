@@ -844,7 +844,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     $scope.resetTimeProduct = function () {
-        console.log("reset--------->");
         $scope.timeSegments = [];
         $scope.productSegments = [];
     };
@@ -947,6 +946,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
     };
     $scope.selectWidgetDataSource = function (dataSourceName) {
+        $scope.dataSets = [];
         if (!dataSourceName) {
             return;
         }
@@ -964,7 +964,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.funnelItem = "";
         $scope.gaugeItem = "";
         $http.get('admin/ui/dataSet/publishDataSet').success(function (response) {
-            $scope.dataSets = [];
             angular.forEach(response, function (value, key) {
                 if (!value.dataSourceId) {
                     return;
