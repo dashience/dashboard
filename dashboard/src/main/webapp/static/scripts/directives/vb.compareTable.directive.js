@@ -25,7 +25,7 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                 '<div>' +
                 '<span>{{column.fieldName}}</span>' +
                 '<span class="pull-right pdfButton">' +
-                '<button class="btn btn-success btn-xs" ng-click="changeExpand(column); showCombainColumn(column, $index)">' +
+                '<button class="btn btn-success btn-xs" ng-click="changeExpand(column); showCombainColumn(column, $index)" ng-attr-title="{{(column.expand != true)?\'Expand\':\'Reduce\'}}">' +
                 '<i ng-if="!column.expand" class="fa fa-plus"></i>' +
                 '<i ng-if="column.expand" class="fa fa-minus"></i>' +
                 '</button>' +
@@ -121,6 +121,13 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
 //                '</tr>' +
 //                '</table></div>',
         link: function (scope, element, attr) {
+            try {
+                var columnsList = JSON.parse(scope.widgetColumns)
+            } catch (exception) {
+
+            }
+
+
             scope.format = function (column, value) {
                 if (!value) {
                     return "-";
@@ -131,9 +138,8 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                 return value;
             };
             scope.columns = [];
-            console.log(JSON.parse(scope.widgetColumns))
             if (scope.widgetColumns) {
-                angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
+                angular.forEach(columnsList, function (value, key) {
                     scope.columns.push(value);
                 });
             }
@@ -163,23 +169,27 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                 return 2;
             };
             var getWidgetObj;
-            if (scope.widgetObj) {
-                var getWidgetObj = JSON.parse(scope.widgetObj);
-            } else {
-                getWidgetObj = "";
+            //if (scope.widgetObj) {
+            try {
+                getWidgetObj = JSON.parse(scope.widgetObj);
+            } catch (exception) {
+
             }
-            var getWidgetId = getWidgetObj.id;
-            var getWidgetUrl = getWidgetObj.directUrl;
-            var getWidgetLevel = (getWidgetObj.reportLevel ? (getWidgetObj.reportLevel.reportLevel ? getWidgetObj.reportLevel.reportLevel : getWidgetObj.reportLevel) : ""); //getWidgetObj.reportLevel;
-            var getWidgetSegment = (getWidgetObj.reportSegment ? (getWidgetObj.reportSegment.reportSegment ? getWidgetObj.reportSegment.reportSegment : getWidgetObj.reportSegment) : ""); //getWidgetObj.reportSegment;
-//            if (getWidgetUrl) {
-            var monthEndReport = scope.monthEndReport;
-            var url;
-//            if (monthEndReport == 'MonthEndReport') {
-//                url = "admin/mapdata/compareMapDataByMonthEndReport?urlPath=";
+            var maxRecord;
+            if (getWidgetObj && getWidgetObj.maxRecord) {
+                maxRecord = getWidgetObj.maxRecord;
+            } else {
+                maxRecord = ""
+            }
 //            } else {
+//                getWidgetObj = "";
+//            }
+            //var getWidgetId = getWidgetObj.id;
+            //var getWidgetUrl = getWidgetObj.directUrl;
+            //var getWidgetLevel = (getWidgetObj.reportLevel ? (getWidgetObj.reportLevel.reportLevel ? getWidgetObj.reportLevel.reportLevel : getWidgetObj.reportLevel) : ""); //getWidgetObj.reportLevel;
+            //var getWidgetSegment = (getWidgetObj.reportSegment ? (getWidgetObj.reportSegment.reportSegment ? getWidgetObj.reportSegment.reportSegment : getWidgetObj.reportSegment) : ""); //getWidgetObj.reportSegment;
+            var url;
             url = "admin/proxy/getCompareData?urlPath=";
-//            }      
             var compareRange;
             if (scope.compareDateRange) {
                 compareRange = JSON.parse(scope.compareDateRange)
@@ -187,8 +197,8 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                 compareRange = "";
             }
 
-            var compareStartDate = compareRange.startDate; //"04/01/2017"//localStorageService.get("compareStartDate")
-            var compareEndDate = compareRange.endDate; //"09/01/2017"//localStorageService.get("compareEndDate")
+            var compareStartDate = compareRange.startDate;
+            var compareEndDate = compareRange.endDate;
             scope.loadingTable = true;
             var compareTableDataSource = JSON.parse(scope.compareTableSource);
             var widgetData = JSON.parse(scope.widgetObj);
@@ -246,10 +256,15 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                     scope.hideEmptyTable = true;
                     return;
                 }
+
                 scope.getColumnDefs = response;
                 scope.getSummary = response.summary;
-                scope.getData = response.data;
+                scope.getData = filterMaxRecord(response.data, maxRecord);
             });
+
+            function filterMaxRecord(data, max) {
+                return max ? data.splice(0, max) : data;
+            }
             scope.getHeaderSpan = function (colDefs, obj) {
                 var columnData = colDefs;
                 var getObjs = obj;

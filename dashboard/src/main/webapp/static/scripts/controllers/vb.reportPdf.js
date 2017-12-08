@@ -12,7 +12,7 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
     function changeLanguage(key) {
         $translate.use(key);
     }
-    $scope.getTableType = $stateParams.getTableType;
+    $scope.getTableType = localStorageService.get("selectedTableType");
     var compareStartDate = localStorageService.get("comparisonStartDate");
     var compareEndDate = localStorageService.get("comparisonEndDate");
     $scope.compareDateRange = {
@@ -28,7 +28,7 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
     });
 
     $http.get("admin/report/" + $stateParams.reportId).success(function (response) {
-        console.log(response);
+
         $scope.reportPdfTitle = response.reportTitle;
         $scope.reportPdfDescription = response.description
         $scope.pdfLogo = response.logo;

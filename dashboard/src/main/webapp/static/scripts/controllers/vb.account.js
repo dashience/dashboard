@@ -131,6 +131,8 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
     };
 
     $scope.saveProperty = function (property) {
+        console.log("************** ACCOUNT PROPERTY ****************");
+        console.log(property);
         var accountId = $scope.accountUserId;
         console.log($scope.accountUserId);
         console.log(accountId);

@@ -12,23 +12,25 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '<div class="stats-icon pull-right">' +
 //                        '<i class="pe-7s-share fa-4x"></i>' +
                 '</div>' +
+                //First Level
                 '<div class="m-t-xl">' +
-                '<h3 class="m-b-xs text-success" style="color:{{colorName}};">{{firstLevelTicker}}' +
+                '<h3 class="m-b-xs text-success" style="color:{{colorName}};">{{firstLevelTicker.totalValue?format(formatColumn, firstLevelTicker.totalValue):format(formatColumn, firstLevelTickerValue)}}' +
+                //Percentage
                 '<span ng-click="changeComparisonType(\'firstLevel\')" ' +
-                'style="cursor:pointer" ng-if="percent(formatColumn, firstLevelTicker,secondLevelTicker) && showDifference == true" ' +
-                'ng-class="{\'arrow-up\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) > 0), \'arrow-down\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
-                '<i class="fa" ng-class="{\'fa-arrow-up\':percent(formatColumn, firstLevelTicker,secondLevelTicker) > 0, \'fa-arrow-down\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}"></i>' +
-                '<span ng-class="{\'leads-up\':percent(formatColumn, firstLevelTicker,secondLevelTicker) > 0, \'leads-down\':(percent(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}" ng-show="showDifference">' +
-                '{{percent(formatColumn, firstLevelTicker,secondLevelTicker)}}' + "%" +
+                'style="cursor:pointer" ng-if="percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) && showDifference == true" ' +
+                'ng-class="{\'arrow-up\':(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0), \'arrow-down\':(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                '<i class="fa" ng-class="{\'fa-arrow-up\':percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0, \'fa-arrow-down\':(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}"></i>' +
+                '<span ng-class="{\'leads-up\':percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0, \'leads-down\':(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}" ng-show="showDifference">' +
+                '{{percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1)}}' + "%" +
                 '</span>' +
                 '</span>' +
-                '<span class="empty-ticker arrow-up" ng-click="changeComparisonType(\'firstLevel\')" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, firstLevelTicker,secondLevelTicker)) && showDifference == true">0 </span>' +
+                '<span class="empty-ticker arrow-up" ng-click="changeComparisonType(\'firstLevel\')" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1)) && showDifference == true">0 </span>' +
                 //Diff
                 '<span ng-click="changeComparisonType(\'firstLevel\')" ' +
-                'style="cursor:pointer" ng-if="sub(formatColumn, firstLevelTicker,secondLevelTicker) != 0 && showDifference != true && firstLevelTicker != 0 && secondLevelTicker != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumn, firstLevelTicker,secondLevelTicker) > 0), \'arrow-down\':(sub(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
-                '<i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumn, firstLevelTicker,secondLevelTicker) > 0, \'fa-arrow-down\':(sub(formatColumn, firstLevelTicker,secondLevelTicker) < 0)}"></i>' +
-                '<span class="leads" ng-hide="showDifference">' + '{{differ(formatColumn, firstLevelTicker,secondLevelTicker)}}' +
-                '<span class="leads-name" ng-if="sub(formatColumn, firstLevelTicker,secondLevelTicker)"> {{secondFormatName}}</span>' +
+                'style="cursor:pointer" ng-if="sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) != 0 && showDifference != true && firstLevelTickerValue != 0 && firstLevelTickerValue1 != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                ' <i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0, \'fa-arrow-down\':(sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}"></i>' +
+                '<span class="leads" ng-hide="showDifference">' + '{{differ(formatColumn, firstLevelTickerValue,firstLevelTickerValue1)}}' +
+                '<span class="leads-name" ng-if="sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1)"> {{secondFormatName}}</span>' +
                 '</span>' +
                 '</span>' +
                 '<div class="icon pull-right" ng-hide="hideEmptyTicker"><i class="{{selectedChartIcon}}" aria-hidden="true"></i></div>' +
@@ -36,32 +38,39 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '<span class="font-bold no-margins">' +
 //                            '{{firstLevelTicker.tickerTitle}}' +
                 '</span>' +
+                //Second Level
                 '<div class="row">' +
                 '<div class="col-xs-6">' +
                 '<small class="stats-label">{{secondLevelTicker.tickerTitle?secondLevelTicker.tickerTitle:secondLevelTickerTitle}}</small>' +
-                '<h4>{{secondLevelTicker.totalValue?secondLevelTicker.totalValue:secondLevelTickerValue}}' +
+                '<h4>{{secondLevelTicker.totalValue?format(formatColumnSecond, secondLevelTicker.totalValue):format(formatColumnSecond, secondLevelTickerValue)}}' +
+                //Percentage
                 '<span ng-click="changeComparisonType(\'secondLevel\')" ' +
                 'style="cursor:pointer" ng-if="percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) && showSecondDifference == true" ' +
                 'ng-class="{\'arrow-up\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0), \'arrow-down\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
                 '<i class="fa" ng-class="{\'fa-arrow-up\':percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'fa-arrow-down\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}"></i>' +
                 '<span ng-class="{\'leads-up\':percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'leads-down\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-show="showSecondDifference">' +
-                '{{percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue)}}' + "%" +
+                '{{percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1)}}' + "%" +
                 '</span>' +
                 '</span>' +
-                '<span class="empty-ticker arrow-up" ng-click="changeComparisonType(\'secondLevel\')" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, firstLevelTicker,secondLevelTicker)) && showSecondDifference == true">0 </span>' +
+//                '<span class="empty-ticker arrow-up" ng-click="changeComparisonType(\'secondLevel\')" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, firstLevelTicker,secondLevelTicker)) && showSecondDifference == true">0 </span>' +
+
+
+
                 //Diff
                 '<span ng-click="changeComparisonType(\'secondLevel\')" ' +
                 'style="cursor:pointer" ng-if="sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) != 0 && showSecondDifference != true && firstLevelTicker != 0 && secondLevelTicker != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
-                '<i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'fa-arrow-down\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}"></i>' +
+                ' <i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'fa-arrow-down\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}"></i>' +
                 '<span class="leads" ng-hide="showSecondDifference">' + '{{differ(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1)}}' +
                 '<span class="leads-name" ng-if="sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1)"> {{secondFormatNameSecond}}</span>' +
                 '</span>' +
                 '</span>' +
                 '</h4>' +
                 '</div>' +
+                //Third Level
                 '<div class="col-xs-6 count">' +
                 '<small class="stats-label">{{thirdLevelTicker.tickerTitle?thirdLevelTicker.tickerTitle:thirdLevelTickerTitle}}</small>' +
-                '<h4>{{thirdLevelTicker.totalValue?thirdLevelTicker.totalValue:thirdLevelTickerValue}}' +
+                '<h4>{{thirdLevelTicker.totalValue?format(formatColumnThird, thirdLevelTicker.totalValue):format(formatColumnThird, thirdLevelTickerValue)}}' +
+                //Percentage
                 '<span ng-click="changeComparisonType(\'thirdLevel\')" ' +
                 'style="cursor:pointer" ng-if="percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) && showThirdDifference == true" ' +
                 'ng-class="{\'arrow-up\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) > 0), \'arrow-down\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
@@ -86,7 +95,16 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '</div>' +
                 '</div>' +
                 '</div>' +
-                '<div class="tickerMessage" ng-show="hideEmptyTicker">{{tickerEmptyMessage}}</div>',
+                '<div class="tickerMessage" ng-show="hideEmptyTicker">' +
+                '<div class="panel-body h-150">' +
+                '<div class="stats-title pull-left">' +
+                '<h4>{{tickerTitleName}}</h4>' +
+                '</div>' +
+                '<div class="stats-icon pull-right">' +
+                '</div>' +
+                '<div class="m-t-xl" style="text-align:center">{{tickerEmptyMessage}}' + '</div>' +
+                '</div>'+ 
+                '</div>',
         scope: {
             setTickerFn: '&',
             tickerSource: '@',
@@ -117,10 +135,7 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 if (!value) {
                     return "-";
                 }
-                if (column.displayFormat) {
-//                    if (isNaN(value)) {
-//                        return "-";
-//                    }
+                if (column && column.displayFormat) {
                     var columnValue = dashboardFormat(column, value);
                     if (columnValue == 'NaN') {
                         columnValue = "-";
@@ -148,18 +163,27 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 if ((firstLevelTicker || firstLevelTicker == 0) && (secondLevelTicker || secondLevelTicker == 0)) {
                     sub = firstLevelTicker - secondLevelTicker;
                     sub = sub + "";
+                    var tmpFormat = {};
                     if (sub.substr(0, 1) == "-") {
                         sub = sub.replace("-", "");
                         sub = parseFloat(sub);
                         if (isNumber(sub)) {
-                            return "-" + scope.format(column, sub);
+                            if (column.displayFormat == ',.2%') {
+                                tmpFormat.fieldType = 'number';
+                                tmpFormat.displayFormat = ',.2f';
+                            }
+                            return "-" + scope.format(tmpFormat, sub);
                         } else {
                             return "-";
                         }
                     } else {
                         sub = parseFloat(sub);
                         if (isNumber(sub)) {
-                            return  scope.format(column, sub);
+                            if (column.displayFormat == ',.2%') {
+                                tmpFormat.fieldType = 'number';
+                                tmpFormat.displayFormat = ',.2f';
+                            }
+                            return  scope.format(tmpFormat, sub);
                         } else {
                             return "-";
                         }
@@ -218,13 +242,6 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 if (column.fieldType === "date" || column.fieldType === "string") {
                     return 0;
                 }
-
-//                if (column && column.displayFormat) {
-//                    if (column.displayFormat === "H:M:S" || column.displayFormat === "M:S") {
-//                        return;
-//                    }
-//                }
-
                 if (firstLevel && secondLevel) {
                     var percent = ((firstLevel - secondLevel) / secondLevel) * 100;
                     if (percent.toFixed(2) != 0.00) {
@@ -238,7 +255,6 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             };
 
             scope.changeComparisonType = function (type) {
-                console.log(type)
                 if (type == "firstLevel") {
                     if (scope.showDifference) {
                         scope.showDifference = false;
@@ -266,10 +282,6 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             var getCompareStatus = getWidgetObj.compareTableype;
             var isCompare = getCompareStatus ? getCompareStatus : scope.urlType;
             var url;
-
-//            if (tickerDataSource.dataSourceId.dataSourceType == "sql") {
-//                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
-//            }
 
             function calTotal(val) {
                 if (!val) {
@@ -320,7 +332,7 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             }
 
 
-            var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
+            // var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
             var widgetChartColors;
             if (getWidgetObj.chartColorOption) {
@@ -330,7 +342,7 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             var chartColors = widgetChartColors ? widgetChartColors : setWidgetChartColors;
             scope.colorName = chartColors[0];
 
-            var getWidgetObj = JSON.parse(scope.widgetObj);
+            // var getWidgetObj = JSON.parse(scope.widgetObj);
             var setProductSegment;
             var setTimeSegment;
             var setNetworkType;
@@ -367,9 +379,9 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
 //                        "&startDate=" + $stateParams.startDate +
 //                        "&endDate=" + $stateParams.endDate +
                         dateRangeType +
-                        "&productSegment=" + setProductSegment +
-                        "&timeSegment=" + setTimeSegment +
-                        "&networkType=" + setNetworkType +
+                        // "&productSegment=" + setProductSegment +
+                        // "&timeSegment=" + setTimeSegment +
+                        // "&networkType=" + setNetworkType +
                         '&username=' + tickerDataSource.dataSourceId.userName +
                         '&password=' + dataSourcePassword +
                         '&widgetId=' + scope.tickerId +
@@ -387,8 +399,9 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                         scope.tickerEmptyMessage = "No Data Found";
                         scope.hideEmptyTicker = true;
                     } else {
-
+                        console.log(isCompare)
                         if (isCompare == 'compareOn') {
+                            console.log()
                             var returnDimensionData = [];
                             var returnMetricsData1 = [];
                             var returnMetricsData2 = [];
@@ -419,29 +432,27 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                                     valueFormat2: timeFormat
                                 });
                             });
-                            console.log(scope.tickers);
-                            scope.firstLevelTicker = scope.tickers[0].metricsData1 ? scope.tickers[0].metricsData1 : scope.tickers[0].dimensionData;
-                            console.log(scope.firstLevelTicker);
-                            scope.secondLevelTicker = scope.tickers[0].metricsData2;
-                            scope.secondLevelTickerTitle = scope.tickers[1].tickerTitle;
-                            scope.secondLevelTickerValue = scope.tickers[1].metricsData1
-                            scope.secondLevelTickerValue1 = scope.tickers[1].metricsData2
-                            scope.thirdLevelTickerTitle = scope.tickers[2].tickerTitle;
-                            scope.thirdLevelTickerValue = scope.tickers[2].metricsData1;
-                            scope.thirdLevelTickerValue1 = scope.tickers[2].metricsData2;
-//                            scope.secondLevelTicker = scope.tickers[1];
-//                            scope.secondLevelTicker = scope.tickers[1];
-//                            scope.thirdLevelTicker = scope.tickers[2];
-                            console.log(scope.secondLevelTicker)
-                            scope.formatColumn = scope.tickers[0].column;
-                            scope.firstFormatName = scope.tickers[0].metricsData1 ? scope.tickers[0].valueFormat1 : "";
-                            scope.secondFormatName = scope.tickers[0].metricsData1 ? scope.tickers[0].valueFormat2 : "";
-                            scope.formatColumnSecond = scope.tickers[1].column;
-                            scope.firstFormatNameSecond = scope.tickers[1].metricsData1 ? scope.tickers[1].valueFormat1 : "";
-                            scope.secondFormatNameSecond = scope.tickers[1].metricsData1 ? scope.tickers[1].valueFormat2 : "";
-                            scope.formatColumnThird = scope.tickers[2].column;
-                            scope.firstFormatNameThird = scope.tickers[2].metricsData1 ? scope.tickers[2].valueFormat1 : "";
-                            scope.secondFormatNameThird = scope.tickers[2].metricsData1 ? scope.tickers[2].valueFormat2 : "";
+                            scope.firstLevelTickerValue = scope.tickers[0].metricsData1 ? scope.tickers[0].metricsData1 : scope.tickers[0].dimensionData;
+                            scope.firstLevelTickerValue1 = scope.tickers[0].metricsData2;
+
+                            scope.secondLevelTickerTitle = scope.tickers[1] ? scope.tickers[1].tickerTitle : '';
+                            scope.secondLevelTickerValue = scope.tickers[1] ? scope.tickers[1].metricsData1 : '';
+                            scope.secondLevelTickerValue1 = scope.tickers[1] ? scope.tickers[1].metricsData2 : '';
+
+                            scope.thirdLevelTickerTitle = scope.tickers[2] ? scope.tickers[2].tickerTitle : '';
+                            scope.thirdLevelTickerValue = scope.tickers[2] ? scope.tickers[2].metricsData1 : '';
+                            scope.thirdLevelTickerValue1 = scope.tickers[2] ? scope.tickers[2].metricsData2 : '';
+
+                            scope.formatColumn = scope.tickers[0] ? scope.tickers[0].column : '';
+                            scope.firstFormatName = scope.tickers[0] ? scope.tickers[0].valueFormat1 : "";
+                            scope.secondFormatName = scope.tickers[0] ? scope.tickers[0].valueFormat2 : "";
+                            scope.formatColumnSecond = scope.tickers[1] ? scope.tickers[1].column : '';
+
+                            scope.firstFormatNameSecond = scope.tickers[1] ? scope.tickers[1].valueFormat1 : "";
+                            scope.secondFormatNameSecond = scope.tickers[1] ? scope.tickers[1].valueFormat2 : "";
+                            scope.formatColumnThird = scope.tickers[2] ? scope.tickers[2].column : '';
+                            scope.firstFormatNameThird = scope.tickers[2] ? scope.tickers[2].valueFormat1 : "";
+                            scope.secondFormatNameThird = scope.tickers[2] ? scope.tickers[2].valueFormat2 : "";
                             if (!scope.secondFormatName) {
                                 scope.secondFormatName = scope.tickers[0].metricsData2 ? scope.tickers[0].valueFormat2 : "";
                             }
@@ -449,13 +460,13 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                                 scope.hideEmptyTickerSecondLevel = false;
                             }
                             if (!scope.secondFormatNameSecond) {
-                                scope.secondFormatNameSecond = scope.tickers[1].metricsData2 ? scope.tickers[1].valueFormat2 : "";
+                                scope.secondFormatNameSecond = scope.tickers[1] ? scope.tickers[1].valueFormat2 : "";
                             }
                             if (scope.secondLevelTickerValue1) {
                                 scope.hideEmptyTickerSecondLevel = false;
                             }
                             if (!scope.secondFormatNameThird) {
-                                scope.secondFormatNameThird = scope.tickers[2].metricsData2 ? scope.tickers[2].valueFormat2 : "";
+                                scope.secondFormatNameThird = scope.tickers[2] ? scope.tickers[2].valueFormat2 : "";
                             }
                             if (scope.thirdLevelTickerValue1) {
                                 scope.hideEmptyTickerSecondLevel = false;
@@ -481,15 +492,20 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                                 scope.tickers.push({tickerTitle: value.displayName, totalValue: calTotal(setData), column: value, valueFormat: timeFormat});
                             });
                             scope.showDifference = false;
-                            scope.firstLevelTicker = scope.tickers[0].totalValue;
-                            console.log(scope.firstLevelTicker);
+                            scope.firstLevelTicker = scope.tickers[0]//.totalValue;
                             scope.secondLevelTicker = scope.tickers[1];
+
+                            console.log("First Level Ticker", scope.firstLevelTicker)
+                            console.log("Second Level Ticker", scope.secondLevelTicker)
+
+
+
                             scope.thirdLevelTicker = scope.tickers[2];
                             scope.formatColumn = scope.tickers[0].column;
                             scope.firstFormatName = scope.tickers[0].totalValue ? scope.tickers[0].valueFormat : "";
                             if (!scope.secondLevelTicker) {
                                 scope.secondFormatName = "";
-                                scope.hideEmptyTickerSecondLevel = true;
+                                //scope.hideEmptyTickerSecondLevel = true;
                             }
                         }
                     }

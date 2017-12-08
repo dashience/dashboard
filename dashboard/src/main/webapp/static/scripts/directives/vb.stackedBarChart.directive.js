@@ -35,6 +35,8 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             if (!scope.widgetColumns) {
                 return;
             }
+            console.log("stacked bar directive called ....");
+            console.log("stacked bar widget columns --.", scope.widgetColumns);
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -179,6 +181,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
             var dateRangeType;
             var compareDateRangeDates = "&startDate1=" + startDate1 + "&endDate1=" + endDate1 + "&startDate2=" + startDate2 + "&endDate2=" + endDate2;
             var monthEndWithoutCompare = "&startDate=" + startDate1 + "&endDate=" + endDate1;
+            console.log("Date range--------->", scope.compareDateRange);
             var compareRange = JSON.parse(scope.compareDateRange);
             var isCompare = scope.urlType;
             var url;
@@ -207,7 +210,9 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                 } else {
                     dataSourcePassword = '';
                 }
+
                 var getWidgetObj = JSON.parse(scope.widgetObj);
+
 
                 var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
@@ -261,6 +266,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             '&url=' + stackedBarChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(stackedBarChartDataSource.query)).success(function (response) {
                         scope.loadingStackedBar = false;
+                        console.log("stacked bar directive response -->", response);
                         if (!response) {
                             scope.stackedBarEmptyMessage = "No Data Found";
                             scope.hideEmptyStackedBar = true;

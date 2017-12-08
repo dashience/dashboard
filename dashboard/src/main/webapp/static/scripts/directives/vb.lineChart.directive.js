@@ -378,7 +378,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     ySeriesData.unshift(value.displayName);
                                     columns.push(ySeriesData);
                                 }
-                            //yaxis mapping data
+                                //yaxis mapping data
 //                            angular.forEach(yAxis, function (value, key) {
 //                                ySeriesData = chartData.map(function (a) {
 //                                    return a[value.fieldName] || "0";
@@ -391,6 +391,18 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+
+                            var data = {
+                                x: xAxis.fieldName,
+                                columns: columns,
+                                labels: labels,
+                                type: 'area',
+                                axes: axes,
+                                types: chartCombinationtypes
+                            };
+                            console.log("data");
+                            console.log(data);
+
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {
                                 gridLine = true;

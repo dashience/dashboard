@@ -9,7 +9,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.childTab = 3;
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
-    };
+    }; 
     $scope.setChildTab = function (newTab) {
         $scope.childTab = newTab;
     };
@@ -575,22 +575,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        }, {
-            type: 'screenName',
-            name: 'Screen Name',
-            timeSegments: [
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ],
-            productSegments: [
-                {
-                    type: 'none',
-                    name: 'None'
-                }
-            ]
-        }, {
+        },  {
             type: 'userTimeLine',
             name: 'User Performance Metrics',
             timeSegments: [
@@ -4676,7 +4661,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     });
 //    $scope.selectedItems = {dataSourceId: {name: ''}};
 
-    $scope.selectXlsSheet = function (dataSource) {
+    $scope.selectXlsSheet = function (dataSource) { 
+        
         if (dataSource.dataSourceType == 'xls') {
             var url = "admin/proxy/getSheets?";
             var dataSourceId = dataSource.id;
@@ -4884,6 +4870,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $timeout(function () {
             $scope.previewData = dataSet;
         }, 50);
+        console.log("Data Set----------->",dataSet)
     };
     $scope.refreshDataSet = function (dataSet) {
 //        var tmpDataSet = dataSet

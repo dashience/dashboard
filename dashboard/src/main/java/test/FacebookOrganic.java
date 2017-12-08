@@ -252,7 +252,7 @@ public class FacebookOrganic {
             System.out.println("value=" + next.get("value"));
             System.out.println("end_time=" + next.get("end_time"));
             dataMap.put("value", next.get("value") + "");
-            dataMap.put("value", next.get("end_time") + "");
+            dataMap.put("end_time", next.get("end_time") + "");
             listData.add(dataMap);
 
         }
@@ -342,7 +342,7 @@ return null;
     public static void main(String[] argv) throws ParseException {
 //        List<Map<String, String>> recentPosts = getTotalOrganicLikes();
         
-        List<Map<String, String>> recentPosts = (List<Map<String, String>>) getViewsByDevice();
+        List<Map<String, String>> recentPosts = (List<Map<String, String>>) getViewsByDay();
 //        System.out.println(recentPosts);
     }
     

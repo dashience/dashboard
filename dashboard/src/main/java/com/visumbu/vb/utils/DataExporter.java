@@ -26,7 +26,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class DataExporter {
 
-    public void exportToXls(List<WidgetColumn> columnDef, List<Map<String, Object>> data, OutputStream out) {
+    public void exportToXls(List<WidgetColumn> columnDef, Integer maxRecord, List<Map<String, Object>> data, OutputStream out) {
         //Blank workbook
         XSSFWorkbook workbook = new XSSFWorkbook();
 
@@ -44,15 +44,31 @@ public class DataExporter {
             cell.setCellValue(fieldName);
         }
 
-        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
-            Map<String, Object> dataMap = iterator.next();
-            Row row = sheet.createRow(rownum++);
-            cellnum = 0;
-            for (Iterator<WidgetColumn> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
-                WidgetColumn columnDefObj = iterator1.next();
-                String fieldName = columnDefObj.getFieldName();
-                Cell cell = row.createCell(cellnum++);
-                cell.setCellValue(dataMap.get(fieldName) + "");
+        if (data != null) {
+            for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                int count = rownum++;
+                if (maxRecord != null) {
+                    if (maxRecord >= count) {
+                        Row row = sheet.createRow(count);
+                        cellnum = 0;
+                        for (Iterator<WidgetColumn> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
+                            WidgetColumn columnDefObj = iterator1.next();
+                            String fieldName = columnDefObj.getFieldName();
+                            Cell cell = row.createCell(cellnum++);
+                            cell.setCellValue(dataMap.get(fieldName) + "");
+                        }
+                    }
+                } else {
+                    Row row = sheet.createRow(count);
+                    cellnum = 0;
+                    for (Iterator<WidgetColumn> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
+                        WidgetColumn columnDefObj = iterator1.next();
+                        String fieldName = columnDefObj.getFieldName();
+                        Cell cell = row.createCell(cellnum++);
+                        cell.setCellValue(dataMap.get(fieldName) + "");
+                    }
+                }
             }
         }
 
