@@ -4885,6 +4885,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $timeout(function () {
             $scope.previewData = dataSet;
         }, 50);
+        console.log("Data Set----------->",dataSet)
     };
     $scope.refreshDataSet = function (dataSet) {
 //        var tmpDataSet = dataSet
