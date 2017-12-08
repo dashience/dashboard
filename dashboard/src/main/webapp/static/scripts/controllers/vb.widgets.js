@@ -2620,8 +2620,8 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                         }
                     });
                     var index = $scope.tickerAxis.indexOf(tickerObject);
-                    console.log("index -->"+index);
-                    $scope.tickerAxis.splice(index,1);
+                    console.log("index -->" + index);
+                    $scope.tickerAxis.splice(index, 1);
                     if (val.displayName === widgetObj.displayName) {
 
                         /*
