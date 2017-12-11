@@ -35,6 +35,9 @@ import oauth.signpost.exception.OAuthExpectationFailedException;
 import oauth.signpost.exception.OAuthMessageSignerException;
 import oauth.signpost.exception.OAuthNotAuthorizedException;
 import org.apache.http.HttpException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -44,7 +47,7 @@ public class Linkedin {
     public static void main(String args[]) throws ParseException, HttpException, IOException {
 
 //        try {
-            //        String url = "https://api.linkedin.com/v1/companies/10671978/historical-status-update-statistics:(time,like-count,impression-count,click-count,engagement)?oauth2_access_token=AQUdoyU6zxDDcLR8b0FLkAfQPsTiwsy5UUccA15GRRtx-U3cP_VRf8nUdfkM5iDlUGT6ECYE4k8ibguWvOgWwKY8yn5KGvduAob-VXvP5qyJKb8ZxDgnJixyHOMzf4f3ReMWBHK2p9vGuENCG5iP8Iqr_K6qN-1dwGJw3WnQ-YasfhnQ19JN9I9lhHXWGbPZajNjAtcV4VkuduCNfF2UhaHYQgbZtA3XIc8_dvF3P0Npg-tD8BsLQOVfKpWFcMZ0SrFdNzOjq9OK4NkD1Y9Kb2TTIccOZQ7rQnqLUcVevI1joOambAhO4uxn4AmMCym8VsXBe6grJYgbJtDbB8EzJz1bhsN-hA&format=json";
+        //        String url = "https://api.linkedin.com/v1/companies/10671978/historical-status-update-statistics:(time,like-count,impression-count,click-count,engagement)?oauth2_access_token=AQUdoyU6zxDDcLR8b0FLkAfQPsTiwsy5UUccA15GRRtx-U3cP_VRf8nUdfkM5iDlUGT6ECYE4k8ibguWvOgWwKY8yn5KGvduAob-VXvP5qyJKb8ZxDgnJixyHOMzf4f3ReMWBHK2p9vGuENCG5iP8Iqr_K6qN-1dwGJw3WnQ-YasfhnQ19JN9I9lhHXWGbPZajNjAtcV4VkuduCNfF2UhaHYQgbZtA3XIc8_dvF3P0Npg-tD8BsLQOVfKpWFcMZ0SrFdNzOjq9OK4NkD1Y9Kb2TTIccOZQ7rQnqLUcVevI1joOambAhO4uxn4AmMCym8VsXBe6grJYgbJtDbB8EzJz1bhsN-hA&format=json";
 //        MultiValueMap<String, String> valueMap = null;
 //        String data = Rest.getData(url, valueMap);
 //        JSONParser parser = new JSONParser();
@@ -60,22 +63,23 @@ public class Linkedin {
 //        returnMap.put("data", myData);
 //        System.out.println(returnMap);
 // System.out.println(data);
-    //    TestLinkedin.oAuthSessionProvider( "https://www.linkedin.com/oauth/v2/authorization?format=json&response_type=code&client_id=81tt2j6dtqazgl&redirect_uri=https://www.getpostman.com/oauth2/callback&state=DCEeFWf45A53sdfKef424", "info@deetaanalytics.com", "D@@tA!23", "81tt2j6dtqazgl", "zQgqM4zKWJZikuQm");
-            
-            MultiValueMap<String, String > properties = new LinkedMultiValueMap<>();
-            String Token ="AQTnxhK_dXsHXoFcOC_EBcJ6GIHvwfMEs_qS3QfXKDtMDHE1o1gKxg8ONzZebJOJEQ9uzyCNeKUhPwjd_fcCTIB3E7E6Box6eJph6G6snAoLDkiNKhFbZ_LebOwXlRv0PcmxJFXWXgE7no6UKPNCt0C33YHLRg";
-            String redirect_uri ="https://www.getpostman.com/oauth2/callback";
-            String client_id ="81tt2j6dtqazgl";
-            String client_secret ="zQgqM4zKWJZikuQm";
-            String url ="https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code";
-            properties.put("code", Arrays.asList(Token));
-            properties.put("redirect_uri", Arrays.asList(redirect_uri));
-            properties.put("client_id", Arrays.asList(client_id));
-            properties.put("client_secret", Arrays.asList(client_secret));
-            properties.put("client_secret", Arrays.asList(client_secret));
+        //    TestLinkedin.oAuthSessionProvider( "https://www.linkedin.com/oauth/v2/authorization?format=json&response_type=code&client_id=81tt2j6dtqazgl&redirect_uri=https://www.getpostman.com/oauth2/callback&state=DCEeFWf45A53sdfKef424", "info@deetaanalytics.com", "D@@tA!23", "81tt2j6dtqazgl", "zQgqM4zKWJZikuQm");
+        MultiValueMap<String, String> properties = new LinkedMultiValueMap<>();
+        String code = "AQSNaWDojfSK6NQQu21IZzU7jFMjPrs4HJGi6_dek08ivEyuzPpI0BVdGI-laz-CaVZ89yeOVOm4iL4pfxkRWmTc2o_bEeHtyhq57l6cpKWw9Qmym47wMZzRl3Ru8llOcAmKQN-_sq6S5Uy8lSrfCiFhj1bTHw";
+        String redirect_uri = "https://www.getpostman.com/oauth2/callback";
+        String client_id = "81tt2j6dtqazgl";
+        String client_secret = "zQgqM4zKWJZikuQm";
+        String url = "https://www.linkedin.com/oauth/v2/accessToken?grant_type=authorization_code";
+        properties.put("code", Arrays.asList(code));
+        properties.put("redirect_uri", Arrays.asList(redirect_uri));
+        properties.put("client_id", Arrays.asList(client_id));
+        properties.put("client_secret", Arrays.asList(client_secret));
         String data = Rest.getData(url, properties);
+        JSONParser parser = new JSONParser();
+        JSONObject json = (JSONObject) parser.parse(data);
+        System.out.println("---------Acess Token----"+json.get("access_token"));
+
     }
-    
 
     public static List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         List<ColumnDef> columnDefs = new ArrayList<>();
@@ -105,7 +109,7 @@ public class Linkedin {
                 "https://api.linkedin.com");
 
         System.out.println("Fetching request token from LinkedIn...");
-        System.out.println("provider ------->"+provider.toString());
+        System.out.println("provider ------->" + provider.toString());
 
         // we do not support callbacks, thus pass OOB
         System.out.println("Request token: " + consumer.getToken());
@@ -193,4 +197,5 @@ public class Linkedin {
         return sb.toString();
 
     }
+         
 }

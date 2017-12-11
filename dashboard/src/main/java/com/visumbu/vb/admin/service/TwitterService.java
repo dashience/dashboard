@@ -283,6 +283,7 @@ public class TwitterService {
                 Scanner scanner = new Scanner(System.in);
                 String oauth_verifier = scanner.next();
                 url = "https://api.twitter.com/oauth/access_token?oauth_token=" + properties.get("oauth_token") + "&oauth_verifier=" + oauth_verifier;
+                valueMap=null;
                 data = Rest.getData(url, valueMap);
                 System.out.println("data----->" + data);
                 tokenDetails = data.split("&");
