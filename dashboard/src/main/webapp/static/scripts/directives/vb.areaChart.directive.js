@@ -32,7 +32,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             if (!scope.widgetColumns) {
                 return;
             }
-
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -40,11 +39,10 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-//                    alert("displayName -->" + labels["format"][displayName]);
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
                             if (format.indexOf("%") > -1) {
-                                return d3.format(format)(value / 100);
+                                return d3.format(format)(value/100);
                             }
                             return d3.format(format)(value);
                         };
@@ -56,7 +54,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 } else {
                     var displayName = value.displayName;
                     labels["format"][displayName] = function (value) {
-
                         return value;
                     };
                 }
@@ -258,7 +255,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 
 
 
-                        console.log(response)
 
 
                         scope.loadingArea = false;

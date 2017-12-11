@@ -400,8 +400,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 axes: axes,
                                 types: chartCombinationtypes
                             };
-                            console.log("data");
-                            console.log(data);
 
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {
@@ -409,7 +407,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             } else {
                                 gridLine = false;
                             }
-
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
