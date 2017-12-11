@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONArray;
@@ -35,9 +37,13 @@ import test.Twitter;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class TwitterService {
 
+    public static void main(String[] args) {
+        Map<String, String> properties = new LinkedHashMap<>();
+        properties.put("oauth_consumer_key", "3oaqt0QK31AGCAzHlX3c9xPbL");
+        properties.put("consumerSecret", "AuVaSXpGPJWLYMCzDiera1avN8MfChN2mGysCmWeDXPzVlDVZC");
+    }
     public List<Map<String, Object>> get(String reportName, Map<String, String> properties,
             Date startDate, Date endDate, String timeSegment, String productSegment) {
-
         if (reportName.equalsIgnoreCase("pagePerformance")) {
             return getPagePerformanceReport(properties, startDate, endDate, timeSegment, productSegment);
         }
@@ -52,17 +58,17 @@ public class TwitterService {
         return null;
     }
 
-    private List<Map<String, Object>> getScreenName(Map<String, String> properties) {
+    private static List<Map<String, Object>> getScreenName(Map<String, String> properties) {
 
 //      String url = "https://api.twitter.com/1.1/account/settings.json?oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_token=780021988039335936-vO7cttPuJ84WByUjEGFySScV1BVGsW5&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1506527941&oauth_nonce=-400194625&oauth_version=1.0&oauth_signature=qDZoWATd7XwCuXuMNzNxZHPGAog%3D";
         properties.put("baseUrl", "https://api.twitter.com/1.1/account/settings.json");
         properties.put("oauth_signature_method", "HMAC-SHA1");
         properties.put("oauth_version", "1.0");
         properties.put("httpMethod", "GET");
-        Twitter.getAuthentionData(properties);
+        Twitter.getAuthentionData(properties, "");
         String url = "https://api.twitter.com/1.1/account/settings.json?"
                 + "oauth_consumer_key=" + properties.get("oauth_consumer_key")
-                + "&oauth_token=" + properties.get("oauth_token")
+                + "&oauth_token_key=" + properties.get("oauth_token")
                 + "&oauth_version=1.0"
                 + "&oauth_signature_method=HMAC-SHA1"
                 + "&oauth_timestamp=" + properties.get("oauth_timestamp")
@@ -102,7 +108,7 @@ public class TwitterService {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
             Long timeStamp = dateToTimeStamp(endDateStr);//to be added in feature 
-            Twitter.getAuthentionData(properties);
+            Twitter.getAuthentionData(properties, "");
             String twitterUrl = "https://api.twitter.com/1.1/users/lookup.json?"
                     + "screen_name=" + properties.get("screen_name")
                     + "&user_id=" + properties.get("user_id")
@@ -160,7 +166,7 @@ public class TwitterService {
         properties.put("oauth_signature_method", "HMAC-SHA1");
         properties.put("oauth_version", "1.0");
         properties.put("httpMethod", "GET");
-        Twitter.getAuthentionData(properties);
+        Twitter.getAuthentionData(properties, "");
         String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?"
                 + "screen_name=" + properties.get("screen_name")
                 + "&user_id=" + properties.get("user_id")
@@ -201,6 +207,5 @@ public class TwitterService {
         dataMap.put("retweet_likes", retweetLikes);
         returnMap.add(dataMap);
         return returnMap;
-    }
-
+    }  
 }

@@ -15,17 +15,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import java.io.StringReader;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
@@ -67,7 +60,7 @@ public class Rest {
             } else {
                 System.out.println("else condition");
                 System.out.println(urlString);
-                System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
+                System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());              
             }
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
