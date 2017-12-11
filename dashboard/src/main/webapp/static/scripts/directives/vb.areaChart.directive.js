@@ -43,7 +43,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 //                    alert("displayName -->" + labels["format"][displayName]);
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
-                            alert();
                             if (format.indexOf("%") > -1) {
                                 return d3.format(format)(value / 100);
                             }
@@ -56,7 +55,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     }
                 } else {
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) { 
+                    labels["format"][displayName] = function (value) {
                         return value;
                     };
                 }
@@ -79,7 +78,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
                 }
                 if (value.combinationType) {
-                    combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
+                    combinationTypes.push({fieldName: value.fieldName, displayName: value.displayName, combinationType: value.combinationType});
                 }
             });
             var xData = [];
@@ -382,8 +381,10 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                         };
                                     }
                                 } else {
-                                    ySeriesData.unshift(value.fieldName);
+//                                    ySeriesData.unshift(value.fieldName);
+                                    ySeriesData.unshift(value.displayName);
                                     columns.push(ySeriesData);
+
                                 }
 //                            angular.forEach(yAxis, function (value, key) {
 //                                ySeriesData = chartData.map(function (a) {
@@ -395,7 +396,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             });
 
                             angular.forEach(combinationTypes, function (value, key) {
-                                chartCombinationtypes[[value.fieldName]] = value.combinationType;
+                                chartCombinationtypes[[value.displayName]] = value.combinationType;
                             });
                             var data = {
                                 x: xAxis.fieldName,
