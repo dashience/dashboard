@@ -43,7 +43,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 //                    alert("displayName -->" + labels["format"][displayName]);
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
-                            alert();
                             if (format.indexOf("%") > -1) {
                                 return d3.format(format)(value / 100);
                             }
