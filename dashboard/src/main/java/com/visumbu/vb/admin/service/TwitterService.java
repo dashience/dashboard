@@ -97,7 +97,7 @@ public class TwitterService {
             Date startDate, Date endDate, String timeSegment, String productSegment) {
         properties.put("baseUrl", BASE_URL + "/users/lookup.json");
         properties.put("queryString", "&screen_name=" + properties.get("screen_name") + "&user_id=" + properties.get("user_id"));
-        Map parameters = OauthAuthentication.getAuthentionData(properties,"pagePerformance");
+        Map parameters = OauthAuthentication.getAuthentionData(properties, "pagePerformance");
 
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
@@ -155,7 +155,7 @@ public class TwitterService {
 //        String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=SivanesanGovind&user_id=2526475147&oauth_consumer_key=FH0z2IiKd46IHVrftBXhyyGjY&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1506528376&oauth_nonce=EwlN94AhGNf&oauth_version=1.0&oauth_token=2526475147-SJeXiGSn6P9Fg1N4AZtACrzdANEz0y9wQ32pncu&oauth_signature=3zFPKetFk6O0Hzyo5ClCVksLW5Q%3D";
         properties.put("baseUrl", BASE_URL + "/statuses/user_timeline.json");
         properties.put("queryString", "&screen_name=" + properties.get("screen_name") + "&user_id=" + properties.get("user_id"));
-        Map parameters = OauthAuthentication.getAuthentionData(properties,"timeLine");
+        Map parameters = OauthAuthentication.getAuthentionData(properties, "timeLine");
 
         String url = BASE_URL + "/statuses/user_timeline.json";
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
@@ -203,7 +203,7 @@ public class TwitterService {
     private List<Map<String, Object>> getFollowersPerformance(Map<String, Object> properties, Date startDate, Date endDate, String timeSegment, String productSegment) {
         properties.put("baseUrl", BASE_URL + "/followers/list.json");
         properties.put("queryString", "&screen_name=" + properties.get("screen_name") + "&user_id=" + properties.get("user_id"));
-        Map parameters = OauthAuthentication.getAuthentionData(properties,"getFollowers");
+        Map parameters = OauthAuthentication.getAuthentionData(properties, "getFollowers");
 
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
@@ -260,22 +260,19 @@ public class TwitterService {
     }
 
     public Map<String, Object> getTokenDetails(Map<String, Object> properties) {
-        properties.put("baseUrl", "https://api.twitter.com/oauth/request_token");
-        properties.put("oauth_signature_method", "HMAC-SHA1");
-        properties.put("oauth_version", "1.0");
-        properties.put("httpMethod", "GET");
-        OauthAuthentication.getAuthentionData(properties,"getToken");
-        String url = "https://api.twitter.com/oauth/request_token?"
-                + "oauth_consumer_key=" + properties.get("oauth_consumer_key")
-                + "&oauth_version=1.0"
-                + "&oauth_signature_method=HMAC-SHA1"
-                + "&oauth_timestamp=" + properties.get("oauth_timestamp")
-                + "&oauth_nonce=" + properties.get("oauth_nonce")
-                + "&oauth_signature=" + properties.get("oauth_signature");
+        properties.put("baseUrl", BASE_URL + "/oauth/request_token");
+       Map parameters = OauthAuthentication.getAuthentionData(properties, "getToken");
+
+        String url = BASE_URL + "/oauth/request_token";
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        valueMap.put("oauth_consumer_key", Arrays.asList((String) parameters.get("oauth_consumer_key")));
+        valueMap.put("oauth_version", Arrays.asList((String) parameters.get("oauth_version")));
+        valueMap.put("oauth_signature_method", Arrays.asList((String) parameters.get("oauth_signature_method")));
+        valueMap.put("oauth_timestamp", Arrays.asList((String) parameters.get("oauth_timestamp")));
+        valueMap.put("oauth_nonce", Arrays.asList((String) parameters.get("oauth_nonce")));
+        valueMap.put("oauth_signature", Arrays.asList((String) parameters.get("oauth_signature")));
 
         System.out.println("page performance url is -->" + url);
-
-        MultiValueMap<String, String> valueMap = null;
         String data = Rest.getData(url, valueMap);
         System.out.println("data----->" + data);
         try {
