@@ -416,7 +416,7 @@
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label translate>Data Source</label>
                                     <select class="form-control m-b" ng-model="widgetObj.dataSourceId" 
-                                            ng-change="selectWidgetDataSource(widgetObj.dataSourceId)"
+                                            ng-change="resetTimeProduct();selectWidgetDataSource(widgetObj.dataSourceId)"
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
                                     </select>
                                 </div>
@@ -425,21 +425,22 @@
                                     <select class="form-control" 
                                             ng-model="widgetObj.dataSetId" 
                                             ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" 
-                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName)">
+                                            ng-change="getNewDataSetObj(widgetObj, chartTypeName);resetTimeProduct()">
+                                            
                                     </select>
                                 </div>
                             </div>
                             <div class="data-2" ng-if="!((chartTypeName ? chartTypeName : widgetObj.chartType) === 'text' || widgetObj.dataSourceId.dataSourceType === 'csv' || widgetObj.dataSourceId.dataSourceType == 'sql' || widgetObj.dataSourceId.dataSourceType == 'xls' || widgetObj.dataSourceId.dataSourceType == 'join')">
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label translate>Time Segment</label>
-                                    <select class="form-control m-b" ng-model="widgetObj.timeSegment" 
+                                    <select class="form-control m-b" ng-model="widgetObj.timeSegment"
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
                                             ng-options="timeSeg.name for timeSeg in timeSegments track by timeSeg.type">
                                     </select>
                                 </div>
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label translate>Dimension</label>
-                                    <select class="form-control" 
+                                    <select class="form-control"
                                             ng-model="widgetObj.productSegment" 
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName)"
                                             ng-options="productSeg.name for productSeg in productSegments track by productSeg.type">
@@ -770,7 +771,7 @@
                                        on-select="ticker(widgetObj, tickerItem)" 
                                        on-remove="removedByTicker(widgetObj, $item, tickerItem)">
                                 <ui-select-match allow-clear="true" placeholder="{{'Ticker Value'|translate}}">{{$item.displayName}}</ui-select-match>
-                                <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
+                                <ui-select-choices repeat="currentColumn in tickerAxis  | filter:$select.search">
                                     {{currentColumn.displayName}}
                                 </ui-select-choices>
                             </ui-select>

@@ -124,7 +124,7 @@ public class ProxyController {
 
     @Autowired
     private GooglePlusService googlePlusService;
-    
+
     @Autowired
     private GoogleSpreadSheetService googleSpreadSheetService;
     private ReviewTrackerService reviewTrackerService;
@@ -235,7 +235,7 @@ public class ProxyController {
         List<ColumnDef> columnDefs = (List<ColumnDef>) firstData.get("columnDefs");
         Map<String, Object> firstDataList = ConvertDataAsMetric(firstData);
         Map<String, Object> secondDataList = ConvertDataAsMetric(secondData);
-        List<Map<String, Object>> comparedData = compareTwoList((List<Map<String, Object>>) firstDataList.get("data"), (List<Map<String, Object>>) secondDataList.get("data"));        
+        List<Map<String, Object>> comparedData = compareTwoList((List<Map<String, Object>>) firstDataList.get("data"), (List<Map<String, Object>>) secondDataList.get("data"));
         returnMap.put("summary", summary);
         returnMap.put("data", comparedData);
         returnMap.put("raw1", firstDataList);
@@ -403,7 +403,7 @@ public class ProxyController {
     public List<Map<String, Object>> compareTwoList(List<Map<String, Object>> data1, List<Map<String, Object>> data2) {
         List<Map<String, Object>> returnList = new ArrayList<>();
         for (Iterator<Map<String, Object>> iterator = data1.iterator(); iterator.hasNext();) {
-            Map<String, Object> dataMap1 = iterator.next(); 
+            Map<String, Object> dataMap1 = iterator.next();
             Map<String, Object> dataMap2 = getMatchingElement(dataMap1, data2);
             dataMap1.put("metrics1", dataMap1.remove("metrics"));
             if (dataMap2 != null) {
@@ -736,7 +736,6 @@ public class ProxyController {
         //System.out.println("Before Join1 ===> ");
         //System.out.println(dataMap1);
         //System.out.println(dataMap2);
-
         List<Map<String, Object>> dataList1 = (List<Map<String, Object>>) dataMap1.get("data");
         //dataList1 = addDerivedColumnsToDataSet(dataSetIdFirst.getId(), userIdInt, dataList1, request1, request, response);
 
@@ -746,7 +745,6 @@ public class ProxyController {
         //System.out.println("Before Join2 ===> ");
         //System.out.println(dataMap1);
         //System.out.println(dataMap2);
-
         Integer secondDataSetAppender = dataSetIdSecond.getId();
         if (!operationType.equalsIgnoreCase("union")) {
             //System.out.println("dataList size ---> " + dataList1.size());
@@ -849,11 +847,11 @@ public class ProxyController {
             List<Map<String, Object>> dataList = getGooglePlusData(request, response);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
-        }else if (dataSourceType.equalsIgnoreCase("googlespreadsheet")) {
+        } else if (dataSourceType.equalsIgnoreCase("googlespreadsheet")) {
             List<Map<String, Object>> dataList = getGoogleSpreadSheetData(request, response);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
-        }else if (dataSourceType.equalsIgnoreCase("csv")) {
+        } else if (dataSourceType.equalsIgnoreCase("csv")) {
             returnMap = (Map) getCsvData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("reviewTracker")) {
             List<Map<String, Object>> dataList = getReviewTrackerData(request, response);
@@ -2045,6 +2043,7 @@ public class ProxyController {
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String linkedinAccessToken = getAccountId(accountProperty, "linkedinAccessToken");
+        //       String linkedinAccessToken = "AQUdoyU6zxDDcLR8b0FLkAfQPsTiwsy5UUccA15GRRtx-U3cP_VRf8nUdfkM5iDlUGT6ECYE4k8ibguWvOgWwKY8yn5KGvduAob-VXvP5qyJKb8ZxDgnJixyHOMzf4f3ReMWBHK2p9vGuENCG5iP8Iqr_K6qN-1dwGJw3WnQ-YasfhnQ19JN9I9lhHXWGbPZajNjAtcV4VkuduCNfF2UhaHYQgbZtA3XIc8_dvF3P0Npg-tD8BsLQOVfKpWFcMZ0SrFdNzOjq9OK4NkD1Y9Kb2TTIccOZQ7rQnqLUcVevI1joOambAhO4uxn4AmMCym8VsXBe6grJYgbJtDbB8EzJz1bhsN-hA";
         String linkedinCompanyId = getAccountId(accountProperty, "linkedinCompanyId");
 
         try {
@@ -2223,7 +2222,7 @@ public class ProxyController {
             return null;
         }
     }
-    
+
     //google spread sheet service
     List<Map<String, Object>> getGoogleSpreadSheetData(MultiValueMap<String, String> request, HttpServletResponse response) {
 
@@ -2278,14 +2277,14 @@ public class ProxyController {
 
         try {
 //            long gPlusAccountId = Long.parseLong(googlePlusAccountId);
-            List<Map<String, Object>> gSpreadSheetReport = googleSpreadSheetService.get(dataSetReportName,startDate,endDate,timeSegment,productSegment,googleSpreadSheetApiKey,"");
+            List<Map<String, Object>> gSpreadSheetReport = googleSpreadSheetService.get(dataSetReportName, startDate, endDate, timeSegment, productSegment, googleSpreadSheetApiKey, "");
             return gSpreadSheetReport;
         } catch (NumberFormatException e) {
             //System.out.println("Exception occured");
             return null;
         }
     }
-    
+
     List<Map<String, Object>> getReviewTrackerData(MultiValueMap<String, String> request, HttpServletResponse response) {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
@@ -2339,7 +2338,7 @@ public class ProxyController {
         String reviewTrackerAccountId = getAccountId(accountProperty, "reviewTrackerAccountId");
 
         try {
-            List<Map<String, Object>> reviewTrackerReport = reviewTrackerService.get(dataSetReportName, reviewTrackerAcessToken, 
+            List<Map<String, Object>> reviewTrackerReport = reviewTrackerService.get(dataSetReportName, reviewTrackerAcessToken,
                     reviewTrackerAccountId, startDate, endDate, timeSegment, productSegment);
             return reviewTrackerReport;
         } catch (NumberFormatException ex) {
@@ -2399,14 +2398,24 @@ public class ProxyController {
         String twitterAccountId = getAccountId(accountProperty, "twitterAccountId");
         String twitterScreenName = getAccountId(accountProperty, "twitterScreenName");
         String twitterOauthToken = getAccountId(accountProperty, "twitterOauthToken");
-        String twitterOauthSignature = getAccountId(accountProperty, "twitterOauthSignature");
-        String twitterOauthNonce = getAccountId(accountProperty, "twitterOauthNonce");
         String twitterOauthConsumerKey = getAccountId(accountProperty, "twitterConsumerKey");
+        String twitterOauthConsumerSecretKey = getAccountId(accountProperty, "twitterConsumerSecret");
+        String twitterOauthTokenSecretKey = getAccountId(accountProperty, "twitterTokenSecret");
 
+        Map<String, Object> properties = new LinkedHashMap<>();
+        properties.put("oauth_consumer_key", twitterOauthConsumerKey);
+        properties.put("oauth_token", twitterOauthToken);
+        properties.put("user_id", twitterAccountId);
+        properties.put("screen_name", twitterScreenName);
+        properties.put("consumerSecret", twitterOauthConsumerSecretKey);
+        properties.put("tokenSecret", twitterOauthTokenSecretKey);
+        properties.put("oauth_signature_method", "HMAC-SHA1");
+        properties.put("oauth_version", "1.0");
+        properties.put("httpMethod", "GET");
         try {
             Long twitterOganicAccountId = Long.parseLong(twitterAccountId);
-            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, twitterAccountId, twitterScreenName,
-                    twitterOauthToken, twitterOauthSignature, twitterOauthNonce, twitterOauthConsumerKey, startDate, endDate, timeSegment, productSegment);
+            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, properties, startDate, endDate,
+                    timeSegment, productSegment);
             return twitterReport;
         } catch (NumberFormatException ex) {
             return null;
@@ -2720,7 +2729,6 @@ public class ProxyController {
 
             //System.out.println("url ===========> " + url);
             //System.out.println("valuemap ============> " + valueMap);
-
             String query = getFromMultiValueMap(valueMap, "query");
 
             String dashboardFilter = getFromMultiValueMap(valueMap, "dashboardFilter");
