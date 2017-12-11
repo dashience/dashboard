@@ -575,9 +575,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        }, {
-            type: 'screenName',
-            name: 'Screen Name',
+        },  {
+            type: 'userTimeLine',
+            name: 'User Performance Metrics',
             timeSegments: [
                 {
                     type: 'none',
@@ -590,9 +590,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        }, {
-            type: 'userTimeLine',
-            name: 'User Performance Metrics',
+        },
+        {
+            type: 'followersPerformance',
+            name: 'Followers Performance',
             timeSegments: [
                 {
                     type: 'none',
@@ -4885,6 +4886,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $timeout(function () {
             $scope.previewData = dataSet;
         }, 50);
+        console.log("Data Set----------->",dataSet)
     };
     $scope.refreshDataSet = function (dataSet) {
 //        var tmpDataSet = dataSet

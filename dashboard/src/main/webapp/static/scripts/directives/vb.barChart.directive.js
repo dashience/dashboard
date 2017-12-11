@@ -382,7 +382,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     ySeriesData.unshift(value.displayName);
                                     columns.push(ySeriesData);
                                 }
-                                
+
 
 //                            angular.forEach(yAxis, function (value, key) {
 //                                ySeriesData = chartData.map(function (a) {

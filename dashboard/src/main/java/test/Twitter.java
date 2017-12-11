@@ -115,17 +115,17 @@ public class Twitter {
 //        return columnDefs;
 //    }
 
-    public static Map<String, String> getAuthentionData(Map<String, String> properties,String type) {
-        String oauth_nonce = OauthAuthentication.oauthNonce();
-        String oauth_timestamp = OauthAuthentication.getTimeStamp();
-        properties.put("oauth_nonce", oauth_nonce);
-        properties.put("oauth_timestamp", oauth_timestamp);
-
-        String signature = OauthAuthentication.generateSignature(properties,type);
-        properties.put("oauth_signature", signature);
-        return properties;
-
-    }
+//    public static Map<String, Object> getAuthentionData(Map<String, Object> properties) {
+//        String oauth_nonce = OauthAuthentication.oauthNonce();
+//        String oauth_timestamp = OauthAuthentication.getTimeStamp();
+//        properties.put("oauth_nonce", oauth_nonce);
+//        properties.put("oauth_timestamp", oauth_timestamp);
+//
+//        String signature = OauthAuthentication.generateSignature(properties,type);
+//        properties.put("oauth_signature", signature);
+//        return properties;
+//
+//    }
 
 //        String url = "https://api.twitter.com/1.1/users/lookup.json?screen_name=Enlivant&user_id=2964932975&"
 //                + "oauth_consumer_key=DC0sePOBbQ8bYdC8r4Smg&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1493999004&"

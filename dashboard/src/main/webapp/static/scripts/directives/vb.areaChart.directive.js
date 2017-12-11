@@ -32,6 +32,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             if (!scope.widgetColumns) {
                 return;
             }
+
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -39,9 +40,10 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-
+//                    alert("displayName -->" + labels["format"][displayName]);
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
+                            alert();
                             if (format.indexOf("%") > -1) {
                                 return d3.format(format)(value / 100);
                             }
@@ -49,12 +51,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                         };
                     } else {
                         labels["format"][displayName] = function (value) {
-                            return formatBySecond(parseInt(value))
+                            return formatBySecond(parseInt(value));
                         };
                     }
                 } else {
                     var displayName = value.displayName;
-                    labels["format"][displayName] = function (value) {
+                    labels["format"][displayName] = function (value) { 
                         return value;
                     };
                 }
@@ -79,9 +81,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (value.combinationType) {
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
-
-                console.log("Line chart combination type");
-                console.log(combinationTypes);
             });
             var xData = [];
             var xTicks = [];
@@ -256,12 +255,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             '&widgetId=' + scope.widgetId +
                             '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
-                                
-                                
-                                
-                                console.log(response)
-                                
-                                
+
+
+
+                        console.log(response)
+
+
                         scope.loadingArea = false;
                         if (!response) {
                             scope.areaEmptyMessage = "No Data Found";
@@ -303,7 +302,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     }
                                 });
                             } else {
-                                console.log("max recode -->", chartMaxRecord.maxRecord);
                                 var responseObject = response.data;
                                 if (chartMaxRecord.maxRecord) {
                                     chartData = maximumRecord(chartMaxRecord, responseObject);
@@ -311,15 +309,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     chartData = responseObject;
                                 }
                             }
-                            console.log("chartData -->", chartData);
                             xTicks = [xAxis.fieldName];
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;
                                 return a[xAxis.fieldName];
                             });
-                            console.log("Xtics");
-                            console.log(xTicks);
                             columns.push(xTicks);
                             angular.forEach(yAxis, function (value, key) {
                                 var ySeriesData = chartData.map(function (a) {
@@ -390,8 +385,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                     ySeriesData.unshift(value.fieldName);
                                     columns.push(ySeriesData);
                                 }
-                                console.log("********** bar chart directive **************");
-                                console.log("columns -->", columns);
 //                            angular.forEach(yAxis, function (value, key) {
 //                                ySeriesData = chartData.map(function (a) {
 //                                    return a[value.fieldName] || "0";
@@ -404,8 +397,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
-                            console.log("chartCombinationtypes -->", chartCombinationtypes);
-
                             var data = {
                                 x: xAxis.fieldName,
                                 columns: columns,
@@ -414,8 +405,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 axes: axes,
                                 types: chartCombinationtypes
                             };
-                            console.log("data");
-                            console.log(data);
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {
                                 gridLine = true;

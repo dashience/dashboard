@@ -753,7 +753,8 @@
                     <div class="col-sm-12">
                         <div class="form-group"  ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) == 'gauge'">
                             <label ng-if="hideSelectedColumn === false;" translate>Gauge</label>
-                            <select ng-if="hideSelectedColumn === false;" class="form-control"  ng-model="gaugeItem" ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
+                            <select ng-if="hideSelectedColumn === false;" class="form-control"  ng-model="gaugeItem" 
+                                    ng-options="currentColumn.displayName for currentColumn in collectionFields track by currentColumn.fieldName" 
                                     ng-change="gauge(widgetObj, gaugeItem)">                
                             </select>
                         </div>    
@@ -770,7 +771,7 @@
                                        on-select="ticker(widgetObj, tickerItem)" 
                                        on-remove="removedByTicker(widgetObj, $item, tickerItem)">
                                 <ui-select-match allow-clear="true" placeholder="{{'Ticker Value'|translate}}">{{$item.displayName}}</ui-select-match>
-                                <ui-select-choices repeat="currentColumn in collectionFields  | filter:$select.search">
+                                <ui-select-choices repeat="currentColumn in tickerAxis  | filter:$select.search">
                                     {{currentColumn.displayName}}
                                 </ui-select-choices>
                             </ui-select>
@@ -1084,13 +1085,13 @@
             <div class="panel panel-default">
                 <div class="panel-heading btnAddon5">
                     <h3 class="panel-title" translate>
-                        Preview</h3>
+                        Preview </h3>
                 </div>
                 <div ng-if="chartTypeName === 'ticker'">
                     <div ticker-Directive ticker-Source="{{displayPreviewChart.dataSetId}}" 
                          widget-Obj="{{displayPreviewChart}}" 
                          ticker-Id="{{displayPreviewChart.id}}" 
-                         ticker-Columns="{{displayPreviewChart.columns}}">                     
+                         ticker-Columns="{{displayPreviewChart.columns}}">
                     </div>
                 </div>
                 <div ng-if="(chartTypeName === 'line')">
@@ -1099,7 +1100,8 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              line-Chart-Directive 
-                             widget-Obj="{{displayPreviewChart}}">                                            
+                             widget-Obj="{{displayPreviewChart}}"
+                             compare-Date-Range="{{compareDateRange}}">
                         </div>
                     </div>
                 </div>
@@ -1109,7 +1111,8 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              area-Chart-Directive 
-                             widget-Obj="{{displayPreviewChart}}">                         
+                             widget-Obj="{{displayPreviewChart}}"
+                             compare-Date-Range="{{compareDateRange}}">
                         </div>
                     </div>
                 </div>
@@ -1120,7 +1123,8 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              widget-Obj="{{displayPreviewChart}}"
-                             is-Horizontal-Bar="{{displayPreviewChart.isHorizontalBar}}">                         
+                             is-Horizontal-Bar="{{displayPreviewChart.isHorizontalBar}}"
+                             compare-Date-Range="{{compareDateRange}}">
                         </div>
                     </div>
                 </div>                
@@ -1131,7 +1135,8 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              widget-Obj="{{displayPreviewChart}}"
-                             is-Horizontal-Bar="{{displayPreviewChart.isHorizontalBar}}">                         
+                             is-Horizontal-Bar="{{displayPreviewChart.isHorizontalBar}}"
+                             compare-Date-Range="{{compareDateRange}}">
                         </div>
                     </div>
                 </div>
@@ -1141,17 +1146,17 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              pie-Chart-Directive 
-                             widget-Obj="{{displayPreviewChart}}">                         
+                             widget-Obj="{{displayPreviewChart}}"> 
                         </div>
                     </div>                            
                 </div> 
                 <div ng-if="chartTypeName === 'stackedbar'">
                     <div>
-                        <div stacked-Bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 
+                        <div stacked-Bar-Chart-Directive stacked-Bar-Chart-Source='{{displayPreviewChart.dataSetId}}' 
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
-                             stacked-Bar-Chart-Directive 
-                             widget-Obj="{{displayPreviewChart}}">                         
+                             widget-Obj="{{displayPreviewChart}}"
+                             compare-Date-Range="{{compareDateRange}}"> 
                         </div>
                     </div>                            
                 </div>
@@ -1161,7 +1166,8 @@
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
                              scatter-Chart-Directive 
-                             widget-Obj="{{displayPreviewChart}}">                                            
+                             widget-Obj="{{displayPreviewChart}}"
+                             compare-Date-Range="{{compareDateRange}}">                                            
                         </div>
                     </div>
                 </div>
@@ -1190,7 +1196,7 @@
                         gauge-Source="{{displayPreviewChart.dataSetId}}" 
                         widget-Obj="{{displayPreviewChart}}" 
                         gauge-Id="{{displayPreviewChart.id}}" 
-                        gauge-Columns="{{displayPreviewChart.columns}}">                     
+                        gauge-Columns="{{displayPreviewChart.columns}}">
                     </div>
                 </div>
 
