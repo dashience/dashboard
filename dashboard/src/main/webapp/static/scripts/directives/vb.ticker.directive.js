@@ -399,9 +399,7 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                         scope.tickerEmptyMessage = "No Data Found";
                         scope.hideEmptyTicker = true;
                     } else {
-                        console.log(isCompare)
                         if (isCompare == 'compareOn') {
-                            console.log()
                             var returnDimensionData = [];
                             var returnMetricsData1 = [];
                             var returnMetricsData2 = [];
@@ -495,13 +493,13 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                             scope.firstLevelTicker = scope.tickers[0]//.totalValue;
                             scope.secondLevelTicker = scope.tickers[1];
 
-                            console.log("First Level Ticker", scope.firstLevelTicker)
-                            console.log("Second Level Ticker", scope.secondLevelTicker)
 
 
 
                             scope.thirdLevelTicker = scope.tickers[2];
-                            scope.formatColumn = scope.tickers[0].column;
+                            scope.formatColumn = scope.tickers[0] ? scope.tickers[0].column : '';
+                            scope.formatColumnSecond = scope.tickers[1] ? scope.tickers[1].column : '';
+                            scope.formatColumnThird = scope.tickers[2] ? scope.tickers[2].column : '';
                             scope.firstFormatName = scope.tickers[0].totalValue ? scope.tickers[0].valueFormat : "";
                             if (!scope.secondLevelTicker) {
                                 scope.secondFormatName = "";

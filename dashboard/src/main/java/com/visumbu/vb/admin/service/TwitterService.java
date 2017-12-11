@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONArray;
@@ -97,7 +98,7 @@ public class TwitterService {
             Date startDate, Date endDate, String timeSegment, String productSegment) {
         properties.put("baseUrl", BASE_URL + "/users/lookup.json");
         properties.put("queryString", "&screen_name=" + properties.get("screen_name") + "&user_id=" + properties.get("user_id"));
-        Map parameters = OauthAuthentication.getAuthentionData(properties);
+        Map parameters = OauthAuthentication.getAuthentionData(properties, "pagePerformance");
 
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
@@ -155,7 +156,7 @@ public class TwitterService {
 //        String url = "https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=SivanesanGovind&user_id=2526475147&oauth_consumer_key=FH0z2IiKd46IHVrftBXhyyGjY&oauth_signature_method=HMAC-SHA1&oauth_timestamp=1506528376&oauth_nonce=EwlN94AhGNf&oauth_version=1.0&oauth_token=2526475147-SJeXiGSn6P9Fg1N4AZtACrzdANEz0y9wQ32pncu&oauth_signature=3zFPKetFk6O0Hzyo5ClCVksLW5Q%3D";
         properties.put("baseUrl", BASE_URL + "/statuses/user_timeline.json");
         properties.put("queryString", "&screen_name=" + properties.get("screen_name") + "&user_id=" + properties.get("user_id"));
-        Map parameters = OauthAuthentication.getAuthentionData(properties);
+        Map parameters = OauthAuthentication.getAuthentionData(properties, "timeLine");
 
         String url = BASE_URL + "/statuses/user_timeline.json";
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
@@ -203,7 +204,7 @@ public class TwitterService {
     private List<Map<String, Object>> getFollowersPerformance(Map<String, Object> properties, Date startDate, Date endDate, String timeSegment, String productSegment) {
         properties.put("baseUrl", BASE_URL + "/followers/list.json");
         properties.put("queryString", "&screen_name=" + properties.get("screen_name") + "&user_id=" + properties.get("user_id"));
-        Map parameters = OauthAuthentication.getAuthentionData(properties);
+        Map parameters = OauthAuthentication.getAuthentionData(properties, "getFollowers");
 
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
@@ -259,4 +260,41 @@ public class TwitterService {
         return null;
     }
 
+    public Map<String, Object> getTokenDetails(Map<String, Object> properties) {
+        properties.put("baseUrl", BASE_URL + "/oauth/request_token");
+       Map parameters = OauthAuthentication.getAuthentionData(properties, "getToken");
+
+        String url = BASE_URL + "/oauth/request_token";
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        valueMap.put("oauth_consumer_key", Arrays.asList((String) parameters.get("oauth_consumer_key")));
+        valueMap.put("oauth_version", Arrays.asList((String) parameters.get("oauth_version")));
+        valueMap.put("oauth_signature_method", Arrays.asList((String) parameters.get("oauth_signature_method")));
+        valueMap.put("oauth_timestamp", Arrays.asList((String) parameters.get("oauth_timestamp")));
+        valueMap.put("oauth_nonce", Arrays.asList((String) parameters.get("oauth_nonce")));
+        valueMap.put("oauth_signature", Arrays.asList((String) parameters.get("oauth_signature")));
+
+        System.out.println("page performance url is -->" + url);
+        String data = Rest.getData(url, valueMap);
+        System.out.println("data----->" + data);
+        try {
+            if (data.contains("oauth_token=") && data.contains("oauth_token_secret")) {
+                String[] tokenDetails = data.split("&");
+                properties.put("oauth_token", tokenDetails[0].substring(tokenDetails[0].indexOf("=") + 1, tokenDetails[0].length()));
+                properties.put("tokenSecret", tokenDetails[1].substring(tokenDetails[1].indexOf("=") + 1, tokenDetails[1].length()));
+                Scanner scanner = new Scanner(System.in);
+                String oauth_verifier = scanner.next();
+                url = "https://api.twitter.com/oauth/access_token?oauth_token=" + properties.get("oauth_token") + "&oauth_verifier=" + oauth_verifier;
+                data = Rest.getData(url, valueMap);
+                System.out.println("data----->" + data);
+                tokenDetails = data.split("&");
+                properties.put("oauth_token", tokenDetails[0].substring(tokenDetails[0].indexOf("=") + 1, tokenDetails[0].length()));
+                properties.put("tokenSecret", tokenDetails[1].substring(tokenDetails[1].indexOf("=") + 1, tokenDetails[1].length()));
+                properties.put("user_id", tokenDetails[2].substring(tokenDetails[2].indexOf("=") + 1, tokenDetails[2].length()));
+                properties.put("screen_name", tokenDetails[3].substring(tokenDetails[3].indexOf("=") + 1, tokenDetails[3].length()));
+}
+        } catch (NullPointerException ex) {
+            Logger.getLogger(TwitterService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return properties;
+    }
 }
