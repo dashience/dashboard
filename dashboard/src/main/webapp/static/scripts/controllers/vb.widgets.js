@@ -862,7 +862,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
 
     }
-
+    
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
         $scope.hideSelectedColumn = true;
         $scope.queryBuilderList = "";
@@ -983,7 +983,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.gaugeItem = "";
         $http.get('admin/ui/dataSet/publishDataSet').success(function (response) {
             $scope.dataSets = [];
-
             angular.forEach(response, function (value, key) {
                 if (!value.dataSourceId) {
                     return;

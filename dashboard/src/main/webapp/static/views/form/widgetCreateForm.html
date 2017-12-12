@@ -416,7 +416,7 @@
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label translate>Data Source</label>
                                     <select class="form-control m-b" ng-model="widgetObj.dataSourceId" 
-                                            ng-change="resetTimeProduct();selectWidgetDataSource(widgetObj.dataSourceId)"
+                                            ng-change="selectWidgetDataSource(widgetObj.dataSourceId);resetTimeProduct()"
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
                                     </select>
                                 </div>

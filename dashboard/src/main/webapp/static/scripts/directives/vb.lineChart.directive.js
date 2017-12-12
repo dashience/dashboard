@@ -338,7 +338,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     }
                                 });
                                 var ySeriesData2 = chartData.map(function (a) {
-                                    if (a.hasOwnProperty("metrics1")) {
+                                    if (a.hasOwnProperty("metrics2")) {
                                         if (Object.keys(a.metrics2).length !== 0) {
                                             return a.metrics2[value.fieldName] || "0";
                                         } else {
