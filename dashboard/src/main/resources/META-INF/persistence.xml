@@ -25,7 +25,6 @@
     <class>com.visumbu.vb.model.DataSource</class>
     <class>com.visumbu.vb.model.Account</class>
     <class>com.visumbu.vb.model.AccountUser</class>
-    <class>com.visumbu.vb.model.Property</class>
     <class>com.visumbu.vb.model.UserPermission</class>
     <class>com.visumbu.vb.model.UserAccount</class>
     <class>com.visumbu.vb.model.Permission</class>
@@ -53,6 +52,7 @@
     <class>com.visumbu.vb.model.TemplateTabs</class>
     <class>com.visumbu.vb.model.AgencyProperty</class>
     <class>com.visumbu.vb.model.LastUserAccount</class>
+    <class>com.visumbu.vb.model.Property</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/wa?zeroDateTimeBehavior=convertToNull"/>

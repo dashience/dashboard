@@ -2588,7 +2588,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     $scope.columnPieYAxis.push(widgetObj);
                     setTimeout(function () {
                         $scope.hideSelectedColumn = false
-                    }, 1000); 
+                    }, 1000);
                 }
                 if ($scope.selectPieChartYAxis.displayName === widgetObj.displayName) {
                     $scope.columnPieXAxis.push(widgetObj);
