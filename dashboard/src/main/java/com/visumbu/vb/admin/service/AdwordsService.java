@@ -11,19 +11,19 @@ import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.ads.adwords.lib.client.reporting.ReportingConfiguration;
-import com.google.api.ads.adwords.lib.jaxb.v201609.DateRange;
-import com.google.api.ads.adwords.lib.jaxb.v201609.DownloadFormat;
-import com.google.api.ads.adwords.lib.jaxb.v201609.Predicate;
-import com.google.api.ads.adwords.lib.jaxb.v201609.PredicateOperator;
-import com.google.api.ads.adwords.lib.jaxb.v201609.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201609.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201609.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201710.DateRange;
+import com.google.api.ads.adwords.lib.jaxb.v201710.DownloadFormat;
+import com.google.api.ads.adwords.lib.jaxb.v201710.Predicate;
+import com.google.api.ads.adwords.lib.jaxb.v201710.PredicateOperator;
+import com.google.api.ads.adwords.lib.jaxb.v201710.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201710.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201710.ReportDefinitionReportType;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponse;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
 import com.google.api.ads.adwords.lib.utils.ReportException;
-import com.google.api.ads.adwords.lib.utils.v201609.ReportDownloader;
+import com.google.api.ads.adwords.lib.utils.v201710.ReportDownloader;
 import com.google.common.collect.Lists;
-import com.google.api.ads.adwords.lib.jaxb.v201609.Selector;
+import com.google.api.ads.adwords.lib.jaxb.v201710.Selector;
 import com.visumbu.api.adwords.report.xml.bean.AccountReport;
 import com.visumbu.api.adwords.report.xml.bean.AccountReportRow;
 import com.visumbu.api.adwords.report.xml.bean.AdGroupReportRow;
@@ -693,7 +693,7 @@ public class AdwordsService {
 //    }
     public Object adWordsAsMap(Date startDate, Date endDate, String accountId, String[] fields, Map<String, String> filter, String aggregation, String reportType) {
         AdWordsSession session = getSession(accountId);
-        com.google.api.ads.adwords.lib.jaxb.v201609.Selector selector = new com.google.api.ads.adwords.lib.jaxb.v201609.Selector();
+        com.google.api.ads.adwords.lib.jaxb.v201710.Selector selector = new com.google.api.ads.adwords.lib.jaxb.v201710.Selector();
         selector.getFields().addAll(Lists.newArrayList(fields));
 
         if (filter != null) {

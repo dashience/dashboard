@@ -14,13 +14,13 @@
 package test;
 
 import com.google.api.ads.adwords.axis.factory.AdWordsServices;
-import com.google.api.ads.adwords.axis.utils.v201609.SelectorBuilder;
-import com.google.api.ads.adwords.axis.v201609.cm.Campaign;
-import com.google.api.ads.adwords.axis.v201609.cm.CampaignPage;
-import com.google.api.ads.adwords.axis.v201609.cm.CampaignServiceInterface;
-import com.google.api.ads.adwords.axis.v201609.cm.Selector;
+import com.google.api.ads.adwords.axis.utils.v201710.SelectorBuilder;
+import com.google.api.ads.adwords.axis.v201710.cm.Campaign;
+import com.google.api.ads.adwords.axis.v201710.cm.CampaignPage;
+import com.google.api.ads.adwords.axis.v201710.cm.CampaignServiceInterface;
+import com.google.api.ads.adwords.axis.v201710.cm.Selector;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
-import com.google.api.ads.adwords.lib.selectorfields.v201609.cm.CampaignField;
+import com.google.api.ads.adwords.lib.selectorfields.v201710.cm.CampaignField;
 import com.google.api.ads.common.lib.auth.OfflineCredentials;
 import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;
 import com.google.api.client.auth.oauth2.Credential;

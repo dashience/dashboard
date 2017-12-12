@@ -15,9 +15,9 @@
 package test;
 
 import com.google.api.ads.adwords.axis.factory.AdWordsServices;
-import com.google.api.ads.adwords.axis.v201609.cm.ReportDefinitionField;
-import com.google.api.ads.adwords.axis.v201609.cm.ReportDefinitionReportType;
-import com.google.api.ads.adwords.axis.v201609.cm.ReportDefinitionServiceInterface;
+import com.google.api.ads.adwords.axis.v201710.cm.ReportDefinitionField;
+import com.google.api.ads.adwords.axis.v201710.cm.ReportDefinitionReportType;
+import com.google.api.ads.adwords.axis.v201710.cm.ReportDefinitionServiceInterface;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.common.lib.auth.OfflineCredentials;
 import com.google.api.ads.common.lib.auth.OfflineCredentials.Api;
