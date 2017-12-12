@@ -2786,6 +2786,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 
     $scope.save = function (widget) {
+        console.log("widget---------->",widget);
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2990,6 +2991,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             var colData = {
                 tableColumns: $scope.derivedColumns
             };
+                            console.log("datasetId----------->",dataSetObj);
             widget.chartType = "";
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
                 $scope.chartTypeName = "";
@@ -3032,6 +3034,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     var tempTargetColors = [];
     $scope.cancel = function (widgetObj) {
+        console.log("widgetObj-----------",widgetObj);
         $scope.saveBtnIsDisable = true;
         $scope.dispHideBuilder = true;
         $scope.queryBuilderList = "";

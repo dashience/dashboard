@@ -454,7 +454,6 @@
                                    title="{{'Duplicate Widget'| translate}}" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" >
                                     <i class="fa fa-files-o" aria-hidden="true" ></i>
                                 </a>
-
                                 <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" ng-click='setWidgetItems(widget); undo(widget, false)' class="edit" title="{{'Edit'| translate}}" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
                                 <!--<a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil">test</i></a>-->
                                 <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" title="{{'Delete'| translate}}" data-toggle="modal" data-target="#delete{{widget.id}}" ><i class="fa fa-times"></i></a>
