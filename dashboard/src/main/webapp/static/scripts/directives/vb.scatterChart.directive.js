@@ -329,6 +329,9 @@ app.directive('scatterChartDirective', function ($http, $filter, $stateParams, o
 //                                    }
 //                                });
                                 var ySeriesData1 = chartData.map(function (a) {
+                                    if (a.metrics1 === null) {
+                                        a.metrics1 = {}
+                                    }
                                     if (a.hasOwnProperty("metrics1")) {
                                         if (Object.keys(a.metrics1).length !== 0) {
                                             return a.metrics1[value.fieldName] || "0";
@@ -338,7 +341,10 @@ app.directive('scatterChartDirective', function ($http, $filter, $stateParams, o
                                     }
                                 });
                                 var ySeriesData2 = chartData.map(function (a) {
-                                    if (a.hasOwnProperty("metrics1")) {
+                                    if (a.metrics2 === null) {
+                                        a.metrics2 = {}
+                                    }
+                                    if (a.hasOwnProperty("metrics2")) {
                                         if (Object.keys(a.metrics2).length !== 0) {
                                             return a.metrics2[value.fieldName] || "0";
                                         } else {
