@@ -426,7 +426,7 @@
                                             ng-model="widgetObj.dataSetId" 
                                             ng-options="dataSet.name for dataSet in dataSets track by dataSet.id" 
                                             ng-change="getNewDataSetObj(widgetObj, chartTypeName);resetTimeProduct()">
-                                            
+
                                     </select>
                                 </div>
                             </div>
@@ -846,7 +846,7 @@
                                     <tr>
                                         <td translate>Field Name</td>
                                         <td translate>Display Name</td>
-                                        <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) === 'ticker' " translate>
+                                        <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table' || (chartTypeName ? chartTypeName : widgetObj.chartType) === 'ticker'" translate>
                                             Aggregation Function
                                         </td>
                                         <td ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" translate>Group Priority</td>
