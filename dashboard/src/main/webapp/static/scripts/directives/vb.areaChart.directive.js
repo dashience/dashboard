@@ -315,6 +315,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                 return a[xAxis.fieldName];
                             });
                             columns.push(xTicks);
+                            console.log("&&&&&&&&&&&&& chart data ->",chartData);
                             angular.forEach(yAxis, function (value, key) {
                                 var ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";

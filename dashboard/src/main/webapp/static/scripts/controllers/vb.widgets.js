@@ -488,10 +488,10 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     var setDefaultWidgetObj = [];
 
     $scope.setWidgetItems = function (widget) {
-        console.log("******************* EDIT WIDGET ****************");
-        console.log(widget);
-
-        console.log("******************* EDIT WIDGET ****************");
+//        console.log("******************* EDIT WIDGET ****************");
+//        console.log(widget);
+//
+//        console.log("******************* EDIT WIDGET ****************");
 
 
         $scope.dispHideBuilder = true;
@@ -863,7 +863,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     }
     
+    $scope.resetTimeProduct =function() {
+        $scope.timeSegments=[];
+        $scope.productSegments=[];
+    };
+
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
+        console.log("&&&&&&&&& widget",widget);
+        console.log("chartTypeName --------",chartTypeName);
         $scope.hideSelectedColumn = true;
         $scope.queryBuilderList = "";
         $scope.dispHideBuilder = true;
@@ -887,6 +894,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         getSegments(widget);
         widget.jsonData = null;
         widget.queryFilter = null;
+        
         var url = "admin/proxy/getData?";
 //        if (getDataSet.dataSourceId.dataSourceType == "sql") {
 //            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
@@ -2562,11 +2570,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var chartType = chartTypeName ? chartTypeName : widget.chartType;
         chartTypeName = chartType;
 
-        console.log("************************ ADVANCED COLUMNS DELETE************");
-        console.log("widget -->", widget);
-        console.log("chartTypeName -->", chartTypeName);
-        console.log("index -->", index);
-        console.log("y1 column -->", $scope.y1Column);
+//        console.log("************************ ADVANCED COLUMNS DELETE************");
+//        console.log("widget -->", widget);
+//        console.log("chartTypeName -->", chartTypeName);
+//        console.log("index -->", index);
+//        console.log("y1 column -->", $scope.y1Column);
 
 
         var value1, value2, value3;
@@ -2578,7 +2586,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     val.selectColumnDef = 0;
                 }
             });
-            console.log("************************ ADVANCED COLUMNS DELETE************");
         } else {
             if (widget.chartType === 'pie' || chartTypeName === 'pie') {
                 $scope.hideSelectedColumn = true;
@@ -2599,14 +2606,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
             } else if (widget.chartType === 'gauge' || chartTypeName === 'gauge') {
                 if ($scope.gaugeItem.displayName === widgetObj.displayName) {
-                    console.log("gauge scope value -->", $scope.gaugeItem);
-                    console.log("gauge scope value -->", $scope.gaugeItem.displayName);
                     $scope.gaugeItem = "";
                 }
             } else if (widget.chartType === 'ticker' || chartTypeName === 'ticker') {
-                console.log($scope.tickerAxis);
-
-
                 $scope.tickerItem.forEach(function (val, key) {
                     $scope.hideSelectedColumn = true;
                     if (val.displayName === widgetObj.displayName) {
@@ -2615,7 +2617,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                          */
 
                         var chartIndex = $scope.tickerItem.indexOf(val);
-                        console.log("chartIndex", chartIndex);
                         $scope.tickerItem.splice(chartIndex, 1);
                         var index = $scope.tickerAxis.indexOf(widgetObj);
                         if (index == -1) {
@@ -2710,15 +2711,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
             });
         }
-        console.log("***************** DELETE COLUMNS ADVANCED MENU ***********************");
-        console.log("Widget Columns -->", widget.columns);
-        console.log("chart Type -->", chartTypeName);
-        console.log("XColumn -->", value1);
-        console.log("y1column -->", value2);
-        console.log("y2column -->", value3);
-        console.log("***************** DELETE COLUMNS ADVANCED MENU ***********************");
+//        console.log("***************** DELETE COLUMNS ADVANCED MENU ***********************");
+//        console.log("Widget Columns -->", widget.columns);
+//        console.log("chart Type -->", chartTypeName);
+//        console.log("XColumn -->", value1);
+//        console.log("y1column -->", value2);
+//        console.log("y2column -->", value3);
+//        console.log("***************** DELETE COLUMNS ADVANCED MENU ***********************");
         $scope.saveBtnIsDisable = checkValidationBySaveBtn(chartTypeName, value1, value2, value3);
-        console.log("Save Btn Status -->", $scope.saveBtnIsDisable);
+//        console.log("Save Btn Status -->", $scope.saveBtnIsDisable);
     };
     $scope.undo = function (obj, status) {
         var widget = obj//$scope.undoWidget;
@@ -2737,18 +2738,18 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     function checkValidationBySaveBtn(chartType, value1, value2, value3) {
         var selectedChart = chartType ? chartType : $scope.chartTypeName;
         var returnStatus = false;
-        console.log('chartType', selectedChart);
-        console.log('xColumn', value1);
-        console.log('selectPieChartXAxis', value1);
-        console.log('selectPieChartYAxis', value2);
-        console.log('y1Column', value2);
-        console.log('y2Column', value3);
-        console.log('location', value1);
-        console.log('latitude', value2);
-        console.log('longitude', value3);
-        console.log('gaugeItem', value1);
-        console.log('tickerItem', value1);
-        console.log('funnelItem', value1);
+//        console.log('chartType', selectedChart);
+//        console.log('xColumn', value1);
+//        console.log('selectPieChartXAxis', value1);
+//        console.log('selectPieChartYAxis', value2);
+//        console.log('y1Column', value2);
+//        console.log('y2Column', value3);
+//        console.log('location', value1);
+//        console.log('latitude', value2);
+//        console.log('longitude', value3);
+//        console.log('gaugeItem', value1);
+//        console.log('tickerItem', value1);
+//        console.log('funnelItem', value1);
         if ((selectedChart === "area" || selectedChart === "line" || selectedChart === "bar" ||
                 selectedChart === "horizontalBar" || selectedChart === "combination" || selectedChart === "stackedbar" ||
                 selectedChart === "scatter") && value1) {
