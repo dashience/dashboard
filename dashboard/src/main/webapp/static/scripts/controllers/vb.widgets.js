@@ -862,15 +862,15 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
 
     }
-    
-    $scope.resetTimeProduct =function() {
-        $scope.timeSegments=[];
-        $scope.productSegments=[];
+
+    $scope.resetTimeProduct = function () {
+        $scope.timeSegments = [];
+        $scope.productSegments = [];
     };
 
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
-        console.log("&&&&&&&&& widget",widget);
-        console.log("chartTypeName --------",chartTypeName);
+        console.log("&&&&&&&&& widget", widget);
+        console.log("chartTypeName --------", chartTypeName);
         $scope.hideSelectedColumn = true;
         $scope.queryBuilderList = "";
         $scope.dispHideBuilder = true;
@@ -894,7 +894,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         getSegments(widget);
         widget.jsonData = null;
         widget.queryFilter = null;
-        
+
         var url = "admin/proxy/getData?";
 //        if (getDataSet.dataSourceId.dataSourceType == "sql") {
 //            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
@@ -2774,6 +2774,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 
     $scope.save = function (widget) {
+        console.log("********** SAVE WIDGET INTITAL *", widget);
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2862,9 +2863,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourceTypeId = 0;
             dataSetTypeId = 0;
         }
+        console.log("All count -->",widget.allAccount);
+        
         if (widget.allAccount === 1) {
             widget.accountId = null;
-        } else {
+        } else { 
             widget.accountId = parseInt($stateParams.accountId);
         }
 
@@ -2900,6 +2903,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             icon: widget.icon
 
         };
+        console.log("******************* SAVE WIDGET ACCIYBT UD *******", data);
         clearEditAllWidgetData();
         var deleteColumnDef = deleteColumns.map(function (value, key) {
             if (value) {

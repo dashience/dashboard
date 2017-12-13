@@ -11,6 +11,7 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter, 
     function changeLanguage(key) {
         $translate.use(key);
     }
+    $scope.dashboardProductName=$stateParams.productName;
     $scope.getTableType = $stateParams.getTableType;
     var compareStartDate = localStorageService.get("comparisonStartDate");
     var compareEndDate = localStorageService.get("comparisonEndDate");
@@ -32,6 +33,7 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter, 
     });
 
     $http.get("admin/ui/dbWidget/" + $stateParams.tabId + "/" + $stateParams.accountId).success(function (response) {
+        console.log("****************&&&&&&&&&&&&************ ",response);
         var pdfProductName = response[0].tabId.agencyProductId ? response[0].tabId.agencyProductId.productName : null;
         $scope.userProductName = pdfProductName;
         var pdfWidgetItems = [];
