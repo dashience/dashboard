@@ -23,8 +23,10 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
         $translate.use(key);
     }
     $scope.getTableType = $stateParams.getTableType;
-    var compareStartDate = localStorageService.get("comparisonStartDate");
-    var compareEndDate = localStorageService.get("comparisonEndDate");
+//    var compareStartDate = localStorageService.get("comparisonStartDate");
+    var compareStartDate = $stateParams.compareStartDate;
+//    var compareEndDate = localStorageService.get("comparisonEndDate");
+    var compareEndDate = $stateParams.compareEndDate;
     $scope.compareDateRange = {
         startDate: compareStartDate,
         endDate: compareEndDate
