@@ -47,7 +47,7 @@ public class PdfService {
                 commandsList.add("--window-status");
                 commandsList.add(windowStatus);
             } else {
-                
+
             }
             commandsList.add("--print-media-type");
             commandsList.add("cover");
@@ -55,9 +55,9 @@ public class PdfService {
             String filename = pdfFilesPath + RandomStringUtils.randomAlphanumeric(32).toUpperCase() + ".pdf";
             commandsList.add(filename);
             String command = pdfGeneratorCommand + " " + windowStatusCommand + " cover \"" + url + "\" " + filename;
-            System.out.println("Url -----------------------------------> "+command);
+            System.out.println("Url -----------------------------------> " + command);
             java.lang.Runtime rt = java.lang.Runtime.getRuntime();
-            String[] commandToExecute = (String[])commandsList.toArray(new String[commandsList.size()]);
+            String[] commandToExecute = (String[]) commandsList.toArray(new String[commandsList.size()]);
             java.lang.Process p = rt.exec(commandToExecute);
             p.waitFor();
             return filename;

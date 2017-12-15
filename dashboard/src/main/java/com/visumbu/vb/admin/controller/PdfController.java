@@ -50,6 +50,7 @@ public class PdfController extends BaseController {
     public @ResponseBody
     void download(HttpServletRequest request, HttpServletResponse response) {
         String url = request.getParameter("url");
+        System.out.println("PDF URL ___________________"+url);
         String windowStatus = request.getParameter("windowStatus");
         System.out.println("Start Date "  + request.getParameter("startDate"));
         System.out.println("End Date " + request.getParameter("endDate"));

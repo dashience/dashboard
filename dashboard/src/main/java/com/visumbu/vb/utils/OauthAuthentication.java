@@ -5,15 +5,11 @@
  */
 package com.visumbu.vb.utils;
 
-import static com.visumbu.vb.utils.JsonUtils.toList;
-import static com.visumbu.vb.utils.JsonUtils.toMap;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -21,8 +17,6 @@ import java.util.logging.Logger;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  *
@@ -148,7 +142,7 @@ public class OauthAuthentication {
     }
 
     public static Map<String, Object> setParameters(Map<String, Object> properties) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         for (Map.Entry<String, Object> entry : properties.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();

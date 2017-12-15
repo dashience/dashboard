@@ -6,9 +6,9 @@
 package com.visumbu.vb.datasource;
 
 import com.google.api.ads.adwords.axis.factory.AdWordsServices;
-import com.google.api.ads.adwords.axis.v201609.cm.CampaignPage;
-import com.google.api.ads.adwords.axis.v201609.cm.CampaignServiceInterface;
-import com.google.api.ads.adwords.axis.v201609.cm.Selector;
+import com.google.api.ads.adwords.axis.v201710.cm.CampaignPage;
+import com.google.api.ads.adwords.axis.v201710.cm.CampaignServiceInterface;
+import com.google.api.ads.adwords.axis.v201710.cm.Selector;
 import static com.visumbu.vb.datasource.GaDataSource.getAllDataSets;
 import java.io.IOException;
 import java.util.List;

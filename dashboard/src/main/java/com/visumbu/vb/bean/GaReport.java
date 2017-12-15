@@ -5,7 +5,7 @@
  */
 package com.visumbu.vb.bean;
 
-import com.google.api.ads.adwords.lib.jaxb.v201609.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201710.ReportDefinitionReportType;
 
 /**
  *

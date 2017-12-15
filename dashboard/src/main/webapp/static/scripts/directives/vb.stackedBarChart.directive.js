@@ -320,23 +320,48 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                 loopCount++;
                                 return a[xAxis.fieldName];
                             });
+
                             columns.push(xTicks);
                             angular.forEach(yAxis, function (value, key) {
                                 var ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
+//                                var ySeriesData1 = chartData.map(function (a) {
+//                                    if (a.metrics1) {
+//                                        return a.metrics1[value.fieldName] || "0";
+//                                    } else {
+//                                        return 0;
+//                                    }
+//                                });
+//                                var ySeriesData2 = chartData.map(function (a) {
+//                                    if (a.metrics2) {
+//                                        return a.metrics2[value.fieldName] || "0";
+//                                    } else {
+//                                        return 0;
+//                                    }
+//                                });
                                 var ySeriesData1 = chartData.map(function (a) {
-                                    if (a.metrics1) {
-                                        return a.metrics1[value.fieldName] || "0";
-                                    } else {
-                                        return 0;
+                                    if (a.metrics1 === null) {
+                                        a.metrics1 = {}
+                                    }
+                                    if (a.hasOwnProperty("metrics1")) {
+                                        if (Object.keys(a.metrics1).length !== 0) {
+                                            return a.metrics1[value.fieldName] || "0";
+                                        } else {
+                                            return a[value.fieldName] || "0";
+                                        }
                                     }
                                 });
                                 var ySeriesData2 = chartData.map(function (a) {
-                                    if (a.metrics2) {
-                                        return a.metrics2[value.fieldName] || "0";
-                                    } else {
-                                        return 0;
+                                    if (a.metrics2 === null) {
+                                        a.metrics2 = {}
+                                    }
+                                    if (a.hasOwnProperty("metrics2")) {
+                                        if (Object.keys(a.metrics2).length !== 0) {
+                                            return a.metrics2[value.fieldName] || "0";
+                                        } else {
+                                            return a[value.fieldName] || "0";
+                                        }
                                     }
                                 });
                                 if (isCompare == 'compareOn') {
