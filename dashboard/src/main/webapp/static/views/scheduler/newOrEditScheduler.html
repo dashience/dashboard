@@ -293,7 +293,8 @@
                                 <div class="col-md-12">
                                     <label translate>Email Ids</label>
                                     <div>
-                                        <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
+                                        <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" 
+                                                   on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
                                             <ui-select-match placeholder="{{'Email Ids'|translate}}">{{$item}}</ui-select-match>
                                             <ui-select-choices repeat="accountEmail in accountEmails | filter:$select.search">
                                                 {{accountEmail}}
