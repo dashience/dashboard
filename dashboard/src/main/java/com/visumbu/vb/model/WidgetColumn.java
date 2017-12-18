@@ -134,6 +134,9 @@ public class WidgetColumn implements Serializable {
     @Column(name = "group_field")
     private String groupField;
 
+    @Size(max = 32)
+    @Column(name = "category")
+    private String category;
     public WidgetColumn() {
     }
 
@@ -365,6 +368,14 @@ public class WidgetColumn implements Serializable {
 
     public void setWidgetId(TabWidget widgetId) {
         this.widgetId = widgetId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override

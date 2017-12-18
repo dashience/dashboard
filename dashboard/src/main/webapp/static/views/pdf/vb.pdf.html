@@ -192,24 +192,28 @@
                         <div class="panel-heading">                           
                             <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
                         </div>
-                        <div class="panel-body pageBreak" ng-if="widget.chartType === 'line'">
+                        <div class="panel-body pageBreak" ng-if="widget.chartType === 'line'&&(getTableType == 'compareOn' || getTableType == 'compareOff')">
                             <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                      line-Chart-Directive 
                                      line-Chart-Source="{{widget.dataSetId}}" 
                                      widget-Id="{{widget.id}}" 
-                                     widget-Columns="{{widget.columns}}" 
+                                     widget-Columns="{{widget.columns}}"
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Obj="{{widget}}">                                         
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak" ng-if="widget.chartType === 'bar'">
+                        <div class="panel-body pageBreak" ng-if="widget.chartType === 'bar'&&(getTableType == 'compareOn' || getTableType == 'compareOff')">
                             <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                      bar-Chart-Directive 
                                      bar-Chart-Source="{{widget.dataSetId}}" 
                                      widget-Id="{{widget.id}}" 
                                      widget-Columns="{{widget.columns}}" 
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Obj="{{widget}}">                                         
                                 </div>
                             </div>
@@ -225,14 +229,17 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak"  ng-if="widget.chartType === 'area'">
+                        <div class="panel-body pageBreak"  ng-if="widget.chartType === 'area'&&(getTableType == 'compareOn' || getTableType == 'compareOff')">
                             <div class="col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" 
                                      area-Chart-Directive 
                                      area-Chart-Source="{{widget.dataSetId}}" 
                                      widget-Id="{{widget.id}}" 
                                      widget-Columns="{{widget.columns}}" 
-                                     widget-Obj="{{widget}}">                                         
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Obj="{{widget}}"> 
+
                                 </div>
                             </div>
                         </div>
@@ -248,7 +255,7 @@
                         </div>
                         <div class="list pageBreak" ng-if="widget.chartType === 'table'" adjust-height>
                             <div class="table-responsive project-list col-fixed-{{widget.width}}" style="width:{{(1300 * widget.width) / 12}}px">
-                                <div id="changes-height" class="project-list">
+                                <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOff'">
                                     <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
                                          dynamic-Table 
                                          pdf-function="addToPdf(test)" 
@@ -259,6 +266,16 @@
                                          widget-Columns="{{widget.columns}}">                                             
                                     </div>
                                 </div>
+                                <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
+                                        <div compare-Range-Table 
+                                             compare-Table-Source="{{widget.dataSetId}}" 
+                                             compare-Date-Range="{{compareDateRange}}"
+                                             widget-Id="{{widget.id}}" 
+                                             widget-Obj="{{widget}}" 
+                                             table-Footer="{{widget.tableFooter}}" 
+                                             widget-Columns="{{widget.columns}}">                                         
+                                        </div>
+                                    </div>
                             </div>
                         </div>
                         <div class="panel-body pageBreak"  ng-if="widget.chartType === 'text'">

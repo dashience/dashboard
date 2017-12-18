@@ -5,7 +5,14 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     $scope.reportId = $stateParams.reportId;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
-
+    $scope.getTableType = $stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
+    $scope.compareDateRange = {
+        startDate: $stateParams.compareStartDate,
+        endDate: $stateParams.compareEndDate
+    }
+    $scope.compareStatus=$stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
+    $scope.compareStartDate = $scope.compareDateRange.startDate;
+    $scope.compareEndDate = $scope.compareDateRange.endDate;
     $scope.reportWidgets = [];
 
     $http.get("admin/report/" + $stateParams.reportId).success(function (response) {
@@ -74,7 +81,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             logo: $scope.uploadLogo   //window.btoa($scope.uploadLogo)
         };
         $http({method: $scope.selectReportId ? 'PUT' : 'POST', url: 'admin/report/report', data: data}).success(function () {
-            $stateParams.reportId = $scope.reports[$scope.reports.length - 1].id;
+//            $stateParams.reportId = $scope.reports[$scope.reports.length - 1].id;
         });
     };
 

@@ -7,6 +7,14 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportWidgets = [];
+    $scope.getTableType = $stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
+    $scope.compareDateRange = {
+        startDate: $stateParams.compareStartDate,
+        endDate: $stateParams.compareEndDate
+    }
+    $scope.compareStatus=$stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
+    $scope.compareStartDate = $scope.compareDateRange.startDate;
+    $scope.compareEndDate = $scope.compareDateRange.endDate;
     if ($scope.permission.scheduleReport === true) {
         $scope.showSchedulerReport = true;
         console.log($scope.showSchedulerReport)

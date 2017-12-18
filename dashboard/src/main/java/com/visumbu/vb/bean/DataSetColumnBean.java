@@ -38,6 +38,7 @@ public class DataSetColumnBean {
     private Integer sortPriority;
     private String agregationFunction;
     private Integer groupPriority;
+    private String category;
     private String sortOrder;
     private List<DataSetColumnBean> tableColumns;
     private VbUser userId;
@@ -258,6 +259,16 @@ public class DataSetColumnBean {
     public void setWidgetId(TabWidget widgetId) {
         this.widgetId = widgetId;
     }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    
 
     @Override
     public String toString() {

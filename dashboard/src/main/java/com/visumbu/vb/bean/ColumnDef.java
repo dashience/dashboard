@@ -29,6 +29,7 @@ public class ColumnDef {
     private String status;
     private VbUser userId;
     private TabWidget widgetId;
+    private String category;
 
     public static class Aggregation {
 
@@ -232,7 +233,15 @@ public class ColumnDef {
     public void setDataFormat(String dataFormat) {
         this.dataFormat = dataFormat;
     }
-    
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     @Override
     public String toString() {
         return "ColumnDef{" + "id=" + id + ", fieldName=" + fieldName + ", fieldType=" + fieldType + ", sortPriority=" + sortPriority + ", sortOrder=" + sortOrder + ", agregationFunction=" + agregationFunction + ", displayName=" + displayName + ", groupPriority=" + groupPriority + ", displayFormat=" + displayFormat + ", functionName=" + functionName + ", expression=" + expression + ", status=" + status + ", userId=" + userId + ", widgetId=" + widgetId + '}';

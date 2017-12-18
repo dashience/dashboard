@@ -171,4 +171,4 @@ public class Account implements Serializable {
         this.dashboardTabsCollection = dashboardTabsCollection;
     }
 
-}
+    }

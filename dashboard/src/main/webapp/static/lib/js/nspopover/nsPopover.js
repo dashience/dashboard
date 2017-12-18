@@ -507,6 +507,10 @@
           scope.hidePopover = function() {
             hider_.hide(0);
           };
+          
+          $rootScope.hidePopover = function() {
+            hider_.hide(0);
+          };
 
           // Hide popovers that are associated with the passed group.
           scope.$on('ns:popover:hide', function(ev, group) {

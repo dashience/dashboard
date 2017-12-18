@@ -78,7 +78,7 @@
     border-color: transparent;
     position: absolute;
     border-bottom-color: #d2d2d2;
-    left: 50%;
+    left: 50% !important;
     top: -11px;
     z-index: 99;
     margin-left: -11px; }

@@ -4,6 +4,14 @@ app.controller("SchedulerController", function ($scope, $http, localStorageServi
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
+    $scope.getTableType = $stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
+    $scope.compareDateRange = {
+        startDate: $stateParams.compareStartDate,
+        endDate: $stateParams.compareEndDate
+    }
+    $scope.compareStartDate = $scope.compareDateRange.startDate;
+    $scope.compareEndDate = $scope.compareDateRange.endDate;
+    $scope.compareStatus=$stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
     $http.get("admin/scheduler/scheduler").success(function (response) {
         $scope.schedulers = response;
     });

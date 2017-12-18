@@ -120,8 +120,8 @@ public class FilterDataController extends BaseController {
             valueMap.put("query", Arrays.asList(query));
             valueMap.put("driver", Arrays.asList("com.mysql.jdbc.Driver"));
             valueMap.put("username", Arrays.asList("root"));
-            valueMap.put("password", Arrays.asList("test@123"));
-            valueMap.put("connectionUrl", Arrays.asList("jdbc:mysql://localhost/fpad_prod"));
+            valueMap.put("password", Arrays.asList("root"));
+            valueMap.put("connectionUrl", Arrays.asList("jdbc:mysql://localhost/fpad"));
 
             String data = Rest.getData(url, valueMap);
             JSONParser parser = new JSONParser();

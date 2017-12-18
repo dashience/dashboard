@@ -5,4 +5,11 @@ app.controller('ReportIndexController', function ($scope, $stateParams, $state) 
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.locationId = $stateParams.locationId;
+    $scope.getTableType = $stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
+    $scope.compareDateRange = {
+        startDate: $stateParams.compareStartDate,
+        endDate: $stateParams.compareEndDate
+    }
+    $scope.compareStartDate = $scope.compareDateRange.startDate;
+    $scope.compareEndDate = $scope.compareDateRange.endDate;
 });

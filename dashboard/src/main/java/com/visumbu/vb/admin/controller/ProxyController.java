@@ -18,6 +18,7 @@ import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.bean.DateRange;
+import com.visumbu.vb.bean.MapSummaryHeader;
 import com.visumbu.vb.bean.Range;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Account;
@@ -57,6 +58,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -405,11 +407,11 @@ public class ProxyController {
         MultiValueMap<String, String> request2 = getRequest(dataSetIdSecond, valueMap);
         Map dataMap1 = getJoinDataSet(request1, request, response, dataSetIdFirst.getId());
         Map dataMap2 = getJoinDataSet(request2, request, response, dataSetIdSecond.getId());
-        
+
         System.out.println("Before Join1 ===> ");
         System.out.println(dataMap1);
         System.out.println(dataMap2);
-        
+
         List<Map<String, Object>> dataList1 = (List<Map<String, Object>>) dataMap1.get("data");
         //dataList1 = addDerivedColumnsToDataSet(dataSetIdFirst.getId(), userIdInt, dataList1, request1, request, response);
 
@@ -419,8 +421,7 @@ public class ProxyController {
         System.out.println("Before Join2 ===> ");
         System.out.println(dataMap1);
         System.out.println(dataMap2);
-        
-        
+
         Integer secondDataSetAppender = dataSetIdSecond.getId();
         if (!operationType.equalsIgnoreCase("union")) {
             Set<String> columnSet = dataList1.get(0).keySet();
@@ -586,7 +587,7 @@ public class ProxyController {
         return returnMap;
     }
 
-    public  List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
+    public List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
         boolean formatRequired = false;
         for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
             ColumnDef column = iterator1.next();
@@ -884,39 +885,41 @@ public class ProxyController {
         }
         List<Map<String, Object>> returnData = new ArrayList<>();
         // System.out.println("dataaaaa ------------> " + data);
-        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
-            Map<String, Object> dataMap = iterator.next();
-            Map<String, Object> returnDataMap = dataMap;
-            for (Iterator<DataSetColumns> iterator1 = dataSetColumns.iterator(); iterator1.hasNext();) {
-                DataSetColumns dataSetColumn = iterator1.next();
-                boolean isDerivedColumn = checkIsDerivedFunction(dataSetColumn);
-                if (isDerivedColumn) {
-                    String functionName = dataSetColumn.getFunctionName();
-                    String dateRangeName = dataSetColumn.getDateRangeName();
-                    Integer lastNdays = dataSetColumn.getLastNdays();
-                    Integer lastNweeks = dataSetColumn.getLastNweeks();
-                    Integer lastNmonths = dataSetColumn.getLastNmonths();
-                    Integer lastNyears = dataSetColumn.getLastNyears();
-                    String customStartDate = dataSetColumn.getCustomStartDate();
-                    String customEndDate = dataSetColumn.getCustomEndDate();
-                    if (dateRangeName != null && !dateRangeName.isEmpty()) {
-                        if (!dateRangeName.equalsIgnoreCase("custom")) {
-                            Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears, endDate);
-                            customStartDate = DateUtils.dateToString(dateMap.get("startDate"), "MM/dd/yyyy");
-                            customEndDate = DateUtils.dateToString(dateMap.get("endDate"), "MM/dd/yyyy");
-                            //// System.out.println("customStartDate ---> " + customStartDate);
-                            //// System.out.println("customEndDate ---> " + customEndDate);
+        if (data != null && !data.isEmpty()) {
+            for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+                Map<String, Object> dataMap = iterator.next();
+                Map<String, Object> returnDataMap = dataMap;
+                for (Iterator<DataSetColumns> iterator1 = dataSetColumns.iterator(); iterator1.hasNext();) {
+                    DataSetColumns dataSetColumn = iterator1.next();
+                    boolean isDerivedColumn = checkIsDerivedFunction(dataSetColumn);
+                    if (isDerivedColumn) {
+                        String functionName = dataSetColumn.getFunctionName();
+                        String dateRangeName = dataSetColumn.getDateRangeName();
+                        Integer lastNdays = dataSetColumn.getLastNdays();
+                        Integer lastNweeks = dataSetColumn.getLastNweeks();
+                        Integer lastNmonths = dataSetColumn.getLastNmonths();
+                        Integer lastNyears = dataSetColumn.getLastNyears();
+                        String customStartDate = dataSetColumn.getCustomStartDate();
+                        String customEndDate = dataSetColumn.getCustomEndDate();
+                        if (dateRangeName != null && !dateRangeName.isEmpty()) {
+                            if (!dateRangeName.equalsIgnoreCase("custom")) {
+                                Map<String, Date> dateMap = getCustomDate(dateRangeName, lastNdays, lastNweeks, lastNmonths, lastNyears, endDate);
+                                customStartDate = DateUtils.dateToString(dateMap.get("startDate"), "MM/dd/yyyy");
+                                customEndDate = DateUtils.dateToString(dateMap.get("endDate"), "MM/dd/yyyy");
+                                //// System.out.println("customStartDate ---> " + customStartDate);
+                                //// System.out.println("customEndDate ---> " + customEndDate);
+                            }
                         }
+                        DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, startDate, endDate);
+                        String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
+                        Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(dataSetColumn.getBaseField()), dataSetColumn);
+                        returnDataMap.put(dataSetColumn.getFieldName(), derivedFunctionValue);
+                    } else {
+                        returnDataMap.put(dataSetColumn.getFieldName(), dataMap.get(dataSetColumn.getFieldName()));
                     }
-                    DateRange dateRange = getDateRange(functionName, dateRangeName, customStartDate, customEndDate, startDate, endDate);
-                    String cachedRangeForFunction = DateUtils.dateToString(dateRange.getStartDate(), format) + " To " + DateUtils.dateToString(dateRange.getEndDate(), format);
-                    Object derivedFunctionValue = getDataForDerivedFunctionColumn(cachedData.get(cachedRangeForFunction), dataMap.get(dataSetColumn.getBaseField()), dataSetColumn);
-                    returnDataMap.put(dataSetColumn.getFieldName(), derivedFunctionValue);
-                } else {
-                    returnDataMap.put(dataSetColumn.getFieldName(), dataMap.get(dataSetColumn.getFieldName()));
                 }
+                returnData.add(returnDataMap);
             }
-            returnData.add(returnDataMap);
         }
         return returnData;
     }
@@ -948,7 +951,7 @@ public class ProxyController {
             if (isDerivedColumn) {
                 if (dataSetColumn.getExpression() != null) {
                     String expressionValue = executeExpression(dataSetColumn, data);
-                     System.out.println("OUTPUT FROM EXPRESSION " + expressionValue);
+                    System.out.println("OUTPUT FROM EXPRESSION " + expressionValue);
                     if ((expressionValue.startsWith("'") && expressionValue.endsWith("'"))) {
                         Object expValue = expressionValue.substring(1, expressionValue.length() - 1);
                         returnMap.put(dataSetColumn.getFieldName(), expValue);
@@ -1169,7 +1172,6 @@ public class ProxyController {
                     // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
                     // System.out.println(pinterestData);
                     // System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-
 //                fbData.lastIndexOf(jsonObj);
 //                String likesCount = fbData.size() + "";
 //                Map<String, String> boardsSize = new HashMap<>();
@@ -1978,7 +1980,6 @@ public class ProxyController {
         }
 
         // System.out.println("ONE ===> " + timeSegment + " TWO ===> " + productSegment + " Filter ====> " + filter);
-
         if (timeSegment != null && timeSegment.equalsIgnoreCase("none")) {
             timeSegment = null;
         }
@@ -2063,9 +2064,10 @@ public class ProxyController {
             valueMap.put("productSegment", Arrays.asList(productSegment == null ? "" : productSegment));
             valueMap.put("dataSetReportName", Arrays.asList(dataSetReportName == null ? "" : dataSetReportName));
             String widgetIdStr = getFromMultiValueMap(valueMap, "widgetId");
-
-            Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
-            Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+            //            Date startDate = DateUtils.getStartDate(request.getParameter("startDate"));
+            Date startDate = DateUtils.getStartDate(getFromMultiValueMap(valueMap, "startDate"));
+            //            Date endDate = DateUtils.getEndDate(request.getParameter("endDate"));
+            Date endDate = DateUtils.getEndDate(getFromMultiValueMap(valueMap, "endDate"));
             if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
                 Integer widgetId = Integer.parseInt(widgetIdStr);
                 TabWidget widget = uiService.getWidgetById(widgetId);
@@ -2080,7 +2082,7 @@ public class ProxyController {
                     }
                 }
             }
-            
+
             try {
                 valueMap.put("startDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8")));
                 valueMap.put("endDate", Arrays.asList("" + URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8")));
@@ -2109,7 +2111,6 @@ public class ProxyController {
             String query = getFromMultiValueMap(valueMap, "query");
 
             String dashboardFilter = getFromMultiValueMap(valueMap, "dashboardFilter");
-
             if (isNullOrEmpty(dashboardFilter)) {
                 dashboardFilter = "";
             }
@@ -2130,7 +2131,6 @@ public class ProxyController {
             }
 
             // System.out.println("Query ===> " + query);
-
             try {
                 query = URLEncoder.encode(query, "UTF-8");
             } catch (UnsupportedEncodingException ex) {
@@ -2146,11 +2146,11 @@ public class ProxyController {
                 java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
             }
             valueMap.put("dashboardFilter", Arrays.asList(dashboardFilter));
-
             String data = Rest.getData(url, valueMap);
             JSONParser parser = new JSONParser();
             Object jsonObj = parser.parse(data);
             Map returnData = JsonSimpleUtils.toMap((JSONObject) jsonObj);
+            System.out.println("sqlData>>>>>>" + returnData);
             return returnData;
         } catch (ParseException ex) {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
@@ -2698,6 +2698,401 @@ public class ProxyController {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return "";
+    }
+
+    @RequestMapping(value = "getCompareData", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object getCompareData(HttpServletRequest request, HttpServletResponse response) {
+        Map returnMap = new HashMap<>();
+        String fieldsOnly = request.getParameter("fieldsOnly");
+
+        String dataSetId = request.getParameter("dataSetId");
+        String widgetIdStr = request.getParameter("widgetId");
+        String userIdStr = request.getParameter("userId");
+
+        Integer dataSetIdInt = null;
+        Integer widgetIdInt = null;
+        Integer userIdInt = null;
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined") && !widgetIdStr.equalsIgnoreCase("null")) {
+            widgetIdInt = Integer.parseInt(widgetIdStr);
+        }
+        if (userIdStr != null) {
+            try {
+                userIdInt = Integer.parseInt(userIdStr);
+            } catch (NumberFormatException e) {
+
+            }
+        }
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (NumberFormatException e) {
+
+            }
+        }
+        Date startDate1 = DateUtils.getStartDate(request.getParameter("startDate1"));
+        Date endDate1 = DateUtils.getEndDate(request.getParameter("endDate1"));
+        Date startDate2 = DateUtils.getStartDate(request.getParameter("startDate2"));
+        Date endDate2 = DateUtils.getEndDate(request.getParameter("endDate2"));
+
+        MapSummaryHeader mapSummaryHeader1 = new MapSummaryHeader(startDate1, endDate1);
+        MapSummaryHeader mapSummaryHeader2 = new MapSummaryHeader(startDate2, endDate2);
+        Map summary = new LinkedHashMap<>();
+        summary.put("dateRange1", mapSummaryHeader1);
+        summary.put("dateRange2", mapSummaryHeader2);
+
+        MultiValueMap<String, String> valueMap = getValueMapFromRequest(request, response);
+
+        valueMap.put("startDate", Arrays.asList(request.getParameter("startDate1")));
+        valueMap.put("endDate", Arrays.asList(request.getParameter("endDate1")));
+        Map<String, Object> firstData = getGenericData(valueMap, userIdInt, dataSetIdInt, widgetIdInt, request, response);
+        valueMap.put("startDate", Arrays.asList(request.getParameter("startDate2")));
+        valueMap.put("endDate", Arrays.asList(request.getParameter("endDate2")));
+        Map<String, Object> secondData = getGenericData(valueMap, userIdInt, dataSetIdInt, widgetIdInt, request, response);
+        List<ColumnDef> columnDefs = (List<ColumnDef>) firstData.get("columnDefs");
+        Map<String, Object> firstDataList = ConvertDataAsMetric(firstData);
+        Map<String, Object> secondDataList = ConvertDataAsMetric(secondData);
+        List<Map<String, Object>> comparedData = compareTwoList((List<Map<String, Object>>) firstDataList.get("data"), (List<Map<String, Object>>) secondDataList.get("data"));
+        returnMap.put("summary", summary);
+        returnMap.put("data", comparedData);
+        returnMap.put("raw1", firstDataList);
+        returnMap.put("raw2", secondDataList);
+        returnMap.put("columnDefs", getColumnDefObjectForComparision(comparedData));
+        return returnMap;
+    }
+
+    private MultiValueMap<String, String> getValueMapFromRequest(HttpServletRequest request, HttpServletResponse response) {
+        Map<String, String[]> parameterMap = request.getParameterMap();
+        String joinDataSetIdStr = request.getParameter("joinDataSetId");
+        String dataSourceId = request.getParameter("dataSourceId");
+        String dataSourceType = request.getParameter("dataSourceType");
+        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+        for (Map.Entry<String, String[]> entrySet : parameterMap.entrySet()) {
+            String key = entrySet.getKey();
+            String[] value = entrySet.getValue();
+            if (value != null) {
+                valueMap.put(key, Arrays.asList(value));
+            }
+        }
+        String joinDataSetId = getFromMultiValueMap(valueMap, "joinDataSetId");
+        if (joinDataSetId == null) {
+            valueMap.put("joinDataSetId", Arrays.asList(joinDataSetId));
+        }
+
+        return valueMap;
+    }
+
+    private Map<String, Object> getGenericData(MultiValueMap<String, String> valueMap, Integer userId, Integer dataSetId, Integer widgetId, HttpServletRequest request, HttpServletResponse response) {
+        Map returnMap = new HashMap<>();
+        returnMap = getData(valueMap, request, response);
+        returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data"), dataSetId));
+
+        updateDataSetColumnId((List) returnMap.get("columnDefs"), userId, dataSetId, widgetId);
+
+        List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
+        if (widgetId != null) {
+            String queryFilter = null;
+            TabWidget tabWidget = uiService.getWidgetByIdAndDataSetId(widgetId, dataSetId);
+            if (tabWidget != null) {
+                queryFilter = tabWidget.getQueryFilter();
+            }
+            List<Map<String, Object>> originalData = (List<Map<String, Object>>) returnMap.get("data");
+            List<Map<String, Object>> returnDataMap = ShuntingYard.applyExpression(originalData, queryFilter);
+            returnMap.put("data", returnDataMap);
+        }
+        Map dataMap = new HashMap<>();
+        dataMap.put("columnDefs", returnMap.get("columnDefs"));
+        dataMap.put("data", returnMap.get("data"));
+        return dataMap;
+    }
+
+    private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data, Integer dataSetId) {
+        log.debug("Calling of getColumnDef function in ProxyController class");
+        List<ColumnDef> columnDefs = new ArrayList<>();
+        if (data == null) {
+            return null;
+        }
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> mapData = iterator.next();
+            for (Map.Entry<String, Object> entrySet : mapData.entrySet()) {
+                String key = entrySet.getKey();
+                ColumnDef columnDef = null;
+                DataSetColumns columns = null;
+                if (dataSetId != null) {
+                    columns = uiService.getDataSetColumn(key, dataSetId);
+                }
+                if (columns != null) {
+                    columnDef = new ColumnDef(key, columns.getFieldType(), columns.getDisplayName());
+                    columnDef.setDisplayFormat(columns.getDisplayFormat());
+                    columnDef.setCategory(columns.getCategory());
+                    columnDef.setDataFormat(columns.getDataFormat());
+                    //System.out.println("ColumnDefs =====> " + columnDef);
+                } else {
+                    DefaultFieldProperties fieldProperties = uiService.getDefaultFieldProperties(key);
+                    if (fieldProperties != null) {
+                        columnDef = new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat());
+                        if (fieldProperties.getDataType() != null && fieldProperties.getDataType().equalsIgnoreCase("date")) {
+                            columnDef.setDataFormat(fieldProperties.getDataFormat());
+                        }
+                        if (fieldProperties.getDataFormat() != null) {
+                            columnDef.setDataFormat(fieldProperties.getDataFormat());
+                        }
+                        // //System.out.println("DAta Format ===> " + fieldProperties.getDataFormat());
+                    } else {
+                        Object value = entrySet.getValue();
+                        String valueString = value + "";
+                        valueString = valueString.replaceAll("^\"|\"$", "");
+                        if (NumberUtils.isNumber(valueString)) {
+                            columnDef = new ColumnDef(key, "number", key);
+                        } else if (DateUtils.convertToDate(valueString) != null) {
+                            columnDef = new ColumnDef(key, "date", key);
+                        } else if (valueString.indexOf("%") > 0) {
+                            columnDef = new ColumnDef(key, "number", key);
+                            columnDef.setDataFormat("%");
+                            columnDefs.add(columnDef);
+                        } else {
+                            columnDef = new ColumnDef(key, "string", key);
+                        }
+                    }
+                }
+                if (columnDef != null) {
+                    columnDefs.add(columnDef);
+                }
+
+            }
+            return columnDefs;
+        }
+        return columnDefs;
+    }
+
+    Map<String, Object> ConvertDataAsMetric(Map<String, Object> dataListMap) {
+        List<Map<String, Object>> data = (List<Map<String, Object>>) dataListMap.get("data");
+        List<ColumnDef> columnDefs = (List<ColumnDef>) dataListMap.get("columnDefs");
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap = iterator.next();
+            Map<String, Object> metrics = new HashMap<>();
+            Map<String, Object> dimensions = new HashMap<>();
+
+            for (Iterator<ColumnDef> iterator1 = columnDefs.iterator(); iterator1.hasNext();) {
+                ColumnDef columndef = iterator1.next();
+                if (columndef.getCategory() != null && columndef.getCategory().equalsIgnoreCase("metric")) {
+                    metrics.put(columndef.getFieldName(), dataMap.get(columndef.getFieldName()));
+                } else if (columndef.getCategory() != null && columndef.getCategory().equalsIgnoreCase("dimension")) {
+                    dimensions.put(columndef.getFieldName(), dataMap.get(columndef.getFieldName()));
+                } else if (columndef.getFieldType().equalsIgnoreCase("string")) {
+                    dimensions.put(columndef.getFieldName(), dataMap.get(columndef.getFieldName()));
+                } else {
+                    // dimensions.put(columndef.getFieldName(), dataMap.get(columndef.getFieldName()));
+                }
+            }
+            dataMap.put("metrics", metrics);
+            dataMap.put("dimensions", dimensions);
+        }
+        return dataListMap;
+    }
+
+    public List<Map<String, Object>> compareTwoList(List<Map<String, Object>> data1, List<Map<String, Object>> data2) {
+        List<Map<String, Object>> returnList = new ArrayList<>();
+        for (Iterator<Map<String, Object>> iterator = data1.iterator(); iterator.hasNext();) {
+            Map<String, Object> dataMap1 = iterator.next();
+            Map<String, Object> dataMap2 = getMatchingElement(dataMap1, data2);
+            dataMap1.put("metrics1", dataMap1.remove("metrics"));
+            if (dataMap2 != null) {
+                dataMap1.put("metrics2", dataMap2.get("metrics"));
+            } else {
+                dataMap1.put("metrics2", null);
+            }
+            returnList.add(dataMap1);
+        }
+        return returnList;
+    }
+
+    public Map<String, Object> getMatchingElement(Map dataMap, List<Map<String, Object>> data) {
+        if (data == null) {
+            return null;
+        }
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> currentData = iterator.next();
+            Map<String, Object> currentDimensions = (Map<String, Object>) currentData.get("dimensions");
+            boolean matched = false;
+            if (currentDimensions == null || currentDimensions.isEmpty()) {
+                return currentData;
+            }
+            for (Map.Entry<String, Object> entry : currentDimensions.entrySet()) {
+                String currentKey = entry.getKey();
+                String currentValue = entry.getValue() + "";
+                String dataValue = dataMap.get(currentKey) + "";
+                if (currentKey.equalsIgnoreCase("metrics") || currentKey.equalsIgnoreCase("dimensions")) {
+                    continue;
+                }
+                if (dataValue.equalsIgnoreCase(currentValue)) {
+                    matched = true;
+                } else {
+                    matched = false;
+                    break;
+                }
+            }
+            if (matched) {
+                System.out.println("curentData>>>" + currentData);
+                return currentData;
+            }
+        }
+        return null;
+    }
+
+    public Boolean checkDayOfWeek(String input) {
+        Boolean checkDay = false;
+        if (input == null) {
+            return false;
+        }
+        List<String> dayOfWeek = new ArrayList<String>() {
+            {
+                add("Sunday");
+                add("Monday");
+                add("Tuesday");
+                add("Wednesday");
+                add("Thursday");
+                add("Friday");
+                add("Saturday");
+            }
+        };
+        for (String day : dayOfWeek) {
+            if (day.equalsIgnoreCase(input)) {
+                checkDay = true;
+            }
+        }
+        return checkDay;
+    }
+
+    public Boolean checkMonth(String input) {
+        Boolean isMonth = false;
+        if (input == null) {
+            return false;
+        }
+        List<String> monthList = new ArrayList<String>() {
+            {
+                add("January");
+                add("February");
+                add("March");
+                add("April");
+                add("May");
+                add("June");
+                add("July");
+                add("August");
+                add("September");
+                add("October");
+                add("November");
+                add("December");
+            }
+        };
+        for (String month : monthList) {
+            if (month.equalsIgnoreCase(input)) {
+                isMonth = true;
+            }
+        }
+        return isMonth;
+    }
+
+    public Boolean checkMonthYear(String input) {
+        Date date = null;
+        Boolean isMonthYear = false;
+        if (input == null) {
+            return false;
+        }
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("MMMM yyyy");
+            format.setLenient(false);
+            date = format.parse(input);
+        } catch (java.text.ParseException e) {
+        }
+        if (date != null) {
+            isMonthYear = true;
+        }
+        return isMonthYear;
+    }
+
+    private ColumnDef getColumnDef(String key, Object value, String category) {
+        //for (Map.Entry<String, Object> entrySet : dataMap.entrySet()) {
+        // String key = entrySet.getKey();
+        DefaultFieldProperties fieldProperties = uiService.getDefaultFieldProperties(key);
+        ColumnDef columnDef = null;
+        if (fieldProperties != null) {
+            columnDef = new ColumnDef(key, fieldProperties.getDataType() == null ? "string" : fieldProperties.getDataType(), fieldProperties.getDisplayName(), fieldProperties.getAgregationFunction(), fieldProperties.getDisplayFormat());
+            if (fieldProperties.getDataType() != null && fieldProperties.getDataType().equalsIgnoreCase("date")) {
+                columnDef.setDataFormat(fieldProperties.getDataFormat());
+            }
+            if (fieldProperties.getDataFormat() != null) {
+                columnDef.setDataFormat(fieldProperties.getDataFormat());
+            }
+            // //System.out.println("DAta Format ===> " + fieldProperties.getDataFormat());
+        } else {
+            String valueString = value + "";
+            valueString = valueString.replaceAll("^\"|\"$", "");
+            if (key.equalsIgnoreCase("rating") || key.equalsIgnoreCase("overallRating")) {
+                columnDef = new ColumnDef(key, "rating", key);
+
+            } else if (NumberUtils.isNumber(valueString)) {
+                columnDef = new ColumnDef(key, "number", key);
+            } else if (checkDayOfWeek(valueString)) {
+                columnDef = new ColumnDef(key, "day", key);
+            } else if (DateUtils.convertToDate(valueString) != null) {
+                columnDef = new ColumnDef(key, "date", key);
+            } else if (checkMonth(valueString)) {
+                columnDef = new ColumnDef(key, "month", key);
+            } else if (checkMonthYear(valueString)) {
+                // valueString contains 'August 2016'
+                columnDef = new ColumnDef(key, "month year", key);
+            } else if (valueString.indexOf("%") > 0) {
+                columnDef = new ColumnDef(key, "number", key);
+                columnDef.setDataFormat("%");
+            } else if (key.equalsIgnoreCase("url") || key.equalsIgnoreCase("videoImageUrl")) {
+                columnDef = new ColumnDef(key, "image", key);
+            } else if (key.equalsIgnoreCase("videoEmbedCode")) {
+                columnDef = new ColumnDef(key, "video", key);
+            } else {
+                columnDef = new ColumnDef(key, "string", key);
+            }
+        }
+
+        columnDef.setCategory(category);
+        return columnDef;
+    }
+
+    private List<ColumnDef> getColumnDefObjectForComparision(List<Map<String, Object>> data) {
+        log.debug("Calling of getColumnDef function in MapDataController class");
+        List<ColumnDef> columnDefs = new ArrayList<>();
+        if (data == null) {
+            return null;
+        }
+        for (Iterator<Map<String, Object>> iterator = data.iterator(); iterator.hasNext();) {
+            Map<String, Object> mapData = iterator.next();
+            for (Map.Entry<String, Object> entry : mapData.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                Map<String, Object> metricsMap = (Map<String, Object>) mapData.get("metrics1");
+                if (metricsMap == null) {
+                    metricsMap = (Map<String, Object>) mapData.get("metrics2");
+                }
+                if (metricsMap.get(key) != null) {
+                    ColumnDef columnDef = getColumnDef(key, value, "metric");
+                    if (columnDef != null) {
+                        columnDefs.add(columnDef);
+                    }
+                } else if (key.equalsIgnoreCase("metrics1")) {
+
+                } else if (key.equalsIgnoreCase("metrics2")) {
+                } else if (key.equalsIgnoreCase("dimensions")) {
+
+                } else {
+                    ColumnDef columnDef = getColumnDef(key, value, "dimension");
+                    if (columnDef != null) {
+                        columnDefs.add(columnDef);
+                    }
+                }
+            }
+            return columnDefs;
+        }
+        return columnDefs;
     }
 
     @ExceptionHandler

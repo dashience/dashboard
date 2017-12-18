@@ -196,24 +196,28 @@
                         <div class="panel-heading">                           
                             <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle?reportWidget.widgetId.widgetTitle:'Widget'}}</span>
                         </div>
-                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'line'">
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'line' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                      line-Chart-Directive 
                                      line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Obj="{{reportWidget.widgetId}}">                                         
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'bar'">
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'bar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                      bar-Chart-Directive 
                                      bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Obj="{{reportWidget.widgetId}}">                                         
                                 </div>
                             </div>
@@ -229,13 +233,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'area'">
+                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'area' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
                                      area-Chart-Directive 
                                      area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
-                                     widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                     widget-Columns="{{reportWidget.widgetId.columns}}"
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Obj="{{reportWidget.widgetId}}"></div>
                             </div>
                         </div>
@@ -251,42 +257,51 @@
                         </div>                       
                         <div class="list pageBreak" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
                             <div class="table-responsive project-list" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
-                                <div id="changes-height" class="project-list">
-                                    <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
-                                         dynamic-Table pdf-function="addToPdf(test)" 
-                                         dynamic-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
-                                         widget-Id="{{reportWidget.widgetId.id}}" widget-Obj="{{reportWidget.widgetId}}" 
-                                         table-Footer="{{reportWidget.widgetId.tableFooter}}" 
-                                         widget-Columns="{{reportWidget.widgetId.columns}}"></div>
-                                </div>
+                                <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOff'">
+                                  <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
+                                     dynamic-Table pdf-function="addToPdf(test)" 
+                                     dynamic-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{reportWidget.widgetId.id}}" widget-Obj="{{reportWidget.widgetId}}" 
+                                     table-Footer="{{reportWidget.widgetId.tableFooter}}" 
+                                     widget-Columns="{{reportWidget.widgetId.columns}}"></div>
                             </div>
-                        </div>
-                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'text'">
-                            <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
-                                <div class="text-widget">
-                                    <span ng-bind-html="reportWidget.widgetId.content"></span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'stackedbar'">
-                            <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
-                                <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
-                                     stacked-Bar-Chart-Directive 
-                                     stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                            <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
+                                <div compare-Range-Table 
+                                     compare-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Id="{{reportWidget.widgetId.id}}" 
-                                     widget-Columns="{{reportWidget.widgetId.columns}}" 
-                                     widget-Obj="{{reportWidget.widgetId}}">                                         
+                                     widget-Obj="{{reportWidget.widgetId}}" 
+                                     table-Footer="{{reportWidget.widgetId.tableFooter}}" 
+                                     widget-Columns="{{reportWidget.widgetId.columns}}">                                         
                                 </div>
                             </div>
-                        </div> 
-                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'funnel'">
-                            <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
-                                <div funnel-Directive
-                                     funnel-Source="{{reportWidget.widgetId.dataSetId}}" 
-                                     widget-Obj="{{reportWidget.widgetId}}" 
-                                     funnel-Id="{{reportWidget.widgetId.id}}"
-                                     funnel-Columns="{{reportWidget.widgetId.columns}}">
-                                </div>
+                        </div>
+                    </div>
+                    <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'text'">
+                        <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
+                            <div class="text-widget">
+                                <span ng-bind-html="reportWidget.widgetId.content"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'stackedbar'">
+                        <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
+                            <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
+                                 stacked-Bar-Chart-Directive 
+                                 stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                 widget-Id="{{reportWidget.widgetId.id}}" 
+                                 widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                 widget-Obj="{{reportWidget.widgetId}}">                                         
+                            </div>
+                        </div>
+                    </div> 
+                    <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'funnel'">
+                        <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
+                            <div funnel-Directive
+                                 funnel-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                 widget-Obj="{{reportWidget.widgetId}}" 
+                                 funnel-Id="{{reportWidget.widgetId.id}}"
+                                 funnel-Columns="{{reportWidget.widgetId.columns}}">
                             </div>
                         </div>
                     </div>
@@ -294,4 +309,5 @@
             </div>
         </div>
     </div>
+</div>
 </div>

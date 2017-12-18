@@ -138,7 +138,7 @@
 <div class="row">    
     <div class="col-sm-12 ">
         <div class="btn-group pull-right pdf-fav"> 
-            <a style="cursor: pointer;" ng-href="#viewFavouritesPdf/{{accountId}}/{{favouriteName}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
+            <a style="cursor: pointer;" ng-href="#viewFavouritesPdf/{{accountId}}/{{userId}}/{{favouriteName}}?startDate={{startDate}}&endDate={{endDate}}&compareStatus={{getTableType}}&compareStartDate={{compareStartDate}}&compareEndDate={{compareEndDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
         </div>
     </div>
 </div>
@@ -160,7 +160,7 @@
                         <a ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
                         <a ng-if="favouritesWidget.widgetId.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
                         <a title="Report" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>
-                        <a class="edit" ui-sref="index.editWidget({accountId: accountId, accountName: accountName, productId: 0, tabId: favouritesWidget.widgetId.tabId.id, widgetId: favouritesWidget.widgetId.id, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i></a>
+                        <!--<a class="edit" ui-sref="index.editWidget({accountId: accountId, accountName: accountName, productId: 0, tabId: favouritesWidget.widgetId.tabId.id, widgetId: favouritesWidget.widgetId.id, startDate: startDate, endDate: endDate,compareStatus:compareStatus,compareStartDate:compareStartDate,compareEndDate:compareEndDate})"><i class="fa fa-pencil"></i></a>-->
                         <!--<a class="closebox" data-toggle="modal" data-target="#delete{{favouritesWidget.widget.id.tab.id}}" title="Delete"><i class="fa fa-times"></i></a>-->
                         <!--                        <div id="delete{{reportWidget.id}}" class="modal">
                                                     <div class="modal-dialog modal-lg">
@@ -191,6 +191,8 @@
                          line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
                          widget-Id="{{favouritesWidget.widgetId.id}}" 
                          widget-Columns="{{favouritesWidget.widgetId.columns}}" 
+                         url-type="{{getTableType}}"
+                         compare-Date-Range="{{compareDateRange}}"
                          widget-Obj="{{favouritesWidget.widgetId}}">                             
                     </div>
                 </div> 
@@ -200,6 +202,8 @@
                          bar-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
                          widget-Id="{{favouritesWidget.widgetId.id}}" 
                          widget-Columns="{{favouritesWidget.widgetId.columns}}"
+                         url-type="{{getTableType}}"
+                         compare-Date-Range="{{compareDateRange}}"
                          widget-Obj="{{favouritesWidget.widgetId}}">                             
                     </div>
                 </div> 
@@ -207,7 +211,13 @@
                     <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{favouritesWidget.widgetId.dataSetId}}' widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
                 </div> 
                 <div class="box-body" ng-if="favouritesWidget.widgetId.chartType === 'area'">
-                    <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Columns="{{favouritesWidget.widgetId.columns}}" widget-Obj="{{favouritesWidget.widgetId}}"></div>
+                    <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" 
+                         area-Chart-Directive area-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                         widget-Id="{{favouritesWidget.widgetId.id}}" 
+                         widget-Columns="{{favouritesWidget.widgetId.columns}}"
+                         url-type="{{getTableType}}"
+                         compare-Date-Range="{{compareDateRange}}"
+                         widget-Obj="{{favouritesWidget.widgetId}}"></div>
                 </div> 
                 <div class="box-body"  ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'">
                     <div>
@@ -242,9 +252,26 @@
                 </div>
                 <div class="box-body list" ng-if="favouritesWidget.widgetId.chartType === 'table'" adjust-height>
                     <div class="table-responsive project-list">
-                        <div id="changes-height" class="project-list">
-                            <div set-Table-Chart-Fn="setTableChartFn(tableFn)" dynamic-Table dynamic-Table-Source="{{favouritesWidget.widgetId.dataSetId}}" widget-Id="{{favouritesWidget.widgetId.id}}" widget-Obj="{{favouritesWidget.widgetId}}" table-Footer="{{favouritesWidget.widgetId.tableFooter}}" widget-Columns="{{favouritesWidget.widgetId.columns}}"></div> 
+                        <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOff'">
+                            <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
+                                 dynamic-Table dynamic-Table-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                                 widget-Id="{{favouritesWidget.widgetId.id}}" 
+                                 widget-Obj="{{favouritesWidget.widgetId}}" 
+                                 table-Footer="{{favouritesWidget.widgetId.tableFooter}}" 
+                                 widget-Columns="{{favouritesWidget.widgetId.columns}}">
+
+                            </div> 
                         </div> 
+                        <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
+                            <div compare-Range-Table 
+                                 compare-Table-Source="{{favouritesWidget.widgetId.dataSetId}}" 
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Id="{{favouritesWidget.widgetId.id}}" 
+                                 widget-Obj="{{favouritesWidget.widgetId}}" 
+                                 table-Footer="{{favouritesWidget.widgetId.tableFooter}}" 
+                                 widget-Columns="{{favouritesWidget.widgetId.columns}}">                                         
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="panel-body"  ng-if="favouritesWidget.widgetId.chartType === 'text'">

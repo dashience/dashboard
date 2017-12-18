@@ -51,7 +51,13 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     $scope.templateId = $stateParams.templateId;
     $scope.widgetDataSetColumnsDefs = [];
     $scope.reloadAllDirective = true;
-
+    $scope.getTableType = $stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
+    $scope.compareDateRange = {
+        startDate: $stateParams.compareStartDate,
+        endDate: $stateParams.compareEndDate
+    }
+    $scope.compareStartDate = $scope.compareDateRange.startDate;
+    $scope.compareEndDate = $scope.compareDateRange.endDate;
     if ($scope.permission.createReport === true) {
         $scope.showCreateReport = true;
     } else {
@@ -111,7 +117,6 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
 
 
     $scope.getWidgetObjScatter = function (obj) {
-        console.log(obj)
     };
 
     $scope.downloadXLSByWidget = function (widget) {
@@ -286,7 +291,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.salesType = selectedFilter.SalesType;
                 dashboardFilter.country = selectedFilter.Country;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                $scope.states= [];
+                $scope.states = [];
                 var request = $http.get('admin/filterData/getFilter/state?dashboardFilter=' + queryString).success(function (response) {
                     $scope.states = response.data;
                 });
@@ -297,7 +302,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 dashboardFilter.country = selectedFilter.Country;
                 dashboardFilter.state = selectedFilter.State;
                 var queryString = encodeURI(JSON.stringify(dashboardFilter));
-                 $scope.cities = [];
+                $scope.cities = [];
                 var request = $http.get('admin/filterData/getFilter/city?dashboardFilter=' + queryString).success(function (response) {
                     $scope.cities = response.data;
                 });
@@ -358,9 +363,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             $scope.widgets.forEach(function (val, key) {
                 val.filterUrlParameter = allSelected;
             });
-            
-            console.log(allSelected)
-//                $scope.selectItems = "";
+
+            //                $scope.selectItems = "";
             $timeout(function () {
                 dispAllFilter(allSelected);
                 $scope.reloadAllDirective = true;
@@ -807,6 +811,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
     function loadInitialWidgetColumnData(columns) {
         var data = [];
         columns.forEach(function (value, key) {
+            console.log(value.category);
             data.push({
                 id: value.id,
                 fieldName: value.fieldName,
@@ -834,7 +839,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 search: value.search,
                 groupField: value.groupField,
                 combinationType: value.combinationType,
-                derivedId: value.derivedId
+                derivedId: value.derivedId,
+                category: value.category
             });
         });
         return data;
@@ -1009,8 +1015,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 '&username=' + widget.dataSetId.dataSourceId.userName +
                 '&password=' + dataSourcePassword +
                 '&url=' + widget.dataSetId.url +
-                '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
-                "&fieldsOnly=true").success(function (response) {
+                '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query)
+                ).success(function (response) {
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
             $scope.widgetDataSetColumnsDefs = response.columnDefs;
@@ -1127,8 +1133,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 '&username=' + getDataSet.dataSourceId.userName +
                 '&password=' + dataSourcePassword +
                 '&url=' + getDataSet.url +
-                '&port=3306&schema=vb&query=' + encodeURI(getDataSet.query) +
-                "&fieldsOnly=true").success(function (response) {
+                '&port=3306&schema=vb&query=' + encodeURI(getDataSet.query) 
+                ).success(function (response) {
             $scope.afterLoadWidgetColumns = true;
             $scope.hideSelectedColumn = false;
 //            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
@@ -1288,6 +1294,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.showDateRange = false;
         $scope.showColor = false;
         $scope.hideSelectedColumn = false;
+        $scope.advanced = false;
     };
 
     $scope.showFilterList = function () {
@@ -1298,6 +1305,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.showDateRange = false;
         $scope.showColor = false;
         $scope.showSortBy = false;
+        $scope.advanced = false;
     };
 
     $scope.showEditor = function (chartType, widget) {
@@ -1306,6 +1314,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.showPreviewChart = true;
         $scope.showColor = false;
         $scope.showDateRange = false;
+        $scope.advanced = false;
     };
 
     $scope.showDateDurations = function () {
@@ -1316,6 +1325,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.showColumnDefs = false;
         $scope.showColor = false;
         $scope.showPreviewChart = false;
+        $scope.advanced = false;
     };
 
     $scope.showSortingColumn = function () {
@@ -1326,6 +1336,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.showColumnDefs = false;
         $scope.showColor = false;
         $scope.showPreviewChart = false;
+        $scope.advanced = false;
     };
 
     $scope.showColorList = function () {
@@ -1336,8 +1347,19 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         $scope.showColumnDefs = false;
         $scope.showPreviewChart = false;
         $scope.showDateRange = false;
+        $scope.advanced = false;
     };
-
+    $scope.advanced = false;
+    $scope.showAdvancedOptions = function () {
+        $scope.advanced = true;
+        $scope.showColor = false;
+        $scope.showFilter = false;
+        $scope.showSortBy = false;
+        $scope.loadingColumnsGif = false;
+        $scope.showColumnDefs = false;
+        $scope.showPreviewChart = false;
+        $scope.showDateRange = false;
+    };
     var firstPreviewAfterEdit = 1;
     $scope.showPreview = function (widgetObj, userChartColors) {
         var chartType = $scope.chartTypeName;
@@ -1397,6 +1419,7 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 selectColumnDef: obj.selectColumnDef,
                 sortOrder: obj.sortOrder,
                 sortPriority: obj.sortPriority,
+                category: obj.category,
                 status: obj.status,
                 type: obj.type,
                 userId: obj.userId,
@@ -2260,8 +2283,16 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
         var widgetColumnsData = [];
         angular.forEach(widget.columns, function (value, key) {
             var hideColumn = value.columnHide;
+            var category;
             if (value.groupPriority > 0) {
                 hideColumn = 1;
+            }
+            if (!value.category) {
+                if (value.type == "number" || value.fieldType == "number") {
+                    category = "metric";
+                } else {
+                    category = "dimension";
+                }
             }
             var columnData = {
                 id: value.id,
@@ -2290,7 +2321,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                 search: value.search,
                 groupField: value.groupField,
                 combinationType: value.combinationType,
-                derivedId: value.derivedId
+                derivedId: value.derivedId,
+                category: value.category ? value.category : category
             };
             widgetColumnsData.push(columnData);
         });
@@ -2355,6 +2387,15 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             if (!data.id) {
                 $scope.columnHeaderColuction = [];
                 $scope.widgetDataSetColumnsDefs.forEach(function (val, key) {
+                    var category;
+                    if (!val.category) {
+                        if (val.type == "number" || val.fieldType == "number") {
+                            category = "metric";
+                        } else {
+                            category = "dimension"
+                        }
+                    }
+                    console.log(category)
                     var collectionFieldDefs = {
                         id: val.id,
                         functionName: val.functionName,
@@ -2370,7 +2411,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                         fieldName: val.fieldName,
                         status: val.status,
                         fieldType: val.fieldType,
-                        displayName: val.displayName
+                        displayName: val.displayName,
+                        category: val.category ? val.category : category
                     };
                     $scope.columnHeaderColuction.push(collectionFieldDefs);
                 });
@@ -2379,6 +2421,15 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
             }
             $scope.derivedColumns = [];
             $scope.collectionFields.forEach(function (value, key) {
+                var category;
+                if (!value.category) {
+
+                    if (value.type == "number" || value.fieldType == "number") {
+                        category = "metric";
+                    } else {
+                        category = "dimension"
+                    }
+                }
                 var columnData = {
                     id: value.id,
                     expression: value.expression,
@@ -2399,7 +2450,8 @@ app.controller('WidgetController', function ($q, $scope, $http, $stateParams, $t
                     fieldType: value.fieldType,
                     sortPriority: value.sortPriority,
                     userId: value.userId, //value.userId,
-                    dataSetId: data.dataSetId ? data.dataSetId.id : null
+                    dataSetId: data.dataSetId ? data.dataSetId.id : null,
+                    category: value.category ? value.category : category
                 };
                 $scope.derivedColumns.push(columnData);
             });
@@ -2639,6 +2691,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 '</table>' +
                 '<div class="text-center" ng-show="hideEmptyTable">{{tableEmptyMessage}}</div>', //+
         link: function (scope, element, attr) {
+            if (!scope.widgetObj) {
+                return;
+            }
             var widgetData = JSON.parse(scope.widgetObj);
             scope.bindSearch = function (search) {
                 scope.searchData = search.col;
@@ -3299,7 +3354,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             widgetColumns: '@',
             lineChartId: '@',
             widgetObj: '@',
-            defaultChartColor: '@'
+            defaultChartColor: '@',
+            compareDateRange: '@',
+            urlType: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -3319,7 +3376,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
-
+            if (!scope.widgetColumns) {
+                return;
+            }
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -3354,7 +3413,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     xAxis = {fieldName: value.fieldName, displayName: value.displayName};
                 }
                 if (value.yAxis) {
-                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName,displayFormat:value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {
@@ -3446,10 +3505,34 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
                 return maxData;
             }
+            var startDates1 = (moment().subtract(1, 'months').startOf('month'));
+            var endDates1 = (moment().subtract(1, 'months').endOf('month'));
+            var startDates2 = (moment().subtract(2, 'months').startOf('month'));
+            var endDates2 = (moment().subtract(2, 'months').endOf('month'));
+            var startDate1 = $filter('date')(new Date(startDates2), 'MM/dd/yyyy');
+            var endDate1 = $filter('date')(new Date(endDates2), 'MM/dd/yyyy');
+            var startDate2 = $filter('date')(new Date(startDates1), 'MM/dd/yyyy');
+            var endDate2 = $filter('date')(new Date(endDates1), 'MM/dd/yyyy');
+            var url;
+            var dateRangeType;
+            var compareRange = JSON.parse(scope.compareDateRange);
+            var isCompare = scope.urlType;
+            if (isCompare == 'compareOn') {
+                var compareStartDate = compareRange.startDate;
+                var compareEndDate = compareRange.endDate;
+                dateRangeType = '&startDate1=' + $stateParams.startDate +
+                        "&endDate1=" + $stateParams.endDate +
+                        "&startDate2=" + compareStartDate +
+                        "&endDate2=" + compareEndDate;
+                url = "admin/proxy/getCompareData?";
+            } else {
+                dateRangeType = '&startDate=' + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+                url = "admin/proxy/getData?";
+            }
             var lineChartDataSource = JSON.parse(scope.lineChartSource);
             if (scope.lineChartSource) {
 
-                var url = "admin/proxy/getData?";
+//                var url = "admin/proxy/getData?";
 //                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
 //                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
 //                }
@@ -3509,8 +3592,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
                             "&dashboardFilter=" + encodeURI(dashboardFilter) +
-                            "&startDate=" + $stateParams.startDate +
-                            "&endDate=" + $stateParams.endDate +
+//                            "&startDate=" + $stateParams.startDate +
+//                            "&endDate=" + $stateParams.endDate +
+                            dateRangeType +
                             '&username=' + lineChartDataSource.dataSourceId.userName +
                             "&dataSetReportName=" + lineChartDataSource.reportName +
                             '&password=' + dataSourcePassword +
@@ -3569,11 +3653,76 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             columns.push(xTicks);
 
                             angular.forEach(yAxis, function (value, key) {
-                                ySeriesData = chartData.map(function (a) {
+                                var ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
-                                ySeriesData.unshift(value.displayName);
-                                columns.push(ySeriesData);
+                                var ySeriesData1 = chartData.map(function (a) {
+
+                                    if (a.metrics1) {
+                                        return a.metrics1[value.fieldName] || "0";
+                                    } else if (a.dimensions) {
+                                        return a.dimensions[value.fieldName] || "0";
+                                    } else {
+                                        return a[value.fieldName] || "0";
+                                    }
+                                });
+                                var ySeriesData2 = chartData.map(function (a) {
+
+                                    if (a.metrics2) {
+                                        return a.metrics2[value.fieldName] || "0";
+                                    } else if (a.dimensions) {
+                                        return a.dimensions[value.fieldName] || "0";
+                                    } else {
+                                        return a[value.fieldName] || "0";
+                                    }
+                                });
+                                if (isCompare == 'compareOn') {
+                                    var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
+                                    var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
+                                    var joinCompare1 = value.fieldName + " (" + sumaryRange1 + ")";
+                                    var joinCompare2 = value.fieldName + " (" + sumaryRange2 + ")";
+                                    ySeriesData1.unshift(joinCompare1);
+                                    ySeriesData2.unshift(joinCompare2);
+                                    columns.push(ySeriesData1);
+                                    columns.push(ySeriesData2);
+                                    var displayName = value.displayName;
+                                    if (value.displayFormat) {
+                                        var format = value.displayFormat;
+                                        if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                                            labels["format"][joinCompare1] = function (value) {
+                                                if (format.indexOf("%") > -1) {
+                                                    return d3.format(format)(value / 100);
+                                                }
+                                                return d3.format(format)(value);
+                                            };
+                                            labels["format"][joinCompare2] = function (value) {
+                                                if (format.indexOf("%") > -1) {
+                                                    return d3.format(format)(value / 100);
+                                                }
+                                                return d3.format(format)(value);
+                                            };
+                                        } else {
+                                            labels["format"][displayName] = function (value) {
+                                                return formatBySecond(parseInt(value))
+                                            };
+                                        }
+                                    } else {
+                                        labels["format"][joinCompare1] = function (value) {
+                                            return value;
+                                        };
+                                        labels["format"][joinCompare2] = function (value) {
+                                            return value;
+                                        };
+                                        labels["format"][displayName] = function (value) {
+                                            return value;
+                                        };
+                                    }
+                                } else {
+//                                    ySeriesData.unshift(value.fieldName);
+                                    ySeriesData.unshift(value.displayName);
+                                    columns.push(ySeriesData);
+
+                                }
                             });
 
                             angular.forEach(combinationTypes, function (value, key) {
@@ -3653,7 +3802,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             barChartId: '@',
             widgetColumns: '@',
             widgetObj: '@',
-            defaultChartColor: '@'
+            defaultChartColor: '@',
+            compareDateRange: '@',
+            urlType: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -3672,6 +3823,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
+            if (!scope.widgetColumns) {
+                return;
+            }
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -3703,7 +3857,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     sortOrder = value.sortOrder;
                 }
                 if (value.xAxis) {
-                    xAxis = {fieldName: value.fieldName, displayName: value.displayName};
+                    xAxis = {fieldName: value.fieldName, displayName: value.displayName,displayFormat:value.displayFormat};
                 }
                 if (value.yAxis) {
                     yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
@@ -3799,12 +3953,35 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 }
                 return maxData;
             }
-
+            var startDates1 = (moment().subtract(1, 'months').startOf('month'));
+            var endDates1 = (moment().subtract(1, 'months').endOf('month'));
+            var startDates2 = (moment().subtract(2, 'months').startOf('month'));
+            var endDates2 = (moment().subtract(2, 'months').endOf('month'));
+            var startDate1 = $filter('date')(new Date(startDates2), 'MM/dd/yyyy');
+            var endDate1 = $filter('date')(new Date(endDates2), 'MM/dd/yyyy');
+            var startDate2 = $filter('date')(new Date(startDates1), 'MM/dd/yyyy');
+            var endDate2 = $filter('date')(new Date(endDates1), 'MM/dd/yyyy');
+            var url;
+            var dateRangeType;
+            var compareRange = JSON.parse(scope.compareDateRange);
+            var isCompare = scope.urlType;
+            if (isCompare == 'compareOn') {
+                var compareStartDate = compareRange.startDate;
+                var compareEndDate = compareRange.endDate;
+                dateRangeType = '&startDate1=' + $stateParams.startDate +
+                        "&endDate1=" + $stateParams.endDate +
+                        "&startDate2=" + compareStartDate +
+                        "&endDate2=" + compareEndDate;
+                url = "admin/proxy/getCompareData?";
+            } else {
+                dateRangeType = '&startDate=' + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+                url = "admin/proxy/getData?";
+            }
             var barChartDataSource = JSON.parse(scope.barChartSource);
             if (scope.barChartSource) {
 
                 var getWidgetObj = JSON.parse(scope.widgetObj);
-                var url = "admin/proxy/getData?";
+//                var url = "admin/proxy/getData?";
 //                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
 //                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
 //                }
@@ -3862,8 +4039,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
                             "&dashboardFilter=" + encodeURI(dashboardFilter) +
-                            "&startDate=" + $stateParams.startDate +
-                            "&endDate=" + $stateParams.endDate +
+                            dateRangeType +
+//                            "&startDate=" + $stateParams.startDate +
+//                            "&endDate=" + $stateParams.endDate +
                             '&username=' + barChartDataSource.dataSourceId.userName +
                             "&dataSetReportName=" + barChartDataSource.reportName +
                             '&password=' + dataSourcePassword +
@@ -3920,11 +4098,76 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             columns.push(xTicks);
 
                             angular.forEach(yAxis, function (value, key) {
-                                ySeriesData = chartData.map(function (a) {
+                                var ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
-                                ySeriesData.unshift(value.displayName);
-                                columns.push(ySeriesData);
+                                var ySeriesData1 = chartData.map(function (a) {
+
+                                    if (a.metrics1) {
+                                        return a.metrics1[value.fieldName] || "0";
+                                    } else if (a.dimensions) {
+                                        return a.dimensions[value.fieldName] || "0";
+                                    } else {
+                                        return a[value.fieldName] || "0";
+                                    }
+                                });
+                                var ySeriesData2 = chartData.map(function (a) {
+
+                                    if (a.metrics2) {
+                                        return a.metrics2[value.fieldName] || "0";
+                                    } else if (a.dimensions) {
+                                        return a.dimensions[value.fieldName] || "0";
+                                    } else {
+                                        return a[value.fieldName] || "0";
+                                    }
+                                });
+                                if (isCompare == 'compareOn') {
+                                    var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
+                                    var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
+                                    var joinCompare1 = value.fieldName + " (" + sumaryRange1 + ")";
+                                    var joinCompare2 = value.fieldName + " (" + sumaryRange2 + ")";
+                                    ySeriesData1.unshift(joinCompare1);
+                                    ySeriesData2.unshift(joinCompare2);
+                                    columns.push(ySeriesData1);
+                                    columns.push(ySeriesData2);
+                                    var displayName = value.displayName;
+                                    if (value.displayFormat) {
+                                        var format = value.displayFormat;
+                                        if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                                            labels["format"][joinCompare1] = function (value) {
+                                                if (format.indexOf("%") > -1) {
+                                                    return d3.format(format)(value / 100);
+                                                }
+                                                return d3.format(format)(value);
+                                            };
+                                            labels["format"][joinCompare2] = function (value) {
+                                                if (format.indexOf("%") > -1) {
+                                                    return d3.format(format)(value / 100);
+                                                }
+                                                return d3.format(format)(value);
+                                            };
+                                        } else {
+                                            labels["format"][displayName] = function (value) {
+                                                return formatBySecond(parseInt(value))
+                                            };
+                                        }
+                                    } else {
+                                        labels["format"][joinCompare1] = function (value) {
+                                            return value;
+                                        };
+                                        labels["format"][joinCompare2] = function (value) {
+                                            return value;
+                                        };
+                                        labels["format"][displayName] = function (value) {
+                                            return value;
+                                        };
+                                    }
+                                } else {
+//                                    ySeriesData.unshift(value.fieldName);
+                                    ySeriesData.unshift(value.displayName);
+                                    columns.push(ySeriesData);
+
+                                }
                             });
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
@@ -4363,7 +4606,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             widgetColumns: '@',
             pieChartId: '@',
             widgetObj: '@',
-            defaultChartColor: '@'
+            defaultChartColor: '@',
+            compareDateRange: '@',
+            urlType: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
@@ -4416,7 +4661,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     xAxis = {fieldName: value.fieldName, displayName: value.displayName};
                 }
                 if (value.yAxis) {
-                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName,displayFormat:value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {
@@ -4508,9 +4753,33 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 }
                 return maxData;
             }
+            var startDates1 = (moment().subtract(1, 'months').startOf('month'));
+            var endDates1 = (moment().subtract(1, 'months').endOf('month'));
+            var startDates2 = (moment().subtract(2, 'months').startOf('month'));
+            var endDates2 = (moment().subtract(2, 'months').endOf('month'));
+            var startDate1 = $filter('date')(new Date(startDates2), 'MM/dd/yyyy');
+            var endDate1 = $filter('date')(new Date(endDates2), 'MM/dd/yyyy');
+            var startDate2 = $filter('date')(new Date(startDates1), 'MM/dd/yyyy');
+            var endDate2 = $filter('date')(new Date(endDates1), 'MM/dd/yyyy');
+            var url;
+            var dateRangeType;
+            var compareRange = JSON.parse(scope.compareDateRange);
+            var isCompare = scope.urlType;
+            if (isCompare == 'compareOn') {
+                var compareStartDate = compareRange.startDate;
+                var compareEndDate = compareRange.endDate;
+                dateRangeType = '&startDate1=' + $stateParams.startDate +
+                        "&endDate1=" + $stateParams.endDate +
+                        "&startDate2=" + compareStartDate +
+                        "&endDate2=" + compareEndDate;
+                url = "admin/proxy/getCompareData?";
+            } else {
+                dateRangeType = '&startDate=' + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+                url = "admin/proxy/getData?";
+            }
             var areaChartDataSource = JSON.parse(scope.areaChartSource);
             if (scope.areaChartSource) {
-                var url = "admin/proxy/getData?";
+//                var url = "admin/proxy/getData?";
 //                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
 //                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
 //                }
@@ -4561,8 +4830,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             "&dataSetReportName=" + areaChartDataSource.reportName +
                             "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
 //                            "&location=" + $stateParams.locationId +
-                            "&startDate=" + $stateParams.startDate +
-                            "&endDate=" + $stateParams.endDate +
+//                            "&startDate=" + $stateParams.startDate +
+//                            "&endDate=" + $stateParams.endDate +
+                            dateRangeType +
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
@@ -4616,11 +4886,76 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             });
                             columns.push(xTicks);
                             angular.forEach(yAxis, function (value, key) {
-                                ySeriesData = chartData.map(function (a) {
+                                var ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
-                                ySeriesData.unshift(value.displayName);
-                                columns.push(ySeriesData);
+                                var ySeriesData1 = chartData.map(function (a) {
+
+                                    if (a.metrics1) {
+                                        return a.metrics1[value.fieldName] || "0";
+                                    } else if (a.dimensions) {
+                                        return a.dimensions[value.fieldName] || "0";
+                                    } else {
+                                        return a[value.fieldName] || "0";
+                                    }
+                                });
+                                var ySeriesData2 = chartData.map(function (a) {
+
+                                    if (a.metrics2) {
+                                        return a.metrics2[value.fieldName] || "0";
+                                    } else if (a.dimensions) {
+                                        return a.dimensions[value.fieldName] || "0";
+                                    } else {
+                                        return a[value.fieldName] || "0";
+                                    }
+                                });
+                                if (isCompare == 'compareOn') {
+                                    var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
+                                    var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
+                                    var joinCompare1 = value.fieldName + " (" + sumaryRange1 + ")";
+                                    var joinCompare2 = value.fieldName + " (" + sumaryRange2 + ")";
+                                    ySeriesData1.unshift(joinCompare1);
+                                    ySeriesData2.unshift(joinCompare2);
+                                    columns.push(ySeriesData1);
+                                    columns.push(ySeriesData2);
+                                    var displayName = value.displayName;
+                                    if (value.displayFormat) {
+                                        var format = value.displayFormat;
+                                        if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                                            labels["format"][joinCompare1] = function (value) {
+                                                if (format.indexOf("%") > -1) {
+                                                    return d3.format(format)(value / 100);
+                                                }
+                                                return d3.format(format)(value);
+                                            };
+                                            labels["format"][joinCompare2] = function (value) {
+                                                if (format.indexOf("%") > -1) {
+                                                    return d3.format(format)(value / 100);
+                                                }
+                                                return d3.format(format)(value);
+                                            };
+                                        } else {
+                                            labels["format"][displayName] = function (value) {
+                                                return formatBySecond(parseInt(value))
+                                            };
+                                        }
+                                    } else {
+                                        labels["format"][joinCompare1] = function (value) {
+                                            return value;
+                                        };
+                                        labels["format"][joinCompare2] = function (value) {
+                                            return value;
+                                        };
+                                        labels["format"][displayName] = function (value) {
+                                            return value;
+                                        };
+                                    }
+                                } else {
+//                                    ySeriesData.unshift(value.fieldName);
+                                    ySeriesData.unshift(value.displayName);
+                                    columns.push(ySeriesData);
+
+                                }
                             });
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
@@ -5858,6 +6193,1295 @@ app.directive('ckEditor', function () {
         }
     };
 });
+
+app.directive('compareRangeTable', function ($http, $stateParams, $filter, orderByFilter, $interpolate, $sce) {
+    return{
+        restrict: 'A',
+        scope: {
+            compareDateRange: '@',
+            setTableChartFn: '&',
+            compareTableSource: '@',
+            widgetId: '@',
+            widgetColumns: '@',
+            tableFooter: '@',
+            widgetObj: '@'
+        },
+        template: '<div ng-show="loadingTable" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif" width="40"></div>' +
+                '<div ng-if="ajaxLoadingCompleted && columns.length!=0" class="table-responsive" ng-hide="hideEmptyTable">' +
+                '<div><table class="table table-bordered">' +
+                '<thead>' +
+                '<tr>' +
+                //Master Grouping Btn
+                '<th class="table-bg" ng-if="groupingByCompare" rowspan="2" class="text-center">' +
+                '<i style="cursor: pointer" ng-click="getData.$hideRows = !getData.$hideRows; hideAndShowRow(getData, getData.$hideRows)"' +
+                ' class="fa pdfButton" ng-class="{\'fa-plus-circle\': !getData.$hideRows, \'fa-minus-circle\': getData.$hideRows}"></i>' +
+                ' {{groupName.displayName}}</th>' +
+                //Dimension Header
+                '<th ng-class="{ratingColumnWidth: (column.fieldType == \'rating\')}" ng-if="column.category != \'metric\' && (!column.columnHide)" rowspan="{{getHeaderSpan(column, getData)+1}}" ng-repeat-start="column in columns" title="{{column.tooltipMessage}}">' +
+                '<div class="text-center" ng-click="initData(column)">' + '{{column.displayName}}' +
+                '<i ng-if="column.sortOrder==\'asc\'" class="fa fa-sort-asc"></i><i ng-if="column.sortOrder==\'desc\'" class="fa fa-sort-desc"></i>' +
+                '</div>' +
+                '</th>' +
+                //Metric Header
+                '<th ng-if="column.category == \'metric\'" title="{{column.tooltipMessage}}" colspan="{{getHeaderSpan(column, getData)}}" rowspan="{{getRowSpan(column)}}" ng-repeat-end>' +
+                '<div class="pull-left pdfButton plus-compare">' +
+                '<span ng-click="changeExpand(column); showCombainColumn(column, $index)">' +
+                '<i ng-if="!column.expand" class="fa fa-plus-circle"></i>' +
+                '<i ng-if="column.expand" class="fa fa-minus-circle"></i>' +
+                '</span>' +
+                '</div>' +
+                '<div class="text-center">' +
+                '<span>{{column.displayName}}</span>' +
+                '</div>' +
+                '</th>' +
+                '</tr>' +
+                //Child Columns Row
+                '<tr>' +
+                '<td style="display: none" ng-repeat-start="dateRowColumn in columns">' +
+                '<th ng-if="dateRowColumn.category == \'metric\' && dateRowColumn.expand" title="{{dateRowColumn.tooltipMessage}}" ng-repeat="date in getColumnDefs.summary">' +
+                '<div class="metric" ng-click="initData(dateRowColumn, ($index+1))">' +
+                '{{date.startDate}} - {{date.endDate}}' +
+                '<i class="fa" ng-class="{\'fa-sort-asc\': (dateRowColumn.sortMetric == ($index+1) && dateRowColumn.sortOrder==\'asc\'), \'fa-sort-desc\': dateRowColumn.sortMetric == ($index+1) && dateRowColumn.sortOrder==\'desc\'}"></i>' +
+                '</th>' +
+                '<th ng-if="dateRowColumn.category == \'metric\' && dateRowColumn.expand" title="{{dateRowColumn.tooltipMessage}}" ng-repeat-end>' +
+                '<div class="metric">' +
+                '<span class="compare-table-child-header" ng-if="dateRowColumn.changeCalculations && dateRowColumn.fieldName != \'avgPosition\'">Difference</span>' +
+                '<span class="compare-table-child-header" ng-if="!dateRowColumn.changeCalculations && dateRowColumn.fieldName == \'avgPosition\'">Difference</span>' +
+                '<span class="compare-table-child-header" ng-if="!dateRowColumn.changeCalculations && dateRowColumn.fieldName != \'avgPosition\'">Percentage</span>' +
+                '<span class="compare-table-child-header" ng-if="dateRowColumn.changeCalculations && dateRowColumn.fieldName == \'avgPosition\'">Percentage</span>' +
+                //Select Calculation Dropdown
+                '<span class="dropdown pdfButton">' +
+                '<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="caret"></span></a>' +
+                '<ul class="dropdown-menu" style="min-width: 50px !important">' +
+                '<li ng-click="dateRowColumn.changeCalculations = !dateRowColumn.changeCalculations">' +
+                '<a ng-if="!dateRowColumn.changeCalculations && dateRowColumn.fieldName != \'avgPosition\'">Difference</a>' +
+                '<a ng-if="dateRowColumn.changeCalculations && dateRowColumn.fieldName == \'avgPosition\'">Difference</a>' +
+                '<a ng-if="dateRowColumn.changeCalculations && dateRowColumn.fieldName != \'avgPosition\'">Percentage</a>' +
+                '<a ng-if="!dateRowColumn.changeCalculations && dateRowColumn.fieldName == \'avgPosition\'">Percentage</a>' +
+                '</li>' +
+                '</ul>' +
+                '</span>' +
+                '</div>' +
+                '</th>' +
+                '</tr>' +
+                '</thead>' +
+                //Table Body
+                '<tbody ng-repeat="groupData in getData" ng-if="groupData">' +
+                //**************************************************************First Level********************************************************************************************
+                '<tr ng-if="!isZeroRow(groupData, columns)">' +
+                //Dimension
+                '<td ng-if="groupingByCompare">' +
+                '<i style="cursor: pointer" class="fa pdfButton" ng-click="groupData.$hideRows = !groupData.$hideRows; hideAndShowParentRow(groupData, groupData.$hideRows, getData)" ' +
+                'ng-class="{\'fa-plus-circle\': !groupData.$hideRows, \'fa-minus-circle\': groupData.$hideRows}"></i>' +
+                ' <span ng-bind-html="groupData._key"></span>' +
+                '</td>' +
+                '<td class="dimension-Fixed" ng-class="{ratingColumnWidth: (column.fieldType == \'rating\')}" ng-if="column.category != \'metric\' && (!column.columnHide)" ng-repeat-start="column in columns">' +
+                //Display Values Only
+                '<div class="text-{{column.alignment}}" ng-if="column.fieldType != \'rating\'&&column.fieldType != \'image\'&&column.fieldType != \'iframe\'">' +
+                '<span ng-bind-html="format(column, groupData[column.fieldName])"></span>' +
+                '</div>' +
+                //Display Ratings Only
+                '<div ng-if="column.fieldType == \'rating\'">' +
+                '<span class="text-{{column.alignment}} col-md-2" ng-bind-html="format(column, groupData[column.fieldName])"></span>' +
+                '<span class="stars col-md-9">' +
+                '<div class="pull-right" ng-class="stars" ng-stars="groupData[column.fieldName]"  ng-stars-readonly></div>' +
+                '</span>' +
+                '</div>' +
+                //Display Images Only                
+                '<span ng-if="column.fieldType == \'image\'">' +
+                '<img ng-if="groupData[column.fieldName]" class="table-img img-responsive img-thumbnail" ng-src="{{groupData[column.fieldName]}}" alt="{{groupData[column.fieldName]?groupData[column.fieldName]:\'-\'}}" />' +
+                '</span>' +
+                //Display Videos Only
+                '<div class="" ng-if="column.fieldType == \'iframe\'">' +
+                '<span class="img-thumbnail"  ng-bind-html="getIframeHtml(groupData[column.fieldName])"></span>' +
+                '</div>' +
+                '</td>' +
+                //Metrics 1
+                '<td ng-if="column.category == \'metric\'" ng-class="{ratingColumnWidth: (column.fieldType == \'rating\')}">' +
+                //Display Values Only
+                '<div class="text-{{column.alignment}}" ng-if="column.fieldType != \'rating\'&&column.fieldType != \'image\'&&column.fieldType != \'iframe\'">' +
+                '<span ng-bind-html="groupData.metrics1[column.fieldName]? format(column, groupData.metrics1[column.fieldName]):\'-\'"></span>' +
+                '</div>' +
+                //Display Ratings Only
+                '<div ng-if="column.fieldType == \'rating\'">' +
+                '<span class="text-{{column.alignment}} col-md-2" ng-bind-html="format(column, groupData.metrics1[column.fieldName])"></span>' +
+                '<span class="stars col-md-9">' +
+                '<div class ="pull-right" ng-class="stars" ng-stars="groupData.metrics1[column.fieldName]"  ng-stars-readonly></div>' +
+                '</span>' +
+                '</div>' +
+                //Display Images Only                
+                '<span ng-if="column.fieldType == \'image\'">' +
+                '<img ng-if="groupData.metrics1[column.fieldName]" class="table-img img-responsive img-thumbnail" ng-src="{{groupData.metrics1[column.fieldName]}}" alt="{{groupData.metrics1[column.fieldName]?groupData.metrics1[column.fieldName]:\'-\'}}" />' +
+                '</span>' +
+                //Display Videos Only
+                '<div class="" ng-if="column.fieldType == \'iframe\'">' +
+                '<span class="img-thumbnail"  ng-bind-html="getIframeHtml(groupData.metrics1[column.fieldName])"></span>' +
+                '</div>' +
+                '</td>' +
+                //Metrics 2
+                '<td ng-if="column.category == \'metric\' && column.expand == true" ng-class="{ratingColumnWidth: (column.fieldType == \'rating\')}">' +
+                //Display Values Only
+                '<div class="text-{{column.alignment}}" ng-if="column.fieldType != \'rating\'&&column.fieldType != \'image\'&&column.fieldType != \'iframe\'">' +
+                '<span ng-bind-html="groupData.metrics2[column.fieldName] ? format(column, groupData.metrics2[column.fieldName]) : \'-\'"></span>' +
+                '</div>' +
+                //Display Ratings Only
+                '<div ng-if="column.fieldType == \'rating\'">' +
+                '<span class="text-{{column.alignment}} col-md-2" ng-bind-html="format(column, groupData.metrics2[column.fieldName])"></span>' +
+                '<span class="stars col-md-9">' +
+                '<div class="pull-right" ng-class="stars" ng-stars="groupData.metrics2[column.fieldName]"  ng-stars-readonly></div>' +
+                '</span>' +
+                '</div>' +
+                //Display Images Only                
+                '<span ng-if="column.fieldType == \'image\'">' +
+                '<img ng-if="groupData.metrics2[column.fieldName]" class="table-img img-responsive img-thumbnail" ng-src="{{groupData.metrics2[column.fieldName]}}" alt="{{groupData.metrics2[column.fieldName]?groupData.metrics2[column.fieldName]:\'-\'}}" />' +
+                '</span>' +
+                //Display Videos Only
+                '<div class="" ng-if="column.fieldType == \'iframe\'">' +
+                '<span class="img-thumbnail"  ng-bind-html="getIframeHtml(groupData.metrics2[column.fieldName])"></span>' +
+                '</div>' +
+                '</td>' +
+                //Diff and Percentage
+                '<td ng-if="column.category == \'metric\' && column.expand == true" ng-repeat-end>' +
+                '<div class="text-{{column.alignment}}" ng-if="column.changeCalculations && column.fieldName != \'avgPosition\'">' +
+                '<span ng-bind-html="format(column, difference(column, groupData.metrics1[column.fieldName],groupData.metrics2[column.fieldName]))"></span></div>' +
+                '<div class="text-{{column.alignment}}" ng-if="!column.changeCalculations && column.fieldName == \'avgPosition\'">' +
+                '<span ng-bind-html="format(column, difference(column, groupData.metrics1[column.fieldName],groupData.metrics2[column.fieldName]))"></span></div>' +
+                '<div class="text-{{column.alignment}}" ng-if="!column.changeCalculations && column.fieldName != \'avgPosition\'">{{percentage(column, groupData.metrics1[column.fieldName] ,groupData.metrics2[column.fieldName])}}</div>' +
+                '<div class="text-{{column.alignment}}" ng-if="column.changeCalculations && column.fieldName == \'avgPosition\'">{{percentage(column, groupData.metrics1[column.fieldName] ,groupData.metrics2[column.fieldName])}}</div>' +
+                '</td>' +
+                '</tr>' +
+                //**************************************************************Second Level**************************************************************************************
+                '<tr class="compare-table" ng-if="!isZeroRow(item.data, columns)" ng-repeat-start="item in groupData.data" ng-show="groupData.$hideRows">' +
+                //Dimension
+                '<td class="right-group">' +
+                '<i class="pdfButton" ng-if="item._groupField  && item.data.length != 1" style="cursor: pointer" class="fa" ' +
+                'ng-click="item.$hideRows = !item.$hideRows; hideAndShowChildRow(item, item.$hideRows, groupData)" ' +
+                'ng-class="{\'fa-plus-circle\': !item.$hideRows, \'fa-minus-circle\': item.$hideRows}"></i>' +
+                ' <span ng-bind-html="item._key"></span>' +
+                '</td>' +
+                '<td class="dimension-Fixed" ng-class="{ratingColumnWidth: (column.fieldType == \'rating\')}" ng-if="column.category != \'metric\' && (!column.columnHide)" ng-repeat-start="column in columns">' +
+                //Display Values Only
+                '<div class="text-{{column.alignment}}" ng-if="column.fieldType != \'rating\'&&column.fieldType != \'image\'&&column.fieldType != \'iframe\'">' +
+                '<span ng-bind-html="format(column, item[column.fieldName])"></span>' +
+                '</div>' +
+                //Display Ratings Only
+                '<div ng-if="column.fieldType == \'rating\'">' +
+                '<span class="text-{{column.alignment}} col-md-2" ng-bind-html="format(column, item[column.fieldName])"></span>' +
+                '<span class="stars col-md-9">' +
+                '<div class="pull-right" ng-class="stars" ng-stars="item[column.fieldName]"  ng-stars-readonly></div>' +
+                '</span>' +
+                '</div>' +
+                //Display Images Only                
+                '<span ng-if="column.fieldType == \'image\'">' +
+                '<img ng-if="item[column.fieldName]" class="table-img img-responsive img-thumbnail" ng-src="{{item[column.fieldName]}}" alt="{{item[column.fieldName]?item[column.fieldName]:\'-\'}}" />' +
+                '</span>' +
+                //Display Videos Only
+                '<div class="" ng-if="column.fieldType == \'iframe\'">' +
+                '<span class="img-thumbnail"  ng-bind-html="getIframeHtml(item[column.fieldName])"></span>' +
+                '</div>' +
+                '</td>' +
+                //Metrics 1
+                '<td ng-if="column.category == \'metric\'" ng-class="{ratingColumnWidth: (column.fieldType == \'rating\')}">' +
+                //Display Values Only
+                '<div class="text-{{column.alignment}}" ng-if="column.fieldType != \'rating\'&&column.fieldType != \'image\'&&column.fieldType != \'iframe\'">' +
+                '<span ng-bind-html="item.metrics1[column.fieldName]? format(column, item.metrics1[column.fieldName]):\'-\'"></span>' +
+                '</div>' +
+                //Display Ratings Only
+                '<div ng-if="column.fieldType == \'rating\'">' +
+                '<span class="text-{{column.alignment}} col-md-2" ng-bind-html="format(column, item.metrics1[column.fieldName])"></span>' +
+                '<span class="stars col-md-9">' +
+                '<div class ="pull-right" ng-class="stars" ng-stars="item.metrics1[column.fieldName]"  ng-stars-readonly></div>' +
+                '</span>' +
+                '</div>' +
+                //Display Images Only                
+                '<span ng-if="column.fieldType == \'image\'">' +
+                '<img ng-if="item.metrics1[column.fieldName]" class="table-img img-responsive img-thumbnail" ng-src="{{item.metrics1[column.fieldName]}}" alt="{{item.metrics1[column.fieldName]?item.metrics1[column.fieldName]:\'-\'}}" />' +
+                '</span>' +
+                //Display Videos Only
+                '<div class="" ng-if="column.fieldType == \'iframe\'">' +
+                '<span class="img-thumbnail"  ng-bind-html="getIframeHtml(item.metrics1[column.fieldName])"></span>' +
+                '</div>' +
+                '</td>' +
+                //Metrics 2
+                '<td ng-if="column.category == \'metric\' && column.expand == true" ng-class="{ratingColumnWidth: (column.fieldType == \'rating\')}">' +
+                //Display Values Only
+                '<div class="text-{{column.alignment}}" ng-if="column.fieldType != \'rating\'&&column.fieldType != \'image\'&&column.fieldType != \'iframe\'">' +
+                '<span ng-bind-html="item.metrics2[column.fieldName] ? format(column, item.metrics2[column.fieldName]) : \'-\'"></span>' +
+                '</div>' +
+                //Display Ratings Only
+                '<div ng-if="column.fieldType == \'rating\'">' +
+                '<span class="text-{{column.alignment}} col-md-2" ng-bind-html="format(column, item.metrics2[column.fieldName])"></span>' +
+                '<span class="stars col-md-9">' +
+                '<div class="pull-right" ng-class="stars" ng-stars="item.metrics2[column.fieldName]"  ng-stars-readonly></div>' +
+                '</span>' +
+                '</div>' +
+                //Display Images Only                
+                '<span ng-if="column.fieldType == \'image\'">' +
+                '<img ng-if="item.metrics2[column.fieldName]" class="table-img img-responsive img-thumbnail" ng-src="{{item.metrics2[column.fieldName]}}" alt="{{item.metrics2[column.fieldName]?item.metrics2[column.fieldName]:\'-\'}}" />' +
+                '</span>' +
+                //Display Videos Only
+                '<div class="" ng-if="column.fieldType == \'iframe\'">' +
+                '<span class="img-thumbnail"  ng-bind-html="getIframeHtml(item.metrics2[column.fieldName])"></span>' +
+                '</div>' +
+                '</td>' +
+                //Diff and Percentage
+                '<td ng-if="column.category == \'metric\' && column.expand == true" ng-repeat-end>' +
+                '<div class="text-{{column.alignment}}" ng-if="column.changeCalculations && column.fieldName != \'avgPosition\'">' +
+                '<span ng-bind-html="format(column, difference(column, item.metrics1[column.fieldName],item.metrics2[column.fieldName]))"></span></div>' +
+                '<div class="text-{{column.alignment}}" ng-if="!column.changeCalculations && column.fieldName == \'avgPosition\'">' +
+                '<span ng-bind-html="format(column, difference(column, item.metrics1[column.fieldName],item.metrics2[column.fieldName]))"></span></div>' +
+                '<div class="text-{{column.alignment}}" ng-if="!column.changeCalculations && column.fieldName != \'avgPosition\'">{{percentage(column, item.metrics1[column.fieldName],item.metrics2[column.fieldName])}}</div>' +
+                '<div class="text-{{column.alignment}}" ng-if="column.changeCalculations && column.fieldName == \'avgPosition\'">{{percentage(column, item.metrics1[column.fieldName],item.metrics2[column.fieldName])}}</div>' +
+                '</td>' +
+                '</tr>' +
+                //**************************************************************Third Level**************************************************************************************
+                '<tr class="compare-table" ng-if="!isZeroRow(childItem.data, columns)  && item.data.length != 1" ng-repeat="childItem in item.data" ng-show="item.$hideRows" ng-repeat-end>' +
+                //Dimension
+                '<td class="right-group">' +
+                '<i ng-if="childItem._groupField && childItem.data.length != 1" style="cursor: pointer" class="fa" ng-click="childItem.$hideRows = !childItem.$hideRows; hideChild(childItem, childItem.$hideRows)" ng-class="{\'fa-plus-circle\': !childItem.$hideRows, \'fa-minus-circle\': childItem.$hideRows}"></i>' +
+                ' <span ng-bind-html="childItem._key"></span>' +
+                '</td>' +
+                '<td class="dimension-Fixed" ng-class="{ratingColumnWidth: (column.fieldType == \'rating\')}" ng-if="column.category != \'metric\' && (!column.columnHide)" ng-repeat-start="column in columns">' +
+                //Display Values Only
+                '<div class="text-{{column.alignment}}" ng-if="column.fieldType != \'rating\'&&column.fieldType != \'image\'&&column.fieldType != \'iframe\'">' +
+                '<span ng-bind-html="format(column, childItem[column.fieldName])"></span>' +
+                '</div>' +
+                //Display Ratings Only
+                '<div ng-if="column.fieldType == \'rating\'">' +
+                '<span class="text-{{column.alignment}} col-md-2" ng-bind-html="format(column, childItem[column.fieldName])"></span>' +
+                '<span class="stars col-md-9">' +
+                '<div class="pull-right" ng-class="stars" ng-stars="childItem[column.fieldName]"  ng-stars-readonly></div>' +
+                '</span>' +
+                '</div>' +
+                //Display Images Only                
+                '<span ng-if="column.fieldType == \'image\'">' +
+                '<img ng-if="childItem[column.fieldName]" class="table-img img-responsive img-thumbnail" ng-src="{{childItem[column.fieldName]}}" alt="{{childItem[column.fieldName]?childItem[column.fieldName]:\'-\'}}" />' +
+                '</span>' +
+                //Display Videos Only
+                '<div class="" ng-if="column.fieldType == \'iframe\'">' +
+                '<span class="img-thumbnail"  ng-bind-html="getIframeHtml(childItem[column.fieldName])"></span>' +
+                '</div>' +
+                '</td>' +
+                //Metrics 1
+                '<td ng-if="column.category == \'metric\'" ng-class="{ratingColumnWidth: (column.fieldType == \'rating\')}">' +
+                //Display Values Only
+                '<div class="text-{{column.alignment}}" ng-if="column.fieldType != \'rating\'&&column.fieldType != \'image\'&&column.fieldType != \'iframe\'">' +
+                '<span ng-bind-html="childItem.metrics1[column.fieldName]? format(column, childItem.metrics1[column.fieldName]):\'-\'"></span>' +
+                '</div>' +
+                //Display Ratings Only
+                '<div ng-if="column.fieldType == \'rating\'">' +
+                '<span class="text-{{column.alignment}} col-md-2" ng-bind-html="format(column, childItem.metrics1[column.fieldName])"></span>' +
+                '<span class="stars col-md-9">' +
+                '<div class ="pull-right" ng-class="stars" ng-stars="childItem.metrics1[column.fieldName]"  ng-stars-readonly></div>' +
+                '</span>' +
+                '</div>' +
+                //Display Images Only                
+                '<span ng-if="column.fieldType == \'image\'">' +
+                '<img ng-if="childItem.metrics1[column.fieldName]" class="table-img img-responsive img-thumbnail" ng-src="{{childItem.metrics1[column.fieldName]}}" alt="{{childItem.metrics1[column.fieldName]?childItem.metrics1[column.fieldName]:\'-\'}}" />' +
+                '</span>' +
+                //Display Videos Only
+                '<div class="" ng-if="column.fieldType == \'iframe\'">' +
+                '<span class="img-thumbnail"  ng-bind-html="getIframeHtml(childItem.metrics1[column.fieldName])"></span>' +
+                '</div>' +
+                '</td>' +
+                //Metrics 2
+                '<td ng-if="column.category == \'metric\' && column.expand == true" ng-class="{ratingColumnWidth: (column.fieldType == \'rating\')}">' +
+                //Display Values Only
+                '<div class="text-{{column.alignment}}" ng-if="column.fieldType != \'rating\'&&column.fieldType != \'image\'&&column.fieldType != \'iframe\'">' +
+                '<span ng-bind-html="childItem.metrics2[column.fieldName] ? format(column, childItem.metrics2[column.fieldName]) : \'-\'"></span>' +
+                '</div>' +
+                //Display Ratings Only
+                '<div ng-if="column.fieldType == \'rating\'">' +
+                '<span class="text-{{column.alignment}} col-md-2" ng-bind-html="format(column, childItem.metrics2[column.fieldName])"></span>' +
+                '<span class="stars col-md-9">' +
+                '<div class="pull-right" ng-class="stars" ng-stars="childItem.metrics2[column.fieldName]"  ng-stars-readonly></div>' +
+                '</span>' +
+                '</div>' +
+                //Display Images Only                
+                '<span ng-if="column.fieldType == \'image\'">' +
+                '<img ng-if="childItem.metrics2[column.fieldName]" class="table-img img-responsive img-thumbnail" ng-src="{{childItem.metrics2[column.fieldName]}}" alt="{{childItem.metrics2[column.fieldName]?childItem.metrics2[column.fieldName]:\'-\'}}" />' +
+                '</span>' +
+                //Display Videos Only
+                '<div class="" ng-if="column.fieldType == \'iframe\'">' +
+                '<span class="img-thumbnail"  ng-bind-html="getIframeHtml(childItem.metrics2[column.fieldName])"></span>' +
+                '</div>' +
+                '</td>' +
+                //Diff and Percentage
+                '<td ng-if="column.category == \'metric\' && column.expand == true" ng-repeat-end>' +
+                '<div class="text-{{column.alignment}}" ng-if="column.changeCalculations && column.fieldName != \'avgPosition\'">' +
+                '<span ng-bind-html="format(column, difference(column, childItem.metrics1[column.fieldName],childItem.metrics2[column.fieldName]))"></span></div>' +
+                '<div class="text-{{column.alignment}}" ng-if="!column.changeCalculations && column.fieldName == \'avgPosition\'">' +
+                '<span ng-bind-html="format(column, difference(column, childItem.metrics1[column.fieldName],childItem.metrics2[column.fieldName]))"></span></div>' +
+                '<div class="text-{{column.alignment}}" ng-if="!column.changeCalculations && column.fieldName != \'avgPosition\'">{{percentage(column, childItem.metrics1[column.fieldName],childItem.metrics2[column.fieldName])}}</div>' +
+                '<div class="text-{{column.alignment}}" ng-if="column.changeCalculations && column.fieldName == \'avgPosition\'">{{percentage(column, childItem.metrics1[column.fieldName],childItem.metrics2[column.fieldName])}}</div>' +
+                '</td>' +
+                '</tr>' +
+                //**************************************************************End---Table Rows**************************************************************
+                '</tbody>' +
+                //Table footer
+//                '<tfoot ng-if="isTableFooter == true">' +
+//                '<tr>' +
+//                '<td ng-if="groupingByCompare">' +
+//                '<i ng-if="subTotalGroup" style="cursor: pointer" ' +
+//                'ng-click="subTotalGroup.$hideRows = !subTotalGroup.$hideRows; hideAndShowRow(subTotalGroup, subTotalGroup.$hideRows)" ' +
+//                'class="fa pdfButton" ng-class="{\'fa-chevron-circle-down\': !subTotalGroup.$hideRows, \'fa-chevron-circle-up\': subTotalGroup.$hideRows}"></i>' +
+//                ' {{showTotal()}}</td>' +
+//                '<td ng-repeat-start="column in columns" ng-if="column.category != \'metric\' && (!column.columnHide)">' +
+//                '<div ng-if="($index + 1) == 1" class="text-{{column.alignment}}">{{ showTotal() }}</div>' +
+//                '<div ng-if="($index + 1) != 1" class="text-{{column.alignment}}">' +
+//                '<span ng-bind-html="format(column, getFooterTotal[column.fieldName])"></span>' +
+//                '</div>' +
+//                '</td>' +
+//                '<td ng-if="column.category == \'metric\'">' +
+//                '<div  class="text-{{column.alignment}}"><span ng-bind-html="format(column, getFooterTotal.metrics1[column.fieldName])"></span></div>' +
+//                '</td>' +
+//                '<td ng-if="column.category == \'metric\' && column.expand == true">' +
+//                '<div  class="text-{{column.alignment}}"><span ng-bind-html="format(column, getFooterTotal.metrics2[column.fieldName])"></span></div>' +
+//                '</td>' +
+                //Footer Diff && Percentage
+//                '<td ng-if="column.category == \'metric\' && column.expand == true" ng-repeat-end>' +
+//                '<div ng-if="column.changeCalculations"  class="text-{{column.alignment}}">' +
+//                '<span ng-bind-html="format(column, difference(column, getFooterTotal.metrics1[column.fieldName],getFooterTotal.metrics2[column.fieldName]))"></span>' +
+//                '</div>' +
+//                '<div ng-if="!column.changeCalculations" class="text-{{column.alignment}}">' +
+//                '{{percentage(column, getFooterTotal.metrics1[column.fieldName] ,getFooterTotal.metrics2[column.fieldName])}}' +
+//                '</div>' +
+//                '</td>' +
+//                '</tr>' +
+//                //<!--------------Table Footer Group---------------------------->
+//                '<tr ng-if="groupingByCompare && subTotalGroup.$hideRows" ng-repeat="total in subTotalGroup">' +
+//                '<td class="right-group" ng-if="total._key">{{total._key}}</td>' +
+//                '<td ng-repeat-start="column in columns" ng-if="!column.columnHide && (total[column.fieldName] != total._key) && column.category != \'metric\'">' +
+//                '<div class="text-{{column.alignment}}"><span ng-bind-html="format(column,total[column.fieldName])"></span></div>' +
+//                '</td>' +
+//                '<td ng-if="column.category == \'metric\'">' +
+//                '<div  class="text-{{column.alignment}}"><span ng-bind-html="format(column, total.metrics1[column.fieldName])"></span></div>' +
+//                '</td>' +
+//                '<td ng-if="column.category == \'metric\' && column.expand == true">' +
+//                '<div  class="text-{{column.alignment}}"><span ng-bind-html="format(column, total.metrics2[column.fieldName])"></span></div>' +
+//                '</td>' +
+//                //Footer-Grouping Diff && Percentage
+//                '<td ng-if="column.category == \'metric\' && column.expand == true" ng-repeat-end>' +
+//                '<div ng-if="column.changeCalculations"  class="text-{{column.alignment}}">' +
+//                '<span ng-bind-html="format(column, difference(column, total.metrics1[column.fieldName],total.metrics2[column.fieldName]))"></span>' +
+//                '</div>' +
+//                '<div ng-if="!column.changeCalculations" class="text-{{column.alignment}}">' +
+//                '{{percentage(column, total.metrics1[column.fieldName] ,total.metrics2[column.fieldName])}}' +
+//                '</div>' +
+//                '</td>' +
+//                '</tr>' +
+//                '</tfoot>' +
+                '</table></div>' +
+                '</div>' +
+                '<div class="text-center" ng-show="hideEmptyTable">' +
+//                '<span ng-bind-html="tableEmptyType | setTextMessageColor"></span>' +
+                '<p>{{tableEmptyDescription | uppercase}}</p>' +
+                '</div>',
+        link: function (scope, element, attr) {
+            if (!scope.widgetColumns) {
+                return;
+            }
+            scope.hideAndShowRow = function (getData, status) {
+                angular.forEach(getData, function (val, key) {
+                    val.$hideRows = status;
+                    if (val.data) {
+                        scope.hideAndShowRow(val.data, status);
+                    }
+                });
+            };
+            scope.hideAndShowParentRow = function (groupData, status, getData) {
+                groupData.$hideRows = status;
+                angular.forEach(groupData.data, function (val, key) {
+                    val.$hideRows = status;
+                    if (val.data) {
+                        scope.hideAndShowParentRow(val.data, status, getData);
+                    }
+                });
+            };
+            scope.hideAndShowChildRow = function (item, status, getData) {
+                item.$hideRows = status;
+                angular.forEach(item.data, function (val, key) {
+                    val.$hideRows = status;
+                    if (val.data) {
+                        scope.hideAndShowChildRow(val.data, status, getData);
+                    }
+                });
+            };
+            scope.showTotal = function () {
+                scope.totalShown = 1;
+                return "Total :";
+            };
+
+            scope.format = function (column, value) {
+                if (!value) {
+                    return "-";
+                }
+                if (column.displayFormat) {
+                    value = value + "";
+                    if (value.substr(0, 1) == "-") {
+                        value = value.replace("-", "");
+                        value = parseFloat(value);
+                        if (isNumber(value)) {
+                            return "-" + dashboardFormat(column, value);
+                        } else {
+                            return "-";
+                        }
+                    } else {
+                        value = parseFloat(value);
+                        if (isNumber(value)) {
+                            return  dashboardFormat(column, value);
+                        } else {
+                            return "-";
+                        }
+                    }
+                }
+                return value;
+            };
+
+            scope.percentage = function (column, metrics1, metrics2) {
+                if (column.fieldType === "date" || column.fieldType === "string") {
+                    return "-";
+                }
+                if (column && column.displayFormat) {
+                    if (column.displayFormat === "H:M:S" || column.displayFormat === "M:S") {
+                        return "-";
+                    }
+                }
+                if (metrics1 && metrics2) {
+                    if (isNumber(metrics1) && isNumber(metrics2)) {
+                        var percent = ((metrics1 - metrics2) / metrics2) * 100;
+                        return percent.toFixed(2) + "%";
+                    } else {
+                        return "-";
+                    }
+                } else {
+                    return "-";
+                }
+            };
+
+            scope.difference = function (column, metrics1, metrics2) {
+                if (column.fieldType === "date" || column.fieldType === "string") {
+                    return "";
+                }
+                var sub;
+                if (metrics1 && metrics2) {
+                    sub = metrics1 - metrics2;
+                    return sub;
+                }
+                if (metrics1 && !metrics2) {
+                    return metrics1;
+                }
+                if (!metrics1 && metrics2) {
+                    return -metrics2;
+                }
+                if (!metrics1 && !metrics2) {
+                    return "";
+                }
+            };
+
+            scope.columns = [];
+            scope.tmpColumns = [];
+            var sortFields = [];
+            var groupByFields = [];
+            var aggreagtionList = [];
+            angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
+                scope.tmpColumns.push(value);
+                if (value.sortOrder) {
+                    sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
+                }
+                if (value.groupPriority) {
+                    if (value.groupPriority == 1) {
+                        scope.groupName = value;
+                    }
+                    groupByFields.push(value.fieldName);
+                }
+                if (value.agregationFunction) {
+                    aggreagtionList.push({fieldname: value.fieldName, aggregationType: value.agregationFunction});
+                }
+            });
+
+            var fullAggreagtionList = aggreagtionList;
+            scope.columns = $filter('orderBy')(scope.tmpColumns, 'groupPriority');
+            scope.getIframeHtml = function (iframe) {
+                var iframeUrl = $interpolate(iframe)(scope);
+                return $sce.trustAsHtml(iframeUrl);
+            };
+
+            scope.getColspan = function (list) {
+                var keySets = [];
+                var getKeySetLength;
+                if (list) {
+                    angular.forEach(list, function (val, key) {
+                        keySets.push([key]);
+                    });
+                    getKeySetLength = keySets.length;
+                    return getKeySetLength;
+                }
+                return 0;
+            };
+
+            scope.changeExpand = function (column) {
+                if (column.expand) {
+                    column.expand = false;
+                } else {
+                    column.expand = true;
+                }
+            };
+            scope.getRowSpan = function (column) {
+                if (column.expand) {
+                    return 1;
+                }
+                return 2;
+            };
+            var getWidgetObj = JSON.parse(scope.widgetObj);
+            scope.isZeroRow = function (row, col) {
+                var widgetData = getWidgetObj;
+                if (!widgetData.zeroSuppression || widgetData.zeroSuppression == false) {
+                    return false;
+                }
+                var zeroRow = true;
+                angular.forEach(col, function (value, key) {
+                    var fieldName = value.fieldName;
+                    if (row.metrics1) {
+                        var fieldValue1 = Number(row.metrics1[fieldName]);
+                    }
+                    if (row.metrics2) {
+                        var fieldValue2 = Number(row.metrics2[fieldName]);
+                    }
+                    if ((!isNaN(fieldValue1) && fieldValue1 != 0) || (!isNaN(fieldValue2) && fieldValue2 != 0)) {
+                        zeroRow = false;
+                        return zeroRow;
+                    } else {
+                        return zeroRow;
+                    }
+                });
+                return zeroRow;
+            };
+            scope.isTableFooter = getWidgetObj.tableFooter;
+            var getWidgetId = getWidgetObj.id;
+            var getWidgetUrl = getWidgetObj.directUrl;
+            var getWidgetLevel = (getWidgetObj.reportLevel ? (getWidgetObj.reportLevel.reportLevel ? getWidgetObj.reportLevel.reportLevel : getWidgetObj.reportLevel) : ""); //getWidgetObj.reportLevel;
+            var getWidgetSegment = (getWidgetObj.reportSegment ? (getWidgetObj.reportSegment.reportSegment ? getWidgetObj.reportSegment.reportSegment : getWidgetObj.reportSegment) : ""); //getWidgetObj.reportSegment;
+            var getProductName = getWidgetObj.productName;
+            var getMaxRecord = getWidgetObj.maxRecord;
+            var monthEndReport = scope.monthEndReport;
+            var compareRange = JSON.parse(scope.compareDateRange);
+            var compareStartDate = compareRange.startDate;
+            var compareEndDate = compareRange.endDate;
+            scope.loadingTable = true;
+            var startDates1 = (moment().subtract(1, 'months').startOf('month'));
+            var endDates1 = (moment().subtract(1, 'months').endOf('month'));
+            var startDates2 = (moment().subtract(2, 'months').startOf('month'));
+            var endDates2 = (moment().subtract(2, 'months').endOf('month'));
+            var startDate1 = $filter('date')(new Date(startDates1), 'MM/dd/yyyy');
+            var endDate1 = $filter('date')(new Date(endDates1), 'MM/dd/yyyy');
+            var startDate2 = $filter('date')(new Date(startDates2), 'MM/dd/yyyy');
+            var endDate2 = $filter('date')(new Date(endDates2), 'MM/dd/yyyy');
+            var compareDateRangeDates = "&startDate1=" + $stateParams.startDate + "&endDate1=" + $stateParams.endDate + "&startDate2=" + compareStartDate + "&endDate2=" + compareEndDate;
+//            var getProductName = getWidgetObj.productName;
+//            var url;
+//            var urlPath;
+//            var returnUrl;
+//            var dateRangeType = '&startDate=' + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
+//            if (getProductName == 'Overall') {
+//                if (scope.monthEndReport == 'MonthEndReport') {
+//                    if (getWidgetLevel == 'PERFORMANCE') {
+//                        getWidgetUrl = "overallCmp/performance";
+//                    }
+//                    if (getWidgetLevel == 'BYPRODUCT') {
+//                        getWidgetUrl = 'overallCmp/byProduct';
+//                    }
+//                    urlPath = "admin/mapdata/" + getWidgetUrl + "/json?" + compareDateRangeDates;
+//                } else {
+//                    if (getWidgetLevel == 'PERFORMANCE') {
+//                        getWidgetUrl = "overallCmp/performance";
+//                    }
+//                    if (getWidgetLevel == 'BYPRODUCT') {
+//                        getWidgetUrl = 'overallCmp/byProduct';
+//                    }
+//                    urlPath = "admin/mapdata/" + getWidgetUrl + "/json?" + dateRangeType;
+//                }
+//            } else {
+//                urlPath = "admin/mapdata/compareMapData?urlPath=" + getWidgetUrl;
+//            }
+//
+//            if (scope.monthEndReport == 'MonthEndReport') {
+//                returnUrl = urlPath + compareDateRangeDates;
+//            } else {
+//                returnUrl = urlPath + "&startDate1=" + $stateParams.startDate +
+//                        "&endDate1=" + $stateParams.endDate +
+//                        "&startDate2=" + compareStartDate +
+//                        "&endDate2=" + compareEndDate;
+//            }
+//            url = returnUrl +
+//                    "&widgetId=" + getWidgetId +
+//                    "&productName=" + getProductName +
+//                    "&level=" + getWidgetLevel +
+//                    "&segment=" + (getWidgetSegment ? getWidgetSegment : "") +
+//                    "&dealerIds=" + $stateParams.dealerId +
+//                    "&date=" + new Date();
+////            }
+            function formatMonthByField(summaryDateRange, value) {
+                var currentMonth;
+                var previousMonth;
+                var displayName;
+                var summaryStartDate1 = summaryDateRange ? summaryDateRange.dateRange1.startDate : "";
+                var summaryDate1 = summaryStartDate1.replace(/-/g, "/");
+                var monthNumber1 = new Date(summaryDate1);
+                var summaryStartDate2 = summaryDateRange ? summaryDateRange.dateRange2.startDate : "";
+                var summaryDate2 = summaryStartDate2.replace(/-/g, "/");
+                var monthNumber2 = new Date(summaryDate2);
+                if (monthNumber1.getMonth() > monthNumber2.getMonth()) {
+                    currentMonth = moment().set('month', monthNumber1.getMonth()).format("MMMM");
+                    previousMonth = moment().set('month', monthNumber2.getMonth()).format("MMMM");
+                } else {
+                    currentMonth = moment().set('month', monthNumber2.getMonth()).format("MMMM");
+                    previousMonth = moment().set('month', monthNumber1.getMonth()).format("MMMM");
+                }
+                if (monthNumber1.getMonth() == monthNumber2.getMonth()) {
+                    currentMonth = moment().set('month', monthNumber1.getMonth()).format("MMMM");
+                    previousMonth = moment().set('month', monthNumber2.getMonth()).format("MMMM");
+                }
+                displayName = value.displayName;
+                if (displayName.substring(0, 15) == "$previousmonth$") {
+                    var str = value.displayName;
+                    return displayName = str.replace("$previousmonth$", previousMonth);
+                }
+                if (displayName.substring(0, 14) == "$currentmonth$") {
+                    var str = value.displayName;
+                    return  displayName = str.replace("$currentmonth$", currentMonth);
+                }
+                return displayName;
+            }
+
+            function formatYearByField(summaryDateRange, value) {
+                var currentYear;
+                var previousYear;
+                var displayName;
+                var summaryStartDate1 = summaryDateRange ? summaryDateRange.dateRange1.startDate : "";
+                var summaryDate1 = summaryStartDate1.replace(/-/g, "/");
+                var yearNumber1 = new Date(summaryDate1);
+                var summaryStartDate2 = summaryDateRange ? summaryDateRange.dateRange2.startDate : "";
+                var summaryDate2 = summaryStartDate2.replace(/-/g, "/");
+                var yearNumber2 = new Date(summaryDate2);
+                if (yearNumber1.getFullYear() > yearNumber2.getFullYear()) {
+                    currentYear = yearNumber1.getFullYear();
+                    previousYear = yearNumber2.getFullYear();
+                } else {
+                    currentYear = yearNumber2.getFullYear();
+                    previousYear = yearNumber1.getFullYear();
+                }
+                if (yearNumber1.getFullYear() == yearNumber2.getFullYear()) {
+                    currentYear = yearNumber1.getFullYear();
+                    previousYear = yearNumber2.getFullYear();
+                }
+                displayName = value.displayName;
+                if (displayName.substring(0, 14) == "$previousyear$") {
+                    var str = value.displayName;
+                    return displayName = str.replace("$previousyear$", previousYear);
+                }
+                if (displayName.substring(0, 13) == "$currentyear$") {
+                    var str = value.displayName;
+                    return  displayName = str.replace("$currentyear$", currentYear);
+                }
+                return displayName;
+            }
+            var compareTableSource = JSON.parse(scope.compareTableSource);
+            var widgetData = JSON.parse(scope.widgetObj)
+            var url = "admin/proxy/getCompareData?";
+//            if (tableDataSource.dataSourceId.dataSourceType == "sql") {
+//                url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
+//            }
+
+            var dataSourcePassword;
+            if (compareTableSource.dataSourceId.password) {
+                dataSourcePassword = compareTableSource.dataSourceId.password;
+            } else {
+                dataSourcePassword = '';
+            }
+            var setProductSegment;
+            var setTimeSegment;
+            var setNetworkType;
+
+            if (widgetData.productSegment && widgetData.productSegment.type) {
+                setProductSegment = widgetData.productSegment.type;
+            } else {
+                setProductSegment = widgetData.productSegment;
+            }
+
+            if (widgetData.timeSegment && widgetData.timeSegment.type) {
+                setTimeSegment = widgetData.timeSegment.type;
+            } else {
+                setTimeSegment = widgetData.timeSegment;
+            }
+
+            if (widgetData.networkType && widgetData.networkType.type) {
+                setNetworkType = widgetData.networkType.type;
+            } else {
+                setNetworkType = widgetData.networkType;
+            }
+
+            var dashboardFilter;
+            if (widgetData.filterUrlParameter) {
+                dashboardFilter = JSON.stringify(widgetData.filterUrlParameter)
+            } else {
+                dashboardFilter = ""
+            }
+
+            $http.get(url + 'connectionUrl=' + compareTableSource.dataSourceId.connectionString +
+                    "&dataSetId=" + compareTableSource.id +
+                    "&accountId=" + (widgetData.accountId ? (widgetData.accountId.id ? widgetData.accountId.id : widgetData.accountId) : $stateParams.accountId) +
+                    "&userId=" + (compareTableSource.userId ? compareTableSource.userId.id : null) +
+                    "&driver=" + compareTableSource.dataSourceId.sqlDriver +
+                    "&productSegment=" + setProductSegment +
+                    "&timeSegment=" + setTimeSegment +
+                    "&networkType=" + setNetworkType +
+                    "&dashboardFilter=" + encodeURI(dashboardFilter) +
+                    compareDateRangeDates +
+//                    "&startDate=" + $stateParams.startDate +
+//                    "&endDate=" + $stateParams.endDate +
+                    '&username=' + compareTableSource.dataSourceId.userName +
+                    "&dataSetReportName=" + compareTableSource.reportName +
+                    '&password=' + dataSourcePassword +
+                    '&widgetId=' + scope.widgetId +
+                    '&url=' + compareTableSource.url +
+                    '&port=3306&schema=vb&query=' + encodeURI(compareTableSource.query))
+                    .success(function (response) {
+                        scope.ajaxLoadingCompleted = true;
+                        scope.loadingTable = false;
+                        scope.hideEmptyTable = false;
+//                        if (response && response.meta) {
+//                            scope.forceClose({meta: response.meta});
+//                        } else {
+//                            scope.forceClose({meta: false});
+//                        }
+                        if (response.data.length == 0) {
+                            scope.tableEmptyType = "ERROR";
+                            scope.tableEmptyDescription = "No Data Found";
+                            scope.hideEmptyTable = true;
+                            return;
+                        }
+                        scope.getColumnDefs = response;
+                        scope.getSummary = response.summary;
+                        scope.getFooterTotal = response.footer;
+                        var getReturnData = scope.orderData(response.data, sortFields, 1);
+                        if (getMaxRecord) {
+                            if (groupByFields && groupByFields.length > 0) {
+                                if (groupByFields.length > 1) {
+                                    subTotalGroupByFields = [groupByFields[1]];
+                                    scope.subTotalGroup = scope.group(getReturnData, subTotalGroupByFields, aggreagtionList);
+                                } else {
+                                    scope.subTotalGroup = "";
+                                }
+                                scope.groupingByCompare = groupByFields;
+                                scope.getData = scope.group(getReturnData, groupByFields, fullAggreagtionList).slice(0, getMaxRecord);
+                            } else {
+                                scope.getData = getReturnData.slice(0, getMaxRecord);
+                            }
+                        } else {
+                            if (groupByFields && groupByFields.length > 0) {
+                                if (groupByFields.length > 1) {
+                                    subTotalGroupByFields = [groupByFields[1]];
+                                    scope.subTotalGroup = scope.group(getReturnData, subTotalGroupByFields, aggreagtionList);
+                                } else {
+                                    scope.subTotalGroup = "";
+                                }
+                                scope.groupingByCompare = groupByFields;
+                                scope.getData = scope.group(getReturnData, groupByFields, fullAggreagtionList);
+                            } else {
+                                scope.getData = getReturnData;
+                            }
+                        }
+                        if (scope.getSummary) {
+                            scope.columns.forEach(function (value, key) {
+                                if (value.displayName.substring(0, 15) == "$previousmonth$" || value.displayName.substring(0, 14) == "$currentmonth$") {
+                                    value.displayName = formatMonthByField(scope.getSummary, value);//str.replace("$currentmonth$", currentMonth);
+                                } else if (value.displayName.substring(0, 14) == "$previousyear$" || value.displayName.substring(0, 13) == "$currentyear$") {
+                                    value.displayName = formatYearByField(scope.getSummary, value);
+                                }
+                            });
+                        }
+                    });
+            scope.getHeaderSpan = function (colDefs, obj) {
+                var columnData = colDefs;
+                if (columnData.category == 'dimension') {
+                    return 1;
+                } else if (columnData.category == 'metric') {
+                    if (columnData.expand) {
+                        return 3;
+                    }
+                    return 1;
+                }
+            };
+            scope.initData = function (col, count, obj) {
+                angular.forEach(scope.columns, function (value, key) {
+                    if (value.fieldName != col.fieldName) {
+                        value.sortOrder = "";
+                    }
+                });
+                if (count) {
+                    col.sortMetric = count;
+                }
+                if (col.sortOrder == "asc") {
+                    col.sortOrder = "desc";
+                } else {
+                    col.sortOrder = "asc";
+                }
+                var sortFields = [];
+                sortFields.push({fieldName: col.fieldName, sortOrder: col.sortOrder, fieldType: col.fieldType});
+                var responseData = scope.getData;
+                angular.forEach(sortFields, function (value, key) {
+                    if (value.fieldType != 'day' && value.fieldType != 'month' && value.fieldType != 'month year') {
+                        responseData = scope.orderData(responseData, sortFields, count);
+                    } else if (value.fieldType == 'month') {
+                        responseData = sortByMonth(responseData, sortFields, count);
+                    } else if (value.fieldType == 'month year') {
+                        responseData = sortByMonthYear(responseData, sortFields, count);
+                    } else {
+                        responseData = sortByDay(responseData, sortFields, count);
+                    }
+                });
+                var widgetData = JSON.parse(scope.widgetObj);
+                if (widgetData.maxRecord > 0) {
+                    responseData = responseData.slice(0, widgetData.maxRecord);
+                }
+                scope.getData = responseData;
+            };
+
+            scope.orderData = function (list, fieldnames, count) {
+                if (fieldnames.length == 0) {
+                    return list;
+                }
+                var fieldsOrder = [];
+                angular.forEach(fieldnames, function (value, key) {
+                    if (value.fieldType == "string") {
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(value.fieldName);
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push("-" + value.fieldName);
+                        }
+                    } else if (value.fieldType == "number") {
+                        var parsedValue;
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(function (a) {
+                                if (count == 1) {
+                                    if (a.metrics1) {
+                                        parsedValue = parseFloat(a.metrics1[value.fieldName]);
+                                    }
+                                } else if (count == 2) {
+                                    if (a.metrics2) {
+                                        parsedValue = parseFloat(a.metrics2[value.fieldName]);
+                                    }
+                                } else {
+                                    parsedValue = parseFloat(a[value.fieldName]);
+                                }
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                if (count == 1) {
+                                    if (a.metrics1) {
+                                        parsedValue = parseFloat(a.metrics1[value.fieldName]);
+                                    }
+                                } else if (count == 2) {
+                                    if (a.metrics2) {
+                                        parsedValue = parseFloat(a.metrics2[value.fieldName]);
+                                    }
+                                } else {
+                                    parsedValue = parseFloat(a[value.fieldName]);
+                                }
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return -1 * parsedValue;
+                            });
+                        }
+                    } else if (value.fieldType == "date") {
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedDate;
+                                if (count === 1) {
+                                    parsedDate = new Date(a.metrics1[value.fieldName]);
+                                } else if (count === 2) {
+                                    parsedDate = new Date(a.metrics2[value.fieldName]);
+                                } else {
+                                    parsedDate = new Date(a[value.fieldName]);
+                                }
+                                parsedDate = new Date(a[value.fieldName]);
+                                var parsedValue = parsedDate.getTime() / 1000;
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedDate;
+                                if (count === 1) {
+                                    parsedDate = new Date(a.metrics1[value.fieldName]);
+                                } else if (count === 2) {
+                                    parsedDate = new Date(a.metrics2[value.fieldName]);
+                                } else {
+                                    parsedDate = new Date(a[value.fieldName]);
+                                }
+                                var parsedValue = parsedDate.getTime() / 1000;
+                                if (isNaN(parsedValue)) {
+                                    return 0;
+                                }
+                                return -1 * parsedValue;
+                            });
+                        }
+                    } else {
+                        if (value.sortOrder == "asc") {
+                            fieldsOrder.push(function (a) {
+                                var parsedValue;
+                                if (count === 1) {
+                                    parsedValue = parseFloat(a.metrics1[value.fieldName]);
+                                } else if (count === 2) {
+                                    parsedValue = parseFloat(a.metrics2[value.fieldName]);
+                                } else {
+                                    parsedValue = parseFloat(a[value.fieldName]);
+                                }
+                                if (isNaN(parsedValue)) {
+                                    return a[value.fieldName];
+                                }
+                                return parsedValue;
+                            });
+                        } else if (value.sortOrder == "desc") {
+                            fieldsOrder.push(function (a) {
+                                if (count === 1) {
+                                    return -1 * parseFloat(a.metrics1[value.fieldName])
+                                } else if (count === 2) {
+                                    return -1 * parseFloat(a.metrics2[value.fieldName])
+                                } else {
+                                    return -1 * parseFloat(a[value.fieldName])
+                                }
+                            });
+                        }
+                    }
+                });
+                return $filter('orderBy')(list, fieldsOrder);
+            };
+            function sortByDay(list, sortFields, count) {
+                var returnSortDay;
+                var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                angular.forEach(sortFields, function (value, key) {
+                    returnSortDay = orderByFilter(list, function (item) {
+                        if (value.sortOrder === 'asc') {
+                            if (count === 1) {
+                                return dateOrders.indexOf(item.metrics1[value.fieldName]);
+                            } else if (count === 2) {
+                                return dateOrders.indexOf(item.metrics2[value.fieldName]);
+                            } else {
+                                return dateOrders.indexOf(item[value.fieldName]);
+                            }
+                        } else if (value.sortOrder === 'desc') {
+                            if (count === 1) {
+                                return dateOrders.indexOf(item.metrics1[value.fieldName]) * -1;
+                            } else if (count === 2) {
+                                return dateOrders.indexOf(item.metrics2[value.fieldName]) * -1;
+                            } else {
+                                return dateOrders.indexOf(item[value.fieldName]) * -1;
+                            }
+                        }
+                    });
+                });
+                return returnSortDay;
+            }
+            function sortByMonth(list, sortFields, count) {
+                var returnSortMonth;
+                var monthOrders = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                angular.forEach(sortFields, function (value, key) {
+                    returnSortMonth = orderByFilter(list, function (item) {
+                        if (value.sortOrder === 'asc') {
+                            if (count === 1) {
+                                return monthOrders.indexOf(item.metrics1[value.fieldName]);
+                            } else if (count === 2) {
+                                return monthOrders.indexOf(item.metrics2[value.fieldName]);
+                            } else {
+                                return monthOrders.indexOf(item[value.fieldName]);
+                            }
+                        } else if (value.sortOrder === 'desc') {
+                            if (count === 1) {
+                                return monthOrders.indexOf(item.metrics1[value.fieldName]) * -1;
+                            } else if (count === 2) {
+                                return monthOrders.indexOf(item.metrics2[value.fieldName]) * -1;
+                            } else {
+                                return monthOrders.indexOf(item[value.fieldName]) * -1;
+                            }
+                        }
+                    });
+                });
+                return returnSortMonth;
+            }
+
+            function sortByMonthYear(list, sortFields, count) {
+                var returnSortMonthYear;
+                var monthOrdersWithMMMMM = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                var monthOrdersWithMMM = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                var monthOrders = [];
+                var monthYearOrders = [];
+                angular.forEach(sortFields, function (value, key) {
+                    returnSortMonthYear = orderByFilter(list, function (item) {
+                        var yearInt = null;
+                        var monthStr;
+                        var yearStr;
+                        if (count === 1) {
+                            monthStr = item.metrics1[value.fieldName].substring(3, 4);
+                        } else if (count === 2) {
+                            monthStr = item.metrics2[value.fieldName].substring(3, 4);
+                        } else {
+                            monthStr = item[value.fieldName].substring(3, 4);
+                        }
+                        if (monthStr == " ") {
+                            monthOrders = monthOrdersWithMMM;
+                        } else {
+                            monthOrders = monthOrdersWithMMMMM;
+                        }
+                        if (count === 1) {
+                            yearStr = item.metrics1[value.fieldName].substring(item.metrics1[value.fieldName].length - 4, item.metrics1[value.fieldName].length);
+                        } else if (count === 2) {
+                            yearStr = item.metrics2[value.fieldName].substring(item.metrics2[value.fieldName].length - 4, item.metrics2[value.fieldName].length);
+                        } else {
+                            yearStr = item[value.fieldName].substring(item[value.fieldName].length - 4, item[value.fieldName].length);
+                        }
+                        yearInt = parseInt(yearStr);
+                        var index = -1;
+                        if (monthYearOrders.length != 0) {
+                            if (count === 1) {
+                                index = monthYearOrders.indexOf(item.metrics1[value.fieldName]);
+                            } else if (count === 2) {
+                                index = monthYearOrders.indexOf(item.metrics2[value.fieldName]);
+                            } else {
+                                index = monthYearOrders.indexOf(item[value.fieldName]);
+                            }
+                        }
+                        if (index == -1) {
+                            if (yearInt) {
+                                angular.forEach(monthOrders, function (val) {
+                                    var checkIndex = monthYearOrders.indexOf(val + " " + yearStr);
+                                    if (checkIndex == -1) {
+                                        monthYearOrders.push(val + " " + yearStr);
+                                    }
+                                });
+                            }
+                        }
+                        if (value.sortOrder === 'asc') {
+                            if (count === 1) {
+                                return monthYearOrders.indexOf(item.metrics1[value.fieldName]);
+                            } else if (count === 2) {
+                                return monthYearOrders.indexOf(item.metrics2[value.fieldName]);
+                            } else {
+                                return monthYearOrders.indexOf(item[value.fieldName]);
+                            }
+                        } else if (value.sortOrder === 'desc') {
+                            if (count === 1) {
+                                return monthYearOrders.indexOf(item[value.fieldName]) * -1;
+                            } else if (count === 2) {
+                                return monthYearOrders.indexOf(item[value.fieldName]) * -1;
+                            } else {
+                                return monthYearOrders.indexOf(item[value.fieldName]) * -1;
+                            }
+                        }
+                    });
+                });
+                return returnSortMonthYear;
+            }
+
+            var returnTotalSum = {};
+            scope.sum = function (list, fieldname) {
+                var sum = 0;
+                var sum1 = 0;
+                var sum2 = 0;
+                for (var i in list)
+                {
+                    if (list && isNaN(list[i][fieldname])) {
+
+                    } else {
+                        sum = sum + Number(list[i][fieldname]);
+                    }
+
+                    if (list && isNaN(list[i].metrics1[fieldname])) {
+
+                    } else {
+                        sum1 = sum1 + Number(list[i].metrics1[fieldname]);
+                    }
+                    if (list[i].metrics2) {
+                        if (list && isNaN(list[i].metrics2[fieldname])) {
+
+                        } else {
+                            sum2 = sum2 + Number(list[i].metrics2[fieldname]);
+                        }
+                    }
+                }
+                returnTotalSum = {sum: sum, sum1: sum1, sum2: sum2};
+                return returnTotalSum;//{sum, sum1, sum2};
+            };
+            scope.calculatedMetric = function (list, name, field1, field2) {
+                var value1 = scope.sum(list, field1).sum;
+                var value1Metrics1 = scope.sum(list, field1).sum1;
+                var value1Metrics2 = scope.sum(list, field1).sum2;
+                var value2 = scope.sum(list, field2).sum;
+                var value2Metrics1 = scope.sum(list, field2).sum1;
+                var value2Metrics2 = scope.sum(list, field2).sum2;
+
+                var returnValue = "0";
+                var returnValue1 = "0";
+                var returnValue2 = "0";
+                if (value1 && value2) {
+                    returnValue = value1 / value2;
+                    if (isNaN(returnValue)) {
+                        return 0;
+                    }
+                }
+                if (value1Metrics1 && value2Metrics1) {
+                    returnValue1 = value1Metrics1 / value2Metrics1;
+                    if (isNaN(returnValue)) {
+                        return 0;
+                    }
+                }
+                if (value1Metrics2 && value2Metrics2) {
+                    returnValue2 = value1Metrics2 / value2Metrics2;
+                    if (isNaN(returnValue)) {
+                        return 0;
+                    }
+                }
+                if (name == "ctr") {
+                    if (isNaN(returnValue)) {
+                        return 0;
+                    }
+                    if (isNaN(returnValue1)) {
+                        return 0;
+                    }
+                    if (isNaN(returnValue2)) {
+                        return 0;
+                    }
+                    returnValue = returnValue * 100;
+                    returnValue1 = returnValue1 * 100;
+                    returnValue2 = returnValue2 * 100;
+                    returnTotalSum = {returnDimension: returnValue, returnMetrics1: returnValue1, returnMetrics2: returnValue2};
+                    return returnTotalSum;
+                }
+                returnTotalSum = {returnDimension: returnValue, returnMetrics1: returnValue1, returnMetrics2: returnValue2};
+                return returnTotalSum;
+            };
+
+            listOfCalculatedFunction = [
+                {name: 'ctr', field1: 'clicks', field2: 'impressions'},
+//                {name: 'cpa', field1: 'cost', field2: 'conversions'},
+                {name: 'cpc', field1: 'spend', field2: 'clicks'},
+//                {name: 'cps', field1: 'spend', field2: 'clicks'},
+//                {name: 'cpr', field1: 'spend', field2: 'actions_post_reaction'},
+//                {name: 'ctl', field1: 'spend', field2: 'actions_like'},
+                {name: 'cpl', field1: 'spend', field2: 'leads'}
+//                {name: 'cplc', field1: 'spend', field2: 'actions_link_click'},
+//                {name: 'cpcomment', field1: 'spend', field2: 'actions_comment'},
+//                {name: 'cposte', field1: 'spend', field2: 'actions_post_engagement'},
+//                {name: 'cpagee', field1: 'spend', field2: 'actions_page_engagement'},
+//                {name: 'cpp', field1: 'spend', field2: 'actions_post'}
+            ];
+
+            function aggregate(list, aggreationList) {
+                var returnValue = {metrics1: {}, metrics2: {}};
+                angular.forEach(aggreationList, function (value, key) {
+                    if (value.aggregationType == "sum") {
+                        returnValue['metrics1'][value.fieldname] = scope.sum(list, value.fieldname).sum1;
+                        returnValue['metrics2'][value.fieldname] = scope.sum(list, value.fieldname).sum2;
+                        returnValue[value.fieldname] = scope.sum(list, value.fieldname).sum;
+                    }
+                    if (value.aggregationType == "avg") {
+                        var findAvgSum = scope.sum(list, value.fieldname);
+                        var avg = (findAvgSum.sum / list.length).toFixed(1);
+                        var avg1 = (findAvgSum.sum1 / list.length).toFixed(1);
+                        var avg2 = (findAvgSum.sum2 / list.length).toFixed(1);
+                        returnValue['metrics1'][value.fieldname] = avg1;
+                        returnValue['metrics2'][value.fieldname] = avg2;
+                        returnValue[value.fieldname] = avg;
+                    }
+                    if (value.aggregationType == "count") {
+                        returnValue[value.fieldname] = list.length;
+                        returnValue['metrics1'][value.fieldname] = list.length;
+                        returnValue['metrics2'][value.fieldname] = list.length;
+                    }
+                    if (value.aggregationType == "min") {
+                        returnValue[value.fieldname] = Math.min.apply(Math, list.map(function (currentValue) {
+                            return Number(currentValue[value.fieldname]);
+                        }));
+                        returnValue['metrics1'][value.fieldname] = Math.min.apply(Math, list.map(function (currentValue) {
+                            return Number(currentValue.metrics1[value.fieldname]);
+                        }));
+                        returnValue['metrics2'][value.fieldname] = Math.min.apply(Math, list.map(function (currentValue) {
+                            return Number(currentValue.metrics2[value.fieldname]);
+                        }));
+                    }
+                    if (value.aggregationType == "max") {
+                        returnValue[value.fieldname] = Math.max.apply(Math, list.map(function (currentValue) {
+                            return Number(currentValue[value.fieldname]);
+                        }));
+                        returnValue['metrics1'][value.fieldname] = Math.max.apply(Math, list.map(function (currentValue) {
+                            return Number(currentValue.metrics1[value.fieldname]);
+                        }));
+                        returnValue['metrics2'][value.fieldname] = Math.max.apply(Math, list.map(function (currentValue) {
+                            return Number(currentValue.metrics2[value.fieldname]);
+                        }));
+                    }
+                    angular.forEach(listOfCalculatedFunction, function (calculatedFn, key) {
+                        if (calculatedFn.name == value.aggregationType) {
+                            returnValue[value.fieldname] = scope.calculatedMetric(list, calculatedFn.name, calculatedFn.field1, calculatedFn.field2).returnDimension;
+                            returnValue['metrics1'][value.fieldname] = scope.calculatedMetric(list, calculatedFn.name, calculatedFn.field1, calculatedFn.field2).returnMetrics1;
+                            returnValue['metrics2'][value.fieldname] = scope.calculatedMetric(list, calculatedFn.name, calculatedFn.field1, calculatedFn.field2).returnMetrics2;
+                        }
+                    });
+                    if (isNaN(returnValue[value.fieldname])) {
+                        returnValue[value.fieldname] = "-";
+                    }
+                });
+                return returnValue;
+            }
+
+            scope.group = function (list, fieldnames, aggreationList) {
+                var currentFields = fieldnames;
+                if (fieldnames.length == 0)
+                    return list;
+                var actualList = list;
+                var data = [];
+                var groupingField = currentFields[0];
+                var currentListGrouped = _.groupBy(actualList, groupingField);
+                var currentFields = currentFields.splice(1);
+                angular.forEach(currentListGrouped, function (value1, key1) {
+                    var dataToPush = {};
+                    dataToPush._key = key1;
+                    dataToPush[groupingField] = key1;
+                    dataToPush._groupField = groupingField;
+                    dataToPush = angular.extend(dataToPush, aggregate(value1, fullAggreagtionList));
+                    data.push(dataToPush);
+                    dataToPush.data = scope.group(value1, currentFields, aggreationList);
+                });
+                return data;
+            };
+
+        }
+    };
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 app.directive('customWidgetDateRange', function ($stateParams, $timeout) {
     return{
         restrict: 'A',
@@ -5956,6 +7580,9 @@ app.directive('jqueryQueryBuilder', function ($stateParams, $timeout) {
         },
         link: function (scope, element, attr) {
             scope.columns = scope.queryData;
+            if (!scope.queryData) {
+                return;
+            }
             var jsonFilter = JSON.parse(scope.queryData);
             var columnList = JSON.parse(scope.queryData);
             var filterList = [];

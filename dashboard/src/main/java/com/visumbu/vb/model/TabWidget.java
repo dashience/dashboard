@@ -722,4 +722,4 @@ public class TabWidget implements Serializable {
 //    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
 //        this.reportWidgetCollection = reportWidgetCollection;
 //    }
-}
+    }

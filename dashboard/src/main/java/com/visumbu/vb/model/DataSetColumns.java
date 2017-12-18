@@ -115,6 +115,9 @@ public class DataSetColumns implements Serializable {
     @JoinColumn(name = "widget_id", referencedColumnName = "id")
     @ManyToOne
     private TabWidget widgetId;
+    @Size(max = 255)
+    @Column(name = "category")
+    private String Category;
 
     public DataSetColumns() {
     }
@@ -194,7 +197,7 @@ public class DataSetColumns implements Serializable {
     public void setDataFormat(String dataFormat) {
         this.dataFormat = dataFormat;
     }
-    
+
     public String getFunctionName() {
         return functionName;
     }
@@ -305,6 +308,14 @@ public class DataSetColumns implements Serializable {
 
     public void setWidgetId(TabWidget widgetId) {
         this.widgetId = widgetId;
+    }
+
+    public String getCategory() {
+        return Category;
+    }
+
+    public void setCategory(String Category) {
+        this.Category = Category;
     }
 
     @Override

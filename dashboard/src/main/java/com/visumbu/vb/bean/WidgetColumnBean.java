@@ -39,6 +39,7 @@ public class WidgetColumnBean {
     private String groupField;
     private String combinationType;
     private Integer derivedId;
+    private String category;
     
 
     public Integer getId() {
@@ -263,6 +264,14 @@ public class WidgetColumnBean {
 
     public void setDerivedId(Integer derivedId) {
         this.derivedId = derivedId;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     @Override

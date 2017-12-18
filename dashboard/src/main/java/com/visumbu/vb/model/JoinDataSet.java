@@ -141,5 +141,5 @@ public class JoinDataSet implements Serializable {
     public void setJoinDataSetConditionCollection(Collection<JoinDataSetCondition> joinDataSetConditionCollection) {
         this.joinDataSetConditionCollection = joinDataSetConditionCollection;
     }
-    
-}
+
+    }

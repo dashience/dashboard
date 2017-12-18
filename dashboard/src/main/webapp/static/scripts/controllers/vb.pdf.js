@@ -9,7 +9,13 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter) 
             $scope.userAccountLogo = val.logo;
         });
     });
-
+    $scope.getTableType = $stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
+    $scope.compareDateRange = {
+        startDate: $stateParams.compareStartDate,
+        endDate: $stateParams.compareEndDate
+    }
+    $scope.compareStartDate = $scope.compareDateRange.startDate;
+    $scope.compareEndDate = $scope.compareDateRange.endDate;
     $http.get('admin/ui/dashboardTemplate/' + $stateParams.productId).success(function (response) {
         $scope.templates = response;
         var template = $filter('filter')(response, {id: $stateParams.templateId})[0];
@@ -35,7 +41,7 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter) 
         });
         setInterval(function () {
             window.status = "done";
-        }, 10000);
+        }, 15000);
     });
 
     $scope.downloadUiPdf = function () {

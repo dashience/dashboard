@@ -63,7 +63,7 @@
     <div class="row">
         <div class="pull-right-container pull-right agency-bt">
             <div class="btn-group"> 
-                <a ui-sref="index.schedulerIndex.scheduler({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> Back</a>
+                <a ui-sref="index.schedulerIndex.scheduler({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate,compareStatus:compareStatus,compareStartDate:compareStartDate,compareEndDate:compareEndDate})"><i class="fa fa-arrow-left"></i> Back</a>
             </div>
             <div class="btn-group"> 
                 <button class="btn btn-success btn-sm" ng-click="addNewScheduler()">New</button>
@@ -420,7 +420,7 @@
                         <div class="form-group col-md-12">
                             <div class="col-sm-8">
                                 <button class="btn btn-success btn-sm" ng-click="saveScheduler(scheduler)"> Save</button>
-                                <button class="btn btn-warning btn-sm" ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})"> Cancel</button>
+                                <button class="btn btn-warning btn-sm" ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate,compareStatus:compareStatus,compareStartDate:compareStartDate,compareEndDate:compareEndDate})"> Cancel</button>
                             </div>
                         </div>
                     </form> 

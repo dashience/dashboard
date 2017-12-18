@@ -217,4 +217,4 @@ public class Agency implements Serializable {
     public void setAccountCollection(Collection<Account> accountCollection) {
         this.accountCollection = accountCollection;
     }    
-}
+    }

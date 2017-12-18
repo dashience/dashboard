@@ -255,7 +255,7 @@ public class GaService {
             // Call the batchGet method.
             System.out.println("get Report ---> " + getReport);
             GetReportsResponse response = analyticsReporting.reports().batchGet(getReport).execute();
-
+            System.out.println("response>>>>"+response);
             // Return the response.
             return response;
         } catch (IOException ex) {

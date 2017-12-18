@@ -192,24 +192,28 @@
                         <div class="panel-heading">                           
                             <span class="text-capitalize">{{favPdfWidget.widgetId.widgetTitle?favPdfWidget.widgetId.widgetTitle:'Widget'}}</span>
                         </div>
-                        <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'line'">
+                        <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'line' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                             <div class="col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
                                 <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                      line-Chart-Directive 
                                      line-Chart-Source="{{favPdfWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{favPdfWidget.widgetId.id}}" 
-                                     widget-Columns="{{favPdfWidget.widgetId.columns}}" 
+                                     widget-Columns="{{favPdfWidget.widgetId.columns}}"
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Obj="{{favPdfWidget.widgetId}}">                                         
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'bar'">
+                        <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'bar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                             <div class="col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
                                 <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                      bar-Chart-Directive 
                                      bar-Chart-Source="{{favPdfWidget.widgetId.dataSetId}}"
                                      widget-Id="{{favPdfWidget.widgetId.id}}" 
-                                     widget-Columns="{{favPdfWidget.widgetId.columns}}" 
+                                     widget-Columns="{{favPdfWidget.widgetId.columns}}"
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Obj="{{favPdfWidget.widgetId}}">                                         
                                 </div>
                             </div>
@@ -224,13 +228,15 @@
                                      widget-Obj="{{favPdfWidget.widgetId}}"></div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak"  ng-if="favPdfWidget.widgetId.chartType === 'area'">
+                        <div class="panel-body pageBreak"  ng-if="favPdfWidget.widgetId.chartType === 'area' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                             <div class="col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" 
                                      area-Chart-Directive 
                                      area-Chart-Source="{{favPdfWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{favPdfWidget.widgetId.id}}" 
-                                     widget-Columns="{{favPdfWidget.widgetId.columns}}" 
+                                     widget-Columns="{{favPdfWidget.widgetId.columns}}"
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Obj="{{favPdfWidget.widgetId}}">                                         
                                 </div>
                             </div>
@@ -247,7 +253,7 @@
                         </div>    
                         <div class="list pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'table'" adjust-height>
                             <div class="table-responsive project-list col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
-                                <div id="changes-height" class="project-list">
+                                <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOff'">
                                     <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
                                          dynamic-Table 
                                          pdf-function="addToPdf(test)" 
@@ -256,6 +262,16 @@
                                          widget-Obj="{{favPdfWidget.widgetId}}" 
                                          table-Footer="{{favPdfWidget.widgetId.tableFooter}}"
                                          widget-Columns="{{favPdfWidget.widgetId.columns}}"></div>
+                                </div>
+                                <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
+                                    <div compare-Range-Table 
+                                         compare-Table-Source="{{favPdfWidget.widgetId.dataSetId}}" 
+                                         compare-Date-Range="{{compareDateRange}}"
+                                         widget-Id="{{favPdfWidget.widgetId.id}}" 
+                                         widget-Obj="{{favPdfWidget.widgetId}}" 
+                                         table-Footer="{{favPdfWidget.widgetId.tableFooter}}" 
+                                         widget-Columns="{{favPdfWidget.widgetId.columns}}">                                         
+                                    </div>
                                 </div>
                             </div>
                         </div>

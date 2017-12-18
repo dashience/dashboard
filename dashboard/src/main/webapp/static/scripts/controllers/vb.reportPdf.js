@@ -1,5 +1,12 @@
 app.controller('ReportPdfController', function ($stateParams, $http, $scope, $filter) {
-
+    $scope.getTableType = $stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
+    $scope.compareDateRange = {
+        startDate: $stateParams.compareStartDate,
+        endDate: $stateParams.compareEndDate
+    }
+    $scope.compareStartDate = $scope.compareDateRange.startDate;
+    $scope.compareEndDate = $scope.compareDateRange.endDate;
+    $scope.compareStatus=$stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
     $scope.reportPdfStartDate = $filter('date')(new Date($stateParams.startDate), 'MMM dd yyyy');//$filter(new Date($stateParams.startDate, 'MM/dd/yyyy'));
     $scope.reportPdfEndDate = $filter('date')(new Date($stateParams.endDate), 'MMM dd yyyy'); //$filter(new Date($stateParams.endDate, 'MM/dd/yyyy'));
 
@@ -33,7 +40,7 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
         });
         setInterval(function () {
             window.status = "done";
-        }, 10000)
+        }, 15000)
     });
     $scope.downloadUiPdf = function () {
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));

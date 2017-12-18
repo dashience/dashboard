@@ -1,4 +1,4 @@
-app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state) {
+app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state, $cookies) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.productId = $stateParams.productId;
@@ -7,10 +7,21 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.favouriteId = $stateParams.favouriteId;
     $scope.favouritesWidgets = [];
     $scope.favouriteName = $stateParams.favouriteName;
+    $scope.getTableType = $stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
+    $scope.userId=$cookies.getObject("userId");
+    console.log($scope.agencyId);
+    $scope.compareDateRange = {
+        startDate: $stateParams.compareStartDate,
+        endDate: $stateParams.compareEndDate
+    }
+    $scope.compareStartDate = $scope.compareDateRange.startDate;
+    $scope.compareEndDate = $scope.compareDateRange.endDate;
+    $scope.compareStatus = $stateParams.compareStatus ? $stateParams.compareStatus : "compareOff";
     $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
         var widgetItems = [];
         widgetItems = response;
         $http.get("admin/tag/getAllFav/").success(function (favResponse) {
+            console.log(favResponse);
             widgetItems.forEach(function (value, key) {
                 favWidget = $.grep(favResponse, function (b) {
                     return b.id === value.widgetId.id;
