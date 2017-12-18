@@ -1,10 +1,11 @@
-app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout, $cookies, $translate,$rootScope) {
+app.controller("NewOrEditReportController", function ($scope, $http, $stateParams, $filter, $window, localStorageService, $timeout, $cookies, $translate, $rootScope) {
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.reportId = $stateParams.reportId;
     $scope.userId = $cookies.getObject("userId");
     $scope.startDate = $stateParams.startDate;
+    $scope.saveBtnIsDisable = true;
     $scope.endDate = $stateParams.endDate;
     $scope.reportWidgets = [];
 
@@ -30,7 +31,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             $scope.loadStatus = loadStatus;
         }, 20);
     });
-     var tableTypeByDateRange = localStorageService.get("selectedTableType") ? localStorageService.get("selectedTableType") : "compareOff";
+    var tableTypeByDateRange = localStorageService.get("selectedTableType") ? localStorageService.get("selectedTableType") : "compareOff";
     $scope.getTableType = tableTypeByDateRange ? tableTypeByDateRange : "compareOff";
     if (tableTypeByDateRange == 'compareOn') {
         $scope.selectedTablesType = 'compareOn';
@@ -39,7 +40,13 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
         $scope.selectedTablesType = 'compareOff';
         $scope.compareDateRangeType = false;
     }
-    
+    $scope.checkSaveValidate = function (reportTitle) {
+        if (reportTitle !== '') {
+            $scope.saveBtnIsDisable = false;
+        } else {
+            $scope.saveBtnIsDisable = true;
+        }
+    };
     var compareStartDate = localStorageService.get("comparisonStartDate");
     var compareEndDate = localStorageService.get("comparisonEndDate");
     $scope.compareDateRange = {
@@ -109,8 +116,9 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     };
 
     $scope.saveReportData = function () {
+        console.log("report id---------------->",$stateParams.reportId);
         if (0 == $stateParams.reportId) {
-            $scope.selectReportId = "";
+            $scope.selectReportId = '';
         } else {
             $scope.selectReportId = $stateParams.reportId;
         }
@@ -120,13 +128,14 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             description: $scope.description,
             logo: $scope.uploadLogo   //window.btoa($scope.uploadLogo)
         };
-        $http({method: $scope.selectReportId ? 'PUT' : 'POST', url: 'admin/report/report', data: data}).success(function () {
-            $stateParams.reportId = $scope.reports.id;
+        $http({method: $scope.selectReportId !=='' ? 'PUT' : 'POST', url: 'admin/report/report', data: data}).success(function (response) {
+            $stateParams.reportId = response.id;
             $scope.editReport = false;
         });
     };
 
     $scope.editReportData = function () {
+        $scope.saveBtnIsDisable = false;
         $scope.editReport = true;
     }
 

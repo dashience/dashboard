@@ -119,7 +119,7 @@
         <a ui-sref="index.report.reports({accountId: accountId, accountName: accountName, reportId: reportId, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> <span translate>Back</span></a>
     </div>
     <div class="btn-group"> 
-        <a style="cursor: pointer;" ng-href="#viewReportPdf/{{agencyLanguage}}/{{accountId}}/{{userId}}/{{reportId}}?startDate={{startDate}}&endDate={{endDate}}&getTableType={{getTableType}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
+        <a style="cursor: pointer;" ng-href="#viewReportPdf/{{agencyLanguage}}/{{accountId}}/{{userId}}/{{reportId}}?startDate={{startDate}}&endDate={{endDate}}&getTableType={{getTableType}}&compareStartDate={{compareDateRange.startDate}}&compareEndDate={{compareDateRange.endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
         <!--<a style="cursor: pointer;" ng-click="downloadReportPdf()"><i class="fa fa-file-pdf-o"></i> PDF</a>--> 
     </div>
 </div>
@@ -145,7 +145,7 @@
                             {{reportTitle}}
                         </div>
                         <div ng-show="editReport" class="form-group col-sm-10">
-                            <input type="text" ng-model="reportTitle" class="form-control" placeholder="{{'Title'| translate}}">
+                            <input type="text" ng-model="reportTitle" ng-change = "checkSaveValidate(reportTitle)" class="form-control" placeholder="{{'Title'| translate}}">
                         </div>
                     </div>
                     <div class="form-group col-sm-10">
@@ -163,7 +163,7 @@
                     <button class="btn btn-block btn-success" ng-click="editReportData()" translate>Edit</button>
                 </div>
                 <div ng-show="editReport" class="pull-right">
-                    <button class="btn btn-info" ng-click="saveReportData();" translate>Save</button>
+                    <button class="btn btn-info" ng-disabled="saveBtnIsDisable" ng-click="saveReportData();" translate>Save</button>
                 </div>
 
             </div>

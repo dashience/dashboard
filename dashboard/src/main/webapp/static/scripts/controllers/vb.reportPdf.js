@@ -1,5 +1,4 @@
 app.controller('ReportPdfController', function ($stateParams, $http, $scope, $filter, $cookies, $translate,localStorageService) {
-
     $scope.reportPdfStartDate = $filter('date')(new Date($stateParams.startDate), 'MMM dd yyyy');//$filter(new Date($stateParams.startDate, 'MM/dd/yyyy'));
     $scope.reportPdfEndDate = $filter('date')(new Date($stateParams.endDate), 'MMM dd yyyy'); //$filter(new Date($stateParams.endDate, 'MM/dd/yyyy'));
     console.log("userId>>>>>>>>" + $stateParams.userId);
@@ -13,13 +12,17 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
         $translate.use(key);
     }
     $scope.getTableType = localStorageService.get("selectedTableType");
-    var compareStartDate = localStorageService.get("comparisonStartDate");
+        var compareStartDate = localStorageService.get("comparisonStartDate");
     var compareEndDate = localStorageService.get("comparisonEndDate");
+    console.log("tableType--------------->"+localStorageService.get("selectedTableType"));
+    console.log("compareStartDate--------------->"+localStorageService.get("comparisonStartDate"));
+    console.log("compareStartDate--------------->"+localStorageService.get("comparisonEndDate"));
     $scope.compareDateRange = {
         startDate: compareStartDate,
         endDate: compareEndDate
     };
     $http.get('admin/ui/getAccount/' + $stateParams.accountId).success(function (response) {
+
         console.log(response);
         response.forEach(function (val, key) {
             $scope.userAccountName = val.accountName;
@@ -59,9 +62,11 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
         });
         setInterval(function () {
             window.status = "done";
-        }, 15000);
+        }, 50000);
     });
     $scope.downloadUiPdf = function () {
+        console.log(window.location.href)
+        alert(encodeURIComponent(window.location.href));
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));
     }
 });

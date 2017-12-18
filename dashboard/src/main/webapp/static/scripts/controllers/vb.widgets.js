@@ -17,7 +17,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.widgetStartDate = $stateParams.startDate;
     $rootScope.tabStartDate = $stateParams.startDate;
     $rootScope.tabEndDate = $stateParams.endDate;
-
     $scope.userId = $cookies.getObject("userId");
     $scope.widgetEndDate = $stateParams.endDate;
     $scope.userId = localStorageService.get("userId");
@@ -693,6 +692,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 '&url=' + widget.dataSetId.url +
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
                 "&fieldsOnly=true").success(function (response) {
+                    console.log("response-------------->",response);
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
             if ($scope.collectionFields.length == widget.columns.length) {
@@ -701,7 +701,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widget.selectAll = 0;
             }
 //            $scope.locations = response.data;
-
+            console.log("widget------------->",widget);
             var filterList = {
                 columns: response.columnDefs,
                 widgetObj: widget
@@ -862,15 +862,16 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         });
 
     }
-    
-    $scope.resetTimeProduct =function() {
-        $scope.timeSegments=[];
-        $scope.productSegments=[];
+
+    $scope.resetTimeProduct = function () {
+        $scope.timeSegments = [];
+        $scope.productSegments = [];
     };
 
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
-        console.log("&&&&&&&&& widget",widget);
-        console.log("chartTypeName --------",chartTypeName);
+        console.log("product seg-------------->",widget.productSegment);
+        console.log("&&&&&&&&& widget", widget);
+        console.log("chartTypeName --------", chartTypeName);
         $scope.hideSelectedColumn = true;
         $scope.queryBuilderList = "";
         $scope.dispHideBuilder = true;
@@ -894,7 +895,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         getSegments(widget);
         widget.jsonData = null;
         widget.queryFilter = null;
-        
+
         var url = "admin/proxy/getData?";
 //        if (getDataSet.dataSourceId.dataSourceType == "sql") {
 //            url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
@@ -926,6 +927,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 '&url=' + getDataSet.url +
                 '&port=3306&schema=vb&query=' + encodeURI(getDataSet.query) +
                 "&fieldsOnly=true").success(function (response) {
+                    console.log("resp------------------->",response);
             $scope.afterLoadWidgetColumns = true;
             $scope.hideSelectedColumn = false;
 //            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
@@ -968,6 +970,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.columnPieYAxis.push(value);
                 $scope.tickerAxis.push(value);
             });
+            console.log("ticker axis--------->",$scope.tickerAxis);
             resetQueryBuilder();
         });
     };
@@ -1037,7 +1040,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     });
                 }
             });
-
+            
 
 
 
@@ -2735,6 +2738,22 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $scope.undoWidget = undoWidgetObj;
         }
     }
+    $scope.checkValidate = function (title) {
+        $scope.widgetObj.previewTitle = title;
+        var returnStatus = $scope.checkPreview();
+        if (returnStatus === false) {
+            $scope.saveBtnIsDisable = false;
+        } else {
+            $scope.saveBtnIsDisable = true;
+        }
+    };
+    $scope.checkPreview = function () {
+        if ($scope.returnStatus === false && typeof $scope.widgetObj.previewTitle !== 'undefined' && $scope.widgetObj.previewTitle !== '' && $scope.widgetObj.previewTitle !== null) {
+            return false;
+        } else {
+            return true;
+        }
+    };
     function checkValidationBySaveBtn(chartType, value1, value2, value3) {
         var selectedChart = chartType ? chartType : $scope.chartTypeName;
         var returnStatus = false;
@@ -2768,12 +2787,14 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             returnStatus = true;
         }
+        $scope.returnStatus = returnStatus;
+        returnStatus = $scope.checkPreview();
         return returnStatus;
     }
 
 
     $scope.save = function (widget) {
-        console.log("widget---------->",widget);
+        console.log("widget---------->", widget);
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2978,7 +2999,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             var colData = {
                 tableColumns: $scope.derivedColumns
             };
-                            console.log("datasetId----------->",dataSetObj);
+            console.log("datasetId----------->", dataSetObj);
             widget.chartType = "";
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
                 $scope.chartTypeName = "";
@@ -3021,7 +3042,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     var tempTargetColors = [];
     $scope.cancel = function (widgetObj) {
-        console.log("widgetObj-----------",widgetObj);
+        console.log("widgetObj-----------", widgetObj);
         $scope.saveBtnIsDisable = true;
         $scope.dispHideBuilder = true;
         $scope.queryBuilderList = "";

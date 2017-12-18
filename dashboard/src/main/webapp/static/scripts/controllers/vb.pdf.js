@@ -11,9 +11,12 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter, 
     function changeLanguage(key) {
         $translate.use(key);
     }
-    $scope.getTableType = $stateParams.getTableType;
+    $scope.getTableType = localStorageService.get("selectedTableType");
     var compareStartDate = localStorageService.get("comparisonStartDate");
     var compareEndDate = localStorageService.get("comparisonEndDate");
+    console.log("tableType--------------->"+localStorageService.get("selectedTableType"));
+    console.log("compareStartDate--------------->"+localStorageService.get("comparisonStartDate"));
+    console.log("compareStartDate--------------->"+localStorageService.get("comparisonEndDate"));
     $scope.compareDateRange = {
         startDate: compareStartDate,
         endDate: compareEndDate
@@ -58,7 +61,7 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter, 
         });
         setInterval(function () {
             window.status = "done";
-        }, 14000);
+        }, 35000);
     });
 
     $scope.downloadUiPdf = function () {

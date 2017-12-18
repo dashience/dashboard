@@ -180,8 +180,11 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var monthEndWithoutCompare = "&startDate=" + startDate1 + "&endDate=" + endDate1;
             var compareRange = JSON.parse(scope.compareDateRange);
             var isCompare = scope.urlType;
+            console.log("compareDateRange-------->", scope.compareDateRange)
+            console.log("********* URL TYPE ************ -->",scope.urlType);
+            console.log("urlType------------------------------>",scope.urlType);
             var url;
-            if (isCompare == 'compareOn') {
+            if (isCompare === 'compareOn') {
                 var compareStartDate = compareRange.startDate;
                 var compareEndDate = compareRange.endDate;
                 dateRangeType = '&startDate1=' + $stateParams.startDate +

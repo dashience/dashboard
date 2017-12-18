@@ -84,7 +84,7 @@
                                 <div class="col-md-12">
                                     <label translate>Schedule Name</label>
                                     <div>
-                                        <input type="text" placeholder="{{'Schedule Name'| translate}}" ng-model="scheduler.schedulerName" class="form-control">
+                                        <input type="text" placeholder="{{'Schedule Name'| translate}}" ng-model="scheduler.schedulerName" ng-change="saveValidate(scheduler)" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -92,7 +92,9 @@
                                 <div class="col-md-12">
                                     <label translate>Repeat</label>
                                     <div>
-                                        <select class="form-control" ng-options="schedulerRepeat for schedulerRepeat in schedulerRepeats" ng-model="scheduler.schedulerRepeatType"></select>
+                                        <select class="form-control" ng-change="saveValidate(scheduler)" 
+                                                ng-options="schedulerRepeat for schedulerRepeat in schedulerRepeats"
+                                                ng-model="scheduler.schedulerRepeatType"></select>
                                     </div>
                                 </div>
                             </div>
@@ -102,7 +104,9 @@
 
                                     <label translate>Select Week</label>
                                     <div>
-                                        <select class="form-control" ng-options="week for week in weeks" ng-model="scheduler.schedulerWeekly"></select>
+                                        <select class="form-control" ng-options="week for week in weeks" 
+                                                ng-model="scheduler.schedulerWeekly" 
+                                                ng-change="saveValidate(scheduler)"></select>
                                     </div>
                                 </div>
                             </div>
@@ -111,7 +115,7 @@
                                 <div class="col-md-12">
                                     <label translate>Time</label>
                                     <div>
-                                        <input type="text" jqdatepicker-Time placeholder="{{'Time'|translate}}" ng-model="scheduler.schedulerTime" class="form-control">
+                                        <input type="text" jqdatepicker-Time placeholder="{{'Time'|translate}}" ng-model="scheduler.schedulerTime" ng-change="saveValidate(scheduler)" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -119,7 +123,7 @@
                                 <div class="col-md-12">
                                     <label translate>Select Date And Time</label>
                                     <div>
-                                        <input type="text" jqdatetimepicker placeholder="{{'Select Date And Time'| translate}}" ng-model="scheduler.schedulerMonthly" class="form-control">
+                                        <input type="text" jqdatetimepicker placeholder="{{'Select Date And Time'| translate}}" ng-model="scheduler.schedulerMonthly" ng-change="saveValidate(scheduler)" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -127,7 +131,7 @@
                                 <div class="col-md-12">
                                     <label translate>Start Date</label>
                                     <div>
-                                        <input type="text" jqdatepicker placeholder="{{'Start Date'|translate}}" ng-model="scheduler.startDate" class="form-control">
+                                        <input type="text" jqdatepicker placeholder="{{'Start Date'|translate}}" ng-model="scheduler.startDate" ng-change="saveValidate(scheduler)" class="form-control">
                                     </div>
                                 </div>
                             </div>
@@ -135,7 +139,7 @@
                                 <div class="col-md-12">
                                     <label translate>End Date</label>
                                     <div>
-                                        <input type="text" jqdatepicker placeholder="{{'End Date'|translate}}" ng-disabled ng-model="scheduler.endDate" class="form-control">
+                                        <input type="text" jqdatepicker placeholder="{{'End Date'|translate}}" ng-disabled ng-model="scheduler.endDate" ng-change="saveValidate(scheduler)" class="form-control">
                                     </div>
 
                                 </div>
@@ -172,7 +176,7 @@
                                 <div class="col-md-6">
                                     <label translate>Report</label>
                                     <div>
-                                        <ui-select ng-model="scheduler.reportId" theme="select2" ng-disabled="disabled" style="min-width:225px;">
+                                        <ui-select ng-model="scheduler.reportId" ng-change="saveValidate(scheduler)" theme="select2" ng-disabled="disabled" style="min-width:225px;">
                                             <ui-select-match placeholder="{{'Select Report'|translate}}">
                                                 <img ng-if="$select.selected.logo" style="width: 40px" ng-src="{{ $select.selected.logo}}" />
                                                 <img ng-if="!$select.selected.logo" style="width: 40px" ng-src="static/img/logos/emptyLogo.jpg" />
@@ -191,7 +195,7 @@
                                 <div class="col-md-6">
                                     <label translate>Account</label>
                                     <div>
-                                        <ui-select ng-model="scheduler.accountId" theme="select2" ng-disabled="disabled" style="min-width:108px;">
+                                        <ui-select ng-model="scheduler.accountId" ng-change="saveValidate(scheduler)" theme="select2" ng-disabled="disabled" style="min-width:108px;">
                                             <ui-select-match placeholder="{{'Select Account'|translate}}">{{$select.selected.accountName}}</ui-select-match>
                                             <ui-select-choices repeat="account in accounts | filter: $select.search">
                                                 <span ng-bind-html="account.accountName | highlight: $select.search"></span>
@@ -206,7 +210,7 @@
                                     <label class="scheduler-checkBox-label">
                                         <span translate> Send to Account</span>
                                     </label>
-                                    <div> <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.isAccountEmail == true;" ng-model="scheduler.isAccountEmail" ng-true-value="1" />
+                                    <div> <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.isAccountEmail == true;" ng-model="scheduler.isAccountEmail" ng-change="saveValidate(scheduler)" ng-true-value="1"  />
                                     </div>
 
                                 </div>
@@ -293,7 +297,7 @@
                                 <div class="col-md-12">
                                     <label translate>Email Ids</label>
                                     <div>
-                                        <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
+                                        <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" ng-change="saveValidate(scheduler)" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
                                             <ui-select-match placeholder="{{'Email Ids'|translate}}">{{$item}}</ui-select-match>
                                             <ui-select-choices repeat="accountEmail in accountEmails | filter:$select.search">
                                                 {{accountEmail}}
@@ -313,7 +317,7 @@
                                             <span translate>PDF</span>
                                         </label>
                                         <div>
-                                            <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'pdf'" ng-true-value="'pdf'" ng-model="scheduler.schedulerType" /> 
+                                            <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'pdf'" ng-true-value="'pdf'" ng-model="scheduler.schedulerType" ng-change="saveValidate(scheduler)" />
                                         </div>  
                                     </div>
 <!--                                    <div class="col-sm-2">
@@ -340,7 +344,7 @@
                         </div>
                         <div class="form-group col-md-12">
                             <div class="col-sm-8">
-                                <button class="btn btn-success btn-sm" ng-click="saveScheduler(scheduler)" translate> Save</button>
+                                <button class="btn btn-success btn-sm" ng-disabled="saveBtnIsDisable" ng-click="saveScheduler(scheduler)" translate> Save</button>
                                 <button class="btn btn-warning btn-sm" ui-sref="index.schedulerIndex.scheduler({lan: agencyLanguage, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})" translate> Cancel</button>
                             </div>
                         </div>

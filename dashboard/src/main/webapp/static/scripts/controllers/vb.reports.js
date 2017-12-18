@@ -5,6 +5,7 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
     $scope.reportId = $stateParams.reportId;
     $scope.accountId = $stateParams.accountId;
     $scope.userId = $cookies.getObject("userId");
+    $scope.saveBtnIsDisable = true;
     console.log($scope.userId);
     $scope.accountName = $stateParams.accountName;
     $scope.reportWidgets = [];
@@ -22,7 +23,7 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
     function changeLanguage(key) {
         $translate.use(key);
     }
-    $scope.getTableType = $stateParams.getTableType;
+    $scope.getTableType = localStorageService.get("selectedTableType");
     var compareStartDate = localStorageService.get("comparisonStartDate");
     var compareEndDate = localStorageService.get("comparisonEndDate");
     $scope.compareDateRange = {

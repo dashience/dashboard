@@ -383,7 +383,7 @@
                         <div class="box-pop">
                             <div class="form-group widget-title">
                                 <label translate>Widget Title</label>
-                                <input class='form-control' type='text' ng-model='widgetObj.previewTitle'>
+                                <input class='form-control' type='text' ng-model='widgetObj.previewTitle' ng-change="checkValidate(widgetObj.previewTitle)">
                             </div>
                             <div class="form-group widget-title">
                                 <label translate>Chart Type</label>

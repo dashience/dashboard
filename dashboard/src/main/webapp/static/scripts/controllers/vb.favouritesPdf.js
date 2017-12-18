@@ -10,7 +10,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
     function changeLanguage(key) {
         $translate.use(key);
     }
-    $scope.getTableType = $stateParams.getTableType;
+    $scope.getTableType = localStorageService.get("selectedTableType");
     var compareStartDate = localStorageService.get("comparisonStartDate");
     var compareEndDate = localStorageService.get("comparisonEndDate");
     $scope.compareDateRange = {
@@ -50,7 +50,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
         });
         setInterval(function () {
             window.status = "done";
-        }, 14000);
+        }, 35000);
     });
 
 

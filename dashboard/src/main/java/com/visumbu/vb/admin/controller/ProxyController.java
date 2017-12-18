@@ -897,9 +897,8 @@ public class ProxyController {
             returnMap = getJoinDataSet(request, httpRequest, response, dataSetIdInt);
         }
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
-        // //System.out.println("Column Def For Data Format");
-        // //System.out.println(returnMap);
-
+//         System.out.println("Column Def For Data Format");
+//         System.out.println(returnMap.get("columnDefs"));
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");// request.getParameter("widgetId");
         String userIdStr = getFromMultiValueMap(request, "userId"); // request.getParameter("userId");
         Integer widgetIdInt = null;
@@ -914,7 +913,6 @@ public class ProxyController {
 
             }
         }
-
         List<DataSetColumns> dataSetColumnList = null;
         if (widgetIdInt == null) {
             dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
@@ -924,9 +922,9 @@ public class ProxyController {
         if (dataSetColumnList.size() > 0) {
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataList, request, httpRequest, response);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
-            // //System.out.println(dataSetColumnList);
-            // //System.out.println("DATA INSIDE DERIVED COLUMN");
-            // //System.out.println(dataWithDerivedColumns);
+//             System.out.println(dataSetColumnList);
+//             System.out.println("DATA INSIDE DERIVED COLUMN");
+//             System.out.println(dataWithDerivedColumns);
             returnMap.put("data", dataWithDerivedColumns);
         }
         dataList = (List<Map<String, Object>>) returnMap.get("data");
@@ -1715,7 +1713,6 @@ public class ProxyController {
     }
 
     private Object getAnalyticsData(MultiValueMap request, HttpServletResponse response) {
-        // //System.out.println("Analytics");
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
@@ -1725,7 +1722,7 @@ public class ProxyController {
         }
         String productSegment = getFromMultiValueMap(request, "productSegment");
         if (productSegment != null && (productSegment.isEmpty() || productSegment.equalsIgnoreCase("undefined") || productSegment.equalsIgnoreCase("null"))) {
-            // //System.out.println("In ifffff productSegment...");
+//             System.out.println("In ifffff productSegment...");
             productSegment = null;
         }
         Integer dataSetIdInt = null;
@@ -1741,8 +1738,8 @@ public class ProxyController {
                 dataSet = uiService.readDataSet(dataSetIdInt);
             }
             if (dataSet != null) {
-                // //System.out.println("productSegment ---> " + productSegment);
-                // //System.out.println("productSegment dataset---> " + dataSet.getProductSegment());
+                //System.out.println("productSegment ---> " + productSegment);
+                //System.out.println("productSegment dataset---> " + dataSet.getProductSegment());
 
                 dataSetReportName = (dataSetReportName == null || dataSetReportName.isEmpty()) ? dataSet.getReportName() : dataSetReportName;
                 timeSegment = (timeSegment == null || timeSegment.isEmpty()) ? dataSet.getTimeSegment() : timeSegment;
@@ -1792,7 +1789,6 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String gaAccountId = getAccountId(accountProperty, "gaAccountId");
         String gaProfileId = getAccountId(accountProperty, "gaProfileId");
-
         Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
         List<Map<String, Object>> data = (List<Map<String, Object>>) dataMap.get("data");
         List<ColumnDef> columnDefs = getColumnDefObject(data);

@@ -9,6 +9,7 @@ import com.visumbu.vb.admin.dao.DealerDao;
 import com.visumbu.vb.admin.dao.UserDao;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -58,6 +59,7 @@ public class PdfService {
             System.out.println("Url -----------------------------------> "+command);
             java.lang.Runtime rt = java.lang.Runtime.getRuntime();
             String[] commandToExecute = (String[])commandsList.toArray(new String[commandsList.size()]);
+            System.out.println("commandToExecute------------------>"+commandToExecute.toString());
             java.lang.Process p = rt.exec(commandToExecute);
             p.waitFor();
             return filename;
