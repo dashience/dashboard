@@ -266,7 +266,7 @@
                                 <td class="col-xs-3" ng-click="editUser(user, $index)">{{user.email?user.email:'-'}}</td>
                                 <!--<td class="col-xs-2" ng-click="editUser(user, $index)">{{user.primaryPhone?user.primaryPhone:'-'}}</td>-->
                                 <td class="col-xs-1">
-                                    <button class="btn btn-default btn-xs" data-toggle="modal" title="Delete" data-target="#deleteUser{{user.id}}"><i class="fa fa-trash"></i></button>
+                                    <button class="btn btn-default btn-xs" data-toggle="modal" title="{{'Delete'|translate}}" data-target="#deleteUser{{user.id}}"><i class="fa fa-trash"></i></button>
                                     <div class="modal hmodal-success" id="deleteUser{{user.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">

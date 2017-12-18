@@ -241,5 +241,6 @@
     "API Key": "Clave API",
     "Data Set": "Conjunto de datos",
     "All Permissions": "Todos los permisos",
-    "Menu":"Menú"
+    "Menu":"Menú",
+    "DataSet Name":"Nombre del conjunto de datos"
 }

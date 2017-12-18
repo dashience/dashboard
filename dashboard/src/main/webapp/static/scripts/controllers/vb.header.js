@@ -11,7 +11,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.lan = $stateParams.lan ? $stateParams.lan : $scope.agencyLanguage;
     $stateParams.lan = $scope.lan;
     changeLanguage($scope.lan);
-
+    
     function changeLanguage(key) {
         if ($scope.lan != 'en') {
             $scope.showLangBtn = 'en';
@@ -21,11 +21,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         $translate.use(key);
     }
-
+    
     $scope.changeAgencyLang = function (lan) {
         if (lan == 'en') {
             localStorageService.set('agencyLanguage', lan);
-            var agencyLan = localStorageService.get('agenLan');
+            //var agencyLan = localStorageService.get('agenLan');
+            var agencyLan = $stateParams.lan ? $stateParams.lan : localStorageService.get('agenLan');
             $scope.showLangBtn = agencyLan;
         } else {
             localStorageService.set('agencyLanguage', lan);
@@ -35,7 +36,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.lan = lan;
         $scope.loadNewUrl();
     };
-
+    
     $scope.setParamsProduct = function (product) {
         var setTabId = 0;
         var productId = product.id;
@@ -67,7 +68,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             return;
         }
     };
-
+    
     $scope.themes = [{name: "Green", value: "green"},
         {name: "Blue", value: "blue"},
         {name: "Cyan", value: "cyan"},
@@ -114,7 +115,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             getAgencyProduct($scope.name.userId.agencyId.id);
         });
     });
-
+    
     $scope.getAccountId = function (account) {
         console.log(account);
         if ($stateParams.accountId != account.accountId.id) {
@@ -791,7 +792,19 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //            $scope.loadNewUrl();
         });
     };
-
+    
+    $(window).on('popstate', function() {
+        if($scope.showLangBtn === $stateParams.lan){
+            if($stateParams.lan === 'en'){
+                $scope.showLangBtn = localStorageService.get("agenLan");
+            } else{
+                $scope.showLangBtn = 'en';
+            }
+        }
+        $scope.firstDate = $stateParams.startDate;
+        $scope.lastDate = $stateParams.endDate;
+    });
+    
     $(document).ready(function (e) {
         $(document).on("click", ".calendar", function (e) {
             $("#dataRange").parent().addClass("open");
@@ -982,7 +995,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //       
         localStorageService.set("selectedTableType", selectTableType);
 //        localStorageService.set("loadStatus", loadStatus);
-        console.log("")
 //            
         $scope.getTableType = selectTableType;
         $scope.selectedTablesType=selectTableType;

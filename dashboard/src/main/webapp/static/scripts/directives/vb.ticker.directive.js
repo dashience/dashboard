@@ -35,9 +35,9 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '</span>' +
                 '<div class="icon pull-right" ng-hide="hideEmptyTicker"><i class="{{selectedChartIcon}}" aria-hidden="true"></i></div>' +
                 '</h3>' +
-                '<span class="font-bold no-margins">' +
+//                '<span class="font-bold no-margins">' +
 //                            '{{firstLevelTicker.tickerTitle}}' +
-                '</span>' +
+//                '</span>' +
                 //Second Level
                 '<div class="row">' +
                 '<div class="col-xs-6">' +
