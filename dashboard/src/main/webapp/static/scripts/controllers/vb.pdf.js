@@ -60,7 +60,7 @@ app.controller('PdfController', function ($stateParams, $http, $scope, $filter, 
         });
         setInterval(function () {
             window.status = "done";
-        }, 14000);
+        }, 30000);
     });
 
     $scope.downloadUiPdf = function () {
