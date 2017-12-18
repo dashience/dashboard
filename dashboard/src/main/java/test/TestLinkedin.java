@@ -10,8 +10,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.httpclient.cookie.CookiePolicy;
-import org.apache.commons.httpclient.params.HttpConnectionParams;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import static org.apache.http.HttpVersion.HTTP;

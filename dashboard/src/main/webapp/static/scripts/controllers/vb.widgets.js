@@ -869,7 +869,6 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
-        console.log("product seg-------------->",widget.productSegment);
         console.log("&&&&&&&&& widget", widget);
         console.log("chartTypeName --------", chartTypeName);
         $scope.hideSelectedColumn = true;
@@ -2794,7 +2793,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
 
     $scope.save = function (widget) {
-        console.log("widget---------->", widget);
+        console.log("********** SAVE WIDGET INTITAL *", widget);
         addColor = [];
         $scope.jsonData = "";
         $scope.queryFilter = "";
@@ -2883,9 +2882,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourceTypeId = 0;
             dataSetTypeId = 0;
         }
+        console.log("All count -->",widget.allAccount);
+        
         if (widget.allAccount === 1) {
             widget.accountId = null;
-        } else {
+        } else { 
             widget.accountId = parseInt($stateParams.accountId);
         }
 
@@ -2921,6 +2922,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             icon: widget.icon
 
         };
+        console.log("******************* SAVE WIDGET ACCIYBT UD *******", data);
         clearEditAllWidgetData();
         var deleteColumnDef = deleteColumns.map(function (value, key) {
             if (value) {
