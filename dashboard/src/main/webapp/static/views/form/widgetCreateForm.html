@@ -546,7 +546,8 @@
                 </div>
                 <div class="col-sm-6 form-left-side-menu-border" ng-if="afterLoadWidgetColumns == true;">
                     <ul ng-if="(chartTypeName ? chartTypeName : widgetObj.chartType) === 'table'" class="list-group">
-                        <li class="list-group-item justify-content-between" ng-repeat="collectionField in collectionFields|orderBy:'displayName'">
+                        <li class="list-group-item justify-content-between" 
+                            ng-repeat="collectionField in collectionFields|orderBy:'displayName'">
                             <div class="checkbox">
                                 <input type="checkbox" ng-model="collectionField.selectColumnDef" 
                                        ng-true-value="1" ng-false-value="0" ng-click="selectColumnItem(collectionField, widgetObj)">

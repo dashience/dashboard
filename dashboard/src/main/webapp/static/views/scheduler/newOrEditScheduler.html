@@ -215,14 +215,15 @@
                                     <div>
                                         <div>
                                             <button class="drop btn btn-default" type="button">
-                                                <span id="customDateRangeName">{{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}</span>
+                                                <span id="customDateRangeName">
+                                                    {{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}
+                                                </span>
                                                 <span class="caret"></span></button>
                                             <ul class="dropdown-menu scheduler-list-style">
                                                 <li ng-click="selectDuration('Custom', scheduler)" >
-
                                                     <a>Custom</a>
                                                     <div class="col-md-12 custom-picker">
-                                                        <!--                                                        <label>Custom Range</label>-->
+                                                        <!-- <label>Custom Range</label>-->
                                                         <a class="pull-right custom-daterange-box" id="customDateRange" style="padding: 6px !important;">
                                                             <span class="date-border">
 
@@ -244,48 +245,48 @@
                                                                                                 <li ng-click="selectDuration('Last Year', null)"><a>Last Year</a></li>-->
                                                 <li ng-click="selectDuration('Last N Days', scheduler)">
                                                     <a><span translate>Last</span> <input type="text"
-                                                                   ng-model="scheduler.lastNdays" 
-                                                                   ng-change="selectDuration('Last N Days', scheduler)" 
-                                                                   class="form-control" 
-                                                                   ng-model-options="{debounce: 500}"
-                                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                                                                          ng-model="scheduler.lastNdays" 
+                                                                                          ng-change="selectDuration('Last N Days', scheduler)" 
+                                                                                          class="form-control" 
+                                                                                          ng-model-options="{debounce: 500}"
+                                                                                          style="width: 60px; display: contents; height: 25px;"> 
                                                         <span translate>Days</span>
                                                     </a>
                                                 </li>
                                                 <li ng-click="selectDuration('Last N Weeks', scheduler)">
                                                     <a><span translate>Last</span><input type="text" 
-                                                                   ng-model="scheduler.lastNweeks" 
-                                                                   ng-change="selectDuration('Last N Weeks', scheduler)"
-                                                                   class="form-control" 
-                                                                   ng-model-options="{debounce: 500}"
-                                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                                                                         ng-model="scheduler.lastNweeks" 
+                                                                                         ng-change="selectDuration('Last N Weeks', scheduler)"
+                                                                                         class="form-control" 
+                                                                                         ng-model-options="{debounce: 500}"
+                                                                                         style="width: 60px; display: contents; height: 25px;"> 
                                                         <span translate>Weeks</span>
                                                     </a>
                                                 </li>
                                                 <li ng-click="selectDuration('Last N Months', scheduler)">
                                                     <a><span translate>Last</span> <input type="text" 
-                                                                   ng-model="scheduler.lastNmonths" 
-                                                                   ng-change="selectDuration('Last N Months', scheduler)"
-                                                                   class="form-control" 
-                                                                   ng-model-options="{debounce: 500}"
-                                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                                                                          ng-model="scheduler.lastNmonths" 
+                                                                                          ng-change="selectDuration('Last N Months', scheduler)"
+                                                                                          class="form-control" 
+                                                                                          ng-model-options="{debounce: 500}"
+                                                                                          style="width: 60px; display: contents; height: 25px;"> 
                                                         <span translate>Months</span>
                                                     </a>
                                                 </li>
                                                 <li ng-click="selectDuration('Last N Years', scheduler)">
                                                     <a><span translate>Last</span> <input type="text" 
-                                                                   ng-model="scheduler.lastNyears" 
-                                                                   ng-change="selectDuration('Last N Years', scheduler)"
-                                                                   class="form-control" 
-                                                                   ng-model-options="{debounce: 500}"
-                                                                   style="width: 60px; display: contents; height: 25px;"> 
+                                                                                          ng-model="scheduler.lastNyears" 
+                                                                                          ng-change="selectDuration('Last N Years', scheduler)"
+                                                                                          class="form-control" 
+                                                                                          ng-model-options="{debounce: 500}"
+                                                                                          style="width: 60px; display: contents; height: 25px;"> 
                                                         <span translate>Years</span>
                                                     </a>
                                                 </li>
                                             </ul>
                                         </div>
                                     </div>
-                                    
+
                                     <span class="text-danger" ng-show="showSchedulerMsg">{{showErrorDateRangeMessage}}</span>
                                 </div>
                             </div>
@@ -293,7 +294,8 @@
                                 <div class="col-md-12">
                                     <label translate>Email Ids</label>
                                     <div>
-                                        <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
+                                        <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" 
+                                                   on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
                                             <ui-select-match placeholder="{{'Email Ids'|translate}}">{{$item}}</ui-select-match>
                                             <ui-select-choices repeat="accountEmail in accountEmails | filter:$select.search">
                                                 {{accountEmail}}
@@ -316,15 +318,15 @@
                                             <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'pdf'" ng-true-value="'pdf'" ng-model="scheduler.schedulerType" /> 
                                         </div>  
                                     </div>
-<!--                                    <div class="col-sm-2">
-                                        <label class="scheduler-checkBox-label">
-                                            <span>PPT</span>
-                                        </label>
-                                        <div>
-                                            <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'ppt'" ng-true-value="'ppt'" ng-model="scheduler.schedulerType" /> 
-
-                                        </div>
-                                    </div>-->
+                                    <!--                                    <div class="col-sm-2">
+                                                                            <label class="scheduler-checkBox-label">
+                                                                                <span>PPT</span>
+                                                                            </label>
+                                                                            <div>
+                                                                                <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'ppt'" ng-true-value="'ppt'" ng-model="scheduler.schedulerType" /> 
+                                    
+                                                                            </div>
+                                                                        </div>-->
                                     <!--                                    <div class="col-sm-2">
                                                                             <label class="scheduler-checkBox-label">
                                                                                 <span>XLS</span>
