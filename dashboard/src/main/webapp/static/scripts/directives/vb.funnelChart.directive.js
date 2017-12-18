@@ -36,6 +36,8 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                     }
                     if (column.displayFormat.indexOf("%") > -1) {
                         return d3.format(column.displayFormat)(value / 100);
+                    }else if(column.displayFormat === 'H:M:S'){
+                        return formatBySecond(parseInt(value));
                     }
                     return d3.format(column.displayFormat)(value);
                 }

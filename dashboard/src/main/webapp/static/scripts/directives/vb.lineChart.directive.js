@@ -70,7 +70,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     xAxis = {fieldName: value.fieldName, displayName: value.displayName};
                 }
                 if (value.yAxis) {
-                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {

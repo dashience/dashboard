@@ -23,7 +23,6 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
             $scope.favAccountLogo = val.logo;
         });
     });
-
     $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
 //        $scope.favPdfWidgets = response;
         var widgetItems = response;
@@ -52,8 +51,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
             window.status = "done";
         }, 14000);
     });
-
-
+    
     $scope.downloadUiPdf = function () {
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));
     };

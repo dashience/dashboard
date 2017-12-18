@@ -42,7 +42,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
                             if (format.indexOf("%") > -1) {
-                                return d3.format(format)(value/100);
+                                return d3.format(format)(value / 100);
                             }
                             return d3.format(format)(value);
                         };
@@ -65,7 +65,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     xAxis = {fieldName: value.fieldName, displayName: value.displayName};
                 }
                 if (value.yAxis) {
-                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
 //                    axes[value.fieldName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
@@ -232,7 +232,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-
+                
                 scope.refreshAreaChart = function () {
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
@@ -341,7 +341,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                         }
                                     }
                                 });
-
                                 if (isCompare == 'compareOn') {
                                     var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
                                     var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
