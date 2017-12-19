@@ -163,9 +163,25 @@
                     <button class="btn btn-block btn-success" ng-click="editReportData()" translate>Edit</button>
                 </div>
                 <div ng-show="editReport" class="pull-right">
-                    <button class="btn btn-info" ng-disabled="saveBtnIsDisable" ng-click="saveReportData();" translate>Save</button>
+                    <button class="btn btn-info" data-toggle="modal" data-backdrop="static" data-target="#notification" ng-disabled="saveBtnIsDisable" ng-click="saveReportData();" translate>Save</button>
                 </div>
 
+            </div>
+        </div>
+    </div>
+</div>
+<div id="{{report}}" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content"><!--
+            <div class="modal-header">
+                <strong translate>Duplicate Widget</strong>
+            </div>-->
+            <div class="modal-body">
+                <div ng-show="saveLoading" class="text-center"><img src="static/img/logos/loader.gif" width="45"></div>
+                <span ng-hide="saveLoading" translate>New report added successfully</span>
+            </div>
+            <div class="modal-footer">
+                <button ng-hide="saveLoading" ng-hide class="btn btn-success btn-xs" data-dismiss="modal"> <span translate>Ok</span></button>
             </div>
         </div>
     </div>
@@ -333,42 +349,42 @@
                                 </div>
                                 <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
                                     <div compare-Range-Table 
-                                     compare-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
-                                     compare-Date-Range="{{compareDateRange}}"
-                                     widget-Id="{{reportWidget.widgetId.id}}" 
-                                     widget-Obj="{{reportWidget.widgetId}}" 
-                                     table-Footer="{{reportWidget.widgetId.tableFooter}}" 
-                                     widget-Columns="{{reportWidget.widgetId.columns}}">                                         
+                                         compare-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                         compare-Date-Range="{{compareDateRange}}"
+                                         widget-Id="{{reportWidget.widgetId.id}}" 
+                                         widget-Obj="{{reportWidget.widgetId}}" 
+                                         table-Footer="{{reportWidget.widgetId.tableFooter}}" 
+                                         widget-Columns="{{reportWidget.widgetId.columns}}">                                         
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body"  ng-if="reportWidget.widgetId.chartType === 'text'">
+                                <div class="col-md-12">
+                                    <div class="text-widget">
+                                        <span ng-bind-html="reportWidget.widgetId.content"></span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body"  ng-if="reportWidget.widgetId.chartType === 'text'">
-                            <div class="col-md-12">
-                                <div class="text-widget">
-                                    <span ng-bind-html="reportWidget.widgetId.content"></span>
-                                </div>
+                    </div>    
+                </div>
+                <div id="delete{{reportWidget.id}}" class="modal">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#9DD6D7;color:black;">
+                                <strong translate>Delete</strong>
+                                <strong><button class="close" data-dismiss="modal">&times;</button></strong>
                             </div>
-                        </div>
-                    </div>
-                </div>    
-            </div>
-            <div id="delete{{reportWidget.id}}" class="modal">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header" style="background-color:#9DD6D7;color:black;">
-                            <strong translate>Delete</strong>
-                            <strong><button class="close" data-dismiss="modal">&times;</button></strong>
-                        </div>
-                        <div class="modal-body">
-                            <span translate>Want to delete?</span>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal" translate>Yes</button>
-                            <button class="btn btn-danger btn-xs" data-dismiss="modal" translate>No</button>
+                            <div class="modal-body">
+                                <span translate>Want to delete?</span>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal" translate>Yes</button>
+                                <button class="btn btn-danger btn-xs" data-dismiss="modal" translate>No</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

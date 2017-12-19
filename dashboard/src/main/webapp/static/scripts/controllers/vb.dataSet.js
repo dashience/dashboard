@@ -4727,6 +4727,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var gatDataSourceType = dataSet.dataSourceId ? dataSet.dataSourceId.dataSourceType : null;
             if (gatDataSourceType != "sql" && data != null) {
                 $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForDataSet/' + getDataSetId, data: data}).success(function (response) {
+                    console.log("response---------->",response);
                     getItems();
                 });
             }

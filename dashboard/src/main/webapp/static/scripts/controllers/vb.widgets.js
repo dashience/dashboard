@@ -692,7 +692,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 '&url=' + widget.dataSetId.url +
                 '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query) +
                 "&fieldsOnly=true").success(function (response) {
-                    console.log("response-------------->",response);
+            console.log("response-------------->", response);
             $scope.collectionFields = [];
             $scope.collectionFields = response.columnDefs;
             if ($scope.collectionFields.length == widget.columns.length) {
@@ -701,7 +701,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 widget.selectAll = 0;
             }
 //            $scope.locations = response.data;
-            console.log("widget------------->",widget);
+            console.log("widget------------->", widget);
             var filterList = {
                 columns: response.columnDefs,
                 widgetObj: widget
@@ -926,7 +926,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 '&url=' + getDataSet.url +
                 '&port=3306&schema=vb&query=' + encodeURI(getDataSet.query) +
                 "&fieldsOnly=true").success(function (response) {
-                    console.log("resp------------------->",response);
+            console.log("resp------------------->", response);
             $scope.afterLoadWidgetColumns = true;
             $scope.hideSelectedColumn = false;
 //            if ((chartTypeName ? chartTypeName : widgetList.chartType) !== 'table') {
@@ -969,7 +969,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 $scope.columnPieYAxis.push(value);
                 $scope.tickerAxis.push(value);
             });
-            console.log("ticker axis--------->",$scope.tickerAxis);
+            console.log("ticker axis--------->", $scope.tickerAxis);
             resetQueryBuilder();
         });
     };
@@ -1039,7 +1039,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                     });
                 }
             });
-            
+
 
 
 
@@ -2034,6 +2034,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (text !== "") {
             value1 = text;
         }
+        $scope.ckContent = text;
         $scope.saveBtnIsDisable = checkValidationBySaveBtn("text", value1);
     };
 
@@ -2531,6 +2532,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.widgetObj.previewTitle = "";
         $scope.widgetObj.chartType = "";
         $scope.selectedChartType = "";
+        $scope.widgetObj.content = "";
         $scope.widgetObj.dataSourceId = "";
         $scope.widgetObj.dataSetId = "";
         $scope.widgetObj.timeSegment = "";
@@ -2882,11 +2884,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             dataSourceTypeId = 0;
             dataSetTypeId = 0;
         }
-        console.log("All count -->",widget.allAccount);
-        
+        console.log("All count -->", widget.allAccount);
+
         if (widget.allAccount === 1) {
             widget.accountId = null;
-        } else { 
+        } else {
             widget.accountId = parseInt($stateParams.accountId);
         }
 
@@ -2901,7 +2903,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             zeroSuppression: widget.zeroSuppression,
             maxRecord: widget.maxRecord,
             dateDuration: widget.dateDuration,
-            content: widget.content,
+            content: $scope.ckContent,
             width: widget.width ? widget.width : 12,
             dateRangeName: widget.dateRangeName,
             lastNdays: widget.lastNdays,

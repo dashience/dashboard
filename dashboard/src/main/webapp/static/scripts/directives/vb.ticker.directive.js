@@ -103,7 +103,7 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '<div class="stats-icon pull-right">' +
                 '</div>' +
                 '<div class="m-t-xl" style="text-align:center">{{tickerEmptyMessage}}' + '</div>' +
-                '</div>'+ 
+                '</div>' +
                 '</div>',
         scope: {
             setTickerFn: '&',
@@ -120,6 +120,7 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             if (!scope.widgetObj) {
                 return;
             }
+            console.log("widgetObj------------->", scope);
             var getWidgetObj = JSON.parse(scope.widgetObj);
             scope.loadingTicker = true;
             var tickerName = [];
@@ -279,15 +280,17 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             var setData = [];
             var data = [];
             var tickerDataSource = JSON.parse(scope.tickerSource);
-            var getCompareStatus = getWidgetObj.compareTableype;
+            var getCompareStatus = getWidgetObj.compareTabletype;
             var isCompare = getCompareStatus ? getCompareStatus : scope.urlType;
+            console.log("url type----------------------->", scope.urlType);
             var url;
 
-            function calTotal(val) {
+            function calTotal(val, valueFormat) {
                 if (!val) {
                     return;
                 }
                 var total = 0;
+                console.log("value-------------->", val);
                 for (var i = 0; i < val.length; i++) {
                     if (val[i]) {
                         if (val[i].toString().indexOf(',') !== -1) {
@@ -295,6 +298,10 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                         }
                         total += parseFloat(val[i]);
                     }
+                }
+                if (valueFormat == ",.2%"){
+                    console.log("i------------->",i);
+                    total = total/i;
                 }
                 return total;
             }
@@ -470,6 +477,7 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                                 scope.hideEmptyTickerSecondLevel = false;
                             }
                         } else {
+
                             angular.forEach(tickerName, function (value, key) {
                                 var loopCount = 0;
                                 data = [value.fieldName];
@@ -487,7 +495,7 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                                         timeFormat = "min";
                                     }
                                 }
-                                scope.tickers.push({tickerTitle: value.displayName, totalValue: calTotal(setData), column: value, valueFormat: timeFormat});
+                                scope.tickers.push({tickerTitle: value.displayName, totalValue: calTotal(setData, value.displayFormat), column: value, valueFormat: timeFormat, });
                             });
                             scope.showDifference = false;
                             scope.firstLevelTicker = scope.tickers[0]//.totalValue;

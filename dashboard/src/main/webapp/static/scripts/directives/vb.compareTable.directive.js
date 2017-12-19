@@ -127,7 +127,6 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
 
             }
 
-
             scope.format = function (column, value) {
                 if (!value) {
                     return "-";
