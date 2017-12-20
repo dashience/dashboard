@@ -11,7 +11,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.lan = $stateParams.lan ? $stateParams.lan : $scope.agencyLanguage;
     $stateParams.lan = $scope.lan;
     changeLanguage($scope.lan);
-    
+
     function changeLanguage(key) {
         if ($scope.lan != 'en') {
             $scope.showLangBtn = 'en';
@@ -21,7 +21,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         $translate.use(key);
     }
-    
+
     $scope.changeAgencyLang = function (lan) {
         if (lan == 'en') {
             localStorageService.set('agencyLanguage', lan);
@@ -36,7 +36,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.lan = lan;
         $scope.loadNewUrl();
     };
-    
+
     $scope.setParamsProduct = function (product) {
         var setTabId = 0;
         var productId = product.id;
@@ -60,15 +60,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                     startDate: $stateParams.startDate,
                     endDate: $stateParams.endDate,
                     compareStatus: $scope.selectedTablesType,
-                    compareStartDate:  $scope.compare_startDate,
-                    compareEndDate:  $scope.compare_endDate
+                    compareStartDate: $scope.compare_startDate,
+                    compareEndDate: $scope.compare_endDate
                 });
             });
         } else {
             return;
         }
     };
-    
+
     $scope.themes = [{name: "Green", value: "green"},
         {name: "Blue", value: "blue"},
         {name: "Cyan", value: "cyan"},
@@ -81,9 +81,9 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         $scope.accountName = $stateParams.accountName;
         $scope.startDate = $stateParams.startDate;
         $scope.endDate = $stateParams.endDate;
-        $scope.compareStatus= $scope.selectedTablesType;
-        $scope.compareStartDate=  $scope.compare_startDate;
-        $scope.compareEndDate=  $scope.compare_endDate;
+        $scope.compareStatus = $scope.selectedTablesType;
+        $scope.compareStartDate = $scope.compare_startDate;
+        $scope.compareEndDate = $scope.compare_endDate;
     };
     $scope.product = [];
     $scope.selectAccount = {};
@@ -115,7 +115,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             getAgencyProduct($scope.name.userId.agencyId.id);
         });
     });
-    
+
     $scope.getAccountId = function (account) {
         console.log(account);
         if ($stateParams.accountId != account.accountId.id) {
@@ -218,8 +218,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "editWidget") {
             $state.go("index.editWidget", {
@@ -231,8 +231,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.startDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "reports") {
             $state.go("index.report.reports", {
@@ -244,8 +244,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "newOrEdit") {
             $state.go("index.report.newOrEdit", {
@@ -256,8 +256,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "updateReportWidget") {
             $state.go("index.widgetEditByReport", {
@@ -269,8 +269,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "dataSource") {
             $state.go("index.dataSource", {
@@ -280,8 +280,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "dataSet") {
             $state.go("index.dataSet", {
@@ -291,8 +291,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "scheduler") {
             $state.go("index.schedulerIndex.scheduler", {
@@ -302,8 +302,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
             $state.go("index.schedulerIndex.editOrNewScheduler", {
@@ -314,8 +314,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "user") {
             $state.go("index.user", {
@@ -325,8 +325,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "account") {
             $state.go("index.account", {
@@ -336,8 +336,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "agency") {
             $state.go("index.agency", {
@@ -347,8 +347,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "fieldSettings") {
             $state.go("index.fieldSettings", {
@@ -358,8 +358,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate ? $stateParams.startDate : $scope.startDate,
                 endDate: $stateParams.endDate ? $stateParams.endDate : $scope.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "favourites") {
             $state.go("index.favourites", {
@@ -369,8 +369,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
             $state.go("index.viewFavouritesWidget", {
@@ -382,8 +382,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "settings") {
             $state.go("index.settings", {
@@ -391,8 +391,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
@@ -410,7 +410,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.loadNewUrl = function () {
         try {
             var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
-
             var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
         } catch (e) {
         }
@@ -427,8 +426,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "editWidget") {
             $state.go("index.editWidget", {
@@ -440,8 +439,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "reports") {
             $state.go("index.report.reports", {
@@ -453,8 +452,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "newOrEdit") {
             $state.go("index.report.newOrEdit", {
@@ -465,8 +464,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "updateReportWidget") {
             $state.go("index.widgetEditByReport", {
@@ -478,8 +477,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         }
 //        else if ($scope.getCurrentPage() === "franchiseMarketing") {
@@ -510,8 +509,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "scheduler") {
             $state.go("index.schedulerIndex.scheduler", {
@@ -521,8 +520,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "editOrNewScheduler") {
             $state.go("index.schedulerIndex.editOrNewScheduler", {
@@ -544,8 +543,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "account") {
             $state.go("index.account", {
@@ -555,8 +554,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "agency") {
             $state.go("index.agency", {
@@ -566,8 +565,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "fieldSettings") {
             $state.go("index.fieldSettings", {
@@ -577,8 +576,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         }
 //        else if ($scope.getCurrentPage() === "tag") {
@@ -597,8 +596,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "viewFavouritesWidget") {
             $state.go("index.viewFavouritesWidget", {
@@ -611,8 +610,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else if ($scope.getCurrentPage() === "settings") {
             $state.go("index.settings", {
@@ -620,8 +619,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 startDate: $stateParams.startDate,
                 endDate: $stateParams.endDate,
                 compareStatus: $scope.selectedTablesType,
-                compareStartDate:  $scope.compare_startDate,
-                compareEndDate:  $scope.compare_endDate
+                compareStartDate: $scope.compare_startDate,
+                compareEndDate: $scope.compare_endDate
             });
         } else {
             $location.path("/" + "?startDate=" + $('#startDate').val() + "&endDate=" + $('#endDate').val());
@@ -792,19 +791,19 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //            $scope.loadNewUrl();
         });
     };
-    
-    $(window).on('popstate', function() {
-        if($scope.showLangBtn === $stateParams.lan){
-            if($stateParams.lan === 'en'){
+
+    $(window).on('popstate', function () {
+        if ($scope.showLangBtn === $stateParams.lan) {
+            if ($stateParams.lan === 'en') {
                 $scope.showLangBtn = localStorageService.get("agenLan");
-            } else{
+            } else {
                 $scope.showLangBtn = 'en';
             }
         }
         $scope.firstDate = $stateParams.startDate;
         $scope.lastDate = $stateParams.endDate;
     });
-    
+
     $(document).ready(function (e) {
         $(document).on("click", ".calendar", function (e) {
             $("#dataRange").parent().addClass("open");
@@ -908,7 +907,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 function (startDate, endDate) {
                     $('#daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
                 });
-
         //Date picker
         $('#datepicker').datepicker({
             autoclose: true
@@ -956,7 +954,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 singleDatePicker: false,
                 startDate: LastDay
             });
-
         });
     });
     var tableTypeByDateRange = localStorageService.get("selectedTableType") ? localStorageService.get("selectedTableType") : "compareOff";
@@ -977,6 +974,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         }
         $scope.firstDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY');
         $scope.lastDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY');
+//        $('#daterange-btn').daterangepicker().entries(ranges)
 //        $stateParams.startDate = $scope.firstDate;
 //        $stateParams.endDate = $scope.lastDate;
         var selectTableType;
@@ -985,7 +983,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         } else if (type == false) {
             selectTableType = "compareOff";
         }
-
         $scope.compareDateRange = {
             startDate: $scope.compare_startDate,
             endDate: $scope.compare_endDate
@@ -997,7 +994,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 //        localStorageService.set("loadStatus", loadStatus);
 //            
         $scope.getTableType = selectTableType;
-        $scope.selectedTablesType=selectTableType;
+        $scope.selectedTablesType = selectTableType;
         $scope.loadNewUrl();
 //        $rootScope.$broadcast('loadStatusChanged', loadStatus);
 //            
@@ -1023,7 +1020,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         startDate: $scope.compare_startDate,
         endDate: $scope.compare_endDate
     };
-
 
 
 
@@ -1078,7 +1074,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         //Date range picker with time picker
         $('#reservationtime').daterangepicker({timePicker: true, timePickerIncrement: 30, format: 'MM/DD/YYYY h:mm A'});
         //Date range as a button
-
         //Date picker
         $('#compare-daterange-btn').daterangepicker(
                 {

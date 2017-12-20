@@ -133,12 +133,12 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
 
             scope.format = function (column, value) {
                 if (!value) {
-                    return "-";
+                    return "";
                 }
                 if (column && column.displayFormat) {
                     var columnValue = dashboardFormat(column, value);
                     if (columnValue == 'NaN') {
-                        columnValue = "-";
+                        columnValue = "";
                     }
                     return columnValue;
                 }
@@ -199,7 +199,7 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                     return  scope.format(column, secondLevelTicker);
                 }
                 if (!firstLevelTicker && !secondLevelTicker) {
-                    return "-";
+                    return "";
                 }
             };
 
