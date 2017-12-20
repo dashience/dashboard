@@ -17,19 +17,19 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '<h3 class="m-b-xs text-success" style="color:{{colorName}};">{{firstLevelTicker.totalValue?format(formatColumn, firstLevelTicker.totalValue):format(formatColumn, firstLevelTickerValue)}}' +
                 //Percentage
                 '<span ng-click="changeComparisonType(\'firstLevel\')" ' +
-                'style="cursor:pointer" ng-if="percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) && showDifference == true" ' +
+                'style="cursor:pointer" ng-if="percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) && showDifference != true" ' +
                 'ng-class="{\'arrow-up\':(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0), \'arrow-down\':(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
                 '<i class="fa" ng-class="{\'fa-arrow-up\':percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0, \'fa-arrow-down\':(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}"></i>' +
-                '<span ng-class="{\'leads-up\':percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0, \'leads-down\':(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}" ng-show="showDifference">' +
+                '<span ng-class="{\'leads-up\':percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0, \'leads-down\':(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}" ng-hide="showDifference">' +
                 '{{percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1)}}' + "%" +
                 '</span>' +
                 '</span>' +
                 '<span class="empty-ticker arrow-up" ng-click="changeComparisonType(\'firstLevel\')" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, firstLevelTickerValue,firstLevelTickerValue1)) && showDifference == true">0 </span>' +
                 //Diff
                 '<span ng-click="changeComparisonType(\'firstLevel\')" ' +
-                'style="cursor:pointer" ng-if="sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) != 0 && showDifference != true && firstLevelTickerValue != 0 && firstLevelTickerValue1 != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                'style="cursor:pointer" ng-if="sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) != 0 && showDifference == true && firstLevelTickerValue != 0 && firstLevelTickerValue1 != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
                 ' <i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) > 0, \'fa-arrow-down\':(sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1) < 0)}"></i>' +
-                '<span class="leads" ng-hide="showDifference">' + '{{differ(formatColumn, firstLevelTickerValue,firstLevelTickerValue1)}}' +
+                '<span class="leads" ng-show="showDifference">' + '{{differ(formatColumn, firstLevelTickerValue,firstLevelTickerValue1)}}' +
                 '<span class="leads-name" ng-if="sub(formatColumn, firstLevelTickerValue,firstLevelTickerValue1)"> {{secondFormatName}}</span>' +
                 '</span>' +
                 '</span>' +
@@ -45,10 +45,10 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '<h4>{{secondLevelTicker.totalValue?format(formatColumnSecond, secondLevelTicker.totalValue):format(formatColumnSecond, secondLevelTickerValue)}}' +
                 //Percentage
                 '<span ng-click="changeComparisonType(\'secondLevel\')" ' +
-                'style="cursor:pointer" ng-if="percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) && showSecondDifference == true" ' +
+                'style="cursor:pointer" ng-if="percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) && showSecondDifference != true" ' +
                 'ng-class="{\'arrow-up\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0), \'arrow-down\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
                 '<i class="fa" ng-class="{\'fa-arrow-up\':percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'fa-arrow-down\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}"></i>' +
-                '<span ng-class="{\'leads-up\':percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'leads-down\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-show="showSecondDifference">' +
+                '<span ng-class="{\'leads-up\':percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'leads-down\':(percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-hide="showSecondDifference">' +
                 '{{percent(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1)}}' + "%" +
                 '</span>' +
                 '</span>' +
@@ -58,9 +58,9 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
 
                 //Diff
                 '<span ng-click="changeComparisonType(\'secondLevel\')" ' +
-                'style="cursor:pointer" ng-if="sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) != 0 && showSecondDifference != true && firstLevelTicker != 0 && secondLevelTicker != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                'style="cursor:pointer" ng-if="sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) != 0 && showSecondDifference == true && firstLevelTicker != 0 && secondLevelTicker != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
                 ' <i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) > 0, \'fa-arrow-down\':(sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1) < 0)}"></i>' +
-                '<span class="leads" ng-hide="showSecondDifference">' + '{{differ(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1)}}' +
+                '<span class="leads" ng-show="showSecondDifference">' + '{{differ(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1)}}' +
                 '<span class="leads-name" ng-if="sub(formatColumnSecond, secondLevelTickerValue,secondLevelTickerValue1)"> {{secondFormatNameSecond}}</span>' +
                 '</span>' +
                 '</span>' +
@@ -72,19 +72,19 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                 '<h4>{{thirdLevelTicker.totalValue?format(formatColumnThird, thirdLevelTicker.totalValue):format(formatColumnThird, thirdLevelTickerValue)}}' +
                 //Percentage
                 '<span ng-click="changeComparisonType(\'thirdLevel\')" ' +
-                'style="cursor:pointer" ng-if="percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) && showThirdDifference == true" ' +
+                'style="cursor:pointer" ng-if="percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) && showThirdDifference != true" ' +
                 'ng-class="{\'arrow-up\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) > 0), \'arrow-down\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
                 '<i class="fa" ng-class="{\'fa-arrow-up\':percent(formatColumn, thirdLevelTickerValue,thirdLevelTickerValue1) > 0, \'fa-arrow-down\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}"></i>' +
-                '<span ng-class="{\'leads-up\':percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) > 0, \'leads-down\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}" ng-show="showThirdDifference">' +
+                '<span ng-class="{\'leads-up\':percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) > 0, \'leads-down\':(percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}" ng-hide="showThirdDifference">' +
                 '{{percent(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1)}}' + "%" +
                 '</span>' +
                 '</span>' +
                 '<span class="empty-ticker arrow-up" ng-click="changeComparisonType(\'thirdLevel\')" ng-hide="hideEmptyTickerSecondLevel" style="cursor:pointer" ng-if="!(percent(formatColumn, thirdLevelTickerValue,thirdLevelTickerValue1)) && showThirdDifference == true">0 </span>' +
                 //Diff
                 '<span ng-click="changeComparisonType(\'thirdLevelLevel\')" ' +
-                'style="cursor:pointer" ng-if="sub(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) != 0 && showThirdDifference != true && thirdLevelTickerValue != 0 && thirdLevelTickerValue1 != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumn, thirdLevelTickerValue,thirdLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumn, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
+                'style="cursor:pointer" ng-if="sub(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) != 0 && showThirdDifference == true && thirdLevelTickerValue != 0 && thirdLevelTickerValue1 != 0"' + 'ng-class="{\'arrow-up\':(sub(formatColumn, thirdLevelTickerValue,thirdLevelTickerValue1) > 0), \'arrow-down\':(sub(formatColumn, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}" ng-hide="hideEmptyTickerSecondLevel">' +
                 '<i class="fa" ng-class="{\'fa-arrow-up\':sub(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) > 0, \'fa-arrow-down\':(sub(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1) < 0)}"></i>' +
-                '<span class="leads" ng-hide="showThirdDifference">' + '{{differ(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1)}}' +
+                '<span class="leads" ng-show="showThirdDifference">' + '{{differ(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1)}}' +
                 '<span class="leads-name" ng-if="sub(formatColumnThird, thirdLevelTickerValue,thirdLevelTickerValue1)"> {{secondFormatNameThird}}</span>' +
                 '</span>' +
                 '</span>' +
@@ -258,8 +258,10 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             scope.changeComparisonType = function (type) {
                 if (type == "firstLevel") {
                     if (scope.showDifference) {
+                        console.log("first value----------------->");
                         scope.showDifference = false;
                     } else {
+                        console.log("second value----------------->");
                         scope.showDifference = true;
                     }
                 } else if (type == "secondLevel") {

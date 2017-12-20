@@ -869,6 +869,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
+        $scope.saveBtnIsDisable = true;
         console.log("&&&&&&&&& widget", widget);
         console.log("chartTypeName --------", chartTypeName);
         $scope.hideSelectedColumn = true;
@@ -975,6 +976,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.selectWidgetDataSource = function (dataSourceName) {
+
         if (!dataSourceName) {
             return;
         }
@@ -2939,7 +2941,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         var postUrl;
 
         postUrl = 'admin/ui/dbWidget/' + $stateParams.tabId;
-        $http({method: widget.id ? 'PUT' : 'POST', url: postUrl, data: data}).success(function (response) {
+        $http({method: data.id ? 'PUT' : 'POST', url: postUrl, data: data}).success(function (response) {
             $scope.saveBtnIsDisable = true;
             var widgetColors;
             var newWidgetResponse = response;
@@ -3008,6 +3010,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             $http({method: 'POST', url: 'admin/ui/createWidgetColumn/' + response.id, data: colData}).success(function (response) {
                 $scope.chartTypeName = "";
                 widget.id = data.id;
+                widget.content = data.content;
                 widget.chartType = data.chartType;
                 widget.chartColorOption = data.chartColorOption;
                 widget.widgetTitle = data.widgetTitle;
@@ -3323,7 +3326,7 @@ app.directive('ckEditor', function () {
             });
             if (!ngModel)
                 return;
-
+               console.log("ckeditor-------------------->",ngModel);
             ck.on('instanceReady', function () {
                 ck.setData(ngModel.$viewValue);
             });
