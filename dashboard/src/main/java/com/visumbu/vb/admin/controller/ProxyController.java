@@ -149,6 +149,7 @@ public class ProxyController {
         TabWidget widget = uiService.getWidgetById(widgetIdInt);
         DataExporter exporter = new DataExporter();
         List<ColumnDef> columnDef = (List<ColumnDef>) dataMap.get("columnDefs");
+        System.out.println("Column Def Data------>"+columnDef);
         List<WidgetColumn> widgetColumns = uiService.getWidgetColumns(widgetIdInt);
         String widgetTitle = widget.getWidgetTitle() != null ? widget.getWidgetTitle() : "Widget";
         try {
@@ -499,6 +500,7 @@ public class ProxyController {
         Map dataMap = new HashMap<>();
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
         dataMap.put("data", returnMap.get("data"));
+        System.out.println("FieldName------>"+dataMap);
         return dataMap;
     }
 
@@ -508,7 +510,6 @@ public class ProxyController {
 
         Map returnMap = new HashMap<>();
         String fieldsOnly = request.getParameter("fieldsOnly");
-
         String dataSetId = request.getParameter("dataSetId");
         String widgetIdStr = request.getParameter("widgetId");
         String userIdStr = request.getParameter("userId");

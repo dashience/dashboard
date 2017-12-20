@@ -223,7 +223,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             scope.hideEmptyPie = true;
                             return;
                         }
-                        if (response.data == null  || response.data.length === 0) {
+                        if (response.data == null || response.data.length === 0) {
                             scope.pieEmptyMessage = "No Data Found";
                             scope.hideEmptyPie = true;
                         } else {
