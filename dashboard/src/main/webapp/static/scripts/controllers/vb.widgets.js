@@ -1205,7 +1205,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
 
     var firstPreviewAfterEdit = 1;
     $scope.showPreview = function (widgetObj, userChartColors) {
-        console.log("preview widget object -->",widgetObj);
+        console.log("preview widget object -->", widgetObj);
         var chartType = $scope.chartTypeName;
         $scope.showPreviewChart = true;
         $scope.showFilter = false;
@@ -1237,7 +1237,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
             widgetObj.chartColorOption = chartColors;
         }
         $scope.displayPreviewChart = widgetObj;
-        console.log("display preview chart --->",$scope.displayPreviewChart);
+        console.log("display preview chart --->", $scope.displayPreviewChart);
 
     };
 

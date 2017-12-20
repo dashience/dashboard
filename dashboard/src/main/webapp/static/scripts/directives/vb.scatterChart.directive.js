@@ -314,21 +314,25 @@ angular.forEach(yAxis, function (value, key) {
                                 var ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
+                                if (isCompare == 'compareOn') {
                                 var ySeriesData1 = chartData.map(function (a) {
-                                    if (a.metrics1) {
+                                    if (Object.keys(a.metrics1).length !== 0) {
                                         return a.metrics1[value.fieldName] || "0";
+                                    } else if (Object.keys(a.dimensions).length !== 0) {
+                                        return a.dimensions[value.fieldName] || "0";
                                     } else {
-                                        return 0;
+                                        return a[value.fieldName] || "0";
                                     }
                                 });
                                 var ySeriesData2 = chartData.map(function (a) {
-                                    if (a.metrics2) {
+                                    if (Object.keys(a.metrics2).length !== 0) {
                                         return a.metrics2[value.fieldName] || "0";
+                                    } else if (Object.keys(a.dimensions).length !== 0) {
+                                        return a.dimensions[value.fieldName] || "0";
                                     } else {
-                                        return 0;
+                                        return a[value.fieldName] || "0";
                                     }
                                 });
-                                if (isCompare == 'compareOn') {
                                     var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
                                     var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
                                     var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
