@@ -63,7 +63,7 @@ public class Formatter {
     }
 
     public static void main(String argv[]) {
-        String format = ".1%";
+        String format = "$,.2f";
         String value = "5346.00";
         System.out.println(Formatter.format(format, value));
     }
