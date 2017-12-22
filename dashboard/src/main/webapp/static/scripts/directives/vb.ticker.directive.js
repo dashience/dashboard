@@ -258,10 +258,8 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             scope.changeComparisonType = function (type) {
                 if (type == "firstLevel") {
                     if (scope.showDifference) {
-                        console.log("first value----------------->");
                         scope.showDifference = false;
                     } else {
-                        console.log("second value----------------->");
                         scope.showDifference = true;
                     }
                 } else if (type == "secondLevel") {
@@ -287,23 +285,19 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             console.log("url type----------------------->", scope.urlType);
             var url;
 
-            function calTotal(val, valueFormat) {
+            function calTotal(val,displayFormat) {
                 if (!val) {
                     return;
                 }
                 var total = 0;
-                console.log("value-------------->", val);
-                for (var i = 0; i < val.length; i++) {
-                    if (val[i]) {
-                        if (val[i].toString().indexOf(',') !== -1) {
-                            val[i] = val[i].replace(/\,/g, '');
+                angular.forEach(val , function(value,key){
+                        if (value.toString().indexOf(',') !== -1) {
+                            value = value.replace(/\,/g, '');
                         }
-                        total += parseFloat(val[i]);
-                    }
-                }
-                if (valueFormat == ",.2%"){
-                    console.log("i------------->",i);
-                    total = total/i;
+                        total += parseFloat(value);
+                });
+                if(displayFormat == ',.2%'){
+                    total = total/val.length;
                 }
                 return total;
             }
@@ -373,7 +367,6 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             } else {
                 setNetworkType = getWidgetObj.networkType;
             }
-
             scope.refreshTicker = function () {
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tickerDataSource.id +
@@ -396,7 +389,9 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                         '&widgetId=' + scope.tickerId +
                         '&url=' + tickerDataSource.url +
                         '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
+                    console.log("response----------->", response);
                     scope.tickers = [];
+                    scope.tickerItems = [];
                     scope.loadingTicker = false;
                     var tickerData = response.data;
                     if (!response) {
@@ -409,19 +404,23 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                         scope.hideEmptyTicker = true;
                     } else {
                         if (isCompare == 'compareOn') {
-                            var returnDimensionData = [];
-                            var returnMetricsData1 = [];
-                            var returnMetricsData2 = [];
+                            var returnDimensionData = {};
+                            var returnMetricsData1 = {};
+                            var returnMetricsData2 = {};
                             angular.forEach(tickerName, function (value, key) {
+                                var field = value.fieldName;
+                                returnDimensionData[field] = [];
+                                returnMetricsData1[field] = [];
+                                returnMetricsData2[field] = [];
                                 angular.forEach(tickerData, function (val) {
-                                    if (val && val[value.fieldName]) {
-                                        returnDimensionData.push(val[value.fieldName]);
+                                    if(val && val[field]){
+                                       returnDimensionData[field].push(val[field]);
                                     }
                                     if (val.metrics1) {
-                                        returnMetricsData1.push(val.metrics1[value.fieldName]);
+                                        returnMetricsData1[field].push(val.metrics1[field]);
                                     }
                                     if (val.metrics2) {
-                                        returnMetricsData2.push(val.metrics2[value.fieldName]);
+                                        returnMetricsData2[field].push(val.metrics2[field]);
                                     }
                                 });
                                 var timeFormat = "";
@@ -431,9 +430,9 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                                     }
                                 }
                                 scope.tickers.push({tickerTitle: value.displayName,
-                                    dimensionData: calTotal(returnDimensionData),
-                                    metricsData1: calTotal(returnMetricsData1),
-                                    metricsData2: calTotal(returnMetricsData2),
+                                    dimensionData: calTotal(returnDimensionData[field],value.displayFormat),
+                                    metricsData1: calTotal(returnMetricsData1[field],value.displayFormat),
+                                    metricsData2: calTotal(returnMetricsData2[field],value.displayFormat),
                                     column: value,
                                     valueFormat1: timeFormat,
                                     valueFormat2: timeFormat

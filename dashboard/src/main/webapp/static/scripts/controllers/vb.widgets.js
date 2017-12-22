@@ -2575,7 +2575,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
          */
         var chartType = chartTypeName ? chartTypeName : widget.chartType;
         chartTypeName = chartType;
-
+        widget.selectAll = 0;
 //        console.log("************************ ADVANCED COLUMNS DELETE************");
 //        console.log("widget -->", widget);
 //        console.log("chartTypeName -->", chartTypeName);
