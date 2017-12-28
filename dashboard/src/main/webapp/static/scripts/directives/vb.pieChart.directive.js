@@ -257,6 +257,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     }
                                 });
                             }
+                            console.log("xaxis -->", xAxis);
                             if (xAxis) {
                                 xTicks = [xAxis.fieldName];
                                 xData = chartData.map(function (a) {
@@ -272,6 +273,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                 });
                                 ySeriesData.unshift(value.displayName);
                                 columns.push(ySeriesData);
+                                console.log("Yseries DAta------->",columns);
                             });
                             var data = {};
                             var legends = [];
@@ -280,6 +282,12 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                 legends.push(e[xAxis.fieldName]);
                                 data[e[xAxis.fieldName]] = data[e[xAxis.fieldName]] ? data[e[xAxis.fieldName]] : 0 + e[yAxisField.fieldName] ? e[yAxisField.fieldName] : 0;
                             });
+                            console.log("chartData -->", chartData);
+                            console.log("data -->", data);
+                            console.log(":xData -->", xData);
+                            console.log("xTicks------->",xTicks)
+                            var obj = {"10.35": 10.5, "20.45": 20.5, "30": 30.6, "40": 40.7, "50": 50.4, "60": 60.4};
+                            var datas = ["10.35", "20.45", "30", "40", "50", "60"];
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
