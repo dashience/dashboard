@@ -285,19 +285,21 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             console.log("url type----------------------->", scope.urlType);
             var url;
 
-            function calTotal(val,displayFormat) {
+            function calTotal(val, displayFormat) {
                 if (!val) {
                     return;
                 }
                 var total = 0;
-                angular.forEach(val , function(value,key){
+                angular.forEach(val, function (value, key) {
+                    if (value) {
                         if (value.toString().indexOf(',') !== -1) {
                             value = value.replace(/\,/g, '');
                         }
                         total += parseFloat(value);
+                    }
                 });
-                if(displayFormat == ',.2%'){
-                    total = total/val.length;
+                if (displayFormat == ',.2%') {
+                    total = total / val.length;
                 }
                 return total;
             }
@@ -413,8 +415,8 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                                 returnMetricsData1[field] = [];
                                 returnMetricsData2[field] = [];
                                 angular.forEach(tickerData, function (val) {
-                                    if(val && val[field]){
-                                       returnDimensionData[field].push(val[field]);
+                                    if (val && val[field]) {
+                                        returnDimensionData[field].push(val[field]);
                                     }
                                     if (val.metrics1) {
                                         returnMetricsData1[field].push(val.metrics1[field]);
@@ -430,9 +432,9 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                                     }
                                 }
                                 scope.tickers.push({tickerTitle: value.displayName,
-                                    dimensionData: calTotal(returnDimensionData[field],value.displayFormat),
-                                    metricsData1: calTotal(returnMetricsData1[field],value.displayFormat),
-                                    metricsData2: calTotal(returnMetricsData2[field],value.displayFormat),
+                                    dimensionData: calTotal(returnDimensionData[field], value.displayFormat),
+                                    metricsData1: calTotal(returnMetricsData1[field], value.displayFormat),
+                                    metricsData2: calTotal(returnMetricsData2[field], value.displayFormat),
                                     column: value,
                                     valueFormat1: timeFormat,
                                     valueFormat2: timeFormat

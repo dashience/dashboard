@@ -66,7 +66,7 @@ app.controller('ReportPdfController', function ($stateParams, $http, $scope, $fi
     });
     $scope.downloadUiPdf = function () {
 //        console.log("PDF Encode URL -->" + encodeURIComponent(window.location.href));
-        console.log("URL -->" + window.location.href);
+        console.log("URL -->" + encodeURIComponent(window.location.href));
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));
     };
 });
