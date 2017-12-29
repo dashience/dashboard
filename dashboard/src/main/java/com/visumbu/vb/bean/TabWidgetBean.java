@@ -6,19 +6,8 @@
 package com.visumbu.vb.bean;
 
 import com.visumbu.vb.model.Account;
-import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
-import java.util.Date;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 
 /**
  *

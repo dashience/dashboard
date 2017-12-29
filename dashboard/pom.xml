@@ -106,7 +106,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
-            <version>5.1.6</version>
+            <version>5.1.37</version>
         </dependency>
         <dependency>
             <groupId>aopalliance</groupId>
@@ -458,17 +458,17 @@
             <artifactId>org.apache.oltu.oauth2.client</artifactId>
             <version>1.0.2</version>
         </dependency>
-<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-<dependency>
-    <groupId>com.google.guava</groupId>
-    <artifactId>guava</artifactId>
-    <version>22.0</version>
-</dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>22.0</version>
+        </dependency>
 
         <!-- twitter code ends -->
         
         <!-- bing ads -->
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>com.microsoft.bingads</groupId>
             <artifactId>microsoft.bingads</artifactId>
             <version>10.4.10</version>

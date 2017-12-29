@@ -232,7 +232,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-                
+
                 scope.refreshAreaChart = function () {
                     $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + areaChartDataSource.id +
@@ -252,10 +252,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             '&widgetId=' + scope.widgetId +
                             '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
-
-
-
-
 
                         scope.loadingArea = false;
                         if (!response) {
@@ -392,6 +388,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                             return value;
                                         };
                                     }
+                                    angular.forEach(combinationTypes, function (combinationValue, key) {
+                                        if (combinationValue.fieldName == value.fieldName) {
+                                            chartCombinationtypes[[joinCompare1]] = combinationValue.combinationType;
+                                            chartCombinationtypes[[joinCompare2]] = combinationValue.combinationType;
+                                        }
+                                    });
                                 } else {
 //                                    ySeriesData.unshift(value.fieldName);
                                     ySeriesData.unshift(value.displayName);
@@ -406,10 +408,11 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 //                                ySeriesData.unshift(value.fieldName);
 //                                columns.push(ySeriesData);
                             });
-
-                            angular.forEach(combinationTypes, function (value, key) {
-                                chartCombinationtypes[[value.displayName]] = value.combinationType;
-                            });
+                            if (isCompare != 'compareOn') {
+                                angular.forEach(combinationTypes, function (value, key) {
+                                    chartCombinationtypes[[value.displayName]] = value.combinationType;
+                                });
+                            }
                             var data = {
                                 x: xAxis.fieldName,
                                 columns: columns,

@@ -54,6 +54,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
     });
     
     $scope.downloadUiPdf = function () {
+        console.log("link-------->",encodeURIComponent(window.location.href));
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));
     };
 });

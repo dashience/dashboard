@@ -465,6 +465,10 @@ public class ProxyController {
                     dimensions.put(columndef.getFieldName(), dataMap.get(columndef.getFieldName()));
                 } else if (columndef.getFieldType().equalsIgnoreCase("string")) {
                     dimensions.put(columndef.getFieldName(), dataMap.get(columndef.getFieldName()));
+                } else if (columndef.getFieldType().equalsIgnoreCase("day")) {
+                    if ("dayOfWeekName".equals(columndef.getFieldName())) {
+                        dimensions.put(columndef.getFieldName(), dataMap.get(columndef.getFieldName()));
+                    }
                 } else {
                     // dimensions.put(columndef.getFieldName(), dataMap.get(columndef.getFieldName()));
                 }
@@ -900,6 +904,8 @@ public class ProxyController {
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
 //         System.out.println("Column Def For Data Format");
 //         System.out.println(returnMap.get("columnDefs"));
+//         System.out.println("data For Data Format");
+//         System.out.println(returnMap.get("data"));
         String widgetIdStr = getFromMultiValueMap(request, "widgetId");// request.getParameter("widgetId");
         String userIdStr = getFromMultiValueMap(request, "userId"); // request.getParameter("userId");
         Integer widgetIdInt = null;

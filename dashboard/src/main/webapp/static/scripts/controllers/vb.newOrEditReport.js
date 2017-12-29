@@ -8,6 +8,7 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     $scope.saveBtnIsDisable = true;
     $scope.endDate = $stateParams.endDate;
     $scope.reportWidgets = [];
+    $scope.report = '';
 
     $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
     var lan = $scope.agencyLanguage;
@@ -116,8 +117,11 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
     };
 
     $scope.saveReportData = function () {
-        console.log("report id---------------->",$stateParams.reportId);
+        $scope.report= '';
+        console.log("report id---------------->", $stateParams.reportId);
         if (0 == $stateParams.reportId) {
+            $scope.report= 'notification';
+            $scope.saveLoading = true;
             $scope.selectReportId = '';
         } else {
             $scope.selectReportId = $stateParams.reportId;
@@ -128,9 +132,12 @@ app.controller("NewOrEditReportController", function ($scope, $http, $stateParam
             description: $scope.description,
             logo: $scope.uploadLogo   //window.btoa($scope.uploadLogo)
         };
-        $http({method: $scope.selectReportId !=='' ? 'PUT' : 'POST', url: 'admin/report/report', data: data}).success(function (response) {
+        $http({method: $scope.selectReportId !== '' ? 'PUT' : 'POST', url: 'admin/report/report', data: data}).success(function (response) {
             $stateParams.reportId = response.id;
             $scope.editReport = false;
+            if ($scope.selectReportId == '') {
+                $scope.saveLoading = false;
+            }
         });
     };
 
