@@ -70,7 +70,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     xAxis = {fieldName: value.fieldName, displayName: value.displayName};
                 }
                 if (value.yAxis) {
-                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {
@@ -344,6 +344,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     if (a.metrics2 === null) {
                                         a.metrics2 = {}
                                     }
+
                                     if (a.hasOwnProperty("metrics2")) {
                                         if (Object.keys(a.metrics2).length !== 0) {
                                             return a.metrics2[value.fieldName] || "0";
@@ -425,8 +426,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 axes: axes,
                                 types: chartCombinationtypes
                             };
-                            console.log("data");
-                            console.log(data);
 
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {
@@ -434,7 +433,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             } else {
                                 gridLine = false;
                             }
-
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,

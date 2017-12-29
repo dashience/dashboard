@@ -213,8 +213,6 @@
                         <span class="text-capitalize">{{favouritesWidget.widgetId.widgetTitle?favouritesWidget.widgetId.widgetTitle:'Widget'}}</span>
                     </div>
                     <div class="box-body" ng-if="(favouritesWidget.widgetId.chartType === 'line') && (getTableType == 'compareOn' || getTableType == 'compareOff')">
-                        {{compareDateRange}}
-                        {{getTableType}}
                         <div set-Line-Chart-Fn="setLineChartFn(lineFn)"
                              line-Chart-Directive 
                              line-Chart-Source="{{favouritesWidget.widgetId.dataSetId}}"

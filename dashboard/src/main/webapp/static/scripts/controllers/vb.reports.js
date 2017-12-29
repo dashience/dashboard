@@ -5,6 +5,7 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
     $scope.reportId = $stateParams.reportId;
     $scope.accountId = $stateParams.accountId;
     $scope.userId = $cookies.getObject("userId");
+    $scope.saveBtnIsDisable = true;
     console.log($scope.userId);
     $scope.accountName = $stateParams.accountName;
     $scope.reportWidgets = [];

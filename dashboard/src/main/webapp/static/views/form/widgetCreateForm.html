@@ -383,7 +383,7 @@
                         <div class="box-pop">
                             <div class="form-group widget-title">
                                 <label translate>Widget Title</label>
-                                <input class='form-control' type='text' ng-model='widgetObj.previewTitle'>
+                                <input class='form-control' type='text' ng-model='widgetObj.previewTitle' ng-change="checkValidate(widgetObj.previewTitle)">
                             </div>
                             <div class="form-group widget-title">
                                 <label translate>Chart Type</label>
@@ -416,7 +416,7 @@
                                 <div class="form-group widget-title col-sm-6"> 
                                     <label translate>Data Source</label>
                                     <select class="form-control m-b" ng-model="widgetObj.dataSourceId" 
-                                            ng-change="resetTimeProduct();selectWidgetDataSource(widgetObj.dataSourceId)"
+                                            ng-change="selectWidgetDataSource(widgetObj.dataSourceId);resetTimeProduct()"
                                             ng-options="dataSource.name for dataSource in dataSources track by dataSource.id">
                                     </select>
                                 </div>
@@ -1142,10 +1142,9 @@
                 </div>
                 <div ng-if="chartTypeName === 'pie'">
                     <div>
-                        <div pie-Chart-Source='{{displayPreviewChart.dataSetId}}' 
+                        <div pie-Chart-Directive  pie-Chart-Source='{{displayPreviewChart.dataSetId}}' 
                              widget-Id="{{displayPreviewChart.id}}" 
                              widget-Columns="{{displayPreviewChart.columns}}" 
-                             pie-Chart-Directive 
                              widget-Obj="{{displayPreviewChart}}"> 
                         </div>
                     </div>                            
@@ -1216,8 +1215,8 @@
                 <div class="row" ng-if="chartTypeName === 'text'">
                     <div class="panel-body editor">
                         <div>
-                            <textarea ck-Editor ng-change="setTextContent(ckEditorcontent)" 
-                                      ng-model="ckEditorcontent" 
+                            <textarea ck-Editor ng-change="setTextContent(widgetObj.ckEditorcontent)" 
+                                      ng-model="widgetObj.ckEditorcontent" 
                                       rows="10" 
                                       cols="99"></textarea>
                         </div>  

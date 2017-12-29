@@ -292,6 +292,7 @@ public class UiService {
         }
         System.out.println("dateRange start Date-----> " + startDate);
         System.out.println("dateRange End Date-----> " + endDate);
+        System.out.println("Content value is -->"+tabWidgetBean.getContent());
         tabWidget.setTabId(uiDao.getTabById(tabId));
         tabWidget.setWidth(tabWidgetBean.getWidth());
         tabWidget.setChartType(tabWidgetBean.getChartType());

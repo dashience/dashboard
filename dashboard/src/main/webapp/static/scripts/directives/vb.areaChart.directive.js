@@ -32,7 +32,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
             if (!scope.widgetColumns) {
                 return;
             }
-
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -40,7 +39,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-//                    alert("displayName -->" + labels["format"][displayName]);
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
                             if (format.indexOf("%") > -1) {
@@ -67,7 +65,7 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                     xAxis = {fieldName: value.fieldName, displayName: value.displayName};
                 }
                 if (value.yAxis) {
-                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
 //                    axes[value.fieldName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
@@ -255,11 +253,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             '&url=' + areaChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).success(function (response) {
 
-
-
-                        console.log(response)
-
-
                         scope.loadingArea = false;
                         if (!response) {
                             scope.areaEmptyMessage = "No Data Found";
@@ -344,7 +337,6 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                         }
                                     }
                                 });
-
                                 if (isCompare == 'compareOn') {
                                     var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
                                     var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
@@ -392,6 +384,12 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                             return value;
                                         };
                                     }
+                                    angular.forEach(combinationTypes, function (combinationValue, key) {
+                                        if (combinationValue.fieldName == value.fieldName) {
+                                            chartCombinationtypes[[joinCompare1]] = combinationValue.combinationType;
+                                            chartCombinationtypes[[joinCompare2]] = combinationValue.combinationType;
+                                        }
+                                    });
                                 } else {
 //                                    ySeriesData.unshift(value.fieldName);
                                     ySeriesData.unshift(value.displayName);
@@ -406,10 +404,11 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
 //                                ySeriesData.unshift(value.fieldName);
 //                                columns.push(ySeriesData);
                             });
-
-                            angular.forEach(combinationTypes, function (value, key) {
-                                chartCombinationtypes[[value.displayName]] = value.combinationType;
-                            });
+                            if (isCompare != 'compareOn') {
+                                angular.forEach(combinationTypes, function (value, key) {
+                                    chartCombinationtypes[[value.displayName]] = value.combinationType;
+                                });
+                            }
                             var data = {
                                 x: xAxis.fieldName,
                                 columns: columns,

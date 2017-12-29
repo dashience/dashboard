@@ -61,7 +61,7 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                 '<tbody>' +
                 '<tr ng-repeat="data in getData">' +
                 '<td class="dimension-Fixed" ng-if="column.category != \'metrics\'" ng-repeat-start="column in columns">' +
-                '<div>{{data[column.fieldName]}}</div>' +
+                '<div>{{format(column,data[column.fieldName])}}</div>' +
                 '</td>' +
                 '<td ng-if="column.category == \'metrics\'">' +
                 '<div>{{data.metrics1[column.fieldName]? format(column, data.metrics1[column.fieldName]):\'-\'}}</div>' +
@@ -126,7 +126,6 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
             } catch (exception) {
 
             }
-
 
             scope.format = function (column, value) {
                 if (!value) {

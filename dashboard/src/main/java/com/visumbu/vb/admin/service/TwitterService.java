@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -29,7 +30,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import test.Twitter;
 
 /**
  *
@@ -43,7 +43,6 @@ public class TwitterService {
 
     public List<Map<String, Object>> get(String reportName, Map<String, Object> properties,
             Date startDate, Date endDate, String timeSegment, String productSegment) {
-
         if (reportName.equalsIgnoreCase("pagePerformance")) {
             return getPagePerformanceReport(properties, startDate, endDate, timeSegment, productSegment);
         }
@@ -284,6 +283,7 @@ public class TwitterService {
                 Scanner scanner = new Scanner(System.in);
                 String oauth_verifier = scanner.next();
                 url = "https://api.twitter.com/oauth/access_token?oauth_token=" + properties.get("oauth_token") + "&oauth_verifier=" + oauth_verifier;
+                valueMap=null;
                 data = Rest.getData(url, valueMap);
                 System.out.println("data----->" + data);
                 tokenDetails = data.split("&");
@@ -291,7 +291,7 @@ public class TwitterService {
                 properties.put("tokenSecret", tokenDetails[1].substring(tokenDetails[1].indexOf("=") + 1, tokenDetails[1].length()));
                 properties.put("user_id", tokenDetails[2].substring(tokenDetails[2].indexOf("=") + 1, tokenDetails[2].length()));
                 properties.put("screen_name", tokenDetails[3].substring(tokenDetails[3].indexOf("=") + 1, tokenDetails[3].length()));
-}
+            }
         } catch (NullPointerException ex) {
             Logger.getLogger(TwitterService.class.getName()).log(Level.SEVERE, null, ex);
         }

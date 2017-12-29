@@ -9,7 +9,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.childTab = 3;
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
-    }; 
+    };
     $scope.setChildTab = function (newTab) {
         $scope.childTab = newTab;
     };
@@ -4192,7 +4192,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
 
         if ($scope.dataSet.dataSourceId.dataSourceType === "linkedin") {
-            
+
             var index = getIndex($scope.dataSet.reportName, $scope.linkedinPerformance);
             $scope.timeSegment = $scope.linkedinPerformance[index].timeSegments;
             $scope.productSegment = $scope.linkedinPerformance[index].productSegments;
@@ -4677,8 +4677,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     });
 //    $scope.selectedItems = {dataSourceId: {name: ''}};
 
-    $scope.selectXlsSheet = function (dataSource) { 
-        
+    $scope.selectXlsSheet = function (dataSource) {
+
         if (dataSource.dataSourceType == 'xls') {
             var url = "admin/proxy/getSheets?";
             var dataSourceId = dataSource.id;
@@ -4690,7 +4690,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
     $scope.columnsHeaderDefs = [];
     $scope.getDataSetColDefs = function (getDataSetColDefs) {
-        console.log(getDataSetColDefs);
         $scope.columnsHeaderDefs = "";
         $scope.columnsHeaderDefs = getDataSetColDefs;
     };
@@ -4723,10 +4722,15 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //            $scope.columnHeaderByDataSetId = response;
             var getDataSetId = response.id;
             var data = $scope.columnsHeaderDefs;
-            console.log(data);
+            data.forEach(function (element) {
+                if (element.hasOwnProperty("isEdit")) {
+                    delete element.isEdit;
+                }
+            });
             var gatDataSourceType = dataSet.dataSourceId ? dataSet.dataSourceId.dataSourceType : null;
             if (gatDataSourceType != "sql" && data != null) {
                 $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForDataSet/' + getDataSetId, data: data}).success(function (response) {
+                    console.log("response---------->",response);
                     getItems();
                 });
             }

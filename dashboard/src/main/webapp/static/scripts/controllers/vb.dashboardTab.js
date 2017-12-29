@@ -7,7 +7,6 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $scope.userId = $cookies.getObject("userId");
     $scope.tempStartDate = $stateParams.startDate;
     $scope.tempEndDate = $stateParams.endDate;
-
     $scope.agencyLanguage = $stateParams.lan;
     var lan = $scope.agencyLanguage;
     changeLanguage(lan);

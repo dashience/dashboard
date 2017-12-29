@@ -69,7 +69,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     xAxis = {fieldName: value.fieldName, displayName: value.displayName};
                 }
                 if (value.yAxis) {
-                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {
@@ -180,8 +180,11 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var monthEndWithoutCompare = "&startDate=" + startDate1 + "&endDate=" + endDate1;
             var compareRange = JSON.parse(scope.compareDateRange);
             var isCompare = scope.urlType;
+            console.log("compareDateRange-------->", scope.compareDateRange)
+            console.log("********* URL TYPE ************ -->",scope.urlType);
+            console.log("urlType------------------------------>",scope.urlType);
             var url;
-            if (isCompare == 'compareOn') {
+            if (isCompare === 'compareOn') {
                 var compareStartDate = compareRange.startDate;
                 var compareEndDate = compareRange.endDate;
                 dateRangeType = '&startDate1=' + $stateParams.startDate +
@@ -309,9 +312,12 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;
-                                return a[xAxis.fieldName];
+                                if(isNaN(a[xAxis.fieldName])){
+                                    return (!!a[xAxis.fieldName]) ? a[xAxis.fieldName].charAt(0).toUpperCase() + a[xAxis.fieldName].substr(1).toLowerCase() : '';
+                                }else{
+                                    return a[xAxis.fieldName];
+                                }
                             });
-
                             columns.push(xTicks);
                             console.log("Bar chart XData -->", xData);
                             console.log("Bar chart XTicks -->", xTicks);

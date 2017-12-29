@@ -10,6 +10,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
     function changeLanguage(key) {
         $translate.use(key);
     }
+//    $scope.getTableType = localStorageService.get("selectedTableType");
     $scope.getTableType = $stateParams.getTableType;
     var compareStartDate = localStorageService.get("comparisonStartDate");
     var compareEndDate = localStorageService.get("comparisonEndDate");
@@ -23,8 +24,7 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
             $scope.favAccountLogo = val.logo;
         });
     });
-
-    $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
+    $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName + "/" + $stateParams.userId).success(function (response) {
 //        $scope.favPdfWidgets = response;
         var widgetItems = response;
         $http.get("admin/ui/getChartColorByUserId/" + $stateParams.userId).success(function (response) {
@@ -50,11 +50,11 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
         });
         setInterval(function () {
             window.status = "done";
-        }, 14000);
+        }, 35000);
     });
-
-
+    
     $scope.downloadUiPdf = function () {
+        console.log("link-------->",encodeURIComponent(window.location.href));
         window.open("admin/pdf/download?windowStatus=done&url=" + encodeURIComponent(window.location.href));
     };
 });

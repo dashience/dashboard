@@ -5,11 +5,15 @@
  */
 package com.visumbu.vb.utils;
 
+import static com.visumbu.vb.utils.JsonUtils.toList;
+import static com.visumbu.vb.utils.JsonUtils.toMap;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -17,6 +21,8 @@ import java.util.logging.Logger;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -118,19 +124,19 @@ public class OauthAuthentication {
                 String signature_base_string = properties.get("httpMethod") + "&" + OauthAuthentication.encode((String) properties.get("baseUrl")) + "&" + OauthAuthentication.encode(parameter_string);
                 oauth_signature = OauthAuthentication.computeSignature(signature_base_string, OauthAuthentication.encode((String) properties.get("consumerSecret")) + "&");
             } else {
-            if (properties.containsKey("queryString")) {
-                parameter_string = "oauth_consumer_key=" + properties.get("oauth_consumer_key") + "&oauth_nonce=" + properties.get("oauth_nonce")
-                        + "&oauth_signature_method=" + properties.get("oauth_signature_method")
-                        + "&oauth_timestamp=" + properties.get("oauth_timestamp") + "&oauth_token=" + OauthAuthentication.encode((String) properties.get("oauth_token"))
-                        + "&oauth_version=1.0" + properties.get("queryString");
-                System.out.println("parameter String-----" + parameter_string);
-            } else {
-                parameter_string = "oauth_consumer_key=" + properties.get("oauth_consumer_key") + "&oauth_nonce=" + properties.get("oauth_nonce")
-                        + "&oauth_signature_method=" + properties.get("oauth_signature_method")
-                        + "&oauth_timestamp=" + properties.get("oauth_timestamp") + "&oauth_token=" + OauthAuthentication.encode((String) properties.get("oauth_token"))
-                        + "&oauth_version=" + properties.get("oauth_version");
-            }
-            String signature_base_string = properties.get("httpMethod") + "&" + OauthAuthentication.encode((String) properties.get("baseUrl")) + "&" + OauthAuthentication.encode(parameter_string);
+                if (properties.containsKey("queryString")) {
+                    parameter_string = "oauth_consumer_key=" + properties.get("oauth_consumer_key") + "&oauth_nonce=" + properties.get("oauth_nonce")
+                            + "&oauth_signature_method=" + properties.get("oauth_signature_method")
+                            + "&oauth_timestamp=" + properties.get("oauth_timestamp") + "&oauth_token=" + OauthAuthentication.encode((String) properties.get("oauth_token"))
+                            + "&oauth_version=1.0" + properties.get("queryString");
+                    System.out.println("parameter String-----" + parameter_string);
+                } else {
+                    parameter_string = "oauth_consumer_key=" + properties.get("oauth_consumer_key") + "&oauth_nonce=" + properties.get("oauth_nonce")
+                            + "&oauth_signature_method=" + properties.get("oauth_signature_method")
+                            + "&oauth_timestamp=" + properties.get("oauth_timestamp") + "&oauth_token=" + OauthAuthentication.encode((String) properties.get("oauth_token"))
+                            + "&oauth_version=" + properties.get("oauth_version");
+                }
+                String signature_base_string = properties.get("httpMethod") + "&" + OauthAuthentication.encode((String) properties.get("baseUrl")) + "&" + OauthAuthentication.encode(parameter_string);
                 oauth_signature = OauthAuthentication.computeSignature(signature_base_string, OauthAuthentication.encode((String) properties.get("consumerSecret")) + "&" + OauthAuthentication.encode((String) properties.get("tokenSecret")));
             }
             String signature = OauthAuthentication.encode(oauth_signature);

@@ -121,7 +121,7 @@ public class Twitter {
 //        properties.put("oauth_nonce", oauth_nonce);
 //        properties.put("oauth_timestamp", oauth_timestamp);
 //
-//        String signature = OauthAuthentication.generateSignature(properties);
+//        String signature = OauthAuthentication.generateSignature(properties,type);
 //        properties.put("oauth_signature", signature);
 //        return properties;
 //

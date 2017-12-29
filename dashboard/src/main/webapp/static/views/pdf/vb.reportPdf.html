@@ -234,7 +234,7 @@
                         </div>
                         <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'bar'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
-                                <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                {{getTableType}}--->Table Type<div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                      bar-Chart-Directive 
                                      bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
@@ -247,7 +247,7 @@
                         </div>
                         <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'horizontalBar'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">>
-                                <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                {{getTableType}}--->Table Type<div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                      bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
                                       url-type="{{getTableType}}"

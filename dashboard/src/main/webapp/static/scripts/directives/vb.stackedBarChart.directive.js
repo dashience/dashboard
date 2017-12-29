@@ -71,7 +71,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                     xAxis = {fieldName: value.fieldName, displayName: value.displayName};
                 }
                 if (value.yAxis) {
-                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName});
+                    yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {
@@ -279,6 +279,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             var loopCount = 0;
                             var sortingObj;
                             var groupingNames = [];
+                            var groupingNames2 = [];
                             var gridData = JSON.parse(scope.widgetObj);
                             var chartMaxRecord = JSON.parse(scope.widgetObj);
                             var chartData = response.data;
@@ -314,13 +315,11 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             }
 //                        chartData = orderData(chartData, sortFields);
                             xTicks = [xAxis.fieldName];
-
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;
                                 return a[xAxis.fieldName];
                             });
-
                             columns.push(xTicks);
                             angular.forEach(yAxis, function (value, key) {
                                 var ySeriesData = chartData.map(function (a) {
@@ -373,11 +372,8 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     ySeriesData2.unshift(joinCompare2);
                                     columns.push(ySeriesData1);
                                     columns.push(ySeriesData2);
-                                    console.log(ySeriesData1);
-                                    console.log(ySeriesData2);
-
                                     groupingNames.unshift(joinCompare1);
-                                    groupingNames.unshift(joinCompare2);
+                                    groupingNames2.unshift(joinCompare2);
 //                            labels["format"][joinCompare1] = function (value) {
 //                                return value;
 //                            };
@@ -443,7 +439,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             } else {
                                 gridLine = false;
                             }
-
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
@@ -467,7 +462,7 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                                     columns: columns,
                                     type: 'bar',
                                     groups: [
-                                        groupingNames
+                                        groupingNames,groupingNames2
                                     ]
                                 },
                                 color: {

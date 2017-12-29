@@ -26,11 +26,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -194,9 +191,7 @@ public class TabWidget implements Serializable {
     @Size(max = 45)
     @Column(name = "is_grid_line")
     private String isGridLine;
-
-    @Lob
-    @Size(max = 65535)
+    @Size(max = 2147483647)
     @Column(name = "content")
     private String content;
     @Lob
@@ -550,7 +545,7 @@ public class TabWidget implements Serializable {
     public void setTabId(DashboardTabs tabId) {
         this.tabId = tabId;
     }
-    
+
     public List<WidgetColumn> getColumns() {
         return columns;
     }
@@ -677,8 +672,7 @@ public class TabWidget implements Serializable {
 
     public void setNetworkType(String networkType) {
         this.networkType = networkType;
-    }    
-    
+    }
 
     @Override
     public int hashCode() {

@@ -1371,6 +1371,7 @@ public class TwitterService {
 	public static void main(String[] args) {
 
 		TwitterService twitter = new TwitterService();
+                twitter.startTwitterAuthentication();
                 
         
 	}

@@ -90,6 +90,12 @@ public class TagController extends BaseController {
         VbUser user = userService.findByUsername(getUser(request));
         return tagService.getWidgetTagByName(tagName, user);
     }
+    
+    @RequestMapping(value = "widgetTag/{tagName}/{userId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getWidgetTagByUserId(HttpServletRequest request, HttpServletResponse response, @PathVariable String tagName, @PathVariable Integer userId) {
+        return tagService.getWidgetTagByUserId(tagName, userId);
+    }
 
     @RequestMapping(value = "widgetTag/{widgetTagId}", method = RequestMethod.DELETE, produces = "application/json")
     public @ResponseBody

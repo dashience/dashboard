@@ -100,6 +100,10 @@ public class TagService {
     public List getWidgetTagByName(String tagName, VbUser vbUser) {
         return tagDao.getWidgetTagByName(tagName, vbUser);
     }
+    
+    public List getWidgetTagByUserId(String tagName, Integer userId) {
+        return tagDao.getWidgetTagByUserId(tagName, userId);
+    }
 
     public WidgetTag deleteWidgetTag(Integer widgetTagId) {
         return tagDao.deleteWidgetTag(widgetTagId);
