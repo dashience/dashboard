@@ -346,7 +346,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                     },
                                     y: {
                                         show: false
-                                    }
+                                }
                                 }
                             });
                         }

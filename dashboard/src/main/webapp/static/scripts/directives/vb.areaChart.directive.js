@@ -309,7 +309,11 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;
-                                return a[xAxis.fieldName];
+                                if(isNaN(a[xAxis.fieldName])){
+                                    return (!!a[xAxis.fieldName]) ? a[xAxis.fieldName].charAt(0).toUpperCase() + a[xAxis.fieldName].substr(1).toLowerCase() : '';
+                                }else{
+                                    return a[xAxis.fieldName];
+                                }
                             });
                             columns.push(xTicks);
                             console.log("&&&&&&&&&&&&& chart data ->", chartData);
