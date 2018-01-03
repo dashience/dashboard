@@ -906,41 +906,43 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 },
                 function (startDate, endDate, ranges) {
                     $('#daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
-                    var compareDate = getComparisonDate(ranges, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'));
-                    $('#compare-daterange-btn span').html(compareDate.autoCompareStartDate + ' - ' + compareDate.autoCompareEndDate);
-                    $('#compare-daterange-btn').daterangepicker(
-                            {
-                                ranges: {
-                                    'Today': [moment(), moment()],
-                                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                                    'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
-                                    'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
-                                    'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
-                                    'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
+                    if ($scope.getTableType === "compareOff") {
+                        var compareDate = getComparisonDate(ranges, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'));
+                        $('#compare-daterange-btn span').html(compareDate.autoCompareStartDate + ' - ' + compareDate.autoCompareEndDate);
+                        $('#compare-daterange-btn').daterangepicker(
+                                {
+                                    ranges: {
+                                        'Today': [moment(), moment()],
+                                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                                        'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                                        'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
+                                        'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
+                                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
 //                                'This Week (Mon - Today)': [moment().startOf('week').add(1, 'dayswidgetTableDateRange'), moment().endOf(new Date())],
-                                    'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().startOf('week')],
+                                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().startOf('week')],
 //                                'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                                'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
 //                                'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],
-                                    'This Month': [moment().startOf('month'), moment().endOf(new Date())],
-                                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                                        'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
 //                                'Last 2 Months': [moment().subtract(2, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
 //                                'Last 3 Months' : [moment().subtract(3, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                                    'This Year': [moment().startOf('year'), moment().endOf(new Date())],
-                                    'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                                        'This Year': [moment().startOf('year'), moment().endOf(new Date())],
+                                        'Last Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
 //                                'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                                'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
-                                    'This Month': [moment().startOf('month'), moment().endOf(new Date())],
-                                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                                        'This Month': [moment().startOf('month'), moment().endOf(new Date())],
+                                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                                    },
+                                    startDate: compareDate.autoCompareStartDate,
+                                    endDate: compareDate.autoCompareEndDate,
+                                    maxDate: new Date()
                                 },
-                                startDate: compareDate.autoCompareStartDate,
-                                endDate: compareDate.autoCompareEndDate,
-                                maxDate: new Date()
-                            },
-                            function (startDate, endDate) {
-                                $('#compare-daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
-                            }
-                    );
+                                function (startDate, endDate) {
+                                    $('#compare-daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                                }
+                        );
+                    }
                 });
         //Date picker
         $('#datepicker').datepicker({
@@ -998,7 +1000,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         var dayDiff = new Date(date2 - date1);
         dayDiff = (dayDiff / 1000 / 60 / 60 / 24) + 1;
         var dateRange = {};
-        if ((range === 'This Year')||(range === 'Last Year')) {
+        if ((range === 'This Year') || (range === 'Last Year')) {
             var first = date1;
             var last = date2;
             var firstYear = first.getFullYear() - 1;
@@ -1013,7 +1015,15 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         dateRange.autoCompareEndDate = (last.getMonth() + 1) + '-' + last.getDate() + '-' + last.getFullYear();
         return dateRange;
     }
-
+    
+    $scope.unCheckButton = function(type){
+        if (type == true) {
+            $scope.getTableType = "compareOn";
+        } else if (type == false) {
+            $scope.getTableType = "compareOff";
+        }
+    }
+    
     var tableTypeByDateRange = localStorageService.get("selectedTableType") ? localStorageService.get("selectedTableType") : "compareOff";
     if (tableTypeByDateRange == 'compareOn') {
         $scope.selectedTablesType = 'compareOn';
@@ -1158,8 +1168,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                         'This Month': [moment().startOf('month'), moment().endOf(new Date())],
                         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
                     },
-                    startDate: $scope.compare_startDate ? $scope.compare_startDate : moment().subtract(30, 'days'),
-                    endDate: $scope.compare_endDate ? $scope.compare_endDate : moment().subtract(1, 'days'),
+                    startDate: $scope.compare_startDate ? $scope.compare_startDate : moment().subtract(60, 'days'),
+                    endDate: $scope.compare_endDate ? $scope.compare_endDate : moment().subtract(31, 'days'),
                     maxDate: new Date()
                 },
                 function (startDate, endDate) {

@@ -19,11 +19,11 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                 '<thead>' +
                 '<tr>' +
                 '<th ng-if="column.category != \'metrics\'" rowspan="{{getHeaderSpan(column, getData)+1}}" ng-repeat-start="column in columns">' +
-                '<div>{{column.fieldName}}</div>' +
+                '<div>{{column.displayName}}</div>' +
                 '</th>' +
                 '<th ng-if="column.category == \'metrics\'" colspan="{{getHeaderSpan(column, getData)}}" rowspan="{{getRowSpan(column)}}" ng-repeat-end>' +
                 '<div>' +
-                '<span>{{column.fieldName}}</span>' +
+                '<span>{{column.displayName}}</span>' +
                 '<span class="pull-right pdfButton">' +
                 '<button class="btn btn-success btn-xs" ng-click="changeExpand(column); showCombainColumn(column, $index)" ng-attr-title="{{(column.expand != true)?\'Expand\':\'Reduce\'}}">' +
                 '<i ng-if="!column.expand" class="fa fa-plus"></i>' +
@@ -133,6 +133,12 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                 }
                 if (column.displayFormat) {
                     return dashboardFormat(column, value);
+                } else{
+                    if(isNaN(value)){
+                        return (!!value) ? value.charAt(0).toUpperCase() + value.substr(1).toLowerCase() : '';
+                    } else{
+                        return value;
+                    }
                 }
                 return value;
             };

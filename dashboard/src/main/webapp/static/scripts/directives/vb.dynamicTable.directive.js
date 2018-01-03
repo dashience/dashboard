@@ -182,6 +182,12 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         columnValue = "-";
                     }
                     return columnValue;
+                } else{
+                    if(isNaN(value)){
+                        return (!!value) ? value.charAt(0).toUpperCase() + value.substr(1).toLowerCase() : '';
+                    } else{
+                        return value;
+                    }
                 }
                 return value;
             };

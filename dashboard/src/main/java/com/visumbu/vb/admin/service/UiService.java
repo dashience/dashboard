@@ -1220,6 +1220,7 @@ public class UiService {
         for (int i = 0; i < tabs.length; i++) {
             String tabIdStr = tabs[i];
             Integer tabId = Integer.parseInt(tabIdStr);
+            System.out.println("tab id -->"+tabId);
             // DashboardTabs dashboardTab = uiDao.getTabById(tabId);
             DashboardTabs duplicateTab = duplicateTab(tabId, userId);
             TemplateTabs templateTab = new TemplateTabs();

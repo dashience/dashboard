@@ -68,6 +68,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
                 if (value.xAxis) {
                     xAxis = {fieldName: value.fieldName, displayName: value.displayName};
+                    if(!value.sortOrder){
+                        sortFields.push({fieldName: value.fieldName, sortOrder: "asc", fieldType: value.fieldType});
+                    }
                 }
                 if (value.yAxis) {
                     yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
@@ -255,6 +258,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             '&widgetId=' + scope.widgetId +
                             '&url=' + lineChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
+                             console.log("response----->",response.data)
                         scope.loadingLine = false;
                         if (!response.data) {
                             scope.lineEmptyMessage = "No Data Found";
@@ -298,6 +302,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 });
                             }
                             if (chartMaxRecord.maxRecord > 0) {
+                                console.log("Slice Data---->",chartData.slice(0, chartMaxRecord.maxRecord))
                                 chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
                             if (xAxis) {
