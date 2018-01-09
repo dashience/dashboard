@@ -53,6 +53,10 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             {
                 type: 'join',
                 name: 'Join'
+            },
+            {
+                type: 'salesForce',
+                name: 'SalesForce'
             }
         ];
         function getItems() {

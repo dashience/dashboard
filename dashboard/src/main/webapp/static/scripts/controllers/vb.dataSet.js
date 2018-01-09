@@ -128,7 +128,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.joinDataSetList = response;
         });
     };
-    
+
     var joinDataSetId = "";
 
     $scope.loadingResultCompleted = false;
@@ -275,6 +275,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = true;
+        } else if (dataSource === "salesForce") {
+            $scope.report = $scope.salesForcePerformance;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+
         } else if (dataSource === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
@@ -512,6 +517,40 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         },
     ];
+    $scope.salesForcePerformance = [
+        {
+            type: "overallPerformance",
+            name: "OverAll Performance",
+            timeSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }, {
+            type: "cityPerformance",
+            name: "City Performance",
+            timeSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }
+    ];
+
     $scope.facebookPerformance = [
         {
             type: 'accountPerformance',
@@ -1716,6 +1755,17 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var index = getIndex($scope.dataSet.reportName, $scope.twitterPerformance);
             $scope.timeSegment = $scope.twitterPerformance[index].timeSegments;
             $scope.productSegment = $scope.twitterPerformance[index].productSegments;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+            $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+        }
+
+        if ($scope.dataSet.dataSourceId.dataSourceType == "salesForce") {
+            var index = getIndex($scope.dataSet.reportName, $scope.salesForcePerformance);
+            $scope.timeSegment = $scope.salesForcePerformance[index].timeSegments;
+            $scope.productSegment = $scope.salesForcePerformance[index].productSegments;
             $scope.timeSegFlag = true;
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;

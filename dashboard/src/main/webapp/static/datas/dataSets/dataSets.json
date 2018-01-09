@@ -146,6 +146,39 @@
             ]
         }
     ],
+    "salesForce": [
+        {
+            "type": "overallPerformance",
+            "name": "OverAll Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "cityPerformance",
+            "name": "City Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }
+    ],
     "facebook": [{
             "type": "accountPerformance",
             "name": "Account Performance",

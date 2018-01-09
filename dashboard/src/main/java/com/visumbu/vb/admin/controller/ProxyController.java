@@ -12,6 +12,7 @@ import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.GaService;
 import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
+import com.visumbu.vb.admin.service.SalesForceService;
 import com.visumbu.vb.admin.service.SettingsService;
 import com.visumbu.vb.admin.service.TwitterService;
 import com.visumbu.vb.admin.service.UiService;
@@ -125,6 +126,9 @@ public class ProxyController {
 
     @Autowired
     private TwitterService twitterService;
+
+    @Autowired
+    private SalesForceService salesForceService;
 
     PropertyReader propReader = new PropertyReader();
 
@@ -406,7 +410,6 @@ public class ProxyController {
             }
         }
 
-
         List<JoinDataSetCondition> joinDatasetConditionList = uiService.getJoinDataSetConditionById(joinDataSetId);
         List<String> mappings = new ArrayList<>();
 
@@ -630,6 +633,8 @@ public class ProxyController {
             returnMap = (Map) getPinterestData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("linkedin")) {
             returnMap = (Map) getLinkedInData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("salesForce")) {
+            returnMap = (Map) getSalesForceData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("twitter")) {
             List<Map<String, Object>> dataList = getTwitterData(request, response);
             returnMap.put("data", dataList);
@@ -648,6 +653,7 @@ public class ProxyController {
 
     public static List<Map<String, Object>> formatData(final List<Map<String, Object>> dataSet, List<ColumnDef> columnDef) {
         boolean formatRequired = false;
+        System.out.println("Columndef format data -->" + columnDef);
         for (Iterator<ColumnDef> iterator1 = columnDef.iterator(); iterator1.hasNext();) {
             ColumnDef column = iterator1.next();
             if (column.getDataFormat() != null) {
@@ -1634,6 +1640,25 @@ public class ProxyController {
     public @ResponseBody
     Object testGa(HttpServletRequest request, HttpServletResponse response) {
         return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"), null);
+    }
+
+    //salesforce
+    Map getSalesForceData(MultiValueMap request, HttpServletResponse response) {
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(request, "timeSegment");
+        String productSegment = getFromMultiValueMap(request, "productSegment");
+
+        List<Map<String, Object>> data = salesForceService.get(dataSetReportName);
+        Map returnMap = new HashMap();
+
+        List<ColumnDef> columnDefs = getColumnDefObject(data);
+        returnMap.put("columnDefs", columnDefs);
+        returnMap.put("data", data);
+        System.out.println("SalesForce --->");
+        System.out.println(returnMap);
+        System.out.println("SalesForce --->");
+        return returnMap;
     }
 
     //linkedin 
