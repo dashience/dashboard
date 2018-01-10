@@ -519,8 +519,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     ];
     $scope.salesForcePerformance = [
         {
-            type: "overallPerformance",
-            name: "OverAll Performance",
+            type: "customerData",
+            name: "Customer Data",
             timeSegments: [
                 {
                     type: "none",
@@ -534,8 +534,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             ]
         }, {
-            type: "cityPerformance",
-            name: "City Performance",
+            type: "cityData",
+            name: "City Data",
             timeSegments: [
                 {
                     type: "none",

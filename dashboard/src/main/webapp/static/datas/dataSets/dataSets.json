@@ -148,8 +148,8 @@
     ],
     "salesForce": [
         {
-            "type": "overallPerformance",
-            "name": "OverAll Performance",
+            "type": "customerData",
+            "name": "Customer Data",
             "timeSegments": [
                 {
                     "type": "none",
@@ -163,8 +163,8 @@
                 }
             ]
         }, {
-            "type": "cityPerformance",
-            "name": "City Performance",
+            "type": "cityData",
+            "name": "City Data",
             "timeSegments": [
                 {
                     "type": "none",

@@ -41,36 +41,16 @@ import org.json.simple.parser.ParseException;
 public class SalesForceService {
 
     public List<Map<String, Object>> get(String reportName) {
-        if (reportName.equalsIgnoreCase("overallPerformance")) {
-            return getOverallPerformaceData();
+        if (reportName.equalsIgnoreCase("customerData")) {
+            return getcustomerData();
         }
-        if (reportName.equalsIgnoreCase("cityPerformance")) {
-            return getCityPerformanceData();
+        if (reportName.equalsIgnoreCase("cityData")) {
+            return getCityData();
         }
-
-//        if (reportName.equalsIgnoreCase("")) {
-//            return getLeadData();
-//        }
-
         return null;
     }
 
-//    public List<Map<String, Object>> getLeadData() {
-//        try {
-//            String url = "http://111.93.224.129:5000/city";
-//            String data = Rest.getData(url);
-//            JSONParser parser = new JSONParser();
-//            Object jsonObj = parser.parse(data);
-//            JSONObject json = (JSONObject) jsonObj;
-//            List<Map<String, Object>> returnData = (List<Map<String, Object>>) json.get("data");
-//            return returnData;
-//        } catch (ParseException ex) {
-//            Logger.getLogger(SalesForceService.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        return null;
-//    }
-
-    public List<Map<String, Object>> getCityPerformanceData() {
+    public List<Map<String, Object>> getCityData() {
         try {
             String url = "http://111.93.224.129:5000/city";
             String data = Rest.getData(url);
@@ -85,7 +65,7 @@ public class SalesForceService {
         return null;
     }
 
-    public List<Map<String, Object>> getOverallPerformaceData() {
+    public List<Map<String, Object>> getcustomerData() {
         try {
             String url = "http://111.93.224.129:5000/contacts";
             String salesForceData = Rest.getData(url);

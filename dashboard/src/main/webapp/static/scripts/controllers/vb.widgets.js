@@ -3045,8 +3045,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             } else {
                                 gridLine = false;
                             }
-
-
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
@@ -3059,7 +3057,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     x: xAxis.fieldName,
                                     columns: columns,
                                     labels: labels,
-                                    axes: axes,
+                                    axes: axes,                                    
                                     types: chartCombinationtypes
                                 },
                                 color: {
@@ -3070,8 +3068,10 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     x: {
                                         tick: {
                                             format: function (x) {
+                                                console.log(xData[x])
                                                 return xData[x];
-                                            }
+                                            },
+                                            culling:false
                                         }
                                     },
                                     y2: y2
@@ -3407,7 +3407,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
-                                            }
+                                            },
+                                            culling:false
                                         }
                                     },
                                     y2: y2
