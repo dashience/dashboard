@@ -34,20 +34,22 @@ public class ReviewTrackerService {
     public static final String authorizationHeaders = "Basic c2FnYXJAZGlnaXRhbGFuYWx5c3R0ZWFtLmNvbTpVU29vUjhFZHNIT20wb3FYZks1OHJfeW5JZkU9";
 
     public List<Map<String, Object>> get(String dataSetReportName, String reviewTrackerAcessToken, String reviewTrackerAccountId,
-            Date startDate, Date endDate, String timeSegment, String productSegment) {
+            Date startDate, Date endDate, String timeSegment, String productSegment,String reviewTrackerAccountUserName) {
 
         if (dataSetReportName.equalsIgnoreCase("getAccountUsers")) {
-            return getAccountUsers(reviewTrackerAccountId, authorizationHeaders, startDate, endDate, timeSegment, productSegment);
+            return getAccountUsers(reviewTrackerAccountId, authorizationHeaders, startDate, endDate, timeSegment, 
+                    productSegment,reviewTrackerAccountUserName);
         }
         if (dataSetReportName.equalsIgnoreCase("getAccountReviews")) {
-            return getAccountReviews(reviewTrackerAccountId, authorizationHeaders, startDate, endDate, timeSegment, productSegment);
+            return getAccountReviews(reviewTrackerAccountId, authorizationHeaders, startDate, endDate, timeSegment, 
+                    productSegment,reviewTrackerAccountUserName);
         }
 
         return null;
     }
 
     public static List<Map<String, Object>> getAccountReviews(String accountId, String authorizationHeaders, 
-            Date startDate, Date endDate,String timeSegment, String productSegment) {
+            Date startDate, Date endDate,String timeSegment, String productSegment,String reviewTrackerAccountUserName) {
         String url = BASE_URL + "reviews";
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         valueMap.put("account_id", Arrays.asList(accountId));
@@ -58,7 +60,7 @@ public class ReviewTrackerService {
     }
 
     public static List<Map<String, Object>> getAccountUsers(String accountId, String authorizationHeaders, Date startDate,
-            Date endDate, String timeSegment, String productSegment) {
+            Date endDate, String timeSegment, String productSegment,String reviewTrackerAccountUserName) {
         String url = BASE_URL + "users";
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         valueMap.put("account_id", Arrays.asList(accountId));

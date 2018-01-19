@@ -2339,10 +2339,10 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String reviewTrackerAcessToken = getAccountId(accountProperty, "reviewTrackerAcessToken");
         String reviewTrackerAccountId = getAccountId(accountProperty, "reviewTrackerAccountId");
-
+        String reviewTrackerAccountUserName = getAccountId(accountProperty,"reviewTrackerAccountUserName");
         try {
             List<Map<String, Object>> reviewTrackerReport = reviewTrackerService.get(dataSetReportName, reviewTrackerAcessToken,
-                    reviewTrackerAccountId, startDate, endDate, timeSegment, productSegment);
+                    reviewTrackerAccountId, startDate, endDate, timeSegment, productSegment,reviewTrackerAccountUserName);
             return reviewTrackerReport;
         } catch (NumberFormatException ex) {
             return null;
