@@ -382,8 +382,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
             $scope.semRushFlag = false;
-        } else if (dataSource === "") {
-
+        } else if (dataSource === "reviewTracker") {
+            $scope.report = $scope.reviewTrackerPerformance;
+            $scope.dataSetFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
+        } else if (dataSource === "salesForce") {
+            $scope.report = $scope.salesForcePerformance;
+            $scope.dataSetFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
@@ -4279,6 +4291,31 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //            $scope.nwStatusFlag = false;
 //        }
 
+        if ($scope.dataSet.dataSourceId.dataSourceType == "salesForce") {
+            var index = getIndex($scope.dataSet.reportName, $scope.salesForcePerformance);
+            $scope.timeSegment = $scope.salesForcePerformance[index].timeSegments;
+            $scope.productSegment = $scope.salesForcePerformance[index].productSegments;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+            $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+        }
+        if ($scope.dataSet.dataSourceId.dataSourceType == "reviewTracker") {
+            var index = getIndex($scope.dataSet.reportName, $scope.reviewTrackerPerformance);
+            $scope.timeSegment = $scope.reviewTrackerPerformance[index].timeSegments;
+            $scope.productSegment = $scope.reviewTrackerPerformance[index].productSegments;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            if ($scope.dataSet.reportName == "accountReviews") {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            } else {
+                $scope.dataSet.timeSegment = {name: 'Month', type: 'month'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }
+        }
         if ($scope.dataSet.dataSourceId.dataSourceType === "twitter") {
             var index = getIndex($scope.dataSet.reportName, $scope.twitterPerformance);
             $scope.timeSegment = $scope.twitterPerformance[index].timeSegments;
