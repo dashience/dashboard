@@ -178,13 +178,18 @@
                             <a title="{{'Favorites'|translate}}" ng-click="toggleFavourite(favouritesWidget, $index)">
                                 <i class="fa fa-heart" ng-class="{'red':favouritesWidget.widgetId.isFav, 'black': !favouritesWidget.widgetId.isFav}"></i>
                             </a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'line'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'bar'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'pie'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'area'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'table'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
-                            <a ng-if="favouritesWidget.widgetId.chartType === 'scatter'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
+                            <a ng-if="widget.chartType === 'line'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'bar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'horizontalBar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'pie'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'area'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'stackedbar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'table'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'scatter'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'gauge'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveGaugeFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'map'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveMapFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'funnel'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveFunnelFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="favouritesWidget.widgetId.chartType === 'combination'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
                             <!--<a title="{{'Report'|translate}}" ng-click="showReportList[favouritesWidget.widgetId.id] = true;"><i class="fa fa-file-text"></i></a>-->
                             <!--                        <a class="edit" ui-sref="index.editWidget({accountId: accountId, accountName: accountName, productId: 0, tabId: favouritesWidget.widgetId.tabId.id, widgetId: favouritesWidget.widgetId.id, startDate: startDate, endDate: endDate})"><i class="fa fa-pencil"></i></a>-->
                             <!--<a class="closebox" data-toggle="modal" data-target="#delete{{favouritesWidget.widget.id.tab.id}}" title="Delete"><i class="fa fa-times"></i></a>-->

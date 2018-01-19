@@ -171,7 +171,23 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         } else {
             dataSourcePassword = '';
         }
-
+        console.log("window open------------->","admin/proxy/downloadData?connectionUrl=" +
+                widget.dataSetId.dataSourceId.connectionString +
+                "&dataSetId=" + widget.dataSetId.id +
+                "&accountId=" + (widget.accountId ? (widget.accountId.id ? widget.accountId.id : widget.accountId) : $stateParams.accountId) +
+                "&userId=" + (widget.dataSetId.userId ? widget.dataSetId.userId.id : null) +
+                "&driver=" + widget.dataSourceId.sqlDriver +
+                "&productSegment=" + setProductSegment +
+                "&timeSegment=" + setTimeSegment +
+                "&networkType=" + setNetworkType +
+                "&startDate=" + $stateParams.startDate +
+                "&endDate=" + $stateParams.endDate +
+                '&username=' + widget.dataSetId.dataSourceId.userName +
+                "&dataSetReportName=" + widget.dataSetId.reportName +
+                '&password=' + dataSourcePassword +
+                '&widgetId=' + widget.id +
+                '&url=' + widget.dataSetId.url +
+                '&port=3306&schema=vb&query=' + encodeURI(widget.dataSetId.query));
         window.open("admin/proxy/downloadData?connectionUrl=" +
                 widget.dataSetId.dataSourceId.connectionString +
                 "&dataSetId=" + widget.dataSetId.id +
@@ -1154,6 +1170,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.showEditor = function (chartType, widget) {
+        $scope.widgetObj.ckEditorcontent = widget.content;
         $scope.chartTypeName = chartType ? chartType : widget.chartType;
         $scope.showSortBy = false;
         $scope.showPreviewChart = true;
@@ -1560,6 +1577,9 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
     $scope.setStackedBarChartFn = function (stackedBarChartFn) {
         $scope.directiveStackedBarChartFn = stackedBarChartFn;
+    };
+    $scope.setScatterChartFn = function (scatterChartFn) {
+        $scope.directiveScatterFn = scatterChartFn;
     };
     $scope.setTableChartFn = function (tableFn) {
         $scope.directiveTableFn = tableFn;

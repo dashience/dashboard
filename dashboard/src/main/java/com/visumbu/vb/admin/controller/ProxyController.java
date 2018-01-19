@@ -482,10 +482,11 @@ public class ProxyController {
     private Map<String, Object> getGenericData(MultiValueMap<String, String> valueMap, Integer userId, Integer dataSetId, Integer widgetId, HttpServletRequest request, HttpServletResponse response) {
         Map returnMap = new HashMap<>();
         returnMap = getData(valueMap, request, response);
+        System.out.println("returnMap--------------------->"+returnMap);
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data"), dataSetId));
 
         updateDataSetColumnId((List) returnMap.get("columnDefs"), userId, dataSetId, widgetId);
-
+        
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
         if (widgetId != null) {
             String queryFilter = null;
@@ -500,7 +501,7 @@ public class ProxyController {
         Map dataMap = new HashMap<>();
         dataMap.put("columnDefs", returnMap.get("columnDefs"));
         dataMap.put("data", returnMap.get("data"));
-        System.out.println("FieldName------>"+dataMap);
+//        System.out.println("FieldName------>"+dataMap);
         return dataMap;
     }
 
@@ -929,9 +930,10 @@ public class ProxyController {
         if (dataSetColumnList.size() > 0) {
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataList, request, httpRequest, response);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
-//             System.out.println(dataSetColumnList);
-//             System.out.println("DATA INSIDE DERIVED COLUMN");
-//             System.out.println(dataWithDerivedColumns);
+             System.out.println(dataSetColumnList);
+             System.out.println("DATA INSIDE DERIVED COLUMN");
+             System.out.println("dataWithDerivedColumns----------->"+dataWithDerivedColumns);
+             System.out.println("dataWithDerivedFunctions------------->"+dataWithDerivedFunctions);
             returnMap.put("data", dataWithDerivedColumns);
         }
         dataList = (List<Map<String, Object>>) returnMap.get("data");

@@ -18,6 +18,7 @@ app.controller('UiController', function ($scope, $http, $stateParams, $state, $f
     $rootScope.$on("loadStatusChanged", function (event,loadStatus) {
         $scope.loadStatus = "";
         $timeout(function () {
+            $scope.getTableType=localStorageService.get("selectedTableType")
             $scope.loadStatus=loadStatus;
         }, 20);
     });

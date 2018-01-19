@@ -20,6 +20,7 @@ import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.Scheduler;
 import com.visumbu.vb.model.SchedulerHistory;
+import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.PropertyReader;
 import java.io.File;
@@ -43,7 +44,6 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -70,7 +70,6 @@ public class TimerService {
     private final String reportDownloadUrl = "url.reportDownloadUrl";
 
     public void executeTasks(List<Scheduler> scheduledTasks) {
-        System.out.println("Executing Tasks " + scheduledTasks);
         Date today = new Date();
 //        DateRangeFactory dateRangeFactory = new DateRangeFactory();
         for (Iterator<Scheduler> iterator = scheduledTasks.iterator(); iterator.hasNext();) {
@@ -78,6 +77,8 @@ public class TimerService {
             SchedulerHistory schedulerHistory = new SchedulerHistory();
             Scheduler scheduler = iterator.next();
             Report report = scheduler.getReportId();
+            Agency agency = scheduler.getAgencyId();
+            VbUser createdBy = scheduler.getCreatedBy();
             Integer schedulerId = scheduler.getId();
             Scheduler schedulerById = schedulerDao.getSchedulerById(schedulerId);
             String dealerId = scheduler.getAccountId().getId() + "";
@@ -171,11 +172,12 @@ public class TimerService {
             }
             System.out.println("TO Address============================================>");
             System.out.println(toAddress);
+            System.out.println("url finished-----------.");
             String subject = "[ Scheduled Report ] " + scheduler.getSchedulerName() + " " + scheduler.getAccountId().getAccountName() + " " + currentDateStr;
             String message = subject + "\n\n- System";
             //            String status = scheduler.getStatus();
 //            if (status.equalsIgnoreCase("Active")) {
-            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), filename, toAddress, subject, message);
+            Boolean schedulerStatus = downloadReportAndSend(startDate, endDate, dealerId, exportType, report.getId(), agency.getAgencyLanguage(), createdBy.getId(), filename, toAddress, subject, message);
             schedulerHistory.setFileName(filename);
             schedulerHistory.setEmailId(toAddress);
             schedulerHistory.setEmailSubject(subject);
@@ -303,14 +305,14 @@ public class TimerService {
     }
 
     private Boolean downloadReportAndSend(Date startDate, Date endDate,
-            String accountId, String exportType, Integer reportId, String filename,
+            String accountId, String exportType, Integer reportId, String agencyLanguage, Integer userId, String filename,
             String to, String subject, String message) {
         try {
             System.out.println("exportType: " + exportType);
             String startDateStr = URLEncoder.encode(DateUtils.dateToString(startDate, "MM/dd/yyyy"), "UTF-8");
             String endDateStr = URLEncoder.encode(DateUtils.dateToString(endDate, "MM/dd/yyyy"), "UTF-8");
 
-            String url = propReader.readUrl(reportDownloadUrl) + accountId + "/" + reportId + "?startDate=" + startDateStr + "&endDate=" + endDateStr;
+            String url = propReader.readUrl(reportDownloadUrl) + agencyLanguage + "/" + accountId + "/" + userId + "/" + reportId + "?startDate=" + startDateStr + "&endDate=" + endDateStr;
             String pdfGenerator = propReader.readUrl(urlGenerator) + URLEncoder.encode(url, "UTF-8");
             downloadUrlAndSave(filename, pdfGenerator);
             //String urlStr = propReader.readUrl(urlDownloadReport) + reportId + "?dealerId=" + accountId + "&exportType=" + exportType + "&startDate=" + startDateStr + "&endDate=" + endDateStr + "&location=" + accountId + "&accountId=" + accountId;

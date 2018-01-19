@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +32,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class ReviewTrackerService {
 
     public static final String BASE_URL = "https://api.reviewtrackers.com/";
-    public static final String authorizationHeaders = "Basic c2FnYXJAZGlnaXRhbGFuYWx5c3R0ZWFtLmNvbTpVU29vUjhFZHNIT20wb3FYZks1OHJfeW5JZkU9";
+    public static final String authorizationHeaders = "Basic c2FnYXJAZGlnaXRhbGFuYWx5c3R0ZWFtLmNvbTpTQ3Fsbjk3UFdUMGhPUnBwYlhoZ3ppRU5uNFk9";
 
     public List<Map<String, Object>> get(String dataSetReportName, String reviewTrackerAcessToken, String reviewTrackerAccountId,
             Date startDate, Date endDate, String timeSegment, String productSegment) {
@@ -46,7 +47,7 @@ public class ReviewTrackerService {
         return null;
     }
 
-    public static List<Map<String, Object>> getAccountReviews(String accountId, String authorizationHeaders, 
+    public static List<Map<String, Object>> getAccountReviews(String accountId, String authorizationHeaders,
             Date startDate, Date endDate,String timeSegment, String productSegment) {
         String url = BASE_URL + "reviews";
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
@@ -77,7 +78,7 @@ public class ReviewTrackerService {
         }
         String jsonResponse = null;
         try {
-            URL myURL = new URL(url);
+            URL myURL = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
             conn.setRequestProperty("Authorization", authorizationHeaders);
             conn.setRequestMethod("GET");

@@ -32,16 +32,16 @@ public class ReviewTracker {
 
     public static final String accessToken = "USooR8EdsHOm0oqXfK58r_ynIfE=";
     public static final String accountId = "595ee7d2ec14906a57aacb08";
-    public static final String BASE_URL = "https://api.reviewtrackers.com/";
+    public static final String BASE_URL = "http://api.reviewtrackers.com/";
     public static final String userId = "5a15893a0c41a7608f1111cd";
 
     public static void main(String[] args) throws ParseException {
         String userName = "sagar@digitalanalystteam.com";
         String password = "XYWmToJB";
 
-        String authorizationHeaders = "Basic c2FnYXJAZGlnaXRhbGFuYWx5c3R0ZWFtLmNvbTpVU29vUjhFZHNIT20wb3FYZks1OHJfeW5JZkU9";
+        String authorizationHeaders = "Basic c2FnYXJAZGlnaXRhbGFuYWx5c3R0ZWFtLmNvbTpTQ3Fsbjk3UFdUMGhPUnBwYlhoZ3ppRU5uNFk9";
 
-        String reportName = "getAccountUsers";
+        String reportName = "getAccountReviews";
 
         if (reportName.equalsIgnoreCase("getAccountUsers")) {
             getAccountUsers(accountId, authorizationHeaders);
@@ -80,7 +80,7 @@ public class ReviewTracker {
         System.out.println("url -->" + urlString);
         String jsonResponse = null;
         try {
-            URL myURL = new URL(url);
+            URL myURL = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
             conn.setRequestProperty("Authorization", authorizationHeaders);
             conn.setRequestMethod("GET");
@@ -90,14 +90,16 @@ public class ReviewTracker {
             conn.setDoInput(true);
             conn.setDoOutput(true);
             int responseCode = conn.getResponseCode();
-
+            System.out.println("response code-------->"+conn);
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getInputStream())));
             String output;
             while ((output = br.readLine()) != null) {
                 jsonResponse += output;
             }
+            conn.disconnect();
         } catch (IOException e) {
+            System.out.println("exception occured------>"+e);
         }
         return jsonResponse;
     }

@@ -136,12 +136,13 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
                 }
                 return value;
             };
-            scope.columns = [];
-            if (scope.widgetColumns) {
-                angular.forEach(columnsList, function (value, key) {
-                    scope.columns.push(value);
-                });
-            }
+//            scope.columns = [];
+//            if (scope.widgetColumns) {
+//                console.log("widgetColumns-------->", columnsList);
+//                angular.forEach(columnsList, function (value, key) {
+//                    scope.columns.push(value);
+//                });
+//            }
             scope.getColspan = function (list) {
                 var keySets = [];
                 var getKeySetLength;
@@ -228,39 +229,57 @@ app.directive('compareRangeTable', function ($http, localStorageService, $stateP
             } else {
                 setNetworkType = widgetData.networkType;
             }
-            $http.get(url + '&connectionUrl=' + compareTableDataSource.dataSourceId.connectionString +
-                    "&dataSetId=" + compareTableDataSource.id +
-                    "&accountId=" + (widgetData.accountId ? (widgetData.accountId.id ? widgetData.accountId.id : widgetData.accountId) : $stateParams.accountId) +
-                    "&userId=" + (compareTableDataSource.userId ? compareTableDataSource.userId.id : null) +
-                    "&driver=" + compareTableDataSource.dataSourceId.sqlDriver +
-                    "&productSegment=" + setProductSegment +
-                    "&timeSegment=" + setTimeSegment +
-                    "&networkType=" + setNetworkType +
-                    "&startDate1=" + $stateParams.startDate +
-                    "&endDate1=" + $stateParams.endDate +
-                    '&startDate2=' + compareStartDate +
-                    '&endDate2=' + compareEndDate +
-                    '&username=' + compareTableDataSource.dataSourceId.userName +
-                    "&dataSetReportName=" + compareTableDataSource.reportName +
-                    '&password=' + dataSourcePassword +
-                    '&widgetId=' + scope.widgetId +
-                    '&url=' + compareTableDataSource.url +
-                    '&port=3306&schema=vb&query=' + encodeURI(compareTableDataSource.query)).success(function (response) {
-                scope.ajaxLoadingCompleted = true;
-                scope.loadingTable = false;
-                scope.hideEmptyTable = false;
-                if (!response.data) {
-                    scope.tableEmptyType = "ERROR";
-                    scope.tableEmptyDescription = "NO DATA FOUND";
-                    scope.hideEmptyTable = true;
-                    return;
-                }
+            scope.refreshTable = function () {
+                $http.get(url + '&connectionUrl=' + compareTableDataSource.dataSourceId.connectionString +
+                        "&dataSetId=" + compareTableDataSource.id +
+                        "&accountId=" + (widgetData.accountId ? (widgetData.accountId.id ? widgetData.accountId.id : widgetData.accountId) : $stateParams.accountId) +
+                        "&userId=" + (compareTableDataSource.userId ? compareTableDataSource.userId.id : null) +
+                        "&driver=" + compareTableDataSource.dataSourceId.sqlDriver +
+                        "&productSegment=" + setProductSegment +
+                        "&timeSegment=" + setTimeSegment +
+                        "&networkType=" + setNetworkType +
+                        "&startDate1=" + $stateParams.startDate +
+                        "&endDate1=" + $stateParams.endDate +
+                        '&startDate2=' + compareStartDate +
+                        '&endDate2=' + compareEndDate +
+                        '&username=' + compareTableDataSource.dataSourceId.userName +
+                        "&dataSetReportName=" + compareTableDataSource.reportName +
+                        '&password=' + dataSourcePassword +
+                        '&widgetId=' + scope.widgetId +
+                        '&url=' + compareTableDataSource.url +
+                        '&port=3306&schema=vb&query=' + encodeURI(compareTableDataSource.query)).success(function (response) {
+                    scope.columns = [];
+                    if (scope.widgetColumns) {
+                        angular.forEach(columnsList, function (value, key) {
+                            scope.columns.push(value);
+                            angular.forEach(response.columnDefs, function (columnDefsValue, key) {
+                                if (columnDefsValue.fieldName == value.fieldName) {
+                                    if (columnDefsValue.category == 'metric') {
+                                        scope.columns[scope.columns.length - 1].category = 'metrics';
+                                    } else {
+                                        scope.columns[scope.columns.length - 1].category = columnDefsValue.category;
+                                    }
+                                }
+                            });
+                        });
+                    }
+                    scope.ajaxLoadingCompleted = true;
+                    scope.loadingTable = false;
+                    scope.hideEmptyTable = false;
+                    if (!response.data) {
+                        scope.tableEmptyType = "ERROR";
+                        scope.tableEmptyDescription = "NO DATA FOUND";
+                        scope.hideEmptyTable = true;
+                        return;
+                    }
 
-                scope.getColumnDefs = response;
-                scope.getSummary = response.summary;
-                scope.getData = filterMaxRecord(response.data, maxRecord);
-            });
-
+                    scope.getColumnDefs = response;
+                    scope.getSummary = response.summary;
+                    scope.getData = filterMaxRecord(response.data, maxRecord);
+                });
+            };
+            scope.setTableChartFn({tableFn: scope.refreshTable});
+            scope.refreshTable();
             function filterMaxRecord(data, max) {
                 return max ? data.splice(0, max) : data;
             }

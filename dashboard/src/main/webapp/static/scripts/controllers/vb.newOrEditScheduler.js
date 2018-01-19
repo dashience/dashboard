@@ -201,7 +201,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
 
     $scope.saveValidate = function (scheduler) {
         $scope.saveBtnIsDisable = true;
-        if (scheduler.schedulerName !== "" && scheduler.schedulerEmail.length !== 0 && scheduler.schedulerType !== false) {
+        if (scheduler.schedulerName !== "" && scheduler.schedulerEmail.length !== 0 && scheduler.schedulerType !== false && scheduler.reportId !== "" && scheduler.accountId !== "") {
             var response = checkSaveValidate(scheduler);
             $scope.saveBtnIsDisable = response;
         }
@@ -230,7 +230,7 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
     }
 
     $scope.saveScheduler = function (scheduler) {
-        scheduler.dateRangeName = $("#customDateRangeName").text();
+        scheduler.dateRangeName = $("#customDateRangeName").text().trim();
 
         if (scheduler.dateRangeName == "Select Date Duration") {
             scheduler.dateRangeName = "";

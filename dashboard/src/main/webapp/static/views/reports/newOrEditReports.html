@@ -227,6 +227,7 @@
                                 <a ng-if="reportWidget.widgetId.chartType === 'scatter'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="reportWidget.widgetId.chartType === 'gauge'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveGaugeFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="reportWidget.widgetId.chartType === 'map'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveMapFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="reportWidget.widgetId.chartType === 'combination'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
 
                                 <!--                        <a class="edit" ng-click="editReportWidget(reportWidget);"
                                 
@@ -358,11 +359,11 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="panel-body"  ng-if="reportWidget.widgetId.chartType === 'text'">
-                                <div class="col-md-12">
-                                    <div class="text-widget">
-                                        <span ng-bind-html="reportWidget.widgetId.content"></span>
-                                    </div>
+                        </div>
+                        <div class="panel-body"  ng-if="reportWidget.widgetId.chartType === 'text'">
+                            <div class="col-md-12">
+                                <div class="text-widget">
+                                    <span ng-bind-html="reportWidget.widgetId.content"></span>
                                 </div>
                             </div>
                         </div>
