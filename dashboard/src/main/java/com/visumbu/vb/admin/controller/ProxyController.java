@@ -127,6 +127,8 @@ public class ProxyController {
 
     @Autowired
     private GoogleSpreadSheetService googleSpreadSheetService;
+    
+    @Autowired
     private ReviewTrackerService reviewTrackerService;
 
     PropertyReader propReader = new PropertyReader();
@@ -861,6 +863,7 @@ public class ProxyController {
             returnMap = (Map) getCsvData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("reviewTracker")) {
             List<Map<String, Object>> dataList = getReviewTrackerData(request, response);
+                            System.out.println("before data1-------------->"+dataList);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
         } else if (dataSourceType.equalsIgnoreCase("semRush")) {
@@ -902,6 +905,7 @@ public class ProxyController {
             // //System.out.println("Join Data Set");
             returnMap = getJoinDataSet(request, httpRequest, response, dataSetIdInt);
         }
+        System.out.println("before data return map-------------->"+returnMap);
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
 //         System.out.println("Column Def For Data Format");
 //         System.out.println(returnMap.get("columnDefs"));
@@ -920,7 +924,7 @@ public class ProxyController {
             } catch (NumberFormatException e) {
 
             }
-        }
+        }                
         List<DataSetColumns> dataSetColumnList = null;
         if (widgetIdInt == null) {
             dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
@@ -936,6 +940,7 @@ public class ProxyController {
              System.out.println("dataWithDerivedFunctions------------->"+dataWithDerivedFunctions);
             returnMap.put("data", dataWithDerivedColumns);
         }
+        System.out.println("before data-------------->"+returnMap);
         dataList = (List<Map<String, Object>>) returnMap.get("data");
         returnMap.put("columnDefs", getColumnDefObject(dataList));
         List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");
@@ -2341,10 +2346,20 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String reviewTrackerAcessToken = getAccountId(accountProperty, "reviewTrackerAcessToken");
         String reviewTrackerAccountId = getAccountId(accountProperty, "reviewTrackerAccountId");
+        String reviewTrackerAccountUserName = getAccountId(accountProperty, "reviewTrackerAccountUserNames");
 
         try {
+            System.out.println("dataSetReportName--->"+dataSetReportName);
+            System.out.println("reviewTrackerAcessToken--->"+reviewTrackerAcessToken);
+            System.out.println("reviewTrackerAccountId--->"+reviewTrackerAccountId);
+            System.out.println("startDate--->"+startDate);
+            System.out.println("endDate--->"+endDate);
+            System.out.println("timeSegment--->"+timeSegment);
+            System.out.println("productSegment--->"+productSegment);
+            System.out.println("reviewTrackerAccountUserName--->"+reviewTrackerAccountUserName);
             List<Map<String, Object>> reviewTrackerReport = reviewTrackerService.get(dataSetReportName, reviewTrackerAcessToken,
-                    reviewTrackerAccountId, startDate, endDate, timeSegment, productSegment);
+                    reviewTrackerAccountId, startDate, endDate, timeSegment, productSegment,reviewTrackerAccountUserName);
+            System.out.println("reviewTrackerReport----------->"+reviewTrackerReport);
             return reviewTrackerReport;
         } catch (NumberFormatException ex) {
             return null;

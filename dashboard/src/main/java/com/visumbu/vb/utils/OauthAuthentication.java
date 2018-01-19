@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,6 +30,21 @@ import org.json.JSONObject;
  * @author dashience
  */
 public class OauthAuthentication {
+
+    public static String buildBasicAuthorizationString(String username, String password) {
+        String credentials = username + ":" + password;
+        return "Basic " + encodeBase64Data(credentials);
+    }
+
+    public static String encodeBase64Data(String encodeData) {
+        try {
+            String asB64 = Base64.getEncoder().encodeToString(encodeData.getBytes("utf-8"));
+            return asB64;
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(OauthAuthentication.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     public static String encode(String value) {
         {

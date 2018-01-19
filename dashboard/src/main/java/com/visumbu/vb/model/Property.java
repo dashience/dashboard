@@ -43,11 +43,9 @@ public class Property implements Serializable {
     @Size(max = 255)
     @Column(name = "property_name")
     private String propertyName;
-    @Lob
     @Size(max = 2147483647)
     @Column(name = "property_remark")
     private String propertyRemark;
-    @Lob
     @Size(max = 2147483647)
     @Column(name = "property_value")
     private String propertyValue;

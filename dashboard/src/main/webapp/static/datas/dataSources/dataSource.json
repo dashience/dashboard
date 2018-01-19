@@ -71,6 +71,14 @@
         {
             "type": "semRush",
             "name": "SEM Rush"
+        },
+        {
+            "type": "salesForce",
+            "name": "SalesForce"
+        },
+        {
+            "type": "reviewTracker",
+            "name": "Review Tracker"
         }
     ]
 }
