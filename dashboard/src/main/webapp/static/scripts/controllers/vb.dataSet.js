@@ -382,10 +382,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
             $scope.semRushFlag = false;
+        } else if (dataSource === "") {
+
         } else if (dataSource === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
-            console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
@@ -575,7 +576,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        },  {
+        }, {
             type: 'userTimeLine',
             name: 'User Performance Metrics',
             timeSegments: [
@@ -4162,6 +4163,104 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         },
     ];
 
+    $scope.salesForcePerformance = [
+        {
+            type: "customerData",
+            name: "Customer Data",
+            timeSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }, {
+            type: "cityData",
+            name: "City Data",
+            timeSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }
+    ];
+
+    $scope.reviewTrackerPerformance = [
+        {
+            type: "overallPerformance",
+            name: "Overall Performance",
+            timeSegments: [
+                {
+                    type: "month",
+                    name: "Month"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }, {
+            type: "accountReviews",
+            name: "Account Reviews",
+            timeSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }, {
+            type: "ratingsBySource",
+            name: "Ratings By Source",
+            timeSegments: [
+                {
+                    type: "month",
+                    name: "Month"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }, {
+            type: "overallRatings",
+            name: "Overall Ratings",
+            timeSegments: [
+                {
+                    type: "month",
+                    name: "Month"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }
+    ];
+
     $scope.getTimeSegements = function (dataSet) {
         $scope.reportSelected = false;
         $scope.enableMe = true;
@@ -4730,7 +4829,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             var gatDataSourceType = dataSet.dataSourceId ? dataSet.dataSourceId.dataSourceType : null;
             if (gatDataSourceType != "sql" && data != null) {
                 $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForDataSet/' + getDataSetId, data: data}).success(function (response) {
-                    console.log("response---------->",response);
+                    console.log("response---------->", response);
                     getItems();
                 });
             }
@@ -4890,7 +4989,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $timeout(function () {
             $scope.previewData = dataSet;
         }, 50);
-        console.log("Data Set----------->",dataSet)
+        console.log("Data Set----------->", dataSet)
     };
     $scope.refreshDataSet = function (dataSet) {
 //        var tmpDataSet = dataSet

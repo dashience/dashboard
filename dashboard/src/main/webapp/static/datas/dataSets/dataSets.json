@@ -472,6 +472,102 @@
                 }
             ]
         }],
+    "salesForce": [
+        {
+            "type": "customerData",
+            "name": "Customer Data",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "cityData",
+            "name": "City Data",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }
+    ],
+    "reviewTracker": [
+        {
+            "type": "accountReviews",
+            "name": "Account Reviews",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "overviewPerformance",
+            "name": "Overview Performance",
+            "timeSegments": [
+                {
+                    "type": "month",
+                    "name": "Month"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "ratingsBySource",
+            "name": "Ratings By Source",
+            "timeSegments": [
+                {
+                    "type": "month",
+                    "name": "Month"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "overallRatings",
+            "name": "Overall Ratings",
+            "timeSegments": [
+                {
+                    "type": "month",
+                    "name": "Month"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }
+    ],
     "twitter": [{
             "type": "pagePerformance",
             "name": "Page Performance",
