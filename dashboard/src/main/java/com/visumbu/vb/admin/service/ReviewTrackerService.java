@@ -55,7 +55,7 @@ public class ReviewTrackerService {
         valueMap.put("account_id", Arrays.asList(accountId));
         valueMap.put("per_page", Arrays.asList("500"));
         String data = getResponse(url, authorizationHeaders, valueMap);
-        System.out.println(data);
+        System.out.println(data); 
         return null;
     }
 
