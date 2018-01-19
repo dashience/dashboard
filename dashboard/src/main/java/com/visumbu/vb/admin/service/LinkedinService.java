@@ -68,9 +68,7 @@ public class LinkedinService {
         try {
             String segment = null;
 
-            String url = BASE_URL + companyId+"/company-statistics";
-            
-           
+            String url = BASE_URL + companyId + "/company-statistics";
 
             MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
             valueMap.put("oauth2_access_token", Arrays.asList(oauthAccessToken));
@@ -80,9 +78,9 @@ public class LinkedinService {
             JSONParser parser = new JSONParser();
             Object jsonObj = parser.parse(data);
             JSONObject object = (JSONObject) jsonObj;
-            
-             System.out.println("Linkedin In URL -->");
-             System.out.println(data);
+
+            System.out.println("Linkedin In URL -->");
+            System.out.println(data);
 
             if (timeSegment.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("overall")) {
                 return getOverallPageFollowers(oauthAccessToken, companyId);
@@ -137,8 +135,8 @@ public class LinkedinService {
                     Logger.getLogger(LinkedinService.class.getName()).log(Level.SEVERE, null, ex);
                 }
             } else {
-                System.out.println("Product Segment -->"+productSegment);
-                System.out.println("object is "+object);
+                System.out.println("Product Segment -->" + productSegment);
+                System.out.println("object is " + object);
                 return getSegmentsData(object, productSegment);
             }
 

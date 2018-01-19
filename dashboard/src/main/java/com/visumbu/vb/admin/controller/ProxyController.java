@@ -46,6 +46,7 @@ import com.visumbu.vb.utils.XlsDataSet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -2417,8 +2418,8 @@ public class ProxyController {
         properties.put("httpMethod", "GET");
         try {
             Long twitterOganicAccountId = Long.parseLong(twitterAccountId);
-            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, properties, startDate, endDate,
-                    timeSegment, productSegment);
+            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, properties, startDate, 
+                    endDate,timeSegment, productSegment);
             return twitterReport;
         } catch (NumberFormatException ex) {
             return null;

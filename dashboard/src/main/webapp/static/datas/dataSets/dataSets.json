@@ -472,6 +472,37 @@
                 }
             ]
         }],
+    "twitter": [{
+            "type": "pagePerformance",
+            "name": "Page Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "screenName",
+            "name": "Screen Name",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }],
     "salesForce": [
         {
             "type": "customerData",
@@ -3855,4 +3886,4 @@
 
     ]
 }
-    
+

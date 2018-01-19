@@ -589,8 +589,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             ]
         }, {
-            type: 'userTimeLine',
-            name: 'User Performance Metrics',
+            type: 'screenName',
+            name: 'Screen Name',
             timeSegments: [
                 {
                     type: 'none',
@@ -603,10 +603,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        },
-        {
-            type: 'followersPerformance',
-            name: 'Followers Performance',
+        }, {
+            type: 'userTimeLine',
+            name: 'User Performance Metrics',
             timeSegments: [
                 {
                     type: 'none',
@@ -4328,7 +4327,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
 
         if ($scope.dataSet.dataSourceId.dataSourceType === "linkedin") {
-
             var index = getIndex($scope.dataSet.reportName, $scope.linkedinPerformance);
             $scope.timeSegment = $scope.linkedinPerformance[index].timeSegments;
             $scope.productSegment = $scope.linkedinPerformance[index].productSegments;
@@ -4350,7 +4348,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     getProductSegment(productList, productSegmentName);
                 }
             }
-
+            
             if ($scope.dataSet.reportName === 'pagePerformance') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'Month', type: 'month'};
@@ -4363,7 +4361,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     getProductSegment(productList, productSegmentName);
                 }
             }
-
+            
             if ($scope.dataSet.reportName === 'postPerformance') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
@@ -4376,8 +4374,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     getProductSegment(productList, productSegmentName);
                 }
             }
-
-
+            
+            
             if ($scope.dataSet.reportName === 'pageFollowersPerformance') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'Day', type: 'day'};
@@ -4390,7 +4388,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     getProductSegment(productList, productSegmentName);
                 }
             }
-
+            
 
 
 
