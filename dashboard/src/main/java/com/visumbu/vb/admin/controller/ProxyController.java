@@ -905,7 +905,6 @@ public class ProxyController {
             // //System.out.println("Join Data Set");
             returnMap = getJoinDataSet(request, httpRequest, response, dataSetIdInt);
         }
-        System.out.println("before data return map-------------->"+returnMap);
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
 //         System.out.println("Column Def For Data Format");
 //         System.out.println(returnMap.get("columnDefs"));
@@ -2835,7 +2834,7 @@ public class ProxyController {
                         if (fieldProperties.getDataFormat() != null) {
                             columnDef.setDataFormat(fieldProperties.getDataFormat());
                         }
-                        // //System.out.println("DAta Format ===> " + fieldProperties.getDataFormat());
+                         //System.out.println("DAta Format ===> " + fieldProperties.getDataFormat());
                     } else {
                         Object value = entrySet.getValue();
                         String valueString = value + "";

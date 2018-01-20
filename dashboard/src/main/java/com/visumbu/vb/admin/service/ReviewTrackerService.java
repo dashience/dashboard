@@ -201,20 +201,6 @@ public class ReviewTrackerService {
             reviewData.put("totalReviews", array.get("total_reviews"));
             reviewData.put("avgRating", array.get("avg_rating"));
             returnMap.add(reviewData);
-//            for (Iterator<Map<String, Object>> iterator = mapData.iterator(); iterator.hasNext();) {
-//                Map<String, Object> monthData = iterator.next();
-//                Map<String, Object> reviewData = new HashMap<>();
-//                reviewData.put("0star", monthData.get("0star"));
-//                reviewData.put("1star", monthData.get("1star"));
-//                reviewData.put("2star", monthData.get("2star"));
-//                reviewData.put("2star", monthData.get("3star"));
-//                reviewData.put("3star", monthData.get("4star"));
-//                reviewData.put("4star", monthData.get("5star"));
-//                reviewData.put("totalReviews", (String) array.get("total_reviews"));
-//                reviewData.put("overallReviewCount", (String) array.get("overall_review_count"));
-//                reviewData.put("avgRating", (String) array.get("avg_rating"));
-//                returnMap.add(reviewData);
-//            }
             return returnMap;
         } catch (ParseException ex) {
             Logger.getLogger(ReviewTrackerService.class.getName()).log(Level.SEVERE, null, ex);
