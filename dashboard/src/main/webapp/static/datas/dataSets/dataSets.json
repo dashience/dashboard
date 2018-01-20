@@ -3753,7 +3753,8 @@
                     "name": "URL",
                     "type": "url"
                 }
-            ],
+            ]
+        }],
             "salesForce": [
                 {
                     "type": "customerData",
@@ -3844,15 +3845,11 @@
                     ],
                     "productSegments": [
                         {
-                            "type": "none",
-                            "name": "None"
+                            "type": "rating",
+                            "name": "Ratings"
                         }
                     ]
                 }
             ]
-        }
-
-
-    ]
 }
     

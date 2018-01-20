@@ -199,6 +199,7 @@ public class ReviewTrackerService {
             reviewData.put("3star", mapData.get("4star"));
             reviewData.put("4star", mapData.get("5star"));
             reviewData.put("totalReviews", array.get("total_reviews"));
+            reviewData.put("avgRating", array.get("avg_rating"));
             returnMap.add(reviewData);
 //            for (Iterator<Map<String, Object>> iterator = mapData.iterator(); iterator.hasNext();) {
 //                Map<String, Object> monthData = iterator.next();

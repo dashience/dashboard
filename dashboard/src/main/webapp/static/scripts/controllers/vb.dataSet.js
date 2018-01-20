@@ -4290,7 +4290,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //            $scope.productSegment = $scope.facebookPerformance[index].productSegments;
 //            $scope.nwStatusFlag = false;
 //        }
-        if ($scope.dataSet.dataSourceId.dataSourceType == "salesForce") {
+        if ($scope.dataSet.dataSourceId.dataSourceType === "salesForce") {
             var index = getIndex($scope.dataSet.reportName, $scope.salesForcePerformance);
             $scope.timeSegment = $scope.salesForcePerformance[index].timeSegments;
             $scope.productSegment = $scope.salesForcePerformance[index].productSegments;
@@ -4300,7 +4300,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
             $scope.dataSet.productSegment = {name: 'None', type: 'none'};
         }
-        if ($scope.dataSet.dataSourceId.dataSourceType == "reviewTracker") {
+        if ($scope.dataSet.dataSourceId.dataSourceType === "reviewTracker") {
             var index = getIndex($scope.dataSet.reportName, $scope.reviewTrackerPerformance);
             $scope.timeSegment = $scope.reviewTrackerPerformance[index].timeSegments;
             $scope.productSegment = $scope.reviewTrackerPerformance[index].productSegments;
