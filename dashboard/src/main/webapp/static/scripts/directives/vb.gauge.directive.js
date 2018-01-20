@@ -81,65 +81,65 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
                 if (getWidgetObj.filterUrlParameter) {
                     dashboardFilter = JSON.stringify(getWidgetObj.filterUrlParameter)
                 } else {
-                    dashboardFilter = ""
+                    dashboardFilter = "";
                 }
+                
+                scope.refreshGaugeChart = function () {
+                    $http.get(url + 'connectionUrl=' + gaugeChartDataSource.dataSourceId.connectionString +
+                            "&dataSetId=" + gaugeChartDataSource.id +
+                            "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
+                            "&userId=" + (gaugeChartDataSource.userId ? gaugeChartDataSource.userId.id : null) +
+                            "&driver=" + gaugeChartDataSource.dataSourceId.sqlDriver +
+                            "&productSegment=" + setProductSegment +
+                            "&timeSegment=" + setTimeSegment +
+                            "&networkType=" + setNetworkType +
+                            "&dashboardFilter=" + encodeURI(dashboardFilter) +
+                            "&startDate=" + $stateParams.startDate +
+                            "&endDate=" + $stateParams.endDate +
+                            '&username=' + gaugeChartDataSource.dataSourceId.userName +
+                            "&dataSetReportName=" + gaugeChartDataSource.reportName +
+                            '&password=' + dataSourcePassword +
+                            '&widgetId=' + scope.widgetId +
+                            '&url=' + gaugeChartDataSource.url +
+                            '&port=3306&schema=vb&query=' + encodeURI(gaugeChartDataSource.query)).success(function (response) {
+
+                        scope.loadingGauge = false;
 
 
+                        //array of object
+                        var gaugeDataArray = response.data;
 
-//             scope.refreshGaugeChart = function () {
-                $http.get(url + 'connectionUrl=' + gaugeChartDataSource.dataSourceId.connectionString +
-                        "&dataSetId=" + gaugeChartDataSource.id +
-                        "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
-                        "&userId=" + (gaugeChartDataSource.userId ? gaugeChartDataSource.userId.id : null) +
-                        "&driver=" + gaugeChartDataSource.dataSourceId.sqlDriver +
-                        "&productSegment=" + setProductSegment +
-                        "&timeSegment=" + setTimeSegment +
-                        "&networkType=" + setNetworkType +
-                        "&dashboardFilter=" + encodeURI(dashboardFilter) +
-                        "&startDate=" + $stateParams.startDate +
-                        "&endDate=" + $stateParams.endDate +
-                        '&username=' + gaugeChartDataSource.dataSourceId.userName +
-                        "&dataSetReportName=" + gaugeChartDataSource.reportName +
-                        '&password=' + dataSourcePassword +
-                        '&widgetId=' + scope.widgetId +
-                        '&url=' + gaugeChartDataSource.url +
-                        '&port=3306&schema=vb&query=' + encodeURI(gaugeChartDataSource.query)).success(function (response) {
+                        var gaugeDataObj = gaugeDataArray[0];
 
-                    scope.loadingGauge = false;
+                        var arrayGaugeData = [];
 
-
-                    //array of object
-                    var gaugeDataArray = response.data;
-
-                    var gaugeDataObj = gaugeDataArray[0];
-
-                    var arrayGaugeData = [];
-
-                    //array of array
-                    arrayGaugeData.push(fieldName, gaugeDataObj[fieldName]);
+                        //array of array
+                        arrayGaugeData.push(fieldName, gaugeDataObj[fieldName]);
 
 
 
 
 //                    var groups = gaugeData;
 
-                    var chart = c3.generate({
-                        bindto: element[0],
+                        var chart = c3.generate({
+                            bindto: element[0],
 //                        groups: groups,
-                        data: {
-                            columns: [arrayGaugeData],
-                            type: 'gauge',
+                            data: {
+                                columns: [arrayGaugeData],
+                                type: 'gauge',
 //                            groups: [groups],
-                        },
-                        color: {
-                            pattern: chartColors ? chartColors : defaultColors
-                        },
+                            },
+                            color: {
+                                pattern: chartColors ? chartColors : defaultColors
+                            },
+                        });
+
+
                     });
 
-
-                });
-
-
+                }
+                scope.setGaugeChartFn({scatterFn: scope.refreshGaugeChart});
+                scope.refreshGaugeChart();
             }
 
 

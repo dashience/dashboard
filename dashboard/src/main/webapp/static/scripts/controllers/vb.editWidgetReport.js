@@ -810,6 +810,9 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     $scope.setStackedBarChartFn = function (stackedBarChartFn) {
         $scope.directiveStackedBarChartFn = stackedBarChartFn;
     };
+    $scope.setScatterChartFn = function (scatterChartFn) {
+        $scope.directiveScatterFn = scatterChartFn;
+    };
     $scope.setTableChartFn = function (tableFn) {
         $scope.directiveTableFn = tableFn;
     };

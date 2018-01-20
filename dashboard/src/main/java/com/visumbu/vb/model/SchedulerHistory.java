@@ -76,7 +76,6 @@ public class SchedulerHistory implements Serializable {
     @Size(max = 255)
     @Column(name = "file_name")
     private String fileName;
-    @Lob
     @Size(max = 65535)
     @Column(name = "email_id")
     private String emailId;

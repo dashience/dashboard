@@ -14,6 +14,7 @@ app.controller("SchedulerController", function ($scope, $http, localStorageServi
     }
         
     $http.get("admin/scheduler/scheduler").success(function (response) {
+        console.log("scheduler---------->",response);
         $scope.schedulers = response;
     });
     $scope.deleteScheduler = function (scheduler, index) {

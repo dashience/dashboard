@@ -374,6 +374,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
             $scope.semRushFlag = false;
+        } else if (dataSource === "reviewTracker") {
+            $scope.report = $scope.reviewTrackerPerformance;
+            $scope.dataSetFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
+        } else if (dataSource === "salesForce") {
+            $scope.report = $scope.salesForcePerformance;
+            $scope.dataSetFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "analytics")
         {
             $scope.report = $scope.analyticsPerformance;
@@ -4172,6 +4186,103 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             ]
         },
+    ];
+    $scope.salesForcePerformance = [
+        {
+            type: "customerData",
+            name: "Customer Data",
+            timeSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }, {
+            type: "cityData",
+            name: "City Data",
+            timeSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }
+    ];
+
+    $scope.reviewTrackerPerformance = [
+        {
+            type: "overallPerformance",
+            name: "Overall Performance",
+            timeSegments: [
+                {
+                    type: "month",
+                    name: "Month"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }, {
+            type: "accountReviews",
+            name: "Account Reviews",
+            timeSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }, {
+            type: "ratingsBySource",
+            name: "Ratings By Source",
+            timeSegments: [
+                {
+                    type: "month",
+                    name: "Month"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }, {
+            type: "overallRatings",
+            name: "Overall Ratings",
+            timeSegments: [
+                {
+                    type: "month",
+                    name: "Month"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        }
     ];
 
     $scope.salesForcePerformance = [

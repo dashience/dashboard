@@ -31,7 +31,7 @@ import org.json.JSONObject;
  */
 public class OauthAuthentication {
 
-    public String buildBasicAuthorizationString(String username, String password) {
+    public static String buildBasicAuthorizationString(String username, String password) {
         String credentials = username + ":" + password;
         return "Basic " + encodeBase64Data(credentials);
     }

@@ -5,15 +5,27 @@
  */
 package com.visumbu.vb.admin.service;
 
+import com.google.common.collect.HashBiMap;
+import com.visumbu.vb.utils.DateUtils;
+import com.visumbu.vb.utils.OauthAuthentication;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,36 +43,187 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class ReviewTrackerService {
 
     public static final String BASE_URL = "https://api.reviewtrackers.com/";
-    public static final String authorizationHeaders = "Basic c2FnYXJAZGlnaXRhbGFuYWx5c3R0ZWFtLmNvbTpVU29vUjhFZHNIT20wb3FYZks1OHJfeW5JZkU9";
+    public static String authorizationHeaders;
 
     public List<Map<String, Object>> get(String dataSetReportName, String reviewTrackerAcessToken, String reviewTrackerAccountId,
-            Date startDate, Date endDate, String timeSegment, String productSegment,String reviewTrackerAccountUserName) {
+            Date startDate, Date endDate, String timeSegment, String productSegment, String reviewTrackerAccountUserName) {
+        System.out.println("DatasetReport Name -->" + dataSetReportName);
 
+        String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
+        String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
+        authorizationHeaders = OauthAuthentication.buildBasicAuthorizationString(reviewTrackerAccountUserName, reviewTrackerAcessToken);
         if (dataSetReportName.equalsIgnoreCase("getAccountUsers")) {
-            return getAccountUsers(reviewTrackerAccountId, authorizationHeaders, startDate, endDate, timeSegment, 
-                    productSegment,reviewTrackerAccountUserName);
+            return getAccountUsers(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
         }
-        if (dataSetReportName.equalsIgnoreCase("getAccountReviews")) {
-            return getAccountReviews(reviewTrackerAccountId, authorizationHeaders, startDate, endDate, timeSegment, 
-                    productSegment,reviewTrackerAccountUserName);
+        if (dataSetReportName.equalsIgnoreCase("accountReviews")) {
+            return getAccountReviews(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
+        }
+        if (dataSetReportName.equalsIgnoreCase("overallPerformance")) {
+            return getMonthlyReviews(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
+        }
+        if (dataSetReportName.equalsIgnoreCase("ratingsBySource")) {
+            return getSourcesRating(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
+        }
+        if (dataSetReportName.equalsIgnoreCase("overallRatings")) {
+            return getOverallRating(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
         }
 
         return null;
     }
 
-    public static List<Map<String, Object>> getAccountReviews(String accountId, String authorizationHeaders, 
-            Date startDate, Date endDate,String timeSegment, String productSegment,String reviewTrackerAccountUserName) {
-        String url = BASE_URL + "reviews";
-        MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
-        valueMap.put("account_id", Arrays.asList(accountId));
-        valueMap.put("per_page", Arrays.asList("500"));
-        String data = getResponse(url, authorizationHeaders, valueMap);
-        System.out.println(data); 
+    public static List<Map<String, Object>> getAccountReviews(String accountId, String authorizationHeaders,
+            String startDateStr, String endDateStr, String timeSegment, String productSegment) {
+        System.out.println("account Id -->" + accountId);
+        System.out.println("startDateStr Id -->" + startDateStr);
+        System.out.println("endDateStr Id -->" + endDateStr);
+        System.out.println("timeSegment Id -->" + timeSegment);
+        System.out.println("productSegment Id -->" + productSegment);
+        System.out.println("authorizationHeaders Id -->" + authorizationHeaders);
+        try {
+            List<Map<String, Object>> returnMap = new ArrayList();
+            String url = BASE_URL + "reviews";
+            MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+            valueMap.put("account_id", Arrays.asList(accountId));
+            valueMap.put("per_page", Arrays.asList("500"));
+            String data = getResponse(url, authorizationHeaders, valueMap);
+            System.out.println("response  data ------->" + data);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject array = (JSONObject) jsonObj;
+            Map<String, Object> reviews = (Map<String, Object>) array.get("_embedded");
+            List<Map<String, Object>> allReviewData = (List<Map<String, Object>>) reviews.get("reviews");
+            for (Iterator<Map<String, Object>> iterator = allReviewData.iterator(); iterator.hasNext();) {
+                Map<String, Object> monthData = iterator.next();
+                Map<String, Object> reviewData = new HashMap<>();
+                reviewData.put("content", monthData.get("content"));
+                reviewData.put("locationName", monthData.get("location_name"));
+                reviewData.put("locationState", monthData.get("location_state"));
+                reviewData.put("locationZipcode", monthData.get("location_zipcode"));
+                reviewData.put("locationCity", monthData.get("location_city"));
+                reviewData.put("publishedOn", monthData.get("published_on"));
+                reviewData.put("sourceName", monthData.get("source_name"));
+                reviewData.put("exactRating", monthData.get("exact_rating"));
+                reviewData.put("locationAddress", monthData.get("location_address"));
+                returnMap.add(reviewData);
+            }
+            return returnMap;
+
+        } catch (ParseException ex) {
+            Logger.getLogger(ReviewTrackerService.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return null;
     }
 
-    public static List<Map<String, Object>> getAccountUsers(String accountId, String authorizationHeaders, Date startDate,
-            Date endDate, String timeSegment, String productSegment,String reviewTrackerAccountUserName) {
+    public static List<Map<String, Object>> getMonthlyReviews(String accountId, String authorizationHeaders,
+            String startDateStr, String endDateStr, String timeSegment, String productSegment) {
+        try {
+            List<Map<String, Object>> returnMap = new ArrayList();
+            String url = BASE_URL + "metrics/" + accountId + "/overview/monthly?";
+            MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+            valueMap.put("account_id", Arrays.asList(accountId));
+            valueMap.put("month_after", Arrays.asList(startDateStr));
+            valueMap.put("month_before", Arrays.asList(endDateStr));
+            String data = getResponse(url, authorizationHeaders, valueMap);
+            System.out.println(data);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject array = (JSONObject) jsonObj;
+            List<Map<String, Object>> mapData = (List<Map<String, Object>>) array.get("monthly");
+            for (Iterator<Map<String, Object>> iterator = mapData.iterator(); iterator.hasNext();) {
+                Map<String, Object> monthData = iterator.next();
+                Map<String, Object> reviewData = new HashMap<>();
+                reviewData.put("month", monthData.get("month"));
+                reviewData.put("avgRating", monthData.get("avg_rating"));
+                reviewData.put("totalReviews", monthData.get("total_reviews"));
+                returnMap.add(reviewData);
+            }
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(ReviewTrackerService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> getSourcesRating(String accountId, String authorizationHeaders,
+            String startDateStr, String endDateStr, String timeSegment, String productSegment) {
+        try {
+            List<Map<String, Object>> returnMap = new ArrayList();
+            String url = BASE_URL + "metrics/" + accountId + "/sources?";
+            MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+            valueMap.put("account_id", Arrays.asList(accountId));
+            valueMap.put("month_after", Arrays.asList(startDateStr));
+            valueMap.put("month_before", Arrays.asList(endDateStr));
+            String data = getResponse(url, authorizationHeaders, valueMap);
+            System.out.println("URL ===>" + url);
+            System.out.println("data----------------" + data);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject array = (JSONObject) jsonObj;
+            List<Map<String, Object>> mapData = (List<Map<String, Object>>) array.get("sources");
+            for (Iterator<Map<String, Object>> iterator = mapData.iterator(); iterator.hasNext();) {
+                Map<String, Object> monthData = iterator.next();
+                Map<String, Object> reviewData = new HashMap<>();
+                reviewData.put("sourceName", monthData.get("source_name"));
+                reviewData.put("avgRating", monthData.get("avg_rating"));
+                reviewData.put("totalReviews", monthData.get("total_reviews"));
+                returnMap.add(reviewData);
+            }
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(ReviewTrackerService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> getOverallRating(String accountId, String authorizationHeaders,
+            String startDateStr, String endDateStr, String timeSegment, String productSegment) {
+        try {
+            List<Map<String, Object>> returnMap = new ArrayList();
+            String url = BASE_URL + "metrics/" + accountId + "/overview?";
+            MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+            valueMap.put("account_id", Arrays.asList(accountId));
+            valueMap.put("month_after", Arrays.asList(startDateStr));
+            valueMap.put("month_before", Arrays.asList(endDateStr));
+
+            String data = getResponse(url, authorizationHeaders, valueMap);
+            System.out.println(data);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject array = (JSONObject) jsonObj;
+            Map<String, Object> mapData = (Map<String, Object>) array.get("ratings");
+            Map<String, Object> reviewData = new HashMap<>();
+            reviewData.put("0star", mapData.get("0star"));
+            reviewData.put("1star", mapData.get("1star"));
+            reviewData.put("2star", mapData.get("2star"));
+            reviewData.put("2star", mapData.get("3star"));
+            reviewData.put("3star", mapData.get("4star"));
+            reviewData.put("4star", mapData.get("5star"));
+            reviewData.put("totalReviews", array.get("total_reviews"));
+            reviewData.put("avgRating", array.get("avg_rating"));
+            returnMap.add(reviewData);
+//            for (Iterator<Map<String, Object>> iterator = mapData.iterator(); iterator.hasNext();) {
+//                Map<String, Object> monthData = iterator.next();
+//                Map<String, Object> reviewData = new HashMap<>();
+//                reviewData.put("0star", monthData.get("0star"));
+//                reviewData.put("1star", monthData.get("1star"));
+//                reviewData.put("2star", monthData.get("2star"));
+//                reviewData.put("2star", monthData.get("3star"));
+//                reviewData.put("3star", monthData.get("4star"));
+//                reviewData.put("4star", monthData.get("5star"));
+//                reviewData.put("totalReviews", (String) array.get("total_reviews"));
+//                reviewData.put("overallReviewCount", (String) array.get("overall_review_count"));
+//                reviewData.put("avgRating", (String) array.get("avg_rating"));
+//                returnMap.add(reviewData);
+//            }
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(ReviewTrackerService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> getAccountUsers(String accountId, String authorizationHeaders, String startDateStr,
+            String endDateStr, String timeSegment, String productSegment) {
         String url = BASE_URL + "users";
         MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
         valueMap.put("account_id", Arrays.asList(accountId));
@@ -77,9 +240,9 @@ public class ReviewTrackerService {
             UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(url).queryParams(params).build();
             urlString = uriComponents.toUriString();
         }
-        String jsonResponse = null;
+        String jsonResponse = "";
         try {
-            URL myURL = new URL(url);
+            URL myURL = new URL(urlString);
             HttpURLConnection conn = (HttpURLConnection) myURL.openConnection();
             conn.setRequestProperty("Authorization", authorizationHeaders);
             conn.setRequestMethod("GET");

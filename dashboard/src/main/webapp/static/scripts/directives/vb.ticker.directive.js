@@ -120,18 +120,15 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             if (!scope.widgetObj) {
                 return;
             }
-            console.log("widgetObj------------->", scope);
             var getWidgetObj = JSON.parse(scope.widgetObj);
             scope.loadingTicker = true;
             var tickerName = [];
             angular.forEach(JSON.parse(scope.tickerColumns), function (value, key) {
-
                 if (!value) {
                     return;
                 }
-                tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat, icon: value.icon});
+                tickerName.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat, agregationFunction: value.agregationFunction, icon: value.icon});
             });
-
             scope.format = function (column, value) {
                 if (!value) {
                     return "";
@@ -369,6 +366,20 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
             } else {
                 setNetworkType = getWidgetObj.networkType;
             }
+            var listOfCalculatedFunction = [
+                {name: 'ctr', field1: ['clicks'], field2: ['impressions']},
+                {name: 'cpa', field1: ['cost'], field2: ['conversions']},
+                {name: 'cpas', field1: ['spend'], field2: ['conversions']},
+                {name: 'cpc', field1: ['spend', 'cost'], field2: ['clicks']},
+                {name: 'cpcs', field1: ['spend'], field2: ['clicks']},
+                {name: 'cpr', field1: ['spend'], field2: ['actions_post_reaction']},
+                {name: 'ctl', field1: ['spend'], field2: ['actions_like']},
+                {name: 'cplc', field1: ['spend'], field2: ['actions_link_click']},
+                {name: 'cpcomment', field1: ['spend'], field2: ['actions_comment']},
+                {name: 'cposte', field1: ['spend'], field2: ['actions_post_engagement']},
+                {name: 'cpagee', field1: ['spend'], field2: ['actions_page_engagement']},
+                {name: 'cpp', field1: ['spend'], field2: ['actions_post']}
+            ];
             scope.refreshTicker = function () {
                 $http.get(url + 'connectionUrl=' + tickerDataSource.dataSourceId.connectionString +
                         "&dataSetId=" + tickerDataSource.id +
@@ -391,7 +402,6 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                         '&widgetId=' + scope.tickerId +
                         '&url=' + tickerDataSource.url +
                         '&port=3306&schema=vb&query=' + encodeURI(tickerDataSource.query)).success(function (response) {
-                    console.log("response----------->", response);
                     scope.tickers = [];
                     scope.tickerItems = [];
                     scope.loadingTicker = false;
@@ -405,41 +415,83 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                         scope.tickerEmptyMessage = "No Data Found";
                         scope.hideEmptyTicker = true;
                     } else {
-                        if (isCompare == 'compareOn') {
-                            var returnDimensionData = {};
-                            var returnMetricsData1 = {};
-                            var returnMetricsData2 = {};
-                            angular.forEach(tickerName, function (value, key) {
-                                var field = value.fieldName;
-                                returnDimensionData[field] = [];
-                                returnMetricsData1[field] = [];
-                                returnMetricsData2[field] = [];
-                                angular.forEach(tickerData, function (val) {
-                                    if (val && val[field]) {
-                                        returnDimensionData[field].push(val[field]);
-                                    }
-                                    if (val.metrics1) {
-                                        returnMetricsData1[field].push(val.metrics1[field]);
-                                    }
-                                    if (val.metrics2) {
-                                        returnMetricsData2[field].push(val.metrics2[field]);
-                                    }
-                                });
-                                var timeFormat = "";
-                                if (value.displayFormat) {
-                                    if (value.displayFormat == "M:S") {
-                                        timeFormat = "min";
+                        var returnDimensionData = {};
+                        var returnMetricsData1 = {};
+                        var returnMetricsData2 = {};
+                        angular.forEach(tickerName, function (value, key) {
+                            var field1 = null;
+                            var field2 = null;
+                            angular.forEach(listOfCalculatedFunction, function (calculatedFn, key) {
+                                if (value.agregationFunction == calculatedFn.name) {
+                                    angular.forEach(calculatedFn.field1, function (fieldValue1) {
+                                        angular.forEach(calculatedFn.field2, function (fieldValue2) {
+                                            angular.forEach(tickerData, function (val) {
+                                                if (val[fieldValue1]) {
+                                                    field1 = fieldValue1;
+                                                }
+                                                if (val[fieldValue2]) {
+                                                    field2 = fieldValue2;
+                                                }
+                                            });
+                                        });
+                                    });
+                                    returnDimensionData[field1] = [];
+                                    returnMetricsData1[field1] = [];
+                                    returnMetricsData2[field1] = [];
+                                    returnDimensionData[field2] = [];
+                                    returnMetricsData1[field2] = [];
+                                    returnMetricsData2[field2] = [];
+                                }
+                            });
+                            var field = value.fieldName;
+                            returnDimensionData[field] = [];
+                            returnMetricsData1[field] = [];
+                            returnMetricsData2[field] = [];
+                            angular.forEach(tickerData, function (val) {
+                                if (val && val[field]) {
+                                    returnDimensionData[field].push(val[field]);
+                                    if (field1 && field2) {
+                                        returnDimensionData[field1].push(val[field1]);
+                                        returnDimensionData[field2].push(val[field2]);
                                     }
                                 }
+                                if (val.metrics1) {
+                                    returnMetricsData1[field].push(val.metrics1[field]);
+                                    if (field1 && field2) {
+                                        returnMetricsData1[field1].push(val.metrics1[field1]);
+                                        returnMetricsData1[field2].push(val.metrics1[field2]);
+                                    }
+                                }
+                                if (val.metrics2) {
+                                    returnMetricsData2[field].push(val.metrics2[field]);
+                                    if (field1 && field2) {
+                                        returnMetricsData2[field1].push(val.metrics2[field1]);
+                                        returnMetricsData2[field2].push(val.metrics2[field2]);
+                                    }
+                                }
+                            });
+                            var timeFormat = "";
+                            if (value.displayFormat) {
+                                if (value.displayFormat == "M:S") {
+                                    timeFormat = "min";
+                                }
+                            }
+                            if (isCompare == 'compareOn') {
                                 scope.tickers.push({tickerTitle: value.displayName,
-                                    dimensionData: calTotal(returnDimensionData[field], value.displayFormat),
-                                    metricsData1: calTotal(returnMetricsData1[field], value.displayFormat),
-                                    metricsData2: calTotal(returnMetricsData2[field], value.displayFormat),
+                                    dimensionData: field1 && field2 ? calTotal(returnDimensionData[field1], value.displayFormat) / calTotal(returnDimensionData[field2], value.displayFormat) : calTotal(returnDimensionData[field], value.displayFormat),
+                                    metricsData1: field1 && field2 ? calTotal(returnMetricsData1[field1], value.displayFormat) / calTotal(returnMetricsData1[field2], value.displayFormat) : calTotal(returnMetricsData1[field], value.displayFormat),
+                                    metricsData2: field1 && field2 ? calTotal(returnMetricsData2[field1], value.displayFormat) / calTotal(returnMetricsData2[field2], value.displayFormat) : calTotal(returnMetricsData2[field], value.displayFormat),
                                     column: value,
                                     valueFormat1: timeFormat,
                                     valueFormat2: timeFormat
                                 });
-                            });
+                            } else {
+                                scope.tickers.push({tickerTitle: value.displayName,
+                                    totalValue: field1 ? calTotal(returnDimensionData[field1], value.displayFormat) / calTotal(returnDimensionData[field2], value.displayFormat) : calTotal(returnDimensionData[field], value.displayFormat),
+                                    column: value, valueFormat: timeFormat, });
+                            }
+                        });
+                        if (isCompare == 'compareOn') {
                             scope.firstLevelTickerValue = scope.tickers[0].metricsData1 ? scope.tickers[0].metricsData1 : scope.tickers[0].dimensionData;
                             scope.firstLevelTickerValue1 = scope.tickers[0].metricsData2;
 
@@ -480,33 +532,9 @@ app.directive('tickerDirective', function ($http, $stateParams, $filter) {
                                 scope.hideEmptyTickerSecondLevel = false;
                             }
                         } else {
-
-                            angular.forEach(tickerName, function (value, key) {
-                                var loopCount = 0;
-                                data = [value.fieldName];
-                                setData = tickerData.map(function (a) {
-                                    data.push(loopCount);
-                                    loopCount++;
-                                    if (!a[value.fieldName]) {
-                                        return "";
-                                    }
-                                    return a[value.fieldName];
-                                });
-                                var timeFormat = "";
-                                if (value.displayFormat) {
-                                    if (value.displayFormat == "M:S") {
-                                        timeFormat = "min";
-                                    }
-                                }
-                                scope.tickers.push({tickerTitle: value.displayName, totalValue: calTotal(setData, value.displayFormat), column: value, valueFormat: timeFormat, });
-                            });
                             scope.showDifference = false;
                             scope.firstLevelTicker = scope.tickers[0]//.totalValue;
                             scope.secondLevelTicker = scope.tickers[1];
-
-
-
-
                             scope.thirdLevelTicker = scope.tickers[2];
                             scope.formatColumn = scope.tickers[0] ? scope.tickers[0].column : '';
                             scope.formatColumnSecond = scope.tickers[1] ? scope.tickers[1].column : '';

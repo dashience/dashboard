@@ -445,6 +445,7 @@
                                 <a ng-if="widget.chartType === 'gauge'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveGaugeFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'map'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveMapFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'funnel'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveFunnelFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'combination'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
                                 <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
                                 <!--                                <a ng-if ="templateUserId === userId" 
                                                                    ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate});" title="{{'Duplicate Widget'| translate}}">
@@ -557,7 +558,8 @@
                             </div>
                             <!--                            <div compare-Range-Table></div>-->
                             <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
-                                <div compare-Range-Table 
+                                <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
+                                     compare-Range-Table 
                                      compare-Table-Source="{{widget.dataSetId}}" 
                                      compare-Date-Range="{{compareDateRange}}"
                                      widget-Id="{{widget.id}}" 

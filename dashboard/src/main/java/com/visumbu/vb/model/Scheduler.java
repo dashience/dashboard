@@ -123,7 +123,6 @@ public class Scheduler implements Serializable {
     private Integer lastNweeks;
     @Column(name = "last_nyears")
     private Integer lastNyears;
-    @Lob
     @Size(max = 16777215)
     @Column(name = "scheduler_email")
     private String schedulerEmail;
@@ -378,7 +377,7 @@ public class Scheduler implements Serializable {
     public void setCreatedBy(VbUser createdBy) {
         this.createdBy = createdBy;
     }
-
+    
     @Override
     public int hashCode() {
         int hash = 0;

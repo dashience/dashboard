@@ -220,6 +220,9 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.setStackedBarChartFn = function (stackedBarChartFn) {
         $scope.directiveStackedBarChartFn = stackedBarChartFn;
     };
+    $scope.setScatterChartFn = function (scatterChartFn) {
+        $scope.directiveScatterFn = scatterChartFn;
+    };
     $scope.setTableChartFn = function (tableFn) {
         $scope.directiveTableFn = tableFn;
     };

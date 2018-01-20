@@ -415,7 +415,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 {name: 'ctr', field1: 'clicks', field2: 'impressions'},
                 {name: 'cpa', field1: 'cost', field2: 'conversions'},
                 {name: 'cpas', field1: 'spend', field2: 'conversions'},
-                {name: 'cpc', field1: 'cost', field2: 'clicks'},
+                {name: 'cpc', field1: 'spend', field2: 'clicks'},
                 {name: 'cpcs', field1: 'spend', field2: 'clicks'},
                 {name: 'cpr', field1: 'spend', field2: 'actions_post_reaction'},
                 {name: 'ctl', field1: 'spend', field2: 'actions_like'},
