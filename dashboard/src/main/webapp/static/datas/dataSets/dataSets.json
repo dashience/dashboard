@@ -538,6 +538,22 @@
     ],
     "reviewTracker": [
         {
+            "type": "reviewData",
+            "name": "Review Data",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
             "type": "accountReviews",
             "name": "Account Reviews",
             "timeSegments": [
@@ -583,8 +599,8 @@
                 }
             ]
         }, {
-            "type": "overallRatings",
-            "name": "Overall Ratings",
+            "type": "overallReviewsByRatings",
+            "name": "Overall Reviews By Ratings",
             "timeSegments": [
                 {
                     "type": "month",
@@ -3881,102 +3897,6 @@
                     "type": "url"
                 }
             ]
-        }],
-            "salesForce": [
-                {
-                    "type": "customerData",
-                    "name": "Customer Data",
-                    "timeSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ]
-                }, {
-                    "type": "cityData",
-                    "name": "City Data",
-                    "timeSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ]
-                }
-            ],
-            "reviewTracker": [
-                {
-                    "type": "accountReviews",
-                    "name": "Account Reviews",
-                    "timeSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ]
-                }, {
-                    "type": "overviewPerformance",
-                    "name": "Overview Performance",
-                    "timeSegments": [
-                        {
-                            "type": "month",
-                            "name": "Month"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ]
-                }, {
-                    "type": "ratingsBySource",
-                    "name": "Ratings By Source",
-                    "timeSegments": [
-                        {
-                            "type": "month",
-                            "name": "Month"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ]
-                }, {
-                    "type": "overallRatings",
-                    "name": "Overall Ratings",
-                    "timeSegments": [
-                        {
-                            "type": "month",
-                            "name": "Month"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "rating",
-                            "name": "Ratings"
-                        }
-                    ]
-                }
-            ]
+        }]
 }
 
