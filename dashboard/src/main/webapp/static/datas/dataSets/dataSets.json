@@ -3521,7 +3521,33 @@
                     "type": "url"
                 }
             ]
-        }],
+        },
+        {
+            "type": "position",
+            "name": "Position Reports",
+            "timeSegments": [
+                {
+                    "name": "Organic Positions report",
+                    "type": "tracking_position_organic"
+                }, {
+                    "name": "AdWords Positions report",
+                    "type": "tracking_position_adwords"
+                }, {
+                    "name": "Organic Competitors Discovery report",
+                    "type": "tracking_competitors_organic"
+                }, {
+                    "name": "AdWords Competitors Discovery report",
+                    "type": "tracking_competitors_adwords"
+                }
+            ],
+            "productSegments": [
+                {
+                    "name": "None",
+                    "type": "none"
+                }
+            ]
+        }
+    ],
     "reviewTracker": [
         {
             "type": "reviewData",

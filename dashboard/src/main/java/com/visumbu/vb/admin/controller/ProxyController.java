@@ -1057,6 +1057,7 @@ public class ProxyController {
         return false;
     }
     Map getSemRushData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String connectionString = getFromMultiValueMap(request, "connectionUrl");
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String level = getFromMultiValueMap(request, "timeSegment");
@@ -1066,14 +1067,14 @@ public class ProxyController {
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
+         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         if (domain == null) {
             domain = getFromMultiValueMap(request, "networkType");
         }
         if (domain == null || domain.isEmpty() || domain.equalsIgnoreCase("undefined") || domain.equalsIgnoreCase("none")) {
-            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
             domain = getAccountId(accountProperty, "semRushDomain");
         }
-
+        
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
 
@@ -1104,14 +1105,15 @@ public class ProxyController {
             region = (region == null || region.isEmpty()) ? dataSet.getProductSegment() : region;
             domain = (domain == null || domain.isEmpty()) ? dataSet.getNetworkType() : domain;
         }
-
+        String semRushApiKey = getAccountId(accountProperty, "semRushApiKey");
+        String semRushProjectId = getAccountId(accountProperty, "semRushProjectId");
 //        String level = "domain_ranks";
 //        String region = "us";
 //        Date startDate = DateUtils.get30DaysBack();
 //        Date endDate = DateUtils.get30DaysBack();
 //        String domain = "seobook.com";
         try {
-            return semrushService.getData(connectionString, level, region, domain, startDate, endDate);
+            return semrushService.getData(dataSetReportName, connectionString, level, region, domain, startDate, endDate, semRushApiKey, semRushProjectId);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
