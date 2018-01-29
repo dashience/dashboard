@@ -64,7 +64,7 @@ public class ReviewTrackerService {
         if (dataSetReportName.equalsIgnoreCase("ratingsBySource")) {
             return getSourcesRating(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
         }
-        if (dataSetReportName.equalsIgnoreCase("overallReviewsByRatings")) {
+        if (dataSetReportName.equalsIgnoreCase("overallRatings")) {
             return overallReviewsByRatings(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
         }
         if (dataSetReportName.equalsIgnoreCase("reviewData")) {
