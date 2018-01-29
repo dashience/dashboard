@@ -10,6 +10,8 @@ import com.visumbu.vb.admin.service.BingService;
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
 import com.visumbu.vb.admin.service.GaService;
+import com.visumbu.vb.admin.service.ReviewTrackerService;
+import com.visumbu.vb.admin.service.SemrushService;
 import com.visumbu.vb.admin.service.LinkedinService;
 import com.visumbu.vb.admin.service.ReportService;
 import com.visumbu.vb.admin.service.SalesForceService;
@@ -129,6 +131,12 @@ public class ProxyController {
 
     @Autowired
     private SalesForceService salesForceService;
+
+    @Autowired
+    private SemrushService semrushService;
+
+    @Autowired
+    private ReviewTrackerService reviewTrackerService;
 
     PropertyReader propReader = new PropertyReader();
 
@@ -635,6 +643,13 @@ public class ProxyController {
             returnMap = (Map) getLinkedInData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("salesForce")) {
             returnMap = (Map) getSalesForceData(request, response);
+        } else if (dataSourceType.equalsIgnoreCase("reviewTracker")) {
+            List<Map<String, Object>> dataList = getReviewTrackerData(request, response);
+            System.out.println("before data1-------------->" + dataList);
+            returnMap.put("data", dataList);
+            returnMap.put("columnDefs", getColumnDefObject(dataList));
+        } else if (dataSourceType.equalsIgnoreCase("semRush")) {
+            returnMap = (Map) getSemRushData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("twitter")) {
             List<Map<String, Object>> dataList = getTwitterData(request, response);
             returnMap.put("data", dataList);
@@ -1040,6 +1055,67 @@ public class ProxyController {
             return true;
         }
         return false;
+    }
+    Map getSemRushData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        String connectionString = getFromMultiValueMap(request, "connectionUrl");
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String level = getFromMultiValueMap(request, "timeSegment");
+        String region = getFromMultiValueMap(request, "productSegment");
+        String domain = getFromMultiValueMap(request, "filter");
+
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        if (domain == null) {
+            domain = getFromMultiValueMap(request, "networkType");
+        }
+        if (domain == null || domain.isEmpty() || domain.equalsIgnoreCase("undefined") || domain.equalsIgnoreCase("none")) {
+            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+            domain = getAccountId(accountProperty, "semRushDomain");
+        }
+
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+
+        Integer dataSetIdInt = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+        }
+
+        DataSet dataSet = null;
+
+        if (dataSetIdInt != null) {
+            dataSet = uiService.readDataSet(dataSetIdInt);
+        }
+
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            dataSet = widget.getDataSetId();
+        }
+        if (dataSet != null) {
+            connectionString = (connectionString == null || connectionString.isEmpty()) ? dataSet.getDataSourceId().getConnectionString() : connectionString;
+            level = (level == null || level.isEmpty()) ? dataSet.getTimeSegment() : level;
+            region = (region == null || region.isEmpty()) ? dataSet.getProductSegment() : region;
+            domain = (domain == null || domain.isEmpty()) ? dataSet.getNetworkType() : domain;
+        }
+
+//        String level = "domain_ranks";
+//        String region = "us";
+//        Date startDate = DateUtils.get30DaysBack();
+//        Date endDate = DateUtils.get30DaysBack();
+//        String domain = "seobook.com";
+        try {
+            return semrushService.getData(connectionString, level, region, domain, startDate, endDate);
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
     }
 
     Map getCsvData(MultiValueMap<String, String> request, HttpServletResponse response) {
@@ -1648,16 +1724,12 @@ public class ProxyController {
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
         String productSegment = getFromMultiValueMap(request, "productSegment");
-
         List<Map<String, Object>> data = salesForceService.get(dataSetReportName);
         Map returnMap = new HashMap();
-
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         returnMap.put("columnDefs", columnDefs);
         returnMap.put("data", data);
-        System.out.println("SalesForce --->");
         System.out.println(returnMap);
-        System.out.println("SalesForce --->");
         return returnMap;
     }
 
@@ -1822,6 +1894,76 @@ public class ProxyController {
         returnMap.put("columnDefs", columnDefs);
         returnMap.put("data", data);
         return returnMap;
+    }
+     List<Map<String, Object>> getReviewTrackerData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        String dataSetId = getFromMultiValueMap(request, "dataSetId");
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
+        String timeSegment = getFromMultiValueMap(request, "timeSegment");
+        String productSegment = getFromMultiValueMap(request, "productSegment");
+        if (timeSegment == null) {
+            timeSegment = "daily";
+        }
+
+        Integer dataSetIdInt = null;
+        DataSet dataSet = null;
+        if (dataSetId != null) {
+            try {
+                dataSetIdInt = Integer.parseInt(dataSetId);
+            } catch (Exception e) {
+
+            }
+            if (dataSetIdInt != null) {
+                dataSet = uiService.readDataSet(dataSetIdInt);
+            }
+            if (dataSet != null) {
+                dataSetReportName = dataSet.getReportName();
+                timeSegment = dataSet.getTimeSegment();
+            }
+        }
+        String accountIdStr = getFromMultiValueMap(request, "accountId");
+        Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
+
+        Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
+        String fieldsOnly = getFromMultiValueMap(request, "fieldsOnly");
+        String widgetIdStr = getFromMultiValueMap(request, "widgetId");
+        if (widgetIdStr != null && !widgetIdStr.isEmpty() && !widgetIdStr.equalsIgnoreCase("undefined")) {
+            Integer widgetId = Integer.parseInt(widgetIdStr);
+            TabWidget widget = uiService.getWidgetById(widgetId);
+            if (widget.getDateRangeName() != null && !widget.getDateRangeName().isEmpty()) {
+                if (widget.getDateRangeName().equalsIgnoreCase("custom")) {
+                    startDate = DateUtils.getStartDate(widget.getCustomStartDate());
+                    endDate = DateUtils.getEndDate(widget.getCustomEndDate());
+                } else if (!widget.getDateRangeName().equalsIgnoreCase("custom") && !widget.getDateRangeName().equalsIgnoreCase("select date duration") && !widget.getDateRangeName().equalsIgnoreCase("none")) {
+                    Map<String, Date> dateRange = getCustomDate(widget.getDateRangeName(), widget.getLastNdays(), widget.getLastNweeks(), widget.getLastNmonths(), widget.getLastNyears(), endDate);
+                    startDate = dateRange.get("startDate");
+                    endDate = dateRange.get("endDate");
+                }
+            }
+        }
+
+        Integer accountId = Integer.parseInt(accountIdStr);
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String reviewTrackerAcessToken = getAccountId(accountProperty, "reviewTrackerAcessToken");
+        String reviewTrackerAccountId = getAccountId(accountProperty, "reviewTrackerAccountId");
+        String reviewTrackerAccountUserName = getAccountId(accountProperty, "reviewTrackerAccountUserNames");
+
+        try {
+            System.out.println("dataSetReportName--->" + dataSetReportName);
+            System.out.println("reviewTrackerAcessToken--->" + reviewTrackerAcessToken);
+            System.out.println("reviewTrackerAccountId--->" + reviewTrackerAccountId);
+            System.out.println("startDate--->" + startDate);
+            System.out.println("endDate--->" + endDate);
+            System.out.println("timeSegment--->" + timeSegment);
+            System.out.println("productSegment--->" + productSegment);
+            System.out.println("reviewTrackerAccountUserName--->" + reviewTrackerAccountUserName);
+            List<Map<String, Object>> reviewTrackerReport = reviewTrackerService.get(dataSetReportName, reviewTrackerAcessToken,
+                    reviewTrackerAccountId, startDate, endDate, timeSegment, productSegment, reviewTrackerAccountUserName);
+            System.out.println("reviewTrackerReport----------->" + reviewTrackerReport);
+            return reviewTrackerReport;
+        } catch (NumberFormatException ex) {
+            return null;
+        }
     }
 
     List<Map<String, Object>> getTwitterData(MultiValueMap<String, String> request, HttpServletResponse response) {
