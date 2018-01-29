@@ -396,10 +396,23 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
             $scope.semRushFlag = false;
+        } else if (dataSource === "reviewTracker") {
+            $scope.report = $scope.reviewTrackerPerformance;
+            $scope.dataSetFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
+        } else if (dataSource === "salesForce") {
+            $scope.report = $scope.salesForcePerformance;
+            $scope.dataSetFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "facebook")
         {
             $scope.report = $scope.facebookPerformance;
-            console.log($scope.report);
             $scope.dataSetFlag = true;
             $scope.nwStatusFlag = false;
             $scope.timeSegFlag = false;
@@ -590,8 +603,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             ]
         }, {
-            type: 'userTimeLine',
-            name: 'User Performance Metrics',
+            type: 'screenName',
+            name: 'Screen Name',
             timeSegments: [
                 {
                     type: 'none',
@@ -604,10 +617,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     name: 'None'
                 }
             ]
-        },
-        {
-            type: 'followersPerformance',
-            name: 'Followers Performance',
+        }, {
+            type: 'userTimeLine',
+            name: 'User Performance Metrics',
             timeSegments: [
                 {
                     type: 'none',
@@ -4151,7 +4163,31 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }, {
                     name: "URL",
                     type: "url"
-                },
+                }
+            ]
+        }, {
+            "type": "position",
+            "name": "Position Reports",
+            "timeSegments": [
+                {
+                    "name": "Organic Positions report",
+                    "type": "tracking_position_organic"
+                }, {
+                    "name": "AdWords Positions report",
+                    "type": "tracking_position_adwords"
+                }, {
+                    "name": "Organic Competitors Discovery report",
+                    "type": "tracking_competitors_organic"
+                }, {
+                    "name": "AdWords Competitors Discovery report",
+                    "type": "tracking_competitors_adwords"
+                }
+            ],
+            "productSegments": [
+                {
+                    "name": "None",
+                    "type": "none"
+                }
             ]
         }
     ];
@@ -4211,6 +4247,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
     $scope.reviewTrackerPerformance = [
         {
+            type: "reviewData",
+            name: "Review Data",
+            timeSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ],
+            productSegments: [
+                {
+                    type: "none",
+                    name: "None"
+                }
+            ]
+        },
+        {
             type: "overallPerformance",
             name: "Overall Performance",
             timeSegments: [
@@ -4256,8 +4308,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 }
             ]
         }, {
-            type: "overallRatings",
-            name: "Overall Ratings",
+            type: "overallReviewsByRatings",
+            name: "Overall Reviews By Ratings",
             timeSegments: [
                 {
                     type: "month",
@@ -4290,7 +4342,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 //            $scope.productSegment = $scope.facebookPerformance[index].productSegments;
 //            $scope.nwStatusFlag = false;
 //        }
-        if ($scope.dataSet.dataSourceId.dataSourceType === "salesForce") {
+
+        if ($scope.dataSet.dataSourceId.dataSourceType == "salesForce") {
             var index = getIndex($scope.dataSet.reportName, $scope.salesForcePerformance);
             $scope.timeSegment = $scope.salesForcePerformance[index].timeSegments;
             $scope.productSegment = $scope.salesForcePerformance[index].productSegments;
@@ -4300,7 +4353,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
             $scope.dataSet.productSegment = {name: 'None', type: 'none'};
         }
-        if ($scope.dataSet.dataSourceId.dataSourceType === "reviewTracker") {
+        if ($scope.dataSet.dataSourceId.dataSourceType == "reviewTracker") {
             var index = getIndex($scope.dataSet.reportName, $scope.reviewTrackerPerformance);
             $scope.timeSegment = $scope.reviewTrackerPerformance[index].timeSegments;
             $scope.productSegment = $scope.reviewTrackerPerformance[index].productSegments;
@@ -4327,7 +4380,6 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         }
 
         if ($scope.dataSet.dataSourceId.dataSourceType === "linkedin") {
-
             var index = getIndex($scope.dataSet.reportName, $scope.linkedinPerformance);
             $scope.timeSegment = $scope.linkedinPerformance[index].timeSegments;
             $scope.productSegment = $scope.linkedinPerformance[index].productSegments;

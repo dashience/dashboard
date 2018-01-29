@@ -180,7 +180,7 @@ public class ApiUtils {
     public static Map<String, GaReport> getAllGaReports() {
         Map<String, GaReport> gaReports = new HashMap<>();
         gaReports.put("overallPerformance",
-                new GaReport("overallPerformance", "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:sessionDuration,sessionDuration",
+                new GaReport("overallPerformance", "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:avgSessionDuration,avgSessionDuration",
                         null, null));
         gaReports.put("referralReport",
                 new GaReport("referralReport", "ga:visits,visits;ga:sessions,sessions;ga:percentNewSessions,percentNewSessions;ga:pageViews,pageViews;ga:exitRate,exitRate;ga:bounceRate,bounceRate;ga:avgTimeOnPage,avgTimeOnPage;ga:users,users;ga:newUsers,newUsers;ga:avgSessionDuration,avgSessionDuration",

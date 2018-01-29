@@ -487,6 +487,149 @@
                     "name": "None"
                 }
             ]
+        }, {
+            "type": "screenName",
+            "name": "Screen Name",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }],
+    "salesForce": [
+        {
+            "type": "customerData",
+            "name": "Customer Data",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "cityData",
+            "name": "City Data",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }
+    ],
+    "reviewTracker": [
+        {
+            "type": "reviewData",
+            "name": "Review Data",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "accountReviews",
+            "name": "Account Reviews",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "overviewPerformance",
+            "name": "Overview Performance",
+            "timeSegments": [
+                {
+                    "type": "month",
+                    "name": "Month"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "ratingsBySource",
+            "name": "Ratings By Source",
+            "timeSegments": [
+                {
+                    "type": "month",
+                    "name": "Month"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }, {
+            "type": "overallReviewsByRatings",
+            "name": "Overall Reviews By Ratings",
+            "timeSegments": [
+                {
+                    "type": "month",
+                    "name": "Month"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }
+    ],
+    "twitter": [{
+            "type": "pagePerformance",
+            "name": "Page Performance",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
         }, 
         {
             "type": "userTimeLine",
@@ -3754,102 +3897,30 @@
                     "type": "url"
                 }
             ]
-        }],
-            "salesForce": [
+        }, {
+            "type": "position",
+            "name": "Position Reports",
+            "timeSegments": [
                 {
-                    "type": "customerData",
-                    "name": "Customer Data",
-                    "timeSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ]
+                    "name": "Organic Positions report",
+                    "type": "tracking_position_organic"
                 }, {
-                    "type": "cityData",
-                    "name": "City Data",
-                    "timeSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ]
+                    "name": "AdWords Positions report",
+                    "type": "tracking_position_adwords"
+                }, {
+                    "name": "Organic Competitors Discovery report",
+                    "type": "tracking_competitors_organic"
+                }, {
+                    "name": "AdWords Competitors Discovery report",
+                    "type": "tracking_competitors_adwords"
                 }
             ],
-            "reviewTracker": [
+            "productSegments": [
                 {
-                    "type": "accountReviews",
-                    "name": "Account Reviews",
-                    "timeSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ]
-                }, {
-                    "type": "overviewPerformance",
-                    "name": "Overview Performance",
-                    "timeSegments": [
-                        {
-                            "type": "month",
-                            "name": "Month"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ]
-                }, {
-                    "type": "ratingsBySource",
-                    "name": "Ratings By Source",
-                    "timeSegments": [
-                        {
-                            "type": "month",
-                            "name": "Month"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "none",
-                            "name": "None"
-                        }
-                    ]
-                }, {
-                    "type": "overallRatings",
-                    "name": "Overall Ratings",
-                    "timeSegments": [
-                        {
-                            "type": "month",
-                            "name": "Month"
-                        }
-                    ],
-                    "productSegments": [
-                        {
-                            "type": "rating",
-                            "name": "Ratings"
-                        }
-                    ]
+                    "name": "None",
+                    "type": "none"
                 }
             ]
+        }]
 }
-    
+

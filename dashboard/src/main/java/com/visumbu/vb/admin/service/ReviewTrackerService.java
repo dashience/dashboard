@@ -64,10 +64,12 @@ public class ReviewTrackerService {
         if (dataSetReportName.equalsIgnoreCase("ratingsBySource")) {
             return getSourcesRating(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
         }
-        if (dataSetReportName.equalsIgnoreCase("overallRatings")) {
-            return getOverallRating(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
+        if (dataSetReportName.equalsIgnoreCase("overallReviewsByRatings")) {
+            return overallReviewsByRatings(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
         }
-
+        if (dataSetReportName.equalsIgnoreCase("reviewData")) {
+            return reviewData(reviewTrackerAccountId, authorizationHeaders, startDateStr, endDateStr, timeSegment, productSegment);
+        }
         return null;
     }
 
@@ -175,7 +177,34 @@ public class ReviewTrackerService {
         return null;
     }
 
-    public static List<Map<String, Object>> getOverallRating(String accountId, String authorizationHeaders,
+    public static List<Map<String, Object>> reviewData(String accountId, String authorizationHeaders,
+            String startDateStr, String endDateStr, String timeSegment, String productSegment) {
+        try {
+            List<Map<String, Object>> returnMap = new ArrayList();
+            String url = BASE_URL + "metrics/" + accountId + "/overview?";
+            MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();
+            valueMap.put("account_id", Arrays.asList(accountId));
+            valueMap.put("month_after", Arrays.asList(startDateStr));
+            valueMap.put("month_before", Arrays.asList(endDateStr));
+
+            String data = getResponse(url, authorizationHeaders, valueMap);
+            System.out.println(data);
+            JSONParser parser = new JSONParser();
+            Object jsonObj = parser.parse(data);
+            JSONObject array = (JSONObject) jsonObj;
+            Map<String, Object> mapData = new HashMap<>();
+            mapData.put("totalReviews", array.get("total_reviews"));
+            mapData.put("reputationScore", array.get("avg_rating"));
+            returnMap.add(mapData);
+            System.out.println("Review Data -->" + returnMap);
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(ReviewTrackerService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> overallReviewsByRatings(String accountId, String authorizationHeaders,
             String startDateStr, String endDateStr, String timeSegment, String productSegment) {
         try {
             List<Map<String, Object>> returnMap = new ArrayList();
@@ -191,16 +220,14 @@ public class ReviewTrackerService {
             Object jsonObj = parser.parse(data);
             JSONObject array = (JSONObject) jsonObj;
             Map<String, Object> mapData = (Map<String, Object>) array.get("ratings");
-            Map<String, Object> reviewData = new HashMap<>();
-            reviewData.put("0star", mapData.get("0star"));
-            reviewData.put("1star", mapData.get("1star"));
-            reviewData.put("2star", mapData.get("2star"));
-            reviewData.put("2star", mapData.get("3star"));
-            reviewData.put("3star", mapData.get("4star"));
-            reviewData.put("4star", mapData.get("5star"));
-            reviewData.put("totalReviews", array.get("total_reviews"));
-            reviewData.put("avgRating", array.get("avg_rating"));
-            returnMap.add(reviewData);
+            for (Map.Entry<String, Object> entry : mapData.entrySet()) {
+                Map<String, Object> reviewData = new HashMap<>();
+                String key = entry.getKey();
+                String value = entry.getValue() + "";
+                reviewData.put("stars", key);
+                reviewData.put("reviews", value);
+                returnMap.add(reviewData);
+            }
             return returnMap;
         } catch (ParseException ex) {
             Logger.getLogger(ReviewTrackerService.class.getName()).log(Level.SEVERE, null, ex);

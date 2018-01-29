@@ -38,7 +38,10 @@ import org.springframework.util.MultiValueMap;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 
 public class GooglePlusService {
- public final String BASE_URL = "https://www.googleapis.com/plus/v1/people/";
+
+    
+    public final String BASE_URL = "https://www.googleapis.com/plus/v1/people/";
+    
     public List<Map<String, Object>> get(String gPlusAccountId, String pPlusApiKey, String reportName) {
         if (reportName.equalsIgnoreCase("activityPerformance")) {
             return activityMetrics(gPlusAccountId, pPlusApiKey);
@@ -49,6 +52,7 @@ public class GooglePlusService {
     public List<Map<String, Object>> activityMetrics(String gPlusAccountId, String gPlusApiKey) {
         try {
             long replies = 0, plusoners = 0, resharers = 0;
+            
             String url=BASE_URL+gPlusAccountId+"/activities/public";
 
             MultiValueMap<String, String> valueMap = new LinkedMultiValueMap<>();

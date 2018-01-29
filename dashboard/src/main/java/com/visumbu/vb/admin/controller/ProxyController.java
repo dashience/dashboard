@@ -46,6 +46,7 @@ import com.visumbu.vb.utils.XlsDataSet;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -127,7 +128,7 @@ public class ProxyController {
 
     @Autowired
     private GoogleSpreadSheetService googleSpreadSheetService;
-    
+
     @Autowired
     private ReviewTrackerService reviewTrackerService;
 
@@ -151,7 +152,7 @@ public class ProxyController {
         TabWidget widget = uiService.getWidgetById(widgetIdInt);
         DataExporter exporter = new DataExporter();
         List<ColumnDef> columnDef = (List<ColumnDef>) dataMap.get("columnDefs");
-        System.out.println("Column Def Data------>"+columnDef);
+        System.out.println("Column Def Data------>" + columnDef);
         List<WidgetColumn> widgetColumns = uiService.getWidgetColumns(widgetIdInt);
         String widgetTitle = widget.getWidgetTitle() != null ? widget.getWidgetTitle() : "Widget";
         try {
@@ -484,11 +485,11 @@ public class ProxyController {
     private Map<String, Object> getGenericData(MultiValueMap<String, String> valueMap, Integer userId, Integer dataSetId, Integer widgetId, HttpServletRequest request, HttpServletResponse response) {
         Map returnMap = new HashMap<>();
         returnMap = getData(valueMap, request, response);
-        System.out.println("returnMap--------------------->"+returnMap);
+        System.out.println("returnMap--------------------->" + returnMap);
         returnMap.put("columnDefs", getColumnDefObject((List<Map<String, Object>>) returnMap.get("data"), dataSetId));
 
         updateDataSetColumnId((List) returnMap.get("columnDefs"), userId, dataSetId, widgetId);
-        
+
         List<Map<String, Object>> data = (List<Map<String, Object>>) returnMap.get("data");
         if (widgetId != null) {
             String queryFilter = null;
@@ -863,7 +864,7 @@ public class ProxyController {
             returnMap = (Map) getCsvData(request, response);
         } else if (dataSourceType.equalsIgnoreCase("reviewTracker")) {
             List<Map<String, Object>> dataList = getReviewTrackerData(request, response);
-                            System.out.println("before data1-------------->"+dataList);
+            System.out.println("before data1-------------->" + dataList);
             returnMap.put("data", dataList);
             returnMap.put("columnDefs", getColumnDefObject(dataList));
         } else if (dataSourceType.equalsIgnoreCase("semRush")) {
@@ -923,7 +924,7 @@ public class ProxyController {
             } catch (NumberFormatException e) {
 
             }
-        }                
+        }
         List<DataSetColumns> dataSetColumnList = null;
         if (widgetIdInt == null) {
             dataSetColumnList = uiService.getDataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
@@ -933,13 +934,13 @@ public class ProxyController {
         if (dataSetColumnList.size() > 0) {
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataList, request, httpRequest, response);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
-             System.out.println(dataSetColumnList);
-             System.out.println("DATA INSIDE DERIVED COLUMN");
-             System.out.println("dataWithDerivedColumns----------->"+dataWithDerivedColumns);
-             System.out.println("dataWithDerivedFunctions------------->"+dataWithDerivedFunctions);
+            System.out.println(dataSetColumnList);
+            System.out.println("DATA INSIDE DERIVED COLUMN");
+            System.out.println("dataWithDerivedColumns----------->" + dataWithDerivedColumns);
+            System.out.println("dataWithDerivedFunctions------------->" + dataWithDerivedFunctions);
             returnMap.put("data", dataWithDerivedColumns);
         }
-        System.out.println("before data-------------->"+returnMap);
+        System.out.println("before data-------------->" + returnMap);
         dataList = (List<Map<String, Object>>) returnMap.get("data");
         returnMap.put("columnDefs", getColumnDefObject(dataList));
         List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");
@@ -1355,6 +1356,7 @@ public class ProxyController {
     }
 
     Map getSemRushData(MultiValueMap<String, String> request, HttpServletResponse response) {
+        String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String connectionString = getFromMultiValueMap(request, "connectionUrl");
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String level = getFromMultiValueMap(request, "timeSegment");
@@ -1364,14 +1366,14 @@ public class ProxyController {
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
+         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         if (domain == null) {
             domain = getFromMultiValueMap(request, "networkType");
         }
         if (domain == null || domain.isEmpty() || domain.equalsIgnoreCase("undefined") || domain.equalsIgnoreCase("none")) {
-            List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
             domain = getAccountId(accountProperty, "semRushDomain");
         }
-
+        
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
 
@@ -1402,14 +1404,15 @@ public class ProxyController {
             region = (region == null || region.isEmpty()) ? dataSet.getProductSegment() : region;
             domain = (domain == null || domain.isEmpty()) ? dataSet.getNetworkType() : domain;
         }
-
+        String semRushApiKey = getAccountId(accountProperty, "semRushApiKey");
+        String semRushProjectId = getAccountId(accountProperty, "semRushProjectId");
 //        String level = "domain_ranks";
 //        String region = "us";
 //        Date startDate = DateUtils.get30DaysBack();
 //        Date endDate = DateUtils.get30DaysBack();
 //        String domain = "seobook.com";
         try {
-            return semrushService.getData(connectionString, level, region, domain, startDate, endDate);
+            return semrushService.getData(dataSetReportName, connectionString, level, region, domain, startDate, endDate, semRushApiKey, semRushProjectId);
         } catch (IOException ex) {
             java.util.logging.Logger.getLogger(ProxyController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -2348,17 +2351,17 @@ public class ProxyController {
         String reviewTrackerAccountUserName = getAccountId(accountProperty, "reviewTrackerAccountUserNames");
 
         try {
-            System.out.println("dataSetReportName--->"+dataSetReportName);
-            System.out.println("reviewTrackerAcessToken--->"+reviewTrackerAcessToken);
-            System.out.println("reviewTrackerAccountId--->"+reviewTrackerAccountId);
-            System.out.println("startDate--->"+startDate);
-            System.out.println("endDate--->"+endDate);
-            System.out.println("timeSegment--->"+timeSegment);
-            System.out.println("productSegment--->"+productSegment);
-            System.out.println("reviewTrackerAccountUserName--->"+reviewTrackerAccountUserName);
+            System.out.println("dataSetReportName--->" + dataSetReportName);
+            System.out.println("reviewTrackerAcessToken--->" + reviewTrackerAcessToken);
+            System.out.println("reviewTrackerAccountId--->" + reviewTrackerAccountId);
+            System.out.println("startDate--->" + startDate);
+            System.out.println("endDate--->" + endDate);
+            System.out.println("timeSegment--->" + timeSegment);
+            System.out.println("productSegment--->" + productSegment);
+            System.out.println("reviewTrackerAccountUserName--->" + reviewTrackerAccountUserName);
             List<Map<String, Object>> reviewTrackerReport = reviewTrackerService.get(dataSetReportName, reviewTrackerAcessToken,
-                    reviewTrackerAccountId, startDate, endDate, timeSegment, productSegment,reviewTrackerAccountUserName);
-            System.out.println("reviewTrackerReport----------->"+reviewTrackerReport);
+                    reviewTrackerAccountId, startDate, endDate, timeSegment, productSegment, reviewTrackerAccountUserName);
+            System.out.println("reviewTrackerReport----------->" + reviewTrackerReport);
             return reviewTrackerReport;
         } catch (NumberFormatException ex) {
             return null;
@@ -2433,8 +2436,8 @@ public class ProxyController {
         properties.put("httpMethod", "GET");
         try {
             Long twitterOganicAccountId = Long.parseLong(twitterAccountId);
-            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, properties, startDate, endDate,
-                    timeSegment, productSegment);
+            List<Map<String, Object>> twitterReport = twitterService.get(dataSetReportName, properties, startDate,
+                    endDate, timeSegment, productSegment);
             return twitterReport;
         } catch (NumberFormatException ex) {
             return null;
@@ -2834,7 +2837,7 @@ public class ProxyController {
                         if (fieldProperties.getDataFormat() != null) {
                             columnDef.setDataFormat(fieldProperties.getDataFormat());
                         }
-                         //System.out.println("DAta Format ===> " + fieldProperties.getDataFormat());
+                        //System.out.println("DAta Format ===> " + fieldProperties.getDataFormat());
                     } else {
                         Object value = entrySet.getValue();
                         String valueString = value + "";
