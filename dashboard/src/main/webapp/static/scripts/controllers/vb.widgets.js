@@ -2833,6 +2833,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
             });
+            console.log("value---------->",scope.widgetColumns);
             var xData = [];
             var xTicks = [];
             scope.orderData = function (list, fieldnames) {
@@ -3356,6 +3357,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                         }
                                     }
                                 });
+                            }
+                            if (chartMaxRecord.maxRecord > 0) {
+                                chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
                             xTicks = [xAxis.fieldName];
                             xData = chartData.map(function (a) {
