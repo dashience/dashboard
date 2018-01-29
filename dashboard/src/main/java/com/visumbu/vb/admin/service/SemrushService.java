@@ -59,9 +59,9 @@ public class SemrushService {
     public Map getData(String dataSetReportName, String key, String level, String region, String domain, Date startDate, Date endDate, String apiKey, String projectId) throws MalformedURLException, IOException {
         API_KEY = apiKey;
         PROJECT_ID = projectId;
-        if ("position".equals(dataSetReportName)) {
+        if (dataSetReportName.equalsIgnoreCase("position")) {
             String data = getDataFromUrl(getUrl(dataSetReportName, key, level, region, domain, startDate, endDate));
-            if ("tracking_position_organic".equals(level) || "tracking_position_adwords".equals(level)) {
+            if (level.equalsIgnoreCase("tracking_position_organic") || level.equalsIgnoreCase("tracking_position_adwords")) {
                 return getTrackingPosition(data);
             } else {
                 return getCompetitorsDiscovery(data);
@@ -75,18 +75,16 @@ public class SemrushService {
         String startDateStr = DateUtils.dateToString(startDate, "yyyyMMDD");
         String endDateStr = DateUtils.dateToString(endDate, "yyyyMMDD");
         String url;
-        if ("position".equals(dataSetReportName)) {
+        if (dataSetReportName.equalsIgnoreCase("position")) {
             url = SEMRUSH_URL + "reports/v1/projects/" + PROJECT_ID + "/tracking?key=" + API_KEY + "&action=report&type=" + level + "&url=*.championwindow.com&url_type=rootdomain";
         } else {
             String dateStr = DateUtils.dateToString(endDate, "yyyyMM") + "15";
             url = SEMRUSH_URL + "?type=" + level + "&key=" + key + "&domain=" + domain + "&export_escape=1&database=" + region + "&display_date=" + dateStr;
-//        String url = "http://api.semrush.com/reports/v1/projects/1178590/tracking?key=" + API_KEY + "&action=report&type=tracking_position_organic&display_limit=10&display_offset=0&display_sort=20140411_asc&date_begin=20170405&date_end=20140411&display_filter=&url=*.championwindow.com%2F*&linktype_filter=0";
         }
         return url;
     }
 
     public String getDataFromUrl(String url) {
-        System.out.println("url------->" + url);
         return Rest.getData(url);
     }
 
@@ -154,7 +152,7 @@ public class SemrushService {
                 Map<String, Object> reviewData = new HashMap<>();
                 reviewData.put("keyword", requiredData.get("Ph"));
                 reviewData.put("CPC", requiredData.get("Cp"));
-                reviewData.put("Vol", requiredData.get("Nq"));
+                reviewData.put("volumne", requiredData.get("Nq"));
                 Map<String, Object> positionByDate = (Map<String, Object>) requiredData.get("Dt");
                 int size = positionByDate.size();
                 for (Entry<String, Object> position : positionByDate.entrySet()) {
@@ -167,13 +165,13 @@ public class SemrushService {
                 }
                 Map<String, Object> difference1 = (Map<String, Object>) requiredData.get("Diff1");
                 Map.Entry<String, Object> entry = difference1.entrySet().iterator().next();
-                reviewData.put("Diff 1", entry.getValue());
+                reviewData.put("diff1", entry.getValue());
                 Map<String, Object> difference7 = (Map<String, Object>) requiredData.get("Diff7");
                 entry = difference7.entrySet().iterator().next();
-                reviewData.put("Diff 7", entry.getValue());
+                reviewData.put("diff7", entry.getValue());
                 Map<String, Object> difference30 = (Map<String, Object>) requiredData.get("Diff30");
                 entry = difference30.entrySet().iterator().next();
-                reviewData.put("Diff 30", entry.getValue());
+                reviewData.put("diff30", entry.getValue());
                 data.add(reviewData);
             }
             Map<String, Object> returnMap = new HashMap<>();
@@ -206,18 +204,8 @@ public class SemrushService {
                         reviewData.put("keywords", byDateMetrices.get("Mc"));
                         reviewData.put("avgPosition", byDateMetrices.get("Av"));
                         reviewData.put("visibility", byDateMetrices.get("Cl"));
-//                        reviewData.put("positionDeviation", byDateMetrices.get("Sq"));
                         reviewData.put("estimatedTraffic", byDateMetrices.get("Tr"));
-//                        reviewData.put("date", value.getKey());
                     }
-//                    if (value.getKey().equals("Diff")) {
-//                        Map<String, Object> differenceMetrices = (Map<String,Object>)value.getValue();
-//                        reviewData.put("diffKeywords", differenceMetrices.get("Mc"));
-//                        reviewData.put("diffAvgPosition", differenceMetrices.get("Av"));
-//                        reviewData.put("diffVisibility", differenceMetrices.get("Cl"));
-//                        reviewData.put("diffPositionDeviation", differenceMetrices.get("Sq"));
-//                        reviewData.put("diffEstimatedTraffic", differenceMetrices.get("Tr"));
-//                    }
                     count++;
                 }
                 reviewData.put("domain", requiredData.get("Ur"));

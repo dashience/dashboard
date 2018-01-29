@@ -3936,6 +3936,31 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     type: "url"
                 },
             ]
+        },
+        {
+            "type": "position",
+            "name": "Position Reports",
+            "timeSegments": [
+                {
+                    "name": "Organic Positions report",
+                    "type": "tracking_position_organic"
+                }, {
+                    "name": "AdWords Positions report",
+                    "type": "tracking_position_adwords"
+                }, {
+                    "name": "Organic Competitors Discovery report",
+                    "type": "tracking_competitors_organic"
+                }, {
+                    "name": "AdWords Competitors Discovery report",
+                    "type": "tracking_competitors_adwords"
+                }
+            ],
+            "productSegments": [
+                {
+                    "name": "None",
+                    "type": "none"
+                }
+            ]
         }
     ];
 
@@ -4087,10 +4112,21 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
             if ($scope.dataSet.reportName !== "") {
                 $scope.nwStatusFlag = false;
-                $scope.timeSegFlag = false;
-                $scope.productSegFlag = false;
+                $scope.timeSegFlag = true;
+                $scope.productSegFlag = true;
             }
-
+            if ($scope.dataSet.reportName == 'position') {
+                if (!dataSet.timeSegment) {
+                    $scope.dataSet.timeSegment = {name: 'Organic Positions report', type: 'tracking_position_organic'};
+                } else {
+                    getTimeSegment(timeSegmentList, timeSegmentName);
+                }
+                if (!dataSet.productSegment) {
+                    $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+                } else {
+                    getProductSegment(productList, productSegmentName);
+                }
+            }
             if ($scope.dataSet.reportName == 'overview') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};

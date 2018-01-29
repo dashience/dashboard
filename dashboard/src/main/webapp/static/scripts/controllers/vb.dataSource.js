@@ -57,6 +57,14 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             {
                 type: 'salesForce',
                 name: 'SalesForce'
+            },
+            {
+                type: 'semRush',
+                name: 'SEMRush'
+            },
+            {
+                type: 'reviewTracker',
+                name: 'ReviewTracker'
             }
         ];
         function getItems() {
