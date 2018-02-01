@@ -1,5 +1,6 @@
 {
-    "bing": [{
+    "bing": [
+        {
             "type": "accountPerformance",
             "name": "Account Performance",
             "timeSegments": [
@@ -38,7 +39,8 @@
                     "name": "None"
                 }
             ]
-        }, {
+        },
+        {
             "type": "campaignPerformance",
             "name": "Campaign Performance",
             "timeSegments": [
@@ -70,7 +72,8 @@
                     "name": "None"
                 }
             ]
-        }, {
+        },
+        {
             "type": "adGroupPerformance",
             "name": "Ad Group Performance",
             "timeSegments": [
@@ -97,7 +100,8 @@
                     "name": "None"
                 }
             ]
-        }, {
+        },
+        {
             "type": "adPerformance",
             "name": "Ad Performance",
             "timeSegments": [
@@ -124,7 +128,8 @@
                     "name": "None"
                 }
             ]
-        }, {
+        },
+        {
             "type": "geoPerformance",
             "name": "Geo Performance",
             "timeSegments": [
@@ -162,7 +167,8 @@
                     "name": "None"
                 }
             ]
-        }, {
+        },
+        {
             "type": "cityData",
             "name": "City Data",
             "timeSegments": [
@@ -179,7 +185,8 @@
             ]
         }
     ],
-    "facebook": [{
+    "facebook": [
+        {
             "type": "accountPerformance",
             "name": "Account Performance",
             "timeSegments": [
@@ -418,7 +425,8 @@
                     "name": "None"
                 }
             ]
-        }],
+        }
+    ],
     "analytics": [
         {
             "type": "overallPerformance",
@@ -1279,7 +1287,8 @@
                     "name": "None"
                 }
             ]
-        }, {
+        },
+        {
             "type": "videoPerformance",
             "name": "Video",
             "timeSegments": [
@@ -1346,16 +1355,20 @@
                 {
                     "name": "All Databases",
                     "type": "domain_ranks"
-                }, {
+                },
+                {
                     "name": "One Database",
                     "type": "domain_rank"
-                }, {
+                },
+                {
                     "name": "History",
                     "type": "domain_rank_history"
-                }, {
+                },
+                {
                     "name": "Winners and Losers",
                     "type": "rank_difference"
-                }, {
+                },
+                {
                     "name": "SEMrush Rank",
                     "type": "rank"
                 }
@@ -1372,14 +1385,16 @@
                 {
                     "name": "google.ca",
                     "type": "ca"
-                }, {
+                },
+                {
                     "name": "google.ru",
                     "type": "ru"
                 },
                 {
                     "name": "google.de",
                     "type": "de"
-                }, {
+                },
+                {
                     "name": "google.fr",
                     "type": "fr"
                 },
@@ -1390,7 +1405,8 @@
                 {
                     "name": "google.it",
                     "type": "it"
-                }, {
+                },
+                {
                     "name": "google.com.br",
                     "type": "br"
                 },
@@ -1445,7 +1461,8 @@
                 {
                     "name": "google.no",
                     "type": "no"
-                }, {
+                },
+                {
                     "name": "google.pl",
                     "type": "pl"
                 },
@@ -1456,7 +1473,8 @@
                 {
                     "name": "google.com.sg",
                     "type": "sg"
-                }, {
+                },
+                {
                     "name": "google.com.tr",
                     "type": "tr"
                 },
@@ -1483,14 +1501,16 @@
                 {
                     "name": "google.al",
                     "type": "al"
-                }, {
+                },
+                {
                     "name": "google.dz",
                     "type": "dz"
                 },
                 {
                     "name": "google.ao",
                     "type": "ao"
-                }, {
+                },
+                {
                     "name": "google.am",
                     "type": "am"
                 },
@@ -1517,14 +1537,16 @@
                 {
                     "name": "google.bz",
                     "type": "bz"
-                }, {
+                },
+                {
                     "name": "google.bo",
                     "type": "bo"
                 },
                 {
                     "name": "google.ba",
                     "type": "ba"
-                }, {
+                },
+                {
                     "name": "google.bw",
                     "type": "bw"
                 },
@@ -1551,14 +1573,16 @@
                 {
                     "name": "google.cm",
                     "type": "cm"
-                }, {
+                },
+                {
                     "name": "google.cl",
                     "type": "cl"
                 },
                 {
                     "name": "google.co",
                     "type": "co"
-                }, {
+                },
+                {
                     "name": "google.cr",
                     "type": "cr"
                 },
@@ -1585,13 +1609,16 @@
                 {
                     "name": "google.ec",
                     "type": "ec"
-                }, {
+                },
+                {
                     "name": "google.eg",
                     "type": "eg"
-                }, {
+                },
+                {
                     "name": "google.sv",
                     "type": "sv"
-                }, {
+                },
+                {
                     "name": "google.bw",
                     "type": "bw"
                 },
@@ -1618,13 +1645,16 @@
                 {
                     "name": "google.gt",
                     "type": "gt"
-                }, {
+                },
+                {
                     "name": "google.gt",
                     "type": "gt"
-                }, {
+                },
+                {
                     "name": "google.gy",
                     "type": "gy"
-                }, {
+                },
+                {
                     "name": "google.ht",
                     "type": "ht"
                 },
@@ -1651,13 +1681,16 @@
                 {
                     "name": "google.kz",
                     "type": "kz"
-                }, {
+                },
+                {
                     "name": "google.lv",
                     "type": "lv"
-                }, {
+                },
+                {
                     "name": "google.lb",
                     "type": "lb"
-                }, {
+                },
+                {
                     "name": "google.lt",
                     "type": "lt"
                 },
@@ -1684,13 +1717,16 @@
                 {
                     "name": "google.md",
                     "type": "md"
-                }, {
+                },
+                {
                     "name": "google.mn",
                     "type": "mn"
-                }, {
+                },
+                {
                     "name": "google.me",
                     "type": "me"
-                }, {
+                },
+                {
                     "name": "google.ma",
                     "type": "ma"
                 },
@@ -1717,13 +1753,16 @@
                 {
                     "name": "google.om",
                     "type": "om"
-                }, {
+                },
+                {
                     "name": "google.py",
                     "type": "py"
-                }, {
+                },
+                {
                     "name": "google.pe",
                     "type": "pe"
-                }, {
+                },
+                {
                     "name": "google.ph",
                     "type": "ph"
                 },
@@ -1750,7 +1789,8 @@
                 {
                     "name": "google.sk",
                     "type": "sk"
-                }, {
+                },
+                {
                     "name": "google.si",
                     "type": "si"
                 },
@@ -1773,13 +1813,16 @@
                 {
                     "name": "google.bs",
                     "type": "bs"
-                }, {
+                },
+                {
                     "name": "google.tt",
                     "type": "tt"
-                }, {
+                },
+                {
                     "name": "google.tn",
                     "type": "tn"
-                }, {
+                },
+                {
                     "name": "google.ua",
                     "type": "ua"
                 },
@@ -1806,13 +1849,16 @@
                 {
                     "name": "google.zw",
                     "type": "zw"
-                }, {
+                },
+                {
                     "name": "google.ly",
                     "type": "ly"
-                }, {
+                },
+                {
                     "name": "google.com.uk-mobile",
                     "type": "mobile-uk"
-                }, {
+                },
+                {
                     "name": "google.ca-mobile",
                     "type": "mobile-ca"
                 },
@@ -1839,7 +1885,8 @@
                 {
                     "name": "google.com.au-mobile",
                     "type": "mobile-au"
-                }, {
+                },
+                {
                     "name": "google.dk-mobile",
                     "type": "mobile-dk"
                 },
@@ -1850,10 +1897,12 @@
                 {
                     "name": "google.nl",
                     "type": "mobile-nl"
-                }, {
+                },
+                {
                     "name": "google.se",
                     "type": "mobile-se"
-                }, {
+                },
+                {
                     "name": "google.com.tr-mobile",
                     "type": "mobile-tr"
                 },
@@ -1861,10 +1910,12 @@
                 {
                     "name": "google.co.in",
                     "type": "mobile-in"
-                }, {
+                },
+                {
                     "name": "google.co-id",
                     "type": "mobile-id"
-                }, {
+                },
+                {
                     "name": "google.co.il",
                     "type": "mobile-il"
                 }
@@ -1877,32 +1928,40 @@
                 {
                     "name": "Domain Organic Search Keywords",
                     "type": "domain_organic"
-                }, {
+                },
+                {
                     "name": "Domain Paid Search Keywords",
                     "type": "domain_adwords"
-                }, {
+                },
+                {
                     "name": "Ads Copies",
                     "type": "domain_adwords_unique"
-                }, {
+                },
+                {
                     "name": "Competitors in Organic Search",
                     "type": "domain_organic_organic"
-                }, {
+                },
+                {
                     "name": "Competitors in Paid Search",
                     "type": "domain_adwords_adwords"
-                }, {
+                },
+                {
                     "name": " Domain Ads History",
                     "type": "domain_adwords_historical"
-                }, {
+                },
+                {
                     "name": "Domain vs. Domain",
                     "type": "domain_domains"
-                }, {
+                },
+                {
                     "name": "Domain PLA Search Keywords",
                     "type": "domain_shopping"
                 },
                 {
                     "name": "PLA Copies",
                     "type": "domain_shopping_unique"
-                }, {
+                },
+                {
                     "name": "PLA Competitors",
                     "type": "domain_shopping_shopping"
                 }
@@ -1919,14 +1978,16 @@
                 {
                     "name": "google.ca",
                     "type": "ca"
-                }, {
+                },
+                {
                     "name": "google.ru",
                     "type": "ru"
                 },
                 {
                     "name": "google.de",
                     "type": "de"
-                }, {
+                },
+                {
                     "name": "google.fr",
                     "type": "fr"
                 },
@@ -1937,7 +1998,8 @@
                 {
                     "name": "google.it",
                     "type": "it"
-                }, {
+                },
+                {
                     "name": "google.com.br",
                     "type": "br"
                 },
@@ -1992,7 +2054,8 @@
                 {
                     "name": "google.no",
                     "type": "no"
-                }, {
+                },
+                {
                     "name": "google.pl",
                     "type": "pl"
                 },
@@ -2003,7 +2066,8 @@
                 {
                     "name": "google.com.sg",
                     "type": "sg"
-                }, {
+                },
+                {
                     "name": "google.com.tr",
                     "type": "tr"
                 },
@@ -2030,14 +2094,16 @@
                 {
                     "name": "google.al",
                     "type": "al"
-                }, {
+                },
+                {
                     "name": "google.dz",
                     "type": "dz"
                 },
                 {
                     "name": "google.ao",
                     "type": "ao"
-                }, {
+                },
+                {
                     "name": "google.am",
                     "type": "am"
                 },
@@ -2064,14 +2130,16 @@
                 {
                     "name": "google.bz",
                     "type": "bz"
-                }, {
+                },
+                {
                     "name": "google.bo",
                     "type": "bo"
                 },
                 {
                     "name": "google.ba",
                     "type": "ba"
-                }, {
+                },
+                {
                     "name": "google.bw",
                     "type": "bw"
                 },
@@ -2098,14 +2166,16 @@
                 {
                     "name": "google.cm",
                     "type": "cm"
-                }, {
+                },
+                {
                     "name": "google.cl",
                     "type": "cl"
                 },
                 {
                     "name": "google.co",
                     "type": "co"
-                }, {
+                },
+                {
                     "name": "google.cr",
                     "type": "cr"
                 },
@@ -2132,13 +2202,16 @@
                 {
                     "name": "google.ec",
                     "type": "ec"
-                }, {
+                },
+                {
                     "name": "google.eg",
                     "type": "eg"
-                }, {
+                },
+                {
                     "name": "google.sv",
                     "type": "sv"
-                }, {
+                },
+                {
                     "name": "google.bw",
                     "type": "bw"
                 },
@@ -2165,13 +2238,16 @@
                 {
                     "name": "google.gt",
                     "type": "gt"
-                }, {
+                },
+                {
                     "name": "google.gt",
                     "type": "gt"
-                }, {
+                },
+                {
                     "name": "google.gy",
                     "type": "gy"
-                }, {
+                },
+                {
                     "name": "google.ht",
                     "type": "ht"
                 },
@@ -2198,13 +2274,16 @@
                 {
                     "name": "google.kz",
                     "type": "kz"
-                }, {
+                },
+                {
                     "name": "google.lv",
                     "type": "lv"
-                }, {
+                },
+                {
                     "name": "google.lb",
                     "type": "lb"
-                }, {
+                },
+                {
                     "name": "google.lt",
                     "type": "lt"
                 },
@@ -2231,13 +2310,16 @@
                 {
                     "name": "google.md",
                     "type": "md"
-                }, {
+                },
+                {
                     "name": "google.mn",
                     "type": "mn"
-                }, {
+                },
+                {
                     "name": "google.me",
                     "type": "me"
-                }, {
+                },
+                {
                     "name": "google.ma",
                     "type": "ma"
                 },
@@ -2264,13 +2346,16 @@
                 {
                     "name": "google.om",
                     "type": "om"
-                }, {
+                },
+                {
                     "name": "google.py",
                     "type": "py"
-                }, {
+                },
+                {
                     "name": "google.pe",
                     "type": "pe"
-                }, {
+                },
+                {
                     "name": "google.ph",
                     "type": "ph"
                 },
@@ -2297,7 +2382,8 @@
                 {
                     "name": "google.sk",
                     "type": "sk"
-                }, {
+                },
+                {
                     "name": "google.si",
                     "type": "si"
                 },
@@ -2320,13 +2406,16 @@
                 {
                     "name": "google.bs",
                     "type": "bs"
-                }, {
+                },
+                {
                     "name": "google.tt",
                     "type": "tt"
-                }, {
+                },
+                {
                     "name": "google.tn",
                     "type": "tn"
-                }, {
+                },
+                {
                     "name": "google.ua",
                     "type": "ua"
                 },
@@ -2353,13 +2442,16 @@
                 {
                     "name": "google.zw",
                     "type": "zw"
-                }, {
+                },
+                {
                     "name": "google.ly",
                     "type": "ly"
-                }, {
+                },
+                {
                     "name": "google.com.uk-mobile",
                     "type": "mobile-uk"
-                }, {
+                },
+                {
                     "name": "google.ca-mobile",
                     "type": "mobile-ca"
                 },
@@ -2386,7 +2478,8 @@
                 {
                     "name": "google.com.au-mobile",
                     "type": "mobile-au"
-                }, {
+                },
+                {
                     "name": "google.dk-mobile",
                     "type": "mobile-dk"
                 },
@@ -2397,10 +2490,12 @@
                 {
                     "name": "google.nl",
                     "type": "mobile-nl"
-                }, {
+                },
+                {
                     "name": "google.se",
                     "type": "mobile-se"
-                }, {
+                },
+                {
                     "name": "google.com.tr-mobile",
                     "type": "mobile-tr"
                 },
@@ -2408,10 +2503,12 @@
                 {
                     "name": "google.co.in",
                     "type": "mobile-in"
-                }, {
+                },
+                {
                     "name": "google.co-id",
                     "type": "mobile-id"
-                }, {
+                },
+                {
                     "name": "google.co.il",
                     "type": "mobile-il"
                 }
@@ -2424,25 +2521,32 @@
                 {
                     "name": "Keyword Overview - All Databases",
                     "type": "phrase_all"
-                }, {
+                },
+                {
                     "name": "Keyword Overview - One Database",
                     "type": "phrase_this"
-                }, {
+                },
+                {
                     "name": " Organic Results",
                     "type": "phrase_organic"
-                }, {
+                },
+                {
                     "name": "Paid Results",
                     "type": "phrase_adwords"
-                }, {
+                },
+                {
                     "name": "Related Keywords",
                     "type": "phrase_related"
-                }, {
+                },
+                {
                     "name": "Keyword Ads History",
                     "type": "phrase_adwords_historical"
-                }, {
+                },
+                {
                     "name": "Phrase Match Keywords",
                     "type": "phrase_fullsearch"
-                }, {
+                },
+                {
                     "name": "Keyword Difficulty",
                     "type": "phrase_kdi"
                 }
@@ -2459,14 +2563,16 @@
                 {
                     "name": "google.ca",
                     "type": "ca"
-                }, {
+                },
+                {
                     "name": "google.ru",
                     "type": "ru"
                 },
                 {
                     "name": "google.de",
                     "type": "de"
-                }, {
+                },
+                {
                     "name": "google.fr",
                     "type": "fr"
                 },
@@ -2477,7 +2583,8 @@
                 {
                     "name": "google.it",
                     "type": "it"
-                }, {
+                },
+                {
                     "name": "google.com.br",
                     "type": "br"
                 },
@@ -2532,7 +2639,8 @@
                 {
                     "name": "google.no",
                     "type": "no"
-                }, {
+                },
+                {
                     "name": "google.pl",
                     "type": "pl"
                 },
@@ -2543,7 +2651,8 @@
                 {
                     "name": "google.com.sg",
                     "type": "sg"
-                }, {
+                },
+                {
                     "name": "google.com.tr",
                     "type": "tr"
                 },
@@ -2570,14 +2679,16 @@
                 {
                     "name": "google.al",
                     "type": "al"
-                }, {
+                },
+                {
                     "name": "google.dz",
                     "type": "dz"
                 },
                 {
                     "name": "google.ao",
                     "type": "ao"
-                }, {
+                },
+                {
                     "name": "google.am",
                     "type": "am"
                 },
@@ -2604,14 +2715,16 @@
                 {
                     "name": "google.bz",
                     "type": "bz"
-                }, {
+                },
+                {
                     "name": "google.bo",
                     "type": "bo"
                 },
                 {
                     "name": "google.ba",
                     "type": "ba"
-                }, {
+                },
+                {
                     "name": "google.bw",
                     "type": "bw"
                 },
@@ -2638,14 +2751,16 @@
                 {
                     "name": "google.cm",
                     "type": "cm"
-                }, {
+                },
+                {
                     "name": "google.cl",
                     "type": "cl"
                 },
                 {
                     "name": "google.co",
                     "type": "co"
-                }, {
+                },
+                {
                     "name": "google.cr",
                     "type": "cr"
                 },
@@ -2672,13 +2787,16 @@
                 {
                     "name": "google.ec",
                     "type": "ec"
-                }, {
+                },
+                {
                     "name": "google.eg",
                     "type": "eg"
-                }, {
+                },
+                {
                     "name": "google.sv",
                     "type": "sv"
-                }, {
+                },
+                {
                     "name": "google.bw",
                     "type": "bw"
                 },
@@ -2705,13 +2823,16 @@
                 {
                     "name": "google.gt",
                     "type": "gt"
-                }, {
+                },
+                {
                     "name": "google.gt",
                     "type": "gt"
-                }, {
+                },
+                {
                     "name": "google.gy",
                     "type": "gy"
-                }, {
+                },
+                {
                     "name": "google.ht",
                     "type": "ht"
                 },
@@ -2738,13 +2859,16 @@
                 {
                     "name": "google.kz",
                     "type": "kz"
-                }, {
+                },
+                {
                     "name": "google.lv",
                     "type": "lv"
-                }, {
+                },
+                {
                     "name": "google.lb",
                     "type": "lb"
-                }, {
+                },
+                {
                     "name": "google.lt",
                     "type": "lt"
                 },
@@ -2771,13 +2895,16 @@
                 {
                     "name": "google.md",
                     "type": "md"
-                }, {
+                },
+                {
                     "name": "google.mn",
                     "type": "mn"
-                }, {
+                },
+                {
                     "name": "google.me",
                     "type": "me"
-                }, {
+                },
+                {
                     "name": "google.ma",
                     "type": "ma"
                 },
@@ -2804,13 +2931,16 @@
                 {
                     "name": "google.om",
                     "type": "om"
-                }, {
+                },
+                {
                     "name": "google.py",
                     "type": "py"
-                }, {
+                },
+                {
                     "name": "google.pe",
                     "type": "pe"
-                }, {
+                },
+                {
                     "name": "google.ph",
                     "type": "ph"
                 },
@@ -2837,7 +2967,8 @@
                 {
                     "name": "google.sk",
                     "type": "sk"
-                }, {
+                },
+                {
                     "name": "google.si",
                     "type": "si"
                 },
@@ -2860,13 +2991,16 @@
                 {
                     "name": "google.bs",
                     "type": "bs"
-                }, {
+                },
+                {
                     "name": "google.tt",
                     "type": "tt"
-                }, {
+                },
+                {
                     "name": "google.tn",
                     "type": "tn"
-                }, {
+                },
+                {
                     "name": "google.ua",
                     "type": "ua"
                 },
@@ -2893,13 +3027,16 @@
                 {
                     "name": "google.zw",
                     "type": "zw"
-                }, {
+                },
+                {
                     "name": "google.ly",
                     "type": "ly"
-                }, {
+                },
+                {
                     "name": "google.com.uk-mobile",
                     "type": "mobile-uk"
-                }, {
+                },
+                {
                     "name": "google.ca-mobile",
                     "type": "mobile-ca"
                 },
@@ -2926,7 +3063,8 @@
                 {
                     "name": "google.com.au-mobile",
                     "type": "mobile-au"
-                }, {
+                },
+                {
                     "name": "google.dk-mobile",
                     "type": "mobile-dk"
                 },
@@ -2937,10 +3075,12 @@
                 {
                     "name": "google.nl",
                     "type": "mobile-nl"
-                }, {
+                },
+                {
                     "name": "google.se",
                     "type": "mobile-se"
-                }, {
+                },
+                {
                     "name": "google.com.tr-mobile",
                     "type": "mobile-tr"
                 },
@@ -2948,22 +3088,26 @@
                 {
                     "name": "google.co.in",
                     "type": "mobile-in"
-                }, {
+                },
+                {
                     "name": "google.co-id",
                     "type": "mobile-id"
-                }, {
+                },
+                {
                     "name": "google.co.il",
                     "type": "mobile-il"
                 }
             ]
-        }, {
+        },
+        {
             "type": "url",
             "name": "Url Report",
             "timeSegments": [
                 {
                     "name": "URL Organic Search Keywords",
                     "type": "url_organic"
-                }, {
+                },
+                {
                     "name": "URL Paid Search Keywords",
                     "type": "url_adwords"
                 }
@@ -2980,14 +3124,16 @@
                 {
                     "name": "google.ca",
                     "type": "ca"
-                }, {
+                },
+                {
                     "name": "google.ru",
                     "type": "ru"
                 },
                 {
                     "name": "google.de",
                     "type": "de"
-                }, {
+                },
+                {
                     "name": "google.fr",
                     "type": "fr"
                 },
@@ -2998,7 +3144,8 @@
                 {
                     "name": "google.it",
                     "type": "it"
-                }, {
+                },
+                {
                     "name": "google.com.br",
                     "type": "br"
                 },
@@ -3053,7 +3200,8 @@
                 {
                     "name": "google.no",
                     "type": "no"
-                }, {
+                },
+                {
                     "name": "google.pl",
                     "type": "pl"
                 },
@@ -3064,7 +3212,8 @@
                 {
                     "name": "google.com.sg",
                     "type": "sg"
-                }, {
+                },
+                {
                     "name": "google.com.tr",
                     "type": "tr"
                 },
@@ -3091,14 +3240,16 @@
                 {
                     "name": "google.al",
                     "type": "al"
-                }, {
+                },
+                {
                     "name": "google.dz",
                     "type": "dz"
                 },
                 {
                     "name": "google.ao",
                     "type": "ao"
-                }, {
+                },
+                {
                     "name": "google.am",
                     "type": "am"
                 },
@@ -3125,14 +3276,16 @@
                 {
                     "name": "google.bz",
                     "type": "bz"
-                }, {
+                },
+                {
                     "name": "google.bo",
                     "type": "bo"
                 },
                 {
                     "name": "google.ba",
                     "type": "ba"
-                }, {
+                },
+                {
                     "name": "google.bw",
                     "type": "bw"
                 },
@@ -3159,14 +3312,16 @@
                 {
                     "name": "google.cm",
                     "type": "cm"
-                }, {
+                },
+                {
                     "name": "google.cl",
                     "type": "cl"
                 },
                 {
                     "name": "google.co",
                     "type": "co"
-                }, {
+                },
+                {
                     "name": "google.cr",
                     "type": "cr"
                 },
@@ -3193,13 +3348,16 @@
                 {
                     "name": "google.ec",
                     "type": "ec"
-                }, {
+                },
+                {
                     "name": "google.eg",
                     "type": "eg"
-                }, {
+                },
+                {
                     "name": "google.sv",
                     "type": "sv"
-                }, {
+                },
+                {
                     "name": "google.bw",
                     "type": "bw"
                 },
@@ -3226,13 +3384,16 @@
                 {
                     "name": "google.gt",
                     "type": "gt"
-                }, {
+                },
+                {
                     "name": "google.gt",
                     "type": "gt"
-                }, {
+                },
+                {
                     "name": "google.gy",
                     "type": "gy"
-                }, {
+                },
+                {
                     "name": "google.ht",
                     "type": "ht"
                 },
@@ -3259,13 +3420,16 @@
                 {
                     "name": "google.kz",
                     "type": "kz"
-                }, {
+                },
+                {
                     "name": "google.lv",
                     "type": "lv"
-                }, {
+                },
+                {
                     "name": "google.lb",
                     "type": "lb"
-                }, {
+                },
+                {
                     "name": "google.lt",
                     "type": "lt"
                 },
@@ -3292,13 +3456,16 @@
                 {
                     "name": "google.md",
                     "type": "md"
-                }, {
+                },
+                {
                     "name": "google.mn",
                     "type": "mn"
-                }, {
+                },
+                {
                     "name": "google.me",
                     "type": "me"
-                }, {
+                },
+                {
                     "name": "google.ma",
                     "type": "ma"
                 },
@@ -3325,13 +3492,16 @@
                 {
                     "name": "google.om",
                     "type": "om"
-                }, {
+                },
+                {
                     "name": "google.py",
                     "type": "py"
-                }, {
+                },
+                {
                     "name": "google.pe",
                     "type": "pe"
-                }, {
+                },
+                {
                     "name": "google.ph",
                     "type": "ph"
                 },
@@ -3358,7 +3528,8 @@
                 {
                     "name": "google.sk",
                     "type": "sk"
-                }, {
+                },
+                {
                     "name": "google.si",
                     "type": "si"
                 },
@@ -3381,13 +3552,16 @@
                 {
                     "name": "google.bs",
                     "type": "bs"
-                }, {
+                },
+                {
                     "name": "google.tt",
                     "type": "tt"
-                }, {
+                },
+                {
                     "name": "google.tn",
                     "type": "tn"
-                }, {
+                },
+                {
                     "name": "google.ua",
                     "type": "ua"
                 },
@@ -3414,13 +3588,16 @@
                 {
                     "name": "google.zw",
                     "type": "zw"
-                }, {
+                },
+                {
                     "name": "google.ly",
                     "type": "ly"
-                }, {
+                },
+                {
                     "name": "google.com.uk-mobile",
                     "type": "mobile-uk"
-                }, {
+                },
+                {
                     "name": "google.ca-mobile",
                     "type": "mobile-ca"
                 },
@@ -3447,7 +3624,8 @@
                 {
                     "name": "google.com.au-mobile",
                     "type": "mobile-au"
-                }, {
+                },
+                {
                     "name": "google.dk-mobile",
                     "type": "mobile-dk"
                 },
@@ -3458,53 +3636,66 @@
                 {
                     "name": "google.nl",
                     "type": "mobile-nl"
-                }, {
+                },
+                {
                     "name": "google.se",
                     "type": "mobile-se"
-                }, {
+                },
+                {
                     "name": "google.com.tr-mobile",
                     "type": "mobile-tr"
                 },
                 {
                     "name": "google.co.in",
                     "type": "mobile-in"
-                }, {
+                },
+                {
                     "name": "google.co-id",
                     "type": "mobile-id"
-                }, {
+                },
+                {
                     "name": "google.co.il",
                     "type": "mobile-il"
                 }
             ]
-        }, {
+        },
+        {
             "type": "backlinks",
             "name": "Backlinks Report",
             "timeSegments": [
                 {
                     "name": "Backlinks Overview",
                     "type": "backlinks_overview"
-                }, {
+                },
+                {
                     "name": "Backlinks",
                     "type": "backlinks"
-                }, {
+                },
+                {
                     "name": "Referring Domains",
                     "type": "backlinks_refdomains"
-                }, {
+                },
+                {
                     "name": "Referring IPs",
                     "type": "backlinks_refips"
-                }, {
+                },
+                {
                     "name": "TLD Distribution",
                     "type": "backlinks_tld"
-                }, {
+                },
+                {
                     "name": "Referring Domains by Country",
                     "type": "backlinks_geo"
-                }, {
+                },
+                {
                     "name": "Anchors",
                     "type": "backlinks_anchors"
-                }, {
+                },
+                {
                     "name": "Indexed pages",
                     "type": "backlinks_pages"
-                }, {
+                },
+                {
                     "name": "Comparison by referring domains",
                     "type": "backlinks_matrix"
                 }
@@ -3513,10 +3704,12 @@
                 {
                     "name": "Domain",
                     "type": "domain"
-                }, {
+                },
+                {
                     "name": "Root Domain",
                     "type": "root_domain"
-                }, {
+                },
+                {
                     "name": "URL",
                     "type": "url"
                 }
@@ -3529,13 +3722,16 @@
                 {
                     "name": "Organic Positions report",
                     "type": "tracking_position_organic"
-                }, {
+                },
+                {
                     "name": "AdWords Positions report",
                     "type": "tracking_position_adwords"
-                }, {
+                },
+                {
                     "name": "Organic Competitors Discovery report",
                     "type": "tracking_competitors_organic"
-                }, {
+                },
+                {
                     "name": "AdWords Competitors Discovery report",
                     "type": "tracking_competitors_adwords"
                 }
@@ -3580,7 +3776,8 @@
                     "name": "None"
                 }
             ]
-        }, {
+        },
+        {
             "type": "overviewPerformance",
             "name": "Overview Performance",
             "timeSegments": [
@@ -3595,7 +3792,8 @@
                     "name": "None"
                 }
             ]
-        }, {
+        },
+        {
             "type": "ratingsBySource",
             "name": "Ratings By Source",
             "timeSegments": [
@@ -3610,13 +3808,52 @@
                     "name": "None"
                 }
             ]
-        }, {
+        },
+        {
             "type": "overallReviewsByRatings",
             "name": "Overall Reviews By Ratings",
             "timeSegments": [
                 {
                     "type": "month",
                     "name": "Month"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }
+    ],
+    "googleMyBusiness": [
+        {
+            "type": "reportInsights",
+            "name": "Report Insights",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "phoneCalls",
+            "name": "Phone Calls",
+            "timeSegments": [
+                {
+                    "type": "BREAKDOWN_DAY_OF_WEEK",
+                    "name": "Day Of Week"
+                },
+                {
+                    "type": "BREAKDOWN_HOUR_OF_DAY",
+                    "name": "Hour Of Day"
                 }
             ],
             "productSegments": [

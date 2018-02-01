@@ -282,6 +282,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
             $scope.semRushFlag = false;
+        } else if (dataSource === "googleMyBusiness") {
+            $scope.report = $scope.googleMyBusinessPerformance;
+            $scope.dataSetFlag = true;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
         } else if (dataSource === "semRush")
         {
             $scope.report = $scope.semRush;
@@ -4043,6 +4048,44 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
+    $scope.googleMyBusinessPerformance = [
+        {
+            "type": "reportInsights",
+            "name": "Report Insights",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "phoneCalls",
+            "name": "Phone Calls",
+            "timeSegments": [
+                {
+                    "type": "BREAKDOWN_DAY_OF_WEEK",
+                    "name": "Day Of Week"
+                },
+                {
+                    "type": "BREAKDOWN_HOUR_OF_DAY",
+                    "name": "Hour Of Day"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }
+    ];
 
     $scope.getTimeSegements = function (dataSet) {
         console.log(dataSet);
@@ -4095,6 +4138,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.dataSet.productSegment = {name: 'None', type: 'none'};
             } else {
                 $scope.dataSet.timeSegment = {name: 'Month', type: 'month'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }
+        }
+        
+        if ($scope.dataSet.dataSourceId.dataSourceType == "googleMyBusiness") {
+            var index = getIndex($scope.dataSet.reportName, $scope.googleMyBusinessPerformance);
+            $scope.timeSegment = $scope.googleMyBusinessPerformance[index].timeSegments;
+            $scope.productSegment = $scope.googleMyBusinessPerformance[index].productSegments;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            if ($scope.dataSet.reportName == "phoneCalls") {
+                $scope.dataSet.timeSegment = {name: 'Day Of Week', type: 'BREAKDOWN_DAY_OF_WEEK'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            } else {
+                $scope.dataSet.timeSegment = {name: 'none', type: 'none'};
                 $scope.dataSet.productSegment = {name: 'None', type: 'none'};
             }
         }

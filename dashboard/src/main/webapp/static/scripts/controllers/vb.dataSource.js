@@ -65,6 +65,10 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             {
                 type: 'reviewTracker',
                 name: 'ReviewTracker'
+            },
+            {
+                type: 'googleMyBusiness',
+                name: 'Google My Business'
             }
         ];
         function getItems() {
