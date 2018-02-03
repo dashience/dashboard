@@ -68,6 +68,7 @@ import java.util.logging.Level;
 import java.util.stream.Stream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
@@ -141,7 +142,7 @@ public class ProxyController {
 
     @Autowired
     private GoogleMyBusinessService googleMyBusinessService;
-
+    
     PropertyReader propReader = new PropertyReader();
 
     private final String urlDownload = "url.download";
@@ -151,7 +152,8 @@ public class ProxyController {
     @RequestMapping(value = "getData", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object getGenericData(HttpServletRequest request, HttpServletResponse response) {
-
+                        HttpSession sessionDetails = request.getSession(true);
+        System.out.println("the session id is--->"+sessionDetails.getId());
         Map returnMap = new HashMap<>();
         Map<String, String[]> parameterMap = request.getParameterMap();
         String joinDataSetIdStr = request.getParameter("joinDataSetId");
@@ -664,8 +666,9 @@ public class ProxyController {
             System.out.println("Join Data Set");
             returnMap = getJoinDataSet(request, httpRequest, response, dataSetIdInt);
         } else if (dataSourceType.equalsIgnoreCase("googleMyBusiness")) {
-            System.out.println("googleMyBusiness called");
             List<Map<String, Object>> dataList = getGoogleMyBusinessData(request, response);
+            returnMap.put("data", dataList);
+            returnMap.put("columnDefs", getColumnDefObject(dataList));
         }
         List<Map<String, Object>> dataList = (List<Map<String, Object>>) returnMap.get("data");
         List<ColumnDef> columnDefs = (List<ColumnDef>) returnMap.get("columnDefs");

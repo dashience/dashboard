@@ -65,6 +65,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             }
         });
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
+        console.log("the sessionStorage-------->", $scope.name.accountId.id);
+        $http.get("admin/sessionStorage/" + $scope.name.accountId);
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
             $scope.loadNewUrl();
@@ -74,6 +76,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     });
 
     $scope.getAccountId = function (account) {
+        console.log("template response------------->", account);
+        $http.get("admin/sessionStorage/" + account.accountId.id);
         if ($stateParams.accountId != account.accountId.id) {
             $stateParams.tabId = 0;
             $stateParams.templateId = 0;
@@ -547,7 +551,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     ;
     getChartColor();
 
-    $scope.selectChartColor = function (color,chartColor) {
+    $scope.selectChartColor = function (color, chartColor) {
         console.log(chartColor);
         console.log(color);
         console.log($scope.chartColor.optionValue);
@@ -555,10 +559,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $scope.chartColor.optionValue = $scope.chartColor.optionValue + "," + color;
         } else {
             $scope.chartColor = {
-                id: chartColor?chartColor.id:null,
+                id: chartColor ? chartColor.id : null,
                 optionName: 'Chart_Color_Options',
                 optionValue: color,
-                userId:chartColor?chartColor.userId:null
+                userId: chartColor ? chartColor.userId : null
             };
         }
         console.log($scope.chartColor.optionValue);
