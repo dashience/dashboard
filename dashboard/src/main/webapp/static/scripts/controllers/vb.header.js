@@ -193,8 +193,10 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 $stateParams.templateId = templateId;
                 try {
                     var startDate = moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').startDate).format('MM/DD/YYYY') : $scope.firstDate;//$scope.startDate.setDate($scope.startDate.getDate() - 1);
-
                     var endDate = moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#daterange-btn').data('daterangepicker').endDate).format('MM/DD/YYYY') : $scope.lastDate;
+                    var compareDate = getComparisonDate("Last 30 Days", startDate, endDate);
+                    $scope.compare_startDate = compareDate.autoCompareStartDate;
+                    $scope.compare_endDate = compareDate.autoCompareEndDate;
                 } catch (e) {
                 }
                 // $stateParams.startDate = startDate;
@@ -906,9 +908,12 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
                 },
                 function (startDate, endDate, ranges) {
                     $('#daterange-btn span').html(startDate.format('MM-DD-YYYY') + ' - ' + endDate.format('MM-DD-YYYY'));
+                    console.log("Testttttttt");
                     if ($scope.getTableType === "compareOff") {
                         var compareDate = getComparisonDate(ranges, startDate.format('YYYY-MM-DD'), endDate.format('YYYY-MM-DD'));
                         $('#compare-daterange-btn span').html(compareDate.autoCompareStartDate + ' - ' + compareDate.autoCompareEndDate);
+                        $scope.compare_startDate = compareDate.autoCompareStartDate;
+                        $scope.compare_endDate = compareDate.autoCompareEndDate;
                         $('#compare-daterange-btn').daterangepicker(
                                 {
                                     ranges: {
@@ -1015,7 +1020,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
         dateRange.autoCompareEndDate = (last.getMonth() + 1) + '-' + last.getDate() + '-' + last.getFullYear();
         return dateRange;
     }
-    
+
     $scope.unCheckButton = function(type){
         if (type == true) {
             $scope.getTableType = "compareOn";
@@ -1023,7 +1028,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             $scope.getTableType = "compareOff";
         }
     }
-    
+
     var tableTypeByDateRange = localStorageService.get("selectedTableType") ? localStorageService.get("selectedTableType") : "compareOff";
     if (tableTypeByDateRange == 'compareOn') {
         $scope.selectedTablesType = 'compareOn';
@@ -1073,8 +1078,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     var compareSTDate = localStorageService.get("compareStartDate");
     var compareENDate = localStorageService.get("compareEndDate");
-    $scope.compare_startDate = compareSTDate ? compareSTDate : $scope.getDay().toLocaleDateString("en-US");
-    $scope.compare_endDate = compareENDate ? compareENDate : new Date().toLocaleDateString("en-US");
+//    $scope.compare_startDate = compareSTDate ? compareSTDate : $scope.getDay().toLocaleDateString("en-US");
+//    $scope.compare_endDate = compareENDate ? compareENDate : new Date().toLocaleDateString("en-US");
 
     if (!compareSTDate) {
         localStorageService.set("compareStartDate", $scope.compare_startDate);

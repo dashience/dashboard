@@ -35,6 +35,9 @@ function dashboardFormat(column, value) {
     if (column.displayFormat == null) {
         return value;
     }
+    if((column.fieldType === "number") && (typeof(value) === 'string')){
+        value = parseFloat(value);
+    }
     if (column && column.displayFormat) {
         if (column.displayFormat.indexOf("%") > -1) {
             return d3.format(column.displayFormat)(value / 100);
