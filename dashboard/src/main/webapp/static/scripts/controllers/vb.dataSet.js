@@ -4051,7 +4051,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.googleMyBusinessPerformance = [
         {
             "type": "reportInsights",
-            "name": "Report Insights",
+            "name": "Report Insights Per Location",
             "timeSegments": [
                 {
                     "type": "none",
@@ -4076,6 +4076,22 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 {
                     "type": "BREAKDOWN_HOUR_OF_DAY",
                     "name": "Hour Of Day"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "overallReportInsights",
+            "name": "Overall Report Insights",
+            "timeSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
                 }
             ],
             "productSegments": [

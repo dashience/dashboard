@@ -1839,7 +1839,7 @@ public class ProxyController {
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
 
             }
             if (dataSetIdInt != null) {
@@ -1980,6 +1980,7 @@ public class ProxyController {
         String productSegment = getFromMultiValueMap(request, "productSegment");
         Integer dataSetIdInt = null;
         DataSet dataSet = null;
+        System.out.println("time segment1------->"+timeSegment);
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
@@ -1989,7 +1990,7 @@ public class ProxyController {
             if (dataSetIdInt != null) {
                 dataSet = uiService.readDataSet(dataSetIdInt);
             }
-            if (dataSet != null) {
+            if (dataSet != null && timeSegment == null) {
                 dataSetReportName = dataSet.getReportName();
                 timeSegment = dataSet.getTimeSegment();
             }
@@ -2026,7 +2027,7 @@ public class ProxyController {
         System.out.println("gmbAccountId ----->"+gmbAccountId);
         System.out.println("gmbClientId ----->"+gmbClientId);
         System.out.println("gmbClientSecret ----->"+gmbClientSecret);
-
+        System.out.println("time segment2------->"+timeSegment);
         try {
             List<Map<String, Object>> reviewTrackerReport = googleMyBusinessService.get(dataSetReportName, gmbRefreshToken, gmbAccountId, gmbClientId, gmbClientSecret,
                     startDate, endDate, timeSegment, productSegment);
