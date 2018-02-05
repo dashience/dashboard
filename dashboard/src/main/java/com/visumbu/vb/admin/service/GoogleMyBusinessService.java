@@ -52,7 +52,7 @@ public class GoogleMyBusinessService {
         if ("reportInsights".equalsIgnoreCase(dataSetReportName)) {
             return getInsightsReport(gmbRefreshToken, gmbAccountId, clientId, clientSecret, startDate, endDate);
         } else if ("overallReportInsights".equalsIgnoreCase(dataSetReportName)) {
-            return dailyLocationData(gmbRefreshToken, gmbAccountId, clientId, clientSecret, startDate, endDate);
+            return sumOfLocationsData(gmbRefreshToken, gmbAccountId, clientId, clientSecret, startDate, endDate);
         } else {
             return getPhoneCalls(gmbRefreshToken, gmbAccountId, clientId, clientSecret, startDate, endDate, timeSegment);
         }
@@ -271,16 +271,20 @@ public class GoogleMyBusinessService {
                 List<Map<String, Object>> MatricValues = (List<Map<String, Object>>) location.get("metricValues");
                 System.out.println("MatricValues------------->" + MatricValues);
                 for (Map<String, Object> metrics : MatricValues) {
-                    System.out.println("loop---------->"+loop);
                     i = 0;
                     Map<String, Object> aggregatedDate = new HashMap<>();
                     if (loop > 1) {
-                        System.out.println("aggregatedDate--------->"+aggregatedDate);
-                        aggregatedDate = (Map<String, Object>) dateValue.get(metrices.get(i));
+                        try {
+                            System.out.println("aggregatedDate--------->" + aggregatedDate);
+                            aggregatedDate = (Map<String, Object>) dateValue.get(metrices.get(i));
+                        } catch (Exception e) {
+                            System.out.println("exception------>"+e);
+                        }
                     }
                     String metricName = (String) metrics.get("metric");
                     if (loop == 1) {
                         metrices.add(metricName);
+                        System.out.println("metrices---------->"+metrices);
                     }
                     List<Map<String, Object>> value = (List<Map<String, Object>>) metrics.get("dimensionalValues");
                     Map<String, Object> data = new HashMap<>();
