@@ -683,6 +683,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
                 }
                 if (value.dataSourceId.name === dataSourceName.name) {
                     $scope.dataSets.push(value);
+                    console.log($scope.dataSets);
                 }
             });
         });
@@ -3711,6 +3712,8 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                 data[e[xAxis.fieldName]] = data[e[xAxis.fieldName]] ? data[e[xAxis.fieldName]] : 0 + e[yAxisField.fieldName] ? e[yAxisField.fieldName] : 0;
                             })
 
+
+console.log(xData)
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,

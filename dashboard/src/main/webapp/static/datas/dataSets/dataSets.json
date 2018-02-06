@@ -3877,6 +3877,21 @@
                     "name": "None"
                 }
             ]
+        },{
+            "type": "dailyReportInsights",
+            "name": "Daily Report Insights",
+            "timeSegments": [
+                {
+                    "type": "day",
+                    "name": "Day"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
         }
     ]
 }

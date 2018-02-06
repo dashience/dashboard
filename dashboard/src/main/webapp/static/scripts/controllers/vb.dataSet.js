@@ -4100,6 +4100,21 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                     "name": "None"
                 }
             ]
+        },{
+            "type": "dailyReportInsights",
+            "name": "Daily Report Insights",
+            "timeSegments": [
+                {
+                    "type": "day",
+                    "name": "Day"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
         }
     ];
 
@@ -4167,6 +4182,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.nwStatusFlag = false;
             if ($scope.dataSet.reportName == "phoneCalls") {
                 $scope.dataSet.timeSegment = {name: 'Day Of Week', type: 'BREAKDOWN_DAY_OF_WEEK'};
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            }else if ($scope.dataSet.reportName == "dailyReportInsights") {
+                $scope.dataSet.timeSegment = {name: 'Day', type: 'day'};
                 $scope.dataSet.productSegment = {name: 'None', type: 'none'};
             } else {
                 $scope.dataSet.timeSegment = {name: 'none', type: 'none'};
