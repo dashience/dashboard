@@ -91,7 +91,7 @@ public class GoogleMyBusinessService {
             }
             locationListArray = locationMap;
 
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(GoogleMyBusinessService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -100,10 +100,16 @@ public class GoogleMyBusinessService {
         try {
             String url = "https://mybusiness.googleapis.com/v4/accounts/" + gmbAccountId + "/locations:reportInsights?access_token=" + gmbAccessToken;
             List<Map<String, Object>> returnMap = new ArrayList<>();
-            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
+            String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
+            String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
             String requestBody = ",\"basicRequest\":{\"metricRequests\":{\"metric\":\"ACTIONS_PHONE\",\"options\":[\"" + timeSegment + "\"]},\"timeRange\":{\"startTime\":\"" + startDateStr + "T00:00:00.001Z\",\"endTime\":\"" + endDateStr + "T23:59:00.000Z\"}}}";
             String responseString = getAppendedResponse(requestBody, url);
+            System.out.println("responseString--------------" + responseString);
+            if (responseString.contains("\"code\": 400")) {
+                System.out.println("Inside phonecall");
+                return null;
+            }
+            System.out.println("outside phonecall");
             JSONParser parser = new JSONParser();
             Object jsonObject = parser.parse(responseString);
             JSONObject array = (JSONObject) jsonObject;
@@ -189,19 +195,22 @@ public class GoogleMyBusinessService {
             return returnMap;
         } catch (ParseException ex) {
             Logger.getLogger(GoogleMyBusinessService.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-
-        return null;
     }
 
     public List<Map<String, Object>> getInsightsReport(String gmbRefreshToken, String gmbAccountId, String gmbClientId, String gmbClientSecret, Date startDate, Date endDate) {
         try {
             String url = "https://mybusiness.googleapis.com/v4/accounts/" + gmbAccountId + "/locations:reportInsights?access_token=" + gmbAccessToken;
             List<Map<String, Object>> returnMap = new ArrayList<>();
-            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
+            String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
+            String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
             String requestBody = ",\"basicRequest\":{\"metricRequests\":{\"metric\":\"ALL\",\"options\":[\"AGGREGATED_TOTAL\"]},\"timeRange\":{\"startTime\":\"" + startDateStr + "T00:00:00.001Z\",\"endTime\":\"" + endDateStr + "T23:59:00.000Z\"}}}";
             String responseString = getAppendedResponse(requestBody, url);
+            System.out.println("Insights Response -->" + responseString);
+            if (responseString == null) {
+                return null;
+            }
             JSONParser parser = new JSONParser();
             Object jsonObject = parser.parse(responseString);
             JSONObject array = (JSONObject) jsonObject;
@@ -221,11 +230,10 @@ public class GoogleMyBusinessService {
                 returnMap.add(data);
             }
             return returnMap;
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(GoogleMyBusinessService.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-
-        return null;
     }
 
     public List<Map<String, Object>> dailyLocationData(String gmbRefreshToken, String gmbAccountId, String gmbClientId, String gmbClientSecret, Date startDate, Date endDate) {
@@ -233,10 +241,14 @@ public class GoogleMyBusinessService {
         try {
             String url = "https://mybusiness.googleapis.com/v4/accounts/" + gmbAccountId + "/locations:reportInsights?access_token=" + gmbAccessToken;
 
-            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
+            String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
+            String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
             String requestBody = ",\"basicRequest\":{\"metricRequests\":{\"metric\":\"ALL\",\"options\":[\"AGGREGATED_DAILY\"]},\"timeRange\":{\"startTime\":\"" + startDateStr + "T00:00:00.001Z\",\"endTime\":\"" + endDateStr + "T23:59:00.000Z\"}}}";
             String responseString = getAppendedResponse(requestBody, url);
+            System.out.println("daily Location Data ---->" + responseString);
+            if (responseString == null) {
+                return null;
+            }
             JSONParser parser = new JSONParser();
             Object jsonObject = parser.parse(responseString);
             JSONObject array = (JSONObject) jsonObject;
@@ -248,47 +260,50 @@ public class GoogleMyBusinessService {
             LinkedList<String> metrices = new LinkedList();
             Map<String, Object> dateValue = new HashMap<>();
             int loop2 = 0;
-            int loop = 0;
+            int loop1 = 0;
             for (Map<String, Object> location : locationMetrics) {
-                loop++;
+                loop1++;
                 List<Map<String, Object>> MatricValues = (List<Map<String, Object>>) location.get("metricValues");
                 i = 0;
                 for (Map<String, Object> metrics : MatricValues) {
                     if (metrics.containsKey("metric")) {
                         Map<String, Object> aggregatedDate = new HashMap<>();
-                        if (loop > 1) {
+                        if (loop1 > 1) {
                             try {
                                 aggregatedDate = (Map<String, Object>) dateValue.get(metrices.get(i));
                                 i++;
                             } catch (Exception e) {
+                                System.out.println("aggregated exception--------->"+e);
                             }
                         }
                         String metricName = (String) metrics.get("metric");
-                        if (loop == 1) {
+                        if (loop1 == 1) {
                             metrices.add(metricName);
                         }
                         List<Map<String, Object>> value = (List<Map<String, Object>>) metrics.get("dimensionalValues");
-                        Map<String, Object> data = new HashMap<>();
                         for (Map<String, Object> perDayValues : value) {
-                            Map<String, Object> timeDimension = (Map<String, Object>) perDayValues.get("timeDimension");
-                            Map<String, Object> timeRange = (Map<String, Object>) timeDimension.get("timeRange");
-                            String startTime = (String) timeRange.get("startTime");
                             String metricValue = null;
+                            String startTime = null;
+                                Map<String, Object> timeDimension = (Map<String, Object>) perDayValues.get("timeDimension");
+                                Map<String, Object> timeRange = (Map<String, Object>) timeDimension.get("timeRange");
+                                startTime = (String) timeRange.get("startTime");
+                                startTime = startTime.substring(0, startTime.indexOf("T"));
+                                metricValue = null;
                             if (perDayValues.containsKey("value")) {
                                 metricValue = (String) perDayValues.get("value");
                             } else {
                                 metricValue = Integer.toString(0);
                             }
-                            if (loop == 1) {
+                            if (loop1 == 1) {
                                 aggregatedDate.put(startTime, metricValue);
 
                             }
                             if (loop2 == 0) {
                                 dateTimeValue.add(startTime);
 
-                            }else {
+                            } if(loop1 > 1) {
                                 try {
-                                    aggregatedDate.put(startTime, Integer.parseInt((String) aggregatedDate.get(startTime)) + Integer.parseInt(metricValue));
+                                    aggregatedDate.put(startTime, Integer.toString(Integer.parseInt((String) aggregatedDate.get(startTime)) + Integer.parseInt(metricValue)));
                                 } catch (NumberFormatException numberFormatException) {
                                     System.out.println("exception---->" + numberFormatException);
                                 }
@@ -298,22 +313,23 @@ public class GoogleMyBusinessService {
                         dateValue.put(metricName, aggregatedDate);
                     }
                 }
-            }
-            List<Map<String, Object>> returnDataMap = new ArrayList<>();
-            for (String date : dateTimeValue) {
-                Map<String, Object> extractedData = new HashMap<>();
-                extractedData.put("dateValue",date.substring(0,date.indexOf("T")));
-                for (Map.Entry<String, Object> entry : dateValue.entrySet()) {
-                    String key = entry.getKey();
-                    Map<String, Object> value = (Map<String, Object>) entry.getValue();
-                    extractedData.put(key, value.get(date));
+            }           
+            List<Map<String, Object>> returnDataMap = null;
+                returnDataMap = new ArrayList<>();
+                for (String date : dateTimeValue) {
+                    Map<String, Object> extractedData = new HashMap<>();
+                    extractedData.put("dateValue", date);
+                    for (Map.Entry<String, Object> entry : dateValue.entrySet()) {
+                        String key = entry.getKey();
+                        Map<String, Object> value = (Map<String, Object>) entry.getValue();
+                        extractedData.put(key, value.get(date));
+                    }
+                    returnDataMap.add(extractedData);
                 }
-                returnDataMap.add(extractedData);
-            }
             System.out.println("daily Location called end");
             System.out.println("returnDataMap------->" + returnDataMap);
             return returnDataMap;
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(GoogleMyBusinessService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -323,10 +339,13 @@ public class GoogleMyBusinessService {
         try {
             String url = "https://mybusiness.googleapis.com/v4/accounts/" + gmbAccountId + "/locations:reportInsights?access_token=" + gmbAccessToken;
             List<Map<String, Object>> returnMap = new ArrayList<>();
-            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
+            String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
+            String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
             String requestBody = ",\"basicRequest\":{\"metricRequests\":{\"metric\":\"ALL\",\"options\":[\"AGGREGATED_TOTAL\"]},\"timeRange\":{\"startTime\":\"" + startDateStr + "T00:00:00.001Z\",\"endTime\":\"" + endDateStr + "T23:59:00.000Z\"}}}";
             String responseString = getAppendedResponse(requestBody, url);
+            if (responseString == null) {
+                return null;
+            }
             JSONParser parser = new JSONParser();
             Object jsonObject = parser.parse(responseString);
             JSONObject array = (JSONObject) jsonObject;
@@ -356,20 +375,23 @@ public class GoogleMyBusinessService {
             }
             returnMap.add(data);
             return returnMap;
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(GoogleMyBusinessService.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return null;
     }
-        public List<Map<String, Object>> customerSearch(String gmbRefreshToken, String gmbAccountId, String gmbClientId, String gmbClientSecret, Date startDate, Date endDate) {
+
+    public List<Map<String, Object>> customerSearch(String gmbRefreshToken, String gmbAccountId, String gmbClientId, String gmbClientSecret, Date startDate, Date endDate) {
         try {
             String url = "https://mybusiness.googleapis.com/v4/accounts/" + gmbAccountId + "/locations:reportInsights?access_token=" + gmbAccessToken;
-            String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
-            String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
+            String startDateStr = DateUtils.dateToString(startDate, "yyyy-MM-dd");
+            String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
             String requestBody = ",\"basicRequest\":{\"metricRequests\":[{\"metric\":\"QUERIES_DIRECT\",\"options\":[\"AGGREGATED_TOTAL\"]},{\"metric\":\"QUERIES_INDIRECT\",\"options\":[\"AGGREGATED_TOTAL\"]}],\"timeRange\":{\"startTime\":\"" + startDateStr + "T00:00:00.001Z\",\"endTime\":\"" + endDateStr + "T23:59:00.000Z\"}}}";
             String responseString = getAppendedResponse(requestBody, url);
-            System.out.println("respose------------>"+responseString);
+            if (responseString == null) {
+                return null;
+            }
             JSONParser parser = new JSONParser();
             Object jsonObject = parser.parse(responseString);
             JSONObject array = (JSONObject) jsonObject;
@@ -398,17 +420,21 @@ public class GoogleMyBusinessService {
                 }
             }
             List<Map<String, Object>> returnDataMap = new ArrayList<>();
-            System.out.println("chart data------------->"+data);
             for (Map.Entry<String, Object> entry : data.entrySet()) {
-                Map<String,Object> dataMap = new HashMap<>();
+                Map<String, Object> dataMap = new HashMap<>();
                 String key = entry.getKey();
                 Object value = entry.getValue();
+                if ("QUERIES_DIRECT".equals(key)) {
+                    key = "Direct";
+                } else if ("QUERIES_INDIRECT".equals(key)) {
+                    key = "Discovery";
+                }
                 dataMap.put("searchType", key);
-                dataMap.put("searchValue", value);  
+                dataMap.put("searchValue", value);
                 returnDataMap.add(dataMap);
             }
             return returnDataMap;
-        } catch (ParseException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(GoogleMyBusinessService.class.getName()).log(Level.SEVERE, null, ex);
         }
 

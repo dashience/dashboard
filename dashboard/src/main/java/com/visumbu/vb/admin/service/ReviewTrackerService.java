@@ -223,9 +223,10 @@ public class ReviewTrackerService {
             for (Map.Entry<String, Object> entry : mapData.entrySet()) {
                 Map<String, Object> reviewData = new HashMap<>();
                 String key = entry.getKey();
+                key = key.substring(0,1);
                 String value = entry.getValue() + "";
-                reviewData.put("stars", key);
-                reviewData.put("reviews", value);
+                reviewData.put("Stars", key);
+                reviewData.put("Reviews", value);
                 returnMap.add(reviewData);
             }
             return returnMap;

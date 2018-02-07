@@ -2600,7 +2600,7 @@ app.directive('tickerDirective', function ($http, $stateParams) {
                 '<div  ng-hide="loadingTicker" >' +
                 '<div ng-hide="hideEmptyTicker" class="hpanel stats">' +
                 '<div class="panel-body h-150">' +
-                '<div class="stats-title pull-left">' +
+                '<div class="pull-left">' +
                 '<h4>{{tickerTitleName}}</h4>' +
                 '</div>' +
                 '<div class="stats-icon pull-right">' +
@@ -2834,7 +2834,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
             });
-            console.log("value---------->",scope.widgetColumns);
+            console.log("value---------->", scope.widgetColumns);
             var xData = [];
             var xTicks = [];
             scope.orderData = function (list, fieldnames) {
@@ -3059,7 +3059,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     x: xAxis.fieldName,
                                     columns: columns,
                                     labels: labels,
-                                    axes: axes,                                    
+                                    axes: axes,
                                     types: chartCombinationtypes
                                 },
                                 color: {
@@ -3073,7 +3073,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                                 console.log(xData[x])
                                                 return xData[x];
                                             },
-                                            culling:false
+                                            culling: false
                                         }
                                     },
                                     y2: y2
@@ -3413,7 +3413,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                             format: function (x) {
                                                 return xData[x];
                                             },
-                                            culling:false
+                                            culling: false
                                         }
                                     },
                                     y2: y2
@@ -3711,9 +3711,6 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                                 legends.push(e[xAxis.fieldName]);
                                 data[e[xAxis.fieldName]] = data[e[xAxis.fieldName]] ? data[e[xAxis.fieldName]] : 0 + e[yAxisField.fieldName] ? e[yAxisField.fieldName] : 0;
                             })
-
-
-console.log(xData)
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
@@ -4017,6 +4014,9 @@ app.directive('areaChartDirective', function ($http, $stateParams, $filter, orde
                                         }
                                     }
                                 });
+                            }
+                            if (chartMaxRecord.maxRecord > 0) {
+                                chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
                             xTicks = [xAxis.fieldName];
                             xData = chartData.map(function (a) {

@@ -65,7 +65,6 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             }
         });
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
-        console.log("the sessionStorage-------->", $scope.name.accountId.id);
         $http.get("admin/sessionStorage/" + $scope.name.accountId);
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
