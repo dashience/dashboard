@@ -49,12 +49,17 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.model.Goal;
 import com.google.api.services.analytics.model.Goals;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.bean.GaReport;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.utils.ApiUtils;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.util.Calendar;
+import java.util.Comparator;
+import java.util.LinkedList;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -348,12 +353,13 @@ public class GaService {
     public Map<String, List<Map<String, Object>>> getResponseAsMap(GetReportsResponse response) {
         Map returnMap = new HashMap();
         boolean isoYearIsoWeek = false;
+        boolean dayOfWeekName = false;
         Calendar cal = null;
         SimpleDateFormat sdf = null;
         for (Report report : response.getReports()) {
             ColumnHeader header = report.getColumnHeader();
             List<String> dimensionHeaders = header.getDimensions();
-            if (dimensionHeaders!= null &&  dimensionHeaders.contains("ga:isoYearIsoWeek")) {
+            if (dimensionHeaders != null && dimensionHeaders.contains("ga:isoYearIsoWeek")) {
                 sdf = new SimpleDateFormat("MM-dd-yyyy");
                 cal = Calendar.getInstance();
                 isoYearIsoWeek = true;
@@ -390,6 +396,8 @@ public class GaService {
                 return new HashMap();
             }
             List<Map<String, Object>> data = new ArrayList<>();
+            Multimap<String, Object> multiMap = ArrayListMultimap.create();
+            String keyValue = null;
             for (ReportRow row : rows) {
                 List<String> dimensions = row.getDimensions();
                 List<DateRangeValues> metrics = row.getMetrics();
@@ -401,12 +409,14 @@ public class GaService {
                         key = key.replaceAll("ga:", "");
                         String value = dimensions.get(i);
                         if (isoYearIsoWeek) {
-                            if (key.contains("isoYearIsoWeek")) {
+                            if (key.contains("isoYearIsoWeek") && value != null && value.length() > 4) {
                                 cal.setWeekDate(Integer.parseInt(value.substring(0, 4)), Integer.parseInt(value.substring(4, value.length())), 1);
                                 value = sdf.format(cal.getTime());
                             }
                         }
-
+                        if(dayOfWeekName){
+                            keyValue = value;
+                        }
                         dataMap.put(key, value);
                     }
                 }
@@ -422,7 +432,9 @@ public class GaService {
                     }
                 }
                 data.add(dataMap);
+                multiMap.put(keyValue, dataMap);
             }
+            System.out.println("multiMap------>"+multiMap);
             returnMap.put("data", data);
         }
         return returnMap;

@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -104,8 +105,7 @@ public class GoogleMyBusinessService {
             String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
             String requestBody = ",\"basicRequest\":{\"metricRequests\":{\"metric\":\"ACTIONS_PHONE\",\"options\":[\"" + timeSegment + "\"]},\"timeRange\":{\"startTime\":\"" + startDateStr + "T00:00:00.001Z\",\"endTime\":\"" + endDateStr + "T23:59:00.000Z\"}}}";
             String responseString = getAppendedResponse(requestBody, url);
-            System.out.println("responseString--------------" + responseString);
-            if (responseString.contains("\"code\": 400")) {
+            if (responseString == null) {
                 System.out.println("Inside phonecall");
                 return null;
             }
@@ -113,7 +113,7 @@ public class GoogleMyBusinessService {
             JSONParser parser = new JSONParser();
             Object jsonObject = parser.parse(responseString);
             JSONObject array = (JSONObject) jsonObject;
-            Map<String, Object> arrangeData = new HashMap<>();
+            Map<String, Object> arrangeData = new LinkedHashMap<>();
             List<Map<String, Object>> locationMetrics = (List<Map<String, Object>>) array.get("locationMetrics");
             if ("BREAKDOWN_DAY_OF_WEEK".equals(timeSegment)) {
                 int mondayCalls = 0, tuesdayCalls = 0, wednesdayCalls = 0, thursdayCalls = 0, fridayCalls = 0, saturdayCalls = 0, sundayCalls = 0;
@@ -156,6 +156,7 @@ public class GoogleMyBusinessService {
                     callData.put("Day", key);
                     callData.put("No of Calls", value);
                     returnMap.add(callData);
+                    System.out.println("returnMap-------->"+returnMap);
                 }
             } else {
                 for (Map<String, Object> location : locationMetrics) {
@@ -245,7 +246,6 @@ public class GoogleMyBusinessService {
             String endDateStr = DateUtils.dateToString(endDate, "yyyy-MM-dd");
             String requestBody = ",\"basicRequest\":{\"metricRequests\":{\"metric\":\"ALL\",\"options\":[\"AGGREGATED_DAILY\"]},\"timeRange\":{\"startTime\":\"" + startDateStr + "T00:00:00.001Z\",\"endTime\":\"" + endDateStr + "T23:59:00.000Z\"}}}";
             String responseString = getAppendedResponse(requestBody, url);
-            System.out.println("daily Location Data ---->" + responseString);
             if (responseString == null) {
                 return null;
             }
@@ -444,6 +444,9 @@ public class GoogleMyBusinessService {
     public String getAppendedResponse(String requestBody, String url) {
         List<String> locations = new ArrayList<>();
         StringBuilder responseString = new StringBuilder();
+        if(locationListArray.isEmpty()){
+            return null;
+        }
         for (Map.Entry<String, String> entry : locationListArray.entrySet()) {
             String key = entry.getKey();
             locations.add(key);
@@ -460,6 +463,9 @@ public class GoogleMyBusinessService {
             }
             String payload = "{\"locationNames\":" + locationString.toString() + requestBody;
             String result = getResponse(url, null, payload);
+            if(result == null){
+                return null;
+            }
             if (!responseString.toString().equals("")) {
                 result = result.substring(result.indexOf("[") + 1, result.lastIndexOf("]") - 1);
                 responseString.insert(responseString.indexOf("[") + 1, result);
@@ -480,6 +486,9 @@ public class GoogleMyBusinessService {
         try {
             post.setEntity(postEntity);
             response = httpClient.execute(post);
+            if(response.getStatusLine().getStatusCode()!=200){
+                return null;
+            }
             String responseJSON = EntityUtils.toString(response.getEntity());
             EntityUtils.consume(response.getEntity());
             return responseJSON;
