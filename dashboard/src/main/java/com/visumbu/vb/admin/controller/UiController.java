@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 // linked in api imports
 import com.visumbu.vb.admin.service.FacebookService;
+import com.visumbu.vb.admin.service.GoogleMyBusinessService;
 import com.visumbu.vb.bean.DashboardTemplateBean;
 import com.visumbu.vb.bean.DataSetColumnBean;
 import com.visumbu.vb.bean.JoinDataSetBean;
@@ -49,6 +50,7 @@ import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.DashboardTemplate;
 import com.visumbu.vb.model.JoinDataSet;
 import com.visumbu.vb.model.JoinDataSetCondition;
+import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.TemplateTabs;
 import com.visumbu.vb.model.Timezone;
 import com.visumbu.vb.model.UserPreferences;
@@ -85,6 +87,9 @@ public class UiController extends BaseController {
 
     @Autowired
     private FacebookService facebookService;
+    
+    @Autowired
+    private GoogleMyBusinessService googleMyBusinessService;
 
     private Rest rest;
 
@@ -108,6 +113,30 @@ public class UiController extends BaseController {
             return null;
         }
         return uiService.getDashboards(user);
+    }
+    @RequestMapping(value ="sessionStorage/{accountId}")
+    public @ResponseBody
+    void getLocationList(@PathVariable Integer accountId) {
+        Account account = userService.getAccountId(accountId);
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        String gmbRefreshToken = getAccountId(accountProperty, "gmbRefreshToken");
+        if(gmbRefreshToken == null){
+            return;
+        }
+        String gmbAccountId = getAccountId(accountProperty, "gmbAccountId");
+        String gmbClientId = getAccountId(accountProperty, "gmbClientId");
+        String gmbClientSecret = getAccountId(accountProperty, "gmbClientSecret");
+        googleMyBusinessService.getLocations(gmbRefreshToken, gmbAccountId, gmbClientId, gmbClientSecret);
+    }
+    private String getAccountId(List<Property> accountProperty, String propertyName) {
+        String propertyAccountId = null;
+        for (Iterator<Property> iterator = accountProperty.iterator(); iterator.hasNext();) {
+            Property property = iterator.next();
+            if (property.getPropertyName().equalsIgnoreCase(propertyName)) {
+                propertyAccountId = property.getPropertyValue();
+            }
+        }
+        return propertyAccountId;
     }
 
 //    @RequestMapping(value = "dbTabs/{dashboardId}", method = RequestMethod.POST, produces = "application/json")

@@ -890,6 +890,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         if (checkColumnDef === 1) {
             var data = {
                 derivedId: obj.id,
+                fieldType: obj.fieldType,
                 agregationFunction: obj.agregationFunction,
                 columnsButtons: obj.columnsButtons,
                 displayFormat: obj.displayFormat,
@@ -2218,6 +2219,9 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                 }
                 if (column.displayFormat) {
                     if (isNaN(value)) {
+                        if (column.fieldType === "date") {
+                            return value;
+                        }
                         return "-";
                     }
                     return dashboardFormat(column, value);
@@ -2239,7 +2243,7 @@ app.directive('dynamicTable', function ($http, $filter, $stateParams, orderByFil
                         if (value.sortOrder === 'asc') {
                             return dateOrders.indexOf(item[value.fieldName]);
                         } else if (value.sortOrder === 'desc') {
-                            return dateOrders.indexOf(item[value.fieldName] * -1);
+                            return (-dateOrders.indexOf(item[value.fieldName]));
                         }
                     });
                 });
@@ -2834,7 +2838,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
             });
-            console.log("value---------->", scope.widgetColumns);
             var xData = [];
             var xTicks = [];
             scope.orderData = function (list, fieldnames) {

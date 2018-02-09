@@ -65,7 +65,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             }
         });
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
-        $http.get("admin/sessionStorage/" + $scope.name.accountId);
+        $http.get("admin/ui/sessionStorage/" + $scope.name.accountId);
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
             $scope.loadNewUrl();
@@ -76,7 +76,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
 
     $scope.getAccountId = function (account) {
         console.log("template response------------->", account);
-        $http.get("admin/sessionStorage/" + account.accountId.id);
+        $http.get("admin/ui/sessionStorage/" + account.accountId.id);
         if ($stateParams.accountId != account.accountId.id) {
             $stateParams.tabId = 0;
             $stateParams.templateId = 0;

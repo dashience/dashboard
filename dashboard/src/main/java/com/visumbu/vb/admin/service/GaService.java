@@ -353,14 +353,13 @@ public class GaService {
     public Map<String, List<Map<String, Object>>> getResponseAsMap(GetReportsResponse response) {
         Map returnMap = new HashMap();
         boolean isoYearIsoWeek = false;
-        boolean dayOfWeekName = false;
         Calendar cal = null;
         SimpleDateFormat sdf = null;
         for (Report report : response.getReports()) {
             ColumnHeader header = report.getColumnHeader();
             List<String> dimensionHeaders = header.getDimensions();
             if (dimensionHeaders != null && dimensionHeaders.contains("ga:isoYearIsoWeek")) {
-                sdf = new SimpleDateFormat("MM-dd-yyyy");
+                sdf = new SimpleDateFormat("yyyyMMdd");
                 cal = Calendar.getInstance();
                 isoYearIsoWeek = true;
             }
@@ -396,8 +395,6 @@ public class GaService {
                 return new HashMap();
             }
             List<Map<String, Object>> data = new ArrayList<>();
-            Multimap<String, Object> multiMap = ArrayListMultimap.create();
-            String keyValue = null;
             for (ReportRow row : rows) {
                 List<String> dimensions = row.getDimensions();
                 List<DateRangeValues> metrics = row.getMetrics();
@@ -414,9 +411,6 @@ public class GaService {
                                 value = sdf.format(cal.getTime());
                             }
                         }
-                        if(dayOfWeekName){
-                            keyValue = value;
-                        }
                         dataMap.put(key, value);
                     }
                 }
@@ -432,9 +426,7 @@ public class GaService {
                     }
                 }
                 data.add(dataMap);
-                multiMap.put(keyValue, dataMap);
             }
-            System.out.println("multiMap------>"+multiMap);
             returnMap.put("data", data);
         }
         return returnMap;
