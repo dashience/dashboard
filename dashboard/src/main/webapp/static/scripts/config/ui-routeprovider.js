@@ -126,7 +126,7 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 controller: 'ReportPdfController'
             })
             .state("viewFavouritesPdf", {
-                url: "/viewFavouritesPdf/:accountId/:favouriteName?:startDate/:endDate",
+                url: "/viewFavouritesPdf/:accountId/:userId/:favouriteName?:startDate/:endDate",
                 templateUrl: "static/views/pdf/vb.favouritesPdf.html",
                 controller: 'FavouritesPdfController'
             });

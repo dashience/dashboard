@@ -50,6 +50,19 @@ public class TagDao extends BaseDao {
         }
         return widgetTag;
     }
+    public List getWidgetTagByUserId(String tagName, Integer userId) {
+        String queryStr = "select t from WidgetTag t where t.tagId.tagName = :tagName and t.userId.id = :userId order by widgetOrder";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("tagName", tagName);
+        query.setParameter("userId", userId);
+
+        List<WidgetTag> widgetTag = query.list();
+        for (Iterator<WidgetTag> iterator = widgetTag.iterator(); iterator.hasNext();) {
+            TabWidget tabWidget = iterator.next().getWidgetId();
+            tabWidget.setColumns(reportDao.getColumns(tabWidget));
+        }
+        return widgetTag;
+    }
 
     public List getWidgetTagByName(String tagName, VbUser vbUser) {
         String queryStr = "select t from WidgetTag t where t.tagId.tagName = :tagName and t.userId.id = :userId order by widgetOrder";

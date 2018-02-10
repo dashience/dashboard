@@ -9,8 +9,8 @@ app.controller('FavouritesPdfController', function ($stateParams, $http, $scope,
             $scope.favAccountLogo = val.logo;
         });
     });
-    
-    $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
+    console.log("userId-------->",$stateParams.userId);
+    $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName +"/" +$stateParams.userId).success(function (response) {
         $scope.favPdfWidgets = response;
         setInterval(function () {
             window.status = "done";

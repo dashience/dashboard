@@ -1,4 +1,4 @@
-app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state) {
+app.controller('ViewFavouritesWidgetController', function ($http, $scope, $stateParams, $timeout, $state, $cookies) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.productId = $stateParams.productId;
@@ -7,6 +7,7 @@ app.controller('ViewFavouritesWidgetController', function ($http, $scope, $state
     $scope.favouriteId = $stateParams.favouriteId;
     $scope.favouritesWidgets = [];
     $scope.favouriteName = $stateParams.favouriteName;
+    $scope.userId = $cookies.getObject("userId");
     $http.get("admin/tag/widgetTag/" + $stateParams.favouriteName).success(function (response) {
         var widgetItems = [];
         widgetItems = response;

@@ -40,19 +40,19 @@ import org.apache.http.util.EntityUtils;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class GoogleMyBusinessService {
 
-    private static HashMap<String, String> locationListArray;
+    private static HashMap<String, String> locationListArray = null;
 
     private static String gmbAccessToken;
 
     public List<Map<String, Object>> get(String dataSetReportName, String gmbRefreshToken, String gmbAccountId, String clientId, String clientSecret,
             Date startDate, Date endDate, String timeSegment, String productSegment) {
-        gmbAccessToken = getAccessToken(gmbAccountId, gmbRefreshToken, clientId, clientSecret);
         boolean locationData = true;
         while (locationData) {
-            if (!locationListArray.isEmpty()) {
+            if (locationListArray != null) {
                 locationData = false;
             }
         }
+        gmbAccessToken = getAccessToken(gmbAccountId, gmbRefreshToken, clientId, clientSecret);
         if ("reportInsights".equalsIgnoreCase(dataSetReportName)) {
             return getInsightsReport(gmbRefreshToken, gmbAccountId, clientId, clientSecret, startDate, endDate);
         } else if ("overallReportInsights".equalsIgnoreCase(dataSetReportName)) {
@@ -120,52 +120,41 @@ public class GoogleMyBusinessService {
             JSONObject array = (JSONObject) jsonObject;
             Map<String, Object> arrangeData = new LinkedHashMap<>();
             List<Map<String, Object>> locationMetrics = (List<Map<String, Object>>) array.get("locationMetrics");
-            if ("BREAKDOWN_DAY_OF_WEEK".equals(timeSegment)) {
-                for (Map<String, Object> location : locationMetrics) {
-                    List<Map<String, Object>> MatricValues = (List<Map<String, Object>>) location.get("metricValues");
-                    Map<String, Object> metricValue = MatricValues.get(0);
-                    if (metricValue.size() != 1) {
-                        List<Map<String, Object>> dimensionalValues = (List<Map<String, Object>>) metricValue.get("dimensionalValues");
+            for (Map<String, Object> location : locationMetrics) {
+                List<Map<String, Object>> MatricValues = (List<Map<String, Object>>) location.get("metricValues");
+                Map<String, Object> metricValue = MatricValues.get(0);
+                if (metricValue.size() != 1) {
+                    List<Map<String, Object>> dimensionalValues = (List<Map<String, Object>>) metricValue.get("dimensionalValues");
+                    if ("BREAKDOWN_DAY_OF_WEEK".equals(timeSegment)) {
                         for (Map<String, Object> dimensionalValue : dimensionalValues) {
                             Map<String, String> metricName = (Map<String, String>) dimensionalValue.get("timeDimension");
                             for (int i = 1; i < 8; i++) {
                                 if (DayOfWeek.of(i).toString().equalsIgnoreCase(metricName.get("dayOfWeek"))) {
                                     String dayOfWeek = DayOfWeek.of(i).toString();
-                                    if (!arrangeData.containsKey(dayOfWeek)) {
-                                        arrangeData.put(dayOfWeek, dimensionalValue.get("value"));
-                                    } else {
-                                        arrangeData.put(dayOfWeek, Integer.parseInt((String) arrangeData.get(dayOfWeek)) + Integer.parseInt((String) dimensionalValue.get("value")));
-                                        break;
-                                    }
+                                    arrangeData.put(dayOfWeek, dimensionalValue.get("value"));
+                                    break;
                                 }
                             }
                         }
-                    }
-                }
-                for (int i = 1; i < 8; i++) {
-                    String dayOfWeek = DayOfWeek.of(i).toString();
-                    String titleCase = dayOfWeek.charAt(0)+dayOfWeek.substring(1, dayOfWeek.length()).toLowerCase();
-                    if (!arrangeData.containsKey(dayOfWeek)) {
-                        arrangeData.put(titleCase, 0);
-                    }else{
-                        arrangeData.put(titleCase, arrangeData.get(dayOfWeek));
-                        arrangeData.remove(dayOfWeek);
-                    }
-                }
-                for (Map.Entry<String, Object> entry : arrangeData.entrySet()) {
-                    Map<String, Object> callData = new HashMap<>();
-                    String key = entry.getKey();
-                    Object value = entry.getValue();
-                    callData.put("Day", key);
-                    callData.put("No of Calls", value);
-                    returnMap.add(callData);
-                }
-            } else {
-                for (Map<String, Object> location : locationMetrics) {
-                    List<Map<String, Object>> MatricValues = (List<Map<String, Object>>) location.get("metricValues");
-                    Map<String, Object> metricValue = MatricValues.get(0);
-                    if (metricValue.size() != 1) {
-                        List<Map<String, Object>> dimensionalValues = (List<Map<String, Object>>) metricValue.get("dimensionalValues");
+                        for (int i = 1; i < 8; i++) {
+                            String dayOfWeek = DayOfWeek.of(i).toString();
+                            String titleCase = dayOfWeek.charAt(0) + dayOfWeek.substring(1, dayOfWeek.length()).toLowerCase();
+                            if (!arrangeData.containsKey(dayOfWeek)) {
+                                arrangeData.put(titleCase, 0);
+                            } else {
+                                arrangeData.put(titleCase, arrangeData.get(dayOfWeek));
+                                arrangeData.remove(dayOfWeek);
+                            }
+                        }
+                        for (Map.Entry<String, Object> entry : arrangeData.entrySet()) {
+                            Map<String, Object> callData = new HashMap<>();
+                            String key = entry.getKey();
+                            Object value = entry.getValue();
+                            callData.put("Day", key);
+                            callData.put("No of Calls", value);
+                            returnMap.add(callData);
+                        }
+                    } else {
                         for (Map<String, Object> dimensionalValue : dimensionalValues) {
                             Map<String, Object> metricName = (Map<String, Object>) dimensionalValue.get("timeDimension");
                             Map<String, Object> hourValue = (Map<String, Object>) metricName.get("timeOfDay");
@@ -184,15 +173,15 @@ public class GoogleMyBusinessService {
                                 }
                             }
                         }
+                        for (Map.Entry<String, Object> entry : arrangeData.entrySet()) {
+                            Map<String, Object> callData = new HashMap<>();
+                            String key = entry.getKey();
+                            Object value = entry.getValue();
+                            callData.put("Hour", key);
+                            callData.put("noOfCalls", value);
+                            returnMap.add(callData);
+                        }
                     }
-                }
-                for (Map.Entry<String, Object> entry : arrangeData.entrySet()) {
-                    Map<String, Object> callData = new HashMap<>();
-                    String key = entry.getKey();
-                    Object value = entry.getValue();
-                    callData.put("Hour", key);
-                    callData.put("noOfCalls", value);
-                    returnMap.add(callData);
                 }
             }
             return returnMap;
@@ -254,13 +243,11 @@ public class GoogleMyBusinessService {
             JSONParser parser = new JSONParser();
             Object jsonObject = parser.parse(responseString);
             JSONObject array = (JSONObject) jsonObject;
-
-            List<Map<String, Object>> dataMap = new ArrayList<>();
-            int i = 0;
             List<Map<String, Object>> locationMetrics = (List<Map<String, Object>>) array.get("locationMetrics");
             LinkedList<String> dateTimeValue = new LinkedList();
             LinkedList<String> metrices = new LinkedList();
             Map<String, Object> dateValue = new HashMap<>();
+            int i = 0;
             int loop2 = 0;
             int loop1 = 0;
             for (Map<String, Object> location : locationMetrics) {
@@ -271,12 +258,8 @@ public class GoogleMyBusinessService {
                     if (metrics.containsKey("metric")) {
                         Map<String, Object> aggregatedDate = new HashMap<>();
                         if (loop1 > 1) {
-                            try {
                                 aggregatedDate = (Map<String, Object>) dateValue.get(metrices.get(i));
                                 i++;
-                            } catch (Exception e) {
-                                System.out.println("aggregated exception--------->" + e);
-                            }
                         }
                         String metricName = (String) metrics.get("metric");
                         if (loop1 == 1) {
@@ -290,7 +273,6 @@ public class GoogleMyBusinessService {
                             Map<String, Object> timeRange = (Map<String, Object>) timeDimension.get("timeRange");
                             startTime = (String) timeRange.get("startTime");
                             startTime = startTime.substring(0, startTime.indexOf("T"));
-                            metricValue = null;
                             if (perDayValues.containsKey("value")) {
                                 metricValue = (String) perDayValues.get("value");
                             } else {
@@ -298,18 +280,12 @@ public class GoogleMyBusinessService {
                             }
                             if (loop1 == 1) {
                                 aggregatedDate.put(startTime, metricValue);
-
                             }
                             if (loop2 == 0) {
                                 dateTimeValue.add(startTime);
-
                             }
                             if (loop1 > 1) {
-                                try {
                                     aggregatedDate.put(startTime, Integer.toString(Integer.parseInt((String) aggregatedDate.get(startTime)) + Integer.parseInt(metricValue)));
-                                } catch (NumberFormatException numberFormatException) {
-                                    System.out.println("exception---->" + numberFormatException);
-                                }
                             }
                         }
                         loop2++;
@@ -330,7 +306,7 @@ public class GoogleMyBusinessService {
                 returnDataMap.add(extractedData);
             }
             return returnDataMap;
-        } catch (Exception ex) {
+        } catch (NumberFormatException | ParseException ex) {
             Logger.getLogger(GoogleMyBusinessService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -376,7 +352,7 @@ public class GoogleMyBusinessService {
             }
             returnMap.add(data);
             return returnMap;
-        } catch (Exception ex) {
+        } catch (NumberFormatException | ParseException ex) {
             Logger.getLogger(GoogleMyBusinessService.class.getName()).log(Level.SEVERE, null, ex);
         }
 

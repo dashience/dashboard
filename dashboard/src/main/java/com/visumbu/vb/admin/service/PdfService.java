@@ -77,6 +77,7 @@ public class PdfService {
             System.out.println(command);
             java.lang.Runtime rt = java.lang.Runtime.getRuntime();
             String[] commandToExecute = (String[])commandsList.toArray(new String[commandsList.size()]);
+            System.out.println("commandTo Execute-------->"+commandToExecute);
             java.lang.Process p = rt.exec(commandToExecute);
             p.waitFor();
             return filename;
