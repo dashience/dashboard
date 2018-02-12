@@ -53,6 +53,7 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
     $scope.selectAccount = {};
 
     $http.get('admin/ui/userAccountByUser').success(function (response) {
+        console.log("response--------------->",response);
         if (!response[0]) {
             return;
         }
@@ -65,7 +66,8 @@ app.controller('HeaderController', function ($scope, $cookies, $http, $filter, $
             }
         });
         $scope.selectAccount.selected = {accountName: $scope.name.accountId.accountName};
-        $http.get("admin/ui/sessionStorage/" + $scope.name.accountId);
+        console.log("scope name------->",$scope.name);
+        $http.get("admin/ui/sessionStorage/" + $scope.name.accountId.id);
         $scope.accountLogo = $scope.name.accountId.logo;
         if (!$scope.name.userId.agencyId) {
             $scope.loadNewUrl();
