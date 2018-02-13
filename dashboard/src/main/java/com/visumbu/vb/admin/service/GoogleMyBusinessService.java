@@ -81,6 +81,7 @@ public class GoogleMyBusinessService {
 
     public void getLocations(String gmbRefreshToken, String gmbAccountId, String gmbClientId, String gmbClientSecret) {
         JSONObject array = null;
+        locationListArray = null;
         try {
             ArrayList<String> locationList = new ArrayList();
             gmbAccessToken = getAccessToken(gmbAccountId, gmbRefreshToken, gmbClientId, gmbClientSecret);

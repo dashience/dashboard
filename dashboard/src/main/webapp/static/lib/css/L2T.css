@@ -3915,6 +3915,7 @@ thead {
 .border-table {
     border: 1px solid #ddd;
     border-radius:2px;
+    clear: both;
 }
 
 .panel-body .head-title {
