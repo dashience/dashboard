@@ -2039,7 +2039,6 @@ public class ProxyController {
         try {
             List<Map<String, Object>> googleMyBusinessReport = googleMyBusinessService.get(dataSetReportName, gmbRefreshToken, gmbAccountId, gmbClientId, gmbClientSecret,
                     startDate, endDate, timeSegment, productSegment);
-            System.out.println("googleMyBusiness------>" + googleMyBusinessReport);
             return googleMyBusinessReport;
         } catch (NumberFormatException ex) {
 

@@ -67,7 +67,7 @@ public class TagDao extends BaseDao {
     public List getWidgetTagByName(String tagName, VbUser vbUser) {
         String queryStr = "select t from WidgetTag t where t.tagId.tagName = :tagName and t.userId.id = :userId order by widgetOrder";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("tagName", tagName);
+        query.setParameter("tagName", tagName);      
         query.setParameter("userId", vbUser.getId());
 
         List<WidgetTag> widgetTag = query.list();

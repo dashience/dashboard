@@ -266,7 +266,7 @@ public class ReviewTrackerService {
             conn.setDoInput(true);
             conn.setDoOutput(true);
             int responseCode = conn.getResponseCode();
-
+            System.out.println("responseCode----"+responseCode);
             BufferedReader br = new BufferedReader(new InputStreamReader(
                     (conn.getInputStream())));
             String output;
@@ -275,6 +275,7 @@ public class ReviewTrackerService {
             }
         } catch (IOException e) {
         }
+        System.out.println("jsonResponse-->"+jsonResponse);
         return jsonResponse;
     }
 
