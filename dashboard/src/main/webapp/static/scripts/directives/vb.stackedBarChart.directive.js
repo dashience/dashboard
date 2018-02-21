@@ -308,7 +308,6 @@ app.directive('stackedBarChartDirective', function ($http, $stateParams, $filter
                             }
 //                        chartData = orderData(chartData, sortFields);
                             xTicks = [xAxis.fieldName];
-
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;

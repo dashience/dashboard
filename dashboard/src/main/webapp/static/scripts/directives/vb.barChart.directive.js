@@ -32,9 +32,39 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
+            var graphMargin = 40;
+            var graphHeight = 400;
+            var barThickness = 25;
+            var textColor = '#989797';
+            var dataLabelFontSize = 10;
+            var axisLabelFontSize = 12;
+            var displayFormats = [];
+            var compareFormat = [];
             if (!scope.widgetColumns) {
                 return;
             }
+            var colorsHeirarchy = {
+                1: ['#009b96'],
+                2: ['#71c7a7', '#e58c00'],
+                3: ['#dc5c1f', '#f0cc5a', '#009b96'],
+                4: ['#dc5c1f', '#71c7a7', '#f0cc5a', '#236570'],
+                5: ['#e58c00', '#71c7a7', '#f0cc5a', '#156572', '#e15e64'],
+                6: ['#dc5c1f', '#f0cc5a', '#009b96', '#e58c00', '#236570', '#e15e64'],
+                7: ['#dc5c1f', '#f0cc5a', '#71c7a7', '#e58c00', '#009b96', '#e15e64', '#9f4462'],
+                8: ['#dc5c1f', '#f0cc5a', '#71c7a7', '#e58c00', '#009b96', '#e15e64', '#236570', '#9f4462']
+            };
+
+            var colorsHeirarchyShades = {
+                1: ['#088478'],
+                2: ['#62b592', '#d37607'],
+                3: ['#c44412', '#e0ad3d', '#088478'],
+                4: ['#c44412', '#62b592', '#e0ad3d', '#10545b'],
+                5: ['#d37607', '#62b592', '#e0ad3d', '#10545b', '#c4515f'],
+                6: ['#c44412', '#e0ad3d', '#088478', '#d37607', '#10545b', '#c4515f'],
+                7: ['#c44412', '#e0ad3d', '#62b592', '#d37607', '#088478', '#c4515f', '#822e4e'],
+                8: ['#c44412', '#e0ad3d', '#62b592', '#d37607', '#088478', '#c4515f', '#10545b', '#822e4e']
+            };
+            var showLegend;
             angular.forEach(JSON.parse(scope.widgetColumns), function (value, key) {
                 if (!labels["format"]) {
                     labels = {format: {}};
@@ -82,6 +112,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     console.log(value.fieldName + " --- " + value.combinationType);
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
+                displayFormats.push({displayName: value.displayName, displayFormat: value.displayFormat});
             });
             var xData = [];
             var xTicks = [];
@@ -237,6 +268,32 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
+                scope.format = function (val) {
+                    var format;
+                    angular.forEach(displayFormats, function (value, key) {
+                        var displayName = value.displayName;
+                        var dispFormat = value.displayFormat;
+                        if (val.series.name === displayName) {
+                            if (value.displayFormat) {
+                                if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                                    if (dispFormat.indexOf("%") > -1) {
+                                        format = d3.format(dispFormat)(val.y / 100);
+                                    } else {
+                                        format = d3.format(dispFormat)(val.y);
+                                    }
+                                } else {
+                                    format = formatBySecond(parseInt(val.y))
+                                }
+//                                   
+                            } else {
+                                format = val.y;
+                            }
+
+                        }
+
+                    });
+                    return format;
+                };
 
                 scope.refreshBarChart = function () {
                     $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
@@ -302,28 +359,36 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             if (chartMaxRecord.maxRecord > 0) {
                                 chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
-                            xTicks = [xAxis.fieldName];
+//                            xTicks = [xAxis.fieldName];
+//                            xData = chartData.map(function (a) {
+//                                xTicks.push(loopCount);
+//                                loopCount++;
+//                                return a[xAxis.fieldName];
+//                            });
                             xData = chartData.map(function (a) {
-                                xTicks.push(loopCount);
-                                loopCount++;
                                 return a[xAxis.fieldName];
                             });
-
-                            columns.push(xTicks);
+                            console.log("xaxis-------------->",xAxis);
+//                            columns.push(xTicks);
                             angular.forEach(yAxis, function (value, key) {
                                 var ySeriesData = chartData.map(function (a) {
-                                    return a[value.fieldName] || "0";
+//                                    return a[value.fieldName] || "0";
+                                    return parseFloat((angular.isDefined(a[value.fieldName]) == true) ? a[value.fieldName] : 0) || 0;
                                 });
                                 var ySeriesData1 = chartData.map(function (a) {
                                     if (a.metrics1) {
-                                        return a.metrics1[value.fieldName] || "0";
+//                                        return a.metrics1[value.fieldName] || "0";
+                                        return parseFloat((angular.isDefined(a[value.fieldName]) == true) ? a[value.fieldName] : 0) || 0;
+
                                     } else {
                                         return 0;
                                     }
                                 });
                                 var ySeriesData2 = chartData.map(function (a) {
                                     if (a.metrics2) {
-                                        return a.metrics2[value.fieldName] || "0";
+//                                        return a.metrics2[value.fieldName] || "0";
+                                        return parseFloat((angular.isDefined(a.metrics2[value.fieldName]) == true) ? a.metrics2[value.fieldName] : 0) || 0;
+
                                     } else {
                                         return 0;
                                     }
@@ -333,10 +398,20 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
                                     var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
                                     var joinCompare2 = value.displayName + " (" + sumaryRange2 + ")";
-                                    ySeriesData1.unshift(joinCompare1);
-                                    ySeriesData2.unshift(joinCompare2);
-                                    columns.push(ySeriesData1);
-                                    columns.push(ySeriesData2);
+//                                    ySeriesData1.unshift(joinCompare1);
+//                                    ySeriesData2.unshift(joinCompare2);
+//                                    columns.push(ySeriesData1);
+//                                    columns.push(ySeriesData2);
+                                    if (joinCompare1) {
+                                        var tempArray1 = {"name": joinCompare1, "data": ySeriesData1};
+                                        compareFormat.push({displayName: joinCompare1, displayFormat: value.displayFormat});
+                                    }
+                                    if (joinCompare2) {
+                                        var tempArray2 = {"name": joinCompare2, "data": ySeriesData2};
+                                        compareFormat.push({displayName: joinCompare2, displayFormat: value.displayFormat});
+                                    }
+                                    columns.push(tempArray1);
+                                    columns.push(tempArray2);
 //                            labels["format"][joinCompare1] = function (value) {
 //                                return value;
 //                            };
@@ -376,8 +451,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                         };
                                     }
                                 } else {
-                                    ySeriesData.unshift(value.displayName);
-                                    columns.push(ySeriesData);
+//                                    ySeriesData.unshift(value.displayName);
+                                    var tempArray1 = {"name": value.displayName, "data": ySeriesData};
+                                    columns.push(tempArray1);
                                 }
 //                            angular.forEach(yAxis, function (value, key) {
 //                                ySeriesData = chartData.map(function (a) {
@@ -395,60 +471,146 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             } else {
                                 gridLine = false;
                             }
-
                             try {
-                                var isRotate = JSON.parse(scope.isHorizontalBar);
+                                var isRotate = scope.isHorizontalBar == undefined ? false : true;
 
                             } catch (exception) {
+                                console.log("Exception-------->",exception);
                             }
-                            var left;
-                            if (isRotate === true) {
-                                left = 75;
-                            } else {
-                                left = 50;
-                            }
-                            var chart = c3.generate({
-                                padding: {
-                                    top: 10,
-                                    right: 50,
-                                    bottom: 10,
-                                    left: left,
-                                },
-                                bindto: element[0],
-                                data: {
-                                    x: xAxis.fieldName,
-                                    columns: columns,
-                                    labels: labels,
-                                    type: 'bar',
-                                    axes: axes,
-                                    types: chartCombinationtypes
-                                },
-                                color: {
-                                    pattern: chartColors ? chartColors : defaultColors
-                                },
-                                tooltip: {show: false},
-                                axis: {
-                                    rotated: isRotate,
-                                    x: {
-                                        tick: {
-                                            format: function (x) {
-                                                return xData[x];
-                                            },
-                                            multiline: true,
-                                            fit: true,
-                                            culling: false
+                            
+                            if (isCompare == "compareOn") {
+                                scope.format = function (val) {
+                                    var format;
+                                    angular.forEach(compareFormat, function (value, key) {
+                                        var dispFormat = value.displayFormat;
+                                        if (val.series.name === value.displayName) {
+                                            if (value.displayFormat) {
+                                                if (value.displayFormat && value.displayFormat != 'H:M:S') {
+                                                    if (dispFormat.indexOf("%") > -1) {
+                                                        format = d3.format(dispFormat)(val.y / 100);
+
+                                                    } else {
+                                                        format = d3.format(dispFormat)(val.y);
+                                                    }
+
+                                                } else {
+                                                    format = formatBySecond(parseInt(val.y))
+                                                }
+//                                   
+                                            } else {
+                                                format = val.y;
+                                            }
+
                                         }
-                                    },
-                                    y2: y2
-                                },
-                                grid: {
-                                    x: {
-                                        show: gridLine
-                                    },
-                                    y: {
-                                        show: gridLine
+                                    });
+                                    return format;
+
+                                };
+                            }
+                            if (columns.length > 1) {
+                                showLegend = true;
+                            } else {
+                                showLegend = false;
+                            }
+                            var labelOffset = (columns.length / 2) + .3;
+                            var len = columns[0].data.length;
+                            if (len > Object.keys(colorsHeirarchy).length) {
+                                len = Object.keys(colorsHeirarchy).length;
+                            }
+                            var formattedData = [];
+                            columns.forEach(function (dataGroup, groupIndex) {
+                                var index = groupIndex;
+                                var formattedDataArray = [];
+                                for (i = 0; i < dataGroup.data.length; i++) {
+                                    if (columns.length > 1) {
+                                        len = columns.length;
+                                    } else {
+                                        index = i
                                     }
+                                    if (index >= Object.keys(colorsHeirarchy).length) {
+                                        index = index % 8;
+                                    }
+                                    var formattedDataPoint = {
+                                        y: dataGroup.data[i],
+                                        color: colorsHeirarchy[len][index],
+                                        dataLabels: {backgroundColor: colorsHeirarchyShades[len][index]}
+                                    };
+                                    formattedDataArray.push(formattedDataPoint);
                                 }
+//
+                                formattedData.push({
+                                    name: dataGroup.name,
+                                    data: formattedDataArray
+                                });
+                            });
+
+                            // SETUP FOR GRAY BACKGROUND BEHIND BARS
+                            var plotLines = [];
+                            xData.forEach(function (category, index) {
+                                var newPlotLine = {
+                                    width: barThickness * columns.length,
+                                    color: '#f4f4f4',
+                                    value: index
+                                };
+                                plotLines.push(newPlotLine);
+                            });
+                            
+                            var chart = new Highcharts.Chart({
+                                chart: {
+                                    renderTo: element[0],
+                                    type: isRotate ? 'bar': 'column'
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    categories: xData,
+                                    title: {
+                                        text: null
+                                    }
+                                },
+                                yAxis: {
+                                    min: 0,
+                                    title: {
+                                        text: '',
+                                        align: 'high'
+                                    },
+                                    labels: {
+                                        overflow: 'justify'
+                                    }
+                                },
+                                tooltip: {
+                                    valueSuffix: ' millions',
+                                    useHTML: true,
+                                    formatter: function () {
+                                        var symbol = '●';
+                                        return this.x + '<br/>' + '<span style="color:' + this.series.color + '">' + symbol + '</span>' + ' ' + this.series.name + ': ' + scope.format(this)
+
+                                    },
+                                    style: {
+                                        zIndex: 100
+                                    }
+                                },
+                                plotOptions: {
+                                    bar: {
+                                        dataLabels: {
+                                            enabled: true,
+                                            formatter: function () {
+                                                return scope.format(this)
+                                            }
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    layout: 'horizontal',
+                                    align: 'center',
+                                    backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                                    shadow: true
+                                },
+                                credits: {
+                                    enabled: false
+                                },
+                                series: formattedData
                             });
                         }
                     });
