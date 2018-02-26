@@ -125,11 +125,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                             }
                             angular.forEach(funnelName, function (value, key) {
                                 var funnelData = response.data;
-                                var loopCount = 0;
-                                data = [value.fieldName];
                                 setData = funnelData.map(function (a) {
-                                    data.push(loopCount);
-                                    loopCount++;
                                     return a[value.fieldName];
                                 });
                                 var total = 0;

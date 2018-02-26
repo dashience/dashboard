@@ -303,164 +303,152 @@ app.directive('scatterChartDirective', function ($http, $filter, $stateParams, o
                             if (chartMaxRecord.maxRecord > 0) {
                                 chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
-                            xTicks = [xAxis.fieldName];
-                            xData = chartData.map(function (a) {
-                                xTicks.push(loopCount);
-                                loopCount++;
-                                return a[xAxis.fieldName];
-                            });
-                            columns.push(xTicks);
-                            angular.forEach(yAxis, function (value, key) {
-                                var ySeriesData = chartData.map(function (a) {
-                                    return a[value.fieldName] || "0";
+                            var isCompare = scope.urlType == 'compareOn' ? true : false;
+                            var ySeriesData = [];
+                            var ySeriesData1 = [];
+                            var ySeriesData2 = [];
+                            angular.forEach(chartData, function (value, key) {
+                                var tempySeriesData = yAxis.map(function (a) {
+                                    return parseFloat((angular.isDefined(value[a.fieldName]) == true) ? value[a.fieldName] : 0) || 0;
                                 });
+                                var tempySeriesData1 = yAxis.map(function (a) {
+                                    if (value.metrics1) {
+                                        return parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0;
+
+                                    } else {
+                                        return 0;
+                                    }
+                                });
+                                var tempySeriesData2 = yAxis.map(function (a) {
+                                    if (value.metrics2) {
+                                        return parseFloat((angular.isDefined(a.metrics2[value.fieldName]) == true) ? a.metrics2[value.fieldName] : 0) || 0;
+
+                                    } else {
+                                        return 0;
+                                    }
+                                });
+//                                ySeriesData.push(tempySeriesData);
+//                                ySeriesData1.push(tempySeriesData1);
+//                                ySeriesData1.push(tempySeriesData2);
+                                var tempArray1 = {name: value[xAxis.fieldName], data: [tempySeriesData]};
+                                columns.push(tempArray1);
+                            });
+                            if (isCompare) {
+                                var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
+                                var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
+                                var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
+                                var joinCompare2 = value.displayName + " (" + sumaryRange2 + ")";
+                                if (joinCompare1) {
+                                    var tempArray1 = {type: value.combinationType, name: joinCompare1, data: ySeriesData1, range: sumaryRange1};
+                                    compareFormat.push({displayName: joinCompare1, displayFormat: value.displayFormat});
+                                }
+                                if (joinCompare2) {
+                                    var tempArray2 = {type: value.combinationType, name: joinCompare2, data: ySeriesData2, range: sumaryRange2};
+                                    compareFormat.push({displayName: joinCompare2, displayFormat: value.displayFormat});
+                                }
+                                columns.push(tempArray1);
+                                columns.push(tempArray2);
+
+
+                            } else {
+
+                            }
+                            console.log("columns------------->", columns);
+//                           
+//                            angular.forEach(yAxis, function (value, key) {
+//                                var ySeriesData = chartData.map(function (a) {
+//                                    return [a[xAxisData], parseFloat((angular.isDefined(a[value.fieldName]) == true) ? a[value.fieldName] : 0) || 0];
+//                                });
 //                                var ySeriesData1 = chartData.map(function (a) {
 //                                    if (a.metrics1) {
-//                                        return a.metrics1[value.fieldName] || "0";
+//                                        return [a[xAxisData], parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0];
+//
 //                                    } else {
 //                                        return 0;
 //                                    }
 //                                });
 //                                var ySeriesData2 = chartData.map(function (a) {
 //                                    if (a.metrics2) {
-//                                        return a.metrics2[value.fieldName] || "0";
+//                                        return [a[xAxisData], parseFloat((angular.isDefined(a.metrics2[value.fieldName]) == true) ? a.metrics2[value.fieldName] : 0) || 0];
+//
 //                                    } else {
 //                                        return 0;
 //                                    }
 //                                });
-                                var ySeriesData1 = chartData.map(function (a) {
-                                    if (a.metrics1 === null) {
-                                        a.metrics1 = {}
+//                                if (isCompare) {
+//                                    var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
+//                                    var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
+//                                    var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
+//                                    var joinCompare2 = value.displayName + " (" + sumaryRange2 + ")";
+//                                    if (joinCompare1) {
+//                                        var tempArray1 = {type: value.combinationType, name: joinCompare1, data: ySeriesData1, range: sumaryRange1};
+//                                        compareFormat.push({displayName: joinCompare1, displayFormat: value.displayFormat});
+//                                    }
+//                                    if (joinCompare2) {
+//                                        var tempArray2 = {type: value.combinationType, name: joinCompare2, data: ySeriesData2, range: sumaryRange2};
+//                                        compareFormat.push({displayName: joinCompare2, displayFormat: value.displayFormat});
+//                                    }
+//                                    columns.push(tempArray1);
+//                                    columns.push(tempArray2);
+//
+//
+//                                } else {
+//                                    var tempArray1 = {type: value.combinationType, name: value.displayName, data: ySeriesData};
+//                                    columns.push(tempArray1);
+//                                }
+//                            });
+//                               console.log("columns------------->",columns);
+////                           
+                            var chart = Highcharts.chart({
+                                chart: {
+                                    renderTo: element[0],
+                                    type: 'scatter',
+                                    zoomType: 'xy'
+                                },
+                                title: {
+                                    text: ''
+                                },
+                                xAxis: {
+                                    startOnTick: true,
+                                    endOnTick: true,
+                                    showLastLabel: true
+                                },
+                                yAxis: {
+                                    title: {
                                     }
-                                    if (a.hasOwnProperty("metrics1")) {
-                                        if (Object.keys(a.metrics1).length !== 0) {
-                                            return a.metrics1[value.fieldName] || "0";
-                                        } else {
-                                            return a[value.fieldName] || "0";
-                                        }
-                                    }
-                                });
-                                var ySeriesData2 = chartData.map(function (a) {
-                                    if (a.metrics2 === null) {
-                                        a.metrics2 = {}
-                                    }
-                                    if (a.hasOwnProperty("metrics2")) {
-                                        if (Object.keys(a.metrics2).length !== 0) {
-                                            return a.metrics2[value.fieldName] || "0";
-                                        } else {
-                                            return a[value.fieldName] || "0";
-                                        }
-                                    }
-                                });
-                                if (isCompare == 'compareOn') {
-                                    var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
-                                    var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
-                                    var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
-                                    var joinCompare2 = value.displayName + " (" + sumaryRange2 + ")";
-                                    ySeriesData1.unshift(joinCompare1);
-                                    ySeriesData2.unshift(joinCompare2);
-                                    columns.push(ySeriesData1);
-                                    columns.push(ySeriesData2);
-//                            labels["format"][joinCompare1] = function (value) {
-//                                return value;
-//                            };
-//                            labels["format"][joinCompare2] = function (value) {
-//                                return value;
-//                            };
-                                    var displayName = value.displayName;
-                                    if (value.displayFormat) {
-                                        var format = value.displayFormat;
-                                        if (value.displayFormat && value.displayFormat != 'H:M:S') {
-                                            labels["format"][joinCompare1] = function (value) {
-                                                if (format.indexOf("%") > -1) {
-                                                    return d3.format(format)(value / 100);
+                                },
+                                legend: {
+                                    layout: 'horizontal',
+                                    align: 'center',
+                                    backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
+                                    shadow: true
+                                },
+                                plotOptions: {
+                                    scatter: {
+                                        marker: {
+                                            radius: 5,
+                                            states: {
+                                                hover: {
+                                                    enabled: true,
+                                                    lineColor: 'rgb(100,100,100)'
                                                 }
-                                                return d3.format(format)(value);
-                                            };
-                                            labels["format"][joinCompare2] = function (value) {
-                                                if (format.indexOf("%") > -1) {
-                                                    return d3.format(format)(value / 100);
+                                            }
+                                        },
+                                        states: {
+                                            hover: {
+                                                marker: {
+                                                    enabled: false
                                                 }
-                                                return d3.format(format)(value);
-                                            };
-                                        } else {
-                                            labels["format"][displayName] = function (value) {
-                                                return formatBySecond(parseInt(value))
-                                            };
+                                            }
+                                        },
+                                        tooltip: {
+                                            headerFormat: '<b>{series.name}</b><br>',
+                                            pointFormat: '{point.x}, {point.y}'
                                         }
-                                    } else {
-                                        labels["format"][joinCompare1] = function (value) {
-                                            return value;
-                                        };
-                                        labels["format"][joinCompare2] = function (value) {
-                                            return value;
-                                        };
-                                        labels["format"][displayName] = function (value) {
-                                            return value;
-                                        };
                                     }
-                                } else {
-                                    ySeriesData.unshift(value.displayName);
-                                    columns.push(ySeriesData);
-                                }
-//                            angular.forEach(yAxis, function (value, key) {
-//                                ySeriesData = chartData.map(function (a) {
-//                                    return a[value.fieldName] || "0";
-//                                });
-//                                ySeriesData.unshift(value.displayName);
-//                                columns.push(ySeriesData);
-                            });
+                                },
+                                series: columns
 
-                            angular.forEach(combinationTypes, function (value, key) {
-                                chartCombinationtypes[[value.fieldName]] = value.combinationType;
-                            });
-                            var gridScatter = false;
-                            if (gridData.isGridLine == 'Yes') {
-                                gridScatter = true;
-                            } else {
-                                gridScatter = false;
-                            }
-
-                            var chart = c3.generate({
-                                padding: {
-                                    top: 10,
-                                    right: 50,
-                                    bottom: 10,
-                                    left: 50,
-                                },
-                                bindto: element[0],
-                                data: {
-                                    x: xAxis.fieldName,
-                                    columns: columns,
-                                    labels: labels,
-                                    axes: axes,
-                                    type: 'scatter'
-                                },
-                                color: {
-                                    pattern: chartColors ? chartColors : defaultColors
-                                },
-                                tooltip: {show: false},
-                                axis: {
-                                    x: {
-                                        tick: {
-                                            format: function (x) {
-                                                return xData[x];
-                                            },
-                                            fit: false,
-                                            culling: false
-                                        }
-                                    },
-                                    y2: y2
-                                },
-
-                                grid: {
-                                    x: {
-                                        show: gridScatter
-                                    },
-                                    y: {
-                                        show: gridScatter
-                                    }
-                                }
                             });
                         }
                     });

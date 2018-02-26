@@ -5,13 +5,17 @@ app.factory('chartFactory', function () {
 
     function selectChart(chartType, data) {
         var dataFormat = function (displayValues) {
+            console.log("this------------------>",displayValues);
             return displayFormat(data.formatData, displayValues);
         };
         if (chartType == 'line' || chartType == 'area' || chartType == 'combination') {
             return lineChart(data, dataFormat, chartType);
-        }
-        if (chartType == 'pie') {
+        } else if (chartType == 'pie') {
             return pieChart(data, dataFormat, chartType);
+        } else if (chartType == 'gauge') {
+            return gaugeChart(data, dataFormat, chartType);
+        } else if (chartType == 'funnel') {
+            return funnelChart(data, dataFormat, chartType);
         }
         if (chartType == 'bar' || chartType == 'horizontalBar' || chartType == 'stackedbar') {
             if (chartType == 'stackedbar') {
@@ -25,7 +29,7 @@ app.factory('chartFactory', function () {
         var format;
         angular.forEach(displayFormats, function (value, key) {
             var dispFormat = value.displayFormat;
-            if (displayValue.series.name === value.displayName) {
+            if (displayValue.series.name === value.displayName || displayValue.key === value.displayName) {
                 if (value.displayFormat) {
                     if (value.displayFormat != 'H:M:S') {
                         if (dispFormat.indexOf("%") > -1) {
@@ -52,7 +56,7 @@ app.factory('chartFactory', function () {
                 height: 400,
                 margin: 50,
                 marginBottom: 50 * 1.75,
-                type: chartType,
+                type: chartType == 'combination' ? null : chartType,
                 style: {
                     fontFamily: 'Roboto', //'robotoregular',
                 }
@@ -110,6 +114,15 @@ app.factory('chartFactory', function () {
                     }
                 },
                 area: {
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function () {
+                            return dataFormat(this);
+                        }
+                    }
+                },
+                column: {
+                    stacking: data.stacked,
                     dataLabels: {
                         enabled: true,
                         formatter: function () {
@@ -219,6 +232,107 @@ app.factory('chartFactory', function () {
             },
             series: data.formattedData
         };
+    }
+    function gaugeChart(data, dataFormat, chartType) {
+        return{
+            chart: {
+                renderTo: data.renderTo,
+                type: 'solidgauge',
+//                backgroundColor: '#fff'
+            },
+            title: null,
+            pane: {
+                size: '100%',
+                startAngle: -90,
+                endAngle: 90,
+                background: {
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+                    innerRadius: '60%',
+                    outerRadius: '100%',
+                    shape: 'arc'
+                }
+            },
+            tooltip: {
+                valueSuffix: ' millions',
+                useHTML: true,
+                formatter: function () {
+                    var symbol = '●';
+                    return  '<span style="color:' + this.series.color + '">' + symbol + '</span>' + ' ' + this.series.name + ': ' + dataFormat(this);
+                },
+                style: {
+                    zIndex: 100
+                }
+            },
+            plotOptions: {
+                solidgauge: {
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function () {
+                            return dataFormat(this)
+                        }
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                max: 100,
+                stops: [
+                    [0.1, '#e74c3c'], // red
+                    [0.5, '#f1c40f'], // yellow
+                    [0.9, '#2ecc71'] // green
+                ],
+                minorTickInterval: null,
+                tickPixelInterval: 400,
+                tickWidth: 0,
+                gridLineWidth: 0,
+                gridLineColor: 'transparent',
+            },
+
+            series: data.formattedData
+        }
+    }
+    function funnelChart(data, dataFormat, chartType) {
+        return{
+            chart: {
+                renderTo: data.renderTo,
+                type: 'funnel'
+            },
+            title: {
+                text: ''
+            },
+            tooltip: {
+                valueSuffix: ' millions',
+                useHTML: true,
+                formatter: function () {
+                    var symbol = '●';
+                    return  '<span style="color:' + this.series.color + '">' + symbol + '</span>' + ' ' + this.key + ': ' + dataFormat(this);
+                },
+                style: {
+                    zIndex: 100
+                }
+            },
+            plotOptions: {
+                series: {
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b> ({point.y:,.0f})',
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                        softConnector: true
+                    },
+                    center: ['40%', '50%'],
+                    neckWidth: '30%',
+                    neckHeight: '25%',
+                    width: '80%'
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            series: [{
+                    name: '',
+                    data: data.formattedData
+                }]
+        }
     }
     return{
         selectChart: selectChart

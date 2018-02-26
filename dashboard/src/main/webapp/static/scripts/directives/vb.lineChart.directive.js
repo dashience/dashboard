@@ -15,8 +15,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             var yAxis = [];
             var columns = [];
             var xAxis;
-            var y2 = {show: false, label: ''};
-            var axes = {};
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
@@ -35,20 +33,13 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     xAxis = {fieldName: value.fieldName, displayName: value.displayName};
                 }
                 if (value.yAxis) {
-                    var combinationType = value.combinationType == 'bar'? 'column' : value.combinationType;
+                    var combinationType = value.combinationType == 'bar' ? 'column' : value.combinationType;
                     yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat, combinationType: combinationType});
-                    axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
-                }
-                if (value.yAxis > 1) {
-                    y2 = {show: true, label: ''};
                 }
                 if (value.sortOrder) {
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
                 }
-                if (value.combinationType) {
-                    combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
-                }
-                displayFormats.push({displayName: value.displayName, displayFormat: value.displayFormat});
+                displayFormats.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
             });
             console.log("combination type---------->", yAxis);
             var xData = [];
@@ -200,6 +191,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             '&widgetId=' + widgetObj.id +
                             '&url=' + lineChartDataSource.url +
                             '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
+                        console.log("response------->", response);
                         scope.loadingLine = false;
                         if (!response.data) {
                             scope.lineEmptyMessage = "No Data Found";
@@ -262,6 +254,24 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 });
                                 formattedDataVal = {name: yAxis[0].fieldName, data: formattedDataTest};
                                 formattedData.push(formattedDataVal);
+                            } else if (widgetObj.chartType == 'gauge') {
+                                var fieldName = widgetObj.columns[0].fieldName;
+                                var displayName = widgetObj.columns[0].displayName;
+                                var gaugeDataArray = response.data;
+                                var gaugeDataObj = gaugeDataArray[0];
+                                formattedData.push({name: displayName, data: [parseFloat((angular.isDefined(gaugeDataObj[fieldName]) == true) ? gaugeDataObj[fieldName] : 0) || 0]});
+                            } else if (widgetObj.chartType == 'funnel') {
+                                angular.forEach(displayFormats, function (value, key) {
+                                    var funnelData = response.data;
+                                    formattedDataTest = funnelData.map(function (a) {
+                                        return a[value.fieldName];
+                                    });
+                                    var total = 0;
+                                    for (var i = 0; i < formattedDataTest.length; i++) {
+                                        total += parseFloat(formattedDataTest[i]);
+                                    }
+                                    formattedData.push([value.displayName, parseFloat((angular.isDefined(total) == true) ? total : 0) || 0]);
+                                });
                             } else {
                                 angular.forEach(yAxis, function (value, key) {
                                     var ySeriesData = chartData.map(function (a) {
@@ -332,7 +342,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     });
 
                                     formattedData.push({
-                                        type:dataGroup.type,
+                                        type: dataGroup.type,
                                         name: dataGroup.name,
                                         data: formattedDataArray,
                                         stack: dataGroup.range,

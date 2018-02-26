@@ -1570,7 +1570,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.directiveLineFn = barFn;
     };
     $scope.setGaugeFn = function (gaugeFn) {
-        $scope.directiveGaugeFn = gaugeFn;
+        $scope.directiveLineFn = gaugeFn;
     };
     $scope.setPieChartFn = function (pieFn) {
         $scope.directiveLineFn = pieFn;
@@ -1588,7 +1588,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.directiveTickerFn = tickerFn;
     };
     $scope.setFunnelFn = function (funnelFn) {
-        $scope.directiveFunnelFn = funnelFn;
+        $scope.directiveLineFn = funnelFn;
     };
     $scope.setCustomDatePickerFn = function (customDateFn) {
         $scope.directiveDateFn = customDateFn;
