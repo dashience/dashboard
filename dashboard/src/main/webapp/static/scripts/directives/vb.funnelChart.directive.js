@@ -36,7 +36,7 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                     }
                     if (column.displayFormat.indexOf("%") > -1) {
                         return d3.format(column.displayFormat)(value / 100);
-                    }else if(column.displayFormat === 'H:M:S'){
+                    } else if (column.displayFormat === 'H:M:S') {
                         return formatBySecond(parseInt(value));
                     }
                     return d3.format(column.displayFormat)(value);
@@ -136,75 +136,91 @@ app.directive('funnelDirective', function ($http, $stateParams, $filter) {
                                 for (var i = 0; i < setData.length; i++) {
                                     total += parseFloat(setData[i]);
                                 }
-                                scope.funnels.push({funnelTitle: value.displayName, totalValue: format(value, total), dataValue: total});
+                                scope.funnels.push([value.displayName, parseFloat((angular.isDefined(total) == true) ? total : 0) || 0]);
                             });
                         }
-                        var data = scope.funnels;
-                        scope.funnelCharts = [];
-                        scope.funnelFiltered = $filter('orderBy')(scope.funnels, 'totalValue');
-                        scope.fName = [];
-                        scope.fValue = [];
-                        scope.dValue = [];
-                        angular.forEach(scope.funnels, function (value, key) {
-                            var funnelFieldName = value.funnelTitle;
-                            var funnelValue = value.totalValue;
-                            var dataValue = value.dataValue;
-                            scope.fName.push(funnelFieldName);
-                            scope.fValue.push(funnelValue);
-                            scope.dValue.push(dataValue);
-                        });
-                        var funnelData = filterFunnelByValue(scope.fName, scope.fValue, scope.dValue);
-                        scope.funnelCharts = funnelData;
-                        function filterFunnelByValue(name, value, dataValue) {
-                            var len = name.length;
-                            var temp, temp1 = 0, temp2 = 0;
-                            for (var i = 0; i < len; i++) {
-                                for (var j = i + 1; j < len; j++) {
-                                    if (dataValue[i] < dataValue[j]) {
-                                        temp = value[i];
-                                        value[i] = value[j];
-                                        value[j] = temp;
-                                        temp1 = name[i];
-                                        name[i] = name[j];
-                                        name[j] = temp1;
-                                        temp2 = dataValue[i];
-                                        dataValue[i] = dataValue[j];
-                                        dataValue[j] = temp2;
-                                    }
-                                }
-                            }
-                            return funnelArrayObjects(name, value);
-                        }
-
-                        function funnelArrayObjects(name, value) {
-                            var funnelObject = [];
-                            var funnelColor = chartColors ? chartColors : defaultColors;
-                            var len = name.length;
-                            for (var i = 0; i < len; i++) {
-                                funnelObject.push([name[i], value[i], funnelColor[i]]);
-                            }
-                            return funnelObject;
-                        }
+                        console.log("scope.funnels----------------->", scope.funnels);
+//                        var data = scope.funnels;
+//                        scope.funnelCharts = [];
+//                        scope.funnelFiltered = $filter('orderBy')(scope.funnels, 'totalValue');
+//                        scope.fName = [];
+//                        scope.fValue = [];
+//                        scope.dValue = [];
+//                        angular.forEach(scope.funnels, function (value, key) {
+//                            var funnelFieldName = value.funnelTitle;
+//                            var funnelValue = value.totalValue;
+//                            var dataValue = value.dataValue;
+//                            scope.fName.push(funnelFieldName);
+//                            scope.fValue.push(funnelValue);
+//                            scope.dValue.push(dataValue);
+//                        });
+//                        var funnelData = filterFunnelByValue(scope.fName, scope.fValue, scope.dValue);
+//                        scope.funnelCharts = funnelData;
+//                        function filterFunnelByValue(name, value, dataValue) {
+//                            var len = name.length;
+//                            var temp, temp1 = 0, temp2 = 0;
+//                            for (var i = 0; i < len; i++) {
+//                                for (var j = i + 1; j < len; j++) {
+//                                    if (dataValue[i] < dataValue[j]) {
+//                                        temp = value[i];
+//                                        value[i] = value[j];
+//                                        value[j] = temp;
+//                                        temp1 = name[i];
+//                                        name[i] = name[j];
+//                                        name[j] = temp1;
+//                                        temp2 = dataValue[i];
+//                                        dataValue[i] = dataValue[j];
+//                                        dataValue[j] = temp2;
+//                                    }
+//                                }
+//                            }
+//                            return funnelArrayObjects(name, value);
+//                        }
+//                            console.log("funnelArrayObjects------------>",scope.funnelCharts);
+//                        function funnelArrayObjects(name, value) {
+//                            var funnelObject = [];
+//                            var funnelColor = chartColors ? chartColors : defaultColors;
+//                            var len = name.length;
+//                            for (var i = 0; i < len; i++) {
+//                                funnelObject.push([name[i], value[i], funnelColor[i]]);
+//                            }
+//                            return funnelObject;
+//                        }
 
                         /*Filter*/
-                        function drawChart() {
-                            var width = $(element[0]).width();
-                            var height = 315;
-                            var options = {
-                                width: width,
-                                height: height,
-                                bottomPinch: 1, // How many sections to pinch
-                                hoverEffects: true  // Whether the funnel has effects on hover
-                            };
-                            var funnel = new D3Funnel(scope.funnelCharts, options);
-                            funnel.draw(element[0]);
-                        }
-                        drawChart();
-                        $(window).on("resize", function () {
-                            drawChart();
-                        });
+                        var chart = Highcharts.chart(
+                                {
+                                    chart: {
+                                        renderTo:element[0],
+                                        type: 'funnel'
+                                    },
+                                    title: {
+                                        text: ''
+                                    },
+                                    plotOptions: {
+                                        series: {
+                                            dataLabels: {
+                                                enabled: true,
+                                                format: '<b>{point.name}</b> ({point.y:,.0f})',
+                                                color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black',
+                                                softConnector: true
+                                            },
+                                            center: ['40%', '50%'],
+                                            neckWidth: '30%',
+                                            neckHeight: '25%',
+                                            width: '80%'
+                                        }
+                                    },
+                                    legend: {
+                                        enabled: false
+                                    },
+                                    series: [{
+                                            name: '',
+                                            data: scope.funnels
+                                        }]
+                                });
                     });
-                }
+                };
                 scope.setFunnelFn({funnelFn: scope.refreshFunnel});
                 scope.refreshFunnel();
             }

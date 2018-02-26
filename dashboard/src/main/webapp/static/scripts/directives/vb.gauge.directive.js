@@ -83,7 +83,7 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
                 } else {
                     dashboardFilter = "";
                 }
-                
+
                 scope.refreshGaugeChart = function () {
                     $http.get(url + 'connectionUrl=' + gaugeChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + gaugeChartDataSource.id +
@@ -114,27 +114,66 @@ app.directive('gaugeDirective', function ($http, $stateParams) {
                         var arrayGaugeData = [];
 
                         //array of array
-                        arrayGaugeData.push(fieldName, gaugeDataObj[fieldName]);
+                        arrayGaugeData.push({name:fieldName, data:[parseFloat((angular.isDefined(gaugeDataObj[fieldName]) == true) ? gaugeDataObj[fieldName] : 0) || 0]});
 
-
+                        console.log("arrayGaugeData--------->",arrayGaugeData);
+                        console.log("gaugeDataObj--------->",gaugeDataObj);
 
 
 //                    var groups = gaugeData;
 
-                        var chart = c3.generate({
-                            bindto: element[0],
-//                        groups: groups,
-                            data: {
-                                columns: [arrayGaugeData],
-                                type: 'gauge',
-//                            groups: [groups],
-                            },
-                            color: {
-                                pattern: chartColors ? chartColors : defaultColors
-                            },
-                        });
 
 
+
+// The speed gauge
+                        var chart = Highcharts.chart(
+                                {
+                                    chart: {
+                                        renderTo:element[0],
+                                        type: 'solidgauge',
+                                        backgroundColor: '#fff'
+                                    },
+
+                                    title: null,
+
+                                    pane: {
+                                        size: '100%',
+                                        startAngle: -90,
+                                        endAngle: 90,
+                                        background: {
+                                            backgroundColor: '#FFF',
+                                            innerRadius: '90%',
+                                            outerRadius: '105%',
+                                            shape: 'arc',
+                                            borderColor: '#fff'
+                                        }
+                                    },
+
+                                    tooltip: {
+                                        enabled: true
+                                    },
+
+                                    // the value axis
+                                    yAxis: {
+                                        min: 0,
+                                        max: 100,
+                                        stops: [
+                                            [0.1, '#e74c3c'], // red
+                                            [0.5, '#f1c40f'], // yellow
+                                            [0.9, '#2ecc71'] // green
+                                        ],
+                                        minorTickInterval: null,
+                                        tickPixelInterval: 400,
+                                        tickWidth: 0,
+                                        gridLineWidth: 0,
+                                        gridLineColor: 'transparent',
+                                        labels: {
+                                            enabled: true
+                                        }
+                                    },
+
+                                    series: arrayGaugeData
+                                });
                     });
 
                 }

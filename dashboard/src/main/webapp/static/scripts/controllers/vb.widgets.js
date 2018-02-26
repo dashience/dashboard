@@ -1564,19 +1564,19 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.directiveLineFn = lineFn;
     };
     $scope.setAreaChartFn = function (areaFn) {
-        $scope.directiveAreaFn = areaFn;
+        $scope.directiveLineFn = areaFn;
     };
     $scope.setBarChartFn = function (barFn) {
-        $scope.directiveBarFn = barFn;
+        $scope.directiveLineFn = barFn;
     };
     $scope.setGaugeFn = function (gaugeFn) {
         $scope.directiveGaugeFn = gaugeFn;
     };
     $scope.setPieChartFn = function (pieFn) {
-        $scope.directivePieFn = pieFn;
+        $scope.directiveLineFn = pieFn;
     };
     $scope.setStackedBarChartFn = function (stackedBarChartFn) {
-        $scope.directiveStackedBarChartFn = stackedBarChartFn;
+        $scope.directiveLineFn = stackedBarChartFn;
     };
     $scope.setScatterChartFn = function (scatterChartFn) {
         $scope.directiveScatterFn = scatterChartFn;

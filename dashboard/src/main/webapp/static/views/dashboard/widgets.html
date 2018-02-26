@@ -435,11 +435,11 @@
                                 <a title="{{'Favorites'| translate}}" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
                                 <a ng-show="showCreateReport" title="{{'Report'| translate}}" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
                                 <a ng-if="widget.chartType === 'line'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'bar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'horizontalBar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'pie'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'area'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'stackedbar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'bar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'horizontalBar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'pie'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'area'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'stackedbar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'table'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'scatter'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
                                 <a ng-if="widget.chartType === 'gauge'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveGaugeFn()"><i class="fa fa-repeat"></i></a>
@@ -473,28 +473,24 @@
                     <div class="panel-body" ng-if="widget.chartType === 'line' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
                             <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
-                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
-                                 widget-Id="{{widget.id}}" 
-                                 widget-Columns="{{widget.columns}}" 
+                                 line-Chart-Directive  
                                  url-type="{{getTableType}}"
                                  compare-Date-Range="{{compareDateRange}}"
                                  widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body" ng-if="widget.chartType === 'bar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                    <div class="panel-body" ng-if="widget.chartType === 'bar' || widget.chartType === 'horizontalBar'  && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
-                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
-                                 widget-Id="{{widget.id}}" 
-                                 widget-Columns="{{widget.columns}}" 
-                                 url-Type="{{getTableType}}"
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive  
+                                 url-type="{{getTableType}}"
                                  compare-Date-Range="{{compareDateRange}}"
-                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                       
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body" ng-if="widget.chartType === 'horizontalBar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+<!--                    <div class="panel-body" ng-if="widget.chartType === 'horizontalBar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
                             <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                  bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
@@ -506,41 +502,36 @@
                                  is-Horizontal-Bar="{{widget.isHorizontalBar}}">                                     
                             </div>
                         </div>
-                    </div>
+                    </div>-->
 
                     <div class="panel-body" ng-if="widget.chartType === 'pie'">
                         <div>
-                            <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
-                                 pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' 
-                                 widget-Id="{{widget.id}}" 
-                                 widget-Columns="{{widget.columns}}" 
-                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive  
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                       
                             </div>
                         </div>
                     </div>
                     <div class="panel-body"  ng-if="(widget.chartType === 'area' || widget.chartType === 'combination') && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
-                                 area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
-                                 widget-Id="{{widget.id}}"
-                                 widget-Columns="{{widget.columns}}" 
+                            <div set-Line-Chart-Fn="setLineChartFn(areaFn)"
+                                 line-Chart-Directive  
                                  url-type="{{getTableType}}"
                                  compare-Date-Range="{{compareDateRange}}"
-                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                    
                             </div>
                         </div>
                     </div>
 
                     <div class="panel-body" ng-if="widget.chartType === 'scatter' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-Scatter-Chart-Fn="setScatterChartFn(scatterFn)" 
-                                 get-Scatter-Widget-Obj="getWidgetObjScatter(obj)"
-                                 scatter-Chart-Directive scatter-Chart-Source="{{widget.dataSetId}}" 
-                                 widget-Id="{{widget.id}}" 
-                                 widget-Columns="{{widget.columns}}" 
+                             <div set-Area-Chart-Fn="setLineChartFn(areaFn)"
+                                 line-Chart-Directive  
                                  url-type="{{getTableType}}"
                                  compare-Date-Range="{{compareDateRange}}"
-                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                    
                             </div>
                         </div>
                     </div>
@@ -579,13 +570,11 @@
                     </div>
                     <div class="panel-body"  ng-if="widget.chartType === 'stackedbar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
-                                 stacked-Bar-Chart-Directive 
-                                 stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
-                                 widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" 
+                           <div set-Line-Chart-Fn="setLineChartFn(areaFn)"
+                                 line-Chart-Directive  
                                  url-type="{{getTableType}}"
                                  compare-Date-Range="{{compareDateRange}}"
-                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                    
                             </div>
                         </div>
                     </div>
