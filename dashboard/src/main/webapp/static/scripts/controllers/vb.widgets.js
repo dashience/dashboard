@@ -1563,32 +1563,11 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     $scope.setLineChartFn = function (lineFn) {
         $scope.directiveLineFn = lineFn;
     };
-    $scope.setAreaChartFn = function (areaFn) {
-        $scope.directiveLineFn = areaFn;
-    };
-    $scope.setBarChartFn = function (barFn) {
-        $scope.directiveLineFn = barFn;
-    };
-    $scope.setGaugeFn = function (gaugeFn) {
-        $scope.directiveLineFn = gaugeFn;
-    };
-    $scope.setPieChartFn = function (pieFn) {
-        $scope.directiveLineFn = pieFn;
-    };
-    $scope.setStackedBarChartFn = function (stackedBarChartFn) {
-        $scope.directiveLineFn = stackedBarChartFn;
-    };
-    $scope.setScatterChartFn = function (scatterChartFn) {
-        $scope.directiveLineFn = scatterChartFn;
-    };
     $scope.setTableChartFn = function (tableFn) {
         $scope.directiveTableFn = tableFn;
     };
     $scope.setTickerFn = function (tickerFn) {
         $scope.directiveTickerFn = tickerFn;
-    };
-    $scope.setFunnelFn = function (funnelFn) {
-        $scope.directiveLineFn = funnelFn;
     };
     $scope.setCustomDatePickerFn = function (customDateFn) {
         $scope.directiveDateFn = customDateFn;

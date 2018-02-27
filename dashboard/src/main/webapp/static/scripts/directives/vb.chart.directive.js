@@ -1,4 +1,4 @@
-app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter, chartFactory) {
+app.directive('chartDirective', function ($http, $filter, $stateParams, orderByFilter, chartFactory, httpService) {
     return{
         restrict: 'A',
         template: '<div ng-show="loadingLine" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
@@ -16,10 +16,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             var columns = [];
             var xAxis;
             var sortFields = [];
-            var combinationTypes = [];
-            var chartCombinationtypes = [];
             var compareFormat = [];
             var displayFormats = [];
+            var chartUrl, httpUrl, requestUrl;
             var showLegend;
             var widgetObj = JSON.parse(scope.widgetObj);
             console.log("widgetObj---------->", widgetObj);
@@ -43,84 +42,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             });
             console.log("combination type---------->", yAxis);
             var xData = [];
-            scope.orderData = function (list, fieldnames) {
-                if (fieldnames.length == 0) {
-                    return list;
-                }
-                var fieldsOrder = [];
-                angular.forEach(fieldnames, function (value, key) {
-                    if (value.fieldType == "string") {
-                        if (value.sortOrder == "asc") {
-                            fieldsOrder.push(value.fieldName);
-                        } else if (value.sortOrder == "desc") {
-                            fieldsOrder.push("-" + value.fieldName);
-                        }
-                    } else if (value.fieldType == "number") {
-                        if (value.sortOrder == "asc") {
-                            fieldsOrder.push(function (a) {
-
-                                var parsedValue = parseFloat(a[value.fieldName]);
-                                if (isNaN(parsedValue)) {
-                                    return 0;
-                                }
-                                return parsedValue;
-                            });
-                        } else if (value.sortOrder == "desc") {
-                            fieldsOrder.push(function (a) {
-                                var parsedValue = parseFloat(a[value.fieldName]);
-                                if (isNaN(parsedValue)) {
-                                    return 0;
-                                }
-                                return -1 * parsedValue;
-                            });
-                        }
-                    } else if (value.fieldType == "date") {
-                        if (value.sortOrder == "asc") {
-                            fieldsOrder.push(function (a) {
-
-                                var parsedDate = new Date(a[value.fieldName]);
-                                var parsedValue = parsedDate.getTime() / 1000;
-                                if (isNaN(parsedValue)) {
-                                    return 0;
-                                }
-                                return parsedValue;
-                            });
-                        } else if (value.sortOrder == "desc") {
-                            fieldsOrder.push(function (a) {
-                                var parsedDate = new Date(a[value.fieldName]);
-                                var parsedValue = parsedDate.getTime() / 1000;
-                                if (isNaN(parsedValue)) {
-                                    return 0;
-                                }
-                                return -1 * parsedValue;
-                            });
-                        }
-                    } else {
-                        if (value.sortOrder == "asc") {
-                            fieldsOrder.push(function (a) {
-                                var parsedValue = parseFloat(a[value.fieldName]);
-                                if (isNaN(parsedValue)) {
-                                    return a[value.fieldName];
-                                }
-                                return parsedValue;
-                            });
-                        } else if (value.sortOrder == "desc") {
-                            fieldsOrder.push(function (a) {
-                                return -1 * parseFloat(a[value.fieldName])
-                            });
-                        }
-                    }
-                });
-                return $filter('orderBy')(list, fieldsOrder);
-            };
-            function maximumRecord(maxValue, list) {
-                var maxData;
-                if (maxValue.maxRecord > 0) {
-                    maxData = list.slice(0, maxValue.maxRecord);
-                }
-                return maxData;
-            }
-            var isCompare = scope.urlType == 'compareOn' && widgetObj.chartType != 'pie'  && widgetObj.chartType != 'funnel'  && widgetObj.chartType != 'gauge'? true : false;
+            var isCompare = scope.urlType == 'compareOn' && widgetObj.chartType != 'pie' && widgetObj.chartType != 'funnel' && widgetObj.chartType != 'gauge' ? true : false;
             var compareRange = JSON.parse(scope.compareDateRange);
             var url;
             var dateRangeType;
@@ -174,7 +96,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                     setNetworkType = widgetObj.networkType;
                 }
                 scope.refreshLineChart = function () {
-                    $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
+                    chartUrl = 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
                             "&accountId=" + (widgetObj.accountId ? (widgetObj.accountId.id ? widgetObj.accountId.id : widgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (lineChartDataSource.userId ? lineChartDataSource.userId.id : null) +
@@ -188,7 +110,12 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&dataSetReportName=" + lineChartDataSource.reportName +
                             '&widgetId=' + widgetObj.id +
                             '&url=' + lineChartDataSource.url +
-                            '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
+                            '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query);
+                    httpUrl = url + chartUrl;
+                    requestUrl = httpService.httpProcess('GET', httpUrl);
+//                    $http.get(url + ).success(function (response) {
+                    requestUrl.then(function (response) {
+
                         console.log("response------->", response);
                         scope.loadingLine = false;
                         if (!response.data) {
@@ -200,46 +127,17 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             scope.lineEmptyMessage = "No Data Found";
                             scope.hideEmptyLine = true;
                         } else {
-                            var loopCount = 0;
-                            var sortingObj;
                             var chartData = response.data;
-                            if (sortFields.length > 0) {
-                                angular.forEach(sortFields, function (value, key) {
-                                    if (value.fieldType != 'day') {
-                                        sortingObj = scope.orderData(chartData, sortFields);
-                                        if (widgetObj.maxRecord) {
-                                            chartData = maximumRecord(widgetObj, sortingObj)
-                                        } else {
-                                            chartData = sortingObj;
-                                        }
-                                    } else {
-                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
-                                        sortingObj = orderByFilter(chartData, function (item) {
-                                            if (value.sortOrder === 'asc') {
-                                                return dateOrders.indexOf(item[value.fieldName]);
-                                            } else if (value.sortOrder === 'desc') {
-                                                return dateOrders.indexOf(item[value.fieldName]) * -1;
-                                            }
-                                        });
-
-                                        if (widgetObj.maxRecord) {
-                                            chartData = maximumRecord(widgetObj, sortingObj)
-                                        } else {
-                                            chartData = sortingObj;
-                                        }
-                                    }
-                                });
-                            }
-                            if (widgetObj.maxRecord > 0) {
-                                chartData = chartData.slice(0, widgetObj.maxRecord);
-                            }
-                            console.log("chartData--------->", chartData);
+                            console.log("sortFields--------->", sortFields);
+                            console.log("chartData------------->", chartData);
+                            console.log("maxRecord--------->", widgetObj.maxRecord)
+                            chartData = chartFactory.sortData(sortFields, chartData, widgetObj.maxRecord);
                             if (xAxis) {
                                 xData = chartData.map(function (a) {
                                     return a[xAxis.fieldName];
                                 });
                             }
-
+                            console.log("chartDatafinal-------------------->", chartData);
                             var formattedDataTest = [];
                             var formattedDataVal = {};
                             var formattedData = [];
@@ -288,7 +186,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     var ySeriesData1 = chartData.map(function (a) {
                                         if (a.metrics1) {
                                             if (scatter) {
-                                               return [parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0]; 
+                                                return [parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0];
                                             }
                                             return parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0;
 
