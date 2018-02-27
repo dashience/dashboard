@@ -120,7 +120,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
                 return maxData;
             }
-            var isCompare = scope.urlType == 'compareOn' && widgetObj.chartType != 'pie' ? true : false;
+            var isCompare = scope.urlType == 'compareOn' && widgetObj.chartType != 'pie'  && widgetObj.chartType != 'funnel'  && widgetObj.chartType != 'gauge'? true : false;
             var compareRange = JSON.parse(scope.compareDateRange);
             var url;
             var dateRangeType;
@@ -173,8 +173,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 } else {
                     setNetworkType = widgetObj.networkType;
                 }
-                var groupingNames = [];
-                var groupingNames2 = [];
                 scope.refreshLineChart = function () {
                     $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
@@ -245,6 +243,10 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             var formattedDataTest = [];
                             var formattedDataVal = {};
                             var formattedData = [];
+                            var scatter = false;
+                            if (widgetObj.chartType == 'scatter') {
+                                scatter = true;
+                            }
                             if (widgetObj.chartType == 'pie') {
                                 angular.forEach(chartData, function (value) {
                                     var arrayData = parseFloat((angular.isDefined(value[yAxis[0].fieldName]) == true) ? value[yAxis[0].fieldName] : 0) || 0;
@@ -270,15 +272,24 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     for (var i = 0; i < formattedDataTest.length; i++) {
                                         total += parseFloat(formattedDataTest[i]);
                                     }
+                                    if (value.displayFormat == ',.2%') {
+                                        total = total / formattedDataTest.length;
+                                    }
                                     formattedData.push([value.displayName, parseFloat((angular.isDefined(total) == true) ? total : 0) || 0]);
                                 });
                             } else {
                                 angular.forEach(yAxis, function (value, key) {
                                     var ySeriesData = chartData.map(function (a) {
+                                        if (scatter) {
+                                            return [parseFloat((angular.isDefined(a[value.fieldName]) == true) ? a[value.fieldName] : 0) || 0];
+                                        }
                                         return parseFloat((angular.isDefined(a[value.fieldName]) == true) ? a[value.fieldName] : 0) || 0;
                                     });
                                     var ySeriesData1 = chartData.map(function (a) {
                                         if (a.metrics1) {
+                                            if (scatter) {
+                                               return [parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0]; 
+                                            }
                                             return parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0;
 
                                         } else {
@@ -287,6 +298,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     });
                                     var ySeriesData2 = chartData.map(function (a) {
                                         if (a.metrics2) {
+                                            if (scatter) {
+                                                return [parseFloat((angular.isDefined(a.metrics2[value.fieldName]) == true) ? a.metrics2[value.fieldName] : 0) || 0];
+                                            }
                                             return parseFloat((angular.isDefined(a.metrics2[value.fieldName]) == true) ? a.metrics2[value.fieldName] : 0) || 0;
 
                                         } else {
@@ -314,15 +328,6 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                         var tempArray1 = {type: value.combinationType, name: value.displayName, data: ySeriesData};
                                         columns.push(tempArray1);
                                     }
-                                });
-                                if (columns.length > 1) {
-                                    showLegend = true;
-                                } else {
-                                    showLegend = false;
-                                }
-
-                                angular.forEach(combinationTypes, function (value, key) {
-                                    chartCombinationtypes[[value.fieldName]] = value.combinationType;
                                 });
                                 var formattedData = [];
                                 columns.forEach(function (dataGroup) {
@@ -354,6 +359,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     });
                                 });
                             }
+                            showLegend = true;
                             console.log("formatData 1------------>", formattedData);
                             var highChartData = {formatData: isCompare ? compareFormat : displayFormats,
                                 renderTo: element[0],
@@ -363,7 +369,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                 formattedData: formattedData,
                                 isCompare: isCompare
                             };
-                            console.log("widgetObj---->", widgetObj);
+                            console.log("columns", columns);
                             var chart = new Highcharts.Chart(chartFactory.selectChart(widgetObj.chartType, highChartData));
                         }
                     });

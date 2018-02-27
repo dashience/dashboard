@@ -1579,7 +1579,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
         $scope.directiveLineFn = stackedBarChartFn;
     };
     $scope.setScatterChartFn = function (scatterChartFn) {
-        $scope.directiveScatterFn = scatterChartFn;
+        $scope.directiveLineFn = scatterChartFn;
     };
     $scope.setTableChartFn = function (tableFn) {
         $scope.directiveTableFn = tableFn;

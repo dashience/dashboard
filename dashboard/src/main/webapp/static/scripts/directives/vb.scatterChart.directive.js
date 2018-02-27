@@ -307,52 +307,96 @@ app.directive('scatterChartDirective', function ($http, $filter, $stateParams, o
                             var ySeriesData = [];
                             var ySeriesData1 = [];
                             var ySeriesData2 = [];
-                            angular.forEach(chartData, function (value, key) {
-                                var tempySeriesData = yAxis.map(function (a) {
-                                    return parseFloat((angular.isDefined(value[a.fieldName]) == true) ? value[a.fieldName] : 0) || 0;
+                            if (xAxis) {
+                                xData = chartData.map(function (a) {
+                                    return a[xAxis.fieldName];
                                 });
-                                var tempySeriesData1 = yAxis.map(function (a) {
-                                    if (value.metrics1) {
+                            }
+//                            angular.forEach(chartData, function (value, key) {
+//                                var tempySeriesData = yAxis.map(function (a) {
+//                                    return parseFloat((angular.isDefined(value[a.fieldName]) == true) ? value[a.fieldName] : 0) || 0;
+//                                });
+//                                var tempySeriesData1 = yAxis.map(function (a) {
+//                                    if (value.metrics1) {
+//                                        return parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0;
+//
+//                                    } else {
+//                                        return 0;
+//                                    }
+//                                });
+//                                var tempySeriesData2 = yAxis.map(function (a) {
+//                                    if (value.metrics2) {
+//                                        return parseFloat((angular.isDefined(a.metrics2[value.fieldName]) == true) ? a.metrics2[value.fieldName] : 0) || 0;
+//
+//                                    } else {
+//                                        return 0;
+//                                    }
+//                                });
+//                                var tempArray1 = {name: value[xAxis.fieldName], data: [tempySeriesData]};
+//                                columns.push(tempArray1);
+//                            });
+//                            if (isCompare) {
+//                                var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
+//                                var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
+//                                var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
+//                                var joinCompare2 = value.displayName + " (" + sumaryRange2 + ")";
+//                                if (joinCompare1) {
+//                                    var tempArray1 = {type: value.combinationType, name: joinCompare1, data: ySeriesData1, range: sumaryRange1};
+//                                    compareFormat.push({displayName: joinCompare1, displayFormat: value.displayFormat});
+//                                }
+//                                if (joinCompare2) {
+//                                    var tempArray2 = {type: value.combinationType, name: joinCompare2, data: ySeriesData2, range: sumaryRange2};
+//                                    compareFormat.push({displayName: joinCompare2, displayFormat: value.displayFormat});
+//                                }
+//                                columns.push(tempArray1);
+//                                columns.push(tempArray2);
+//
+//
+//                            } else {
+//
+//                            }
+                            angular.forEach(yAxis, function (value, key) {
+                                var ySeriesData = chartData.map(function (a) {
+                                    return [parseFloat((angular.isDefined(a[value.fieldName]) == true) ? a[value.fieldName] : 0) || 0];
+                                });
+                                var ySeriesData1 = chartData.map(function (a) {
+                                    if (a.metrics1) {
                                         return parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0;
 
                                     } else {
                                         return 0;
                                     }
                                 });
-                                var tempySeriesData2 = yAxis.map(function (a) {
-                                    if (value.metrics2) {
+                                var ySeriesData2 = chartData.map(function (a) {
+                                    if (a.metrics2) {
                                         return parseFloat((angular.isDefined(a.metrics2[value.fieldName]) == true) ? a.metrics2[value.fieldName] : 0) || 0;
 
                                     } else {
                                         return 0;
                                     }
                                 });
-//                                ySeriesData.push(tempySeriesData);
-//                                ySeriesData1.push(tempySeriesData1);
-//                                ySeriesData1.push(tempySeriesData2);
-                                var tempArray1 = {name: value[xAxis.fieldName], data: [tempySeriesData]};
-                                columns.push(tempArray1);
+                                if (isCompare) {
+                                    var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
+                                    var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
+                                    var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
+                                    var joinCompare2 = value.displayName + " (" + sumaryRange2 + ")";
+                                    if (joinCompare1) {
+                                        var tempArray1 = {type: value.combinationType, name: joinCompare1, data: ySeriesData1, range: sumaryRange1};
+                                        compareFormat.push({displayName: joinCompare1, displayFormat: value.displayFormat});
+                                    }
+                                    if (joinCompare2) {
+                                        var tempArray2 = {type: value.combinationType, name: joinCompare2, data: ySeriesData2, range: sumaryRange2};
+                                        compareFormat.push({displayName: joinCompare2, displayFormat: value.displayFormat});
+                                    }
+                                    columns.push(tempArray1);
+                                    columns.push(tempArray2);
+
+
+                                } else {
+                                    var tempArray1 = {type: value.combinationType, name: value.displayName, data: ySeriesData};
+                                    columns.push(tempArray1);
+                                }
                             });
-                            if (isCompare) {
-                                var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
-                                var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
-                                var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
-                                var joinCompare2 = value.displayName + " (" + sumaryRange2 + ")";
-                                if (joinCompare1) {
-                                    var tempArray1 = {type: value.combinationType, name: joinCompare1, data: ySeriesData1, range: sumaryRange1};
-                                    compareFormat.push({displayName: joinCompare1, displayFormat: value.displayFormat});
-                                }
-                                if (joinCompare2) {
-                                    var tempArray2 = {type: value.combinationType, name: joinCompare2, data: ySeriesData2, range: sumaryRange2};
-                                    compareFormat.push({displayName: joinCompare2, displayFormat: value.displayFormat});
-                                }
-                                columns.push(tempArray1);
-                                columns.push(tempArray2);
-
-
-                            } else {
-
-                            }
                             console.log("columns------------->", columns);
 //                           
 //                            angular.forEach(yAxis, function (value, key) {
@@ -411,7 +455,8 @@ app.directive('scatterChartDirective', function ($http, $filter, $stateParams, o
                                 xAxis: {
                                     startOnTick: true,
                                     endOnTick: true,
-                                    showLastLabel: true
+                                    showLastLabel: true,
+                                    categories: xData
                                 },
                                 yAxis: {
                                     title: {
