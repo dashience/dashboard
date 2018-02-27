@@ -1,4 +1,4 @@
-app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter, chartFactory) {
+app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter, chartFactory, httpService) {
     return{
         restrict: 'A',
         template: '<div ng-show="loadingLine" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
@@ -43,6 +43,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
             });
             console.log("combination type---------->", yAxis);
             var xData = [];
+
+
+
             scope.orderData = function (list, fieldnames) {
                 if (fieldnames.length == 0) {
                     return list;
@@ -120,7 +123,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 }
                 return maxData;
             }
-            var isCompare = scope.urlType == 'compareOn' && widgetObj.chartType != 'pie'  && widgetObj.chartType != 'funnel'  && widgetObj.chartType != 'gauge'? true : false;
+            var isCompare = scope.urlType == 'compareOn' && widgetObj.chartType != 'pie' && widgetObj.chartType != 'funnel' && widgetObj.chartType != 'gauge' ? true : false;
             var compareRange = JSON.parse(scope.compareDateRange);
             var url;
             var dateRangeType;
@@ -173,8 +176,9 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                 } else {
                     setNetworkType = widgetObj.networkType;
                 }
+
                 scope.refreshLineChart = function () {
-                    $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
+                    var chartUrl = 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
                             "&dataSetId=" + lineChartDataSource.id +
                             "&accountId=" + (widgetObj.accountId ? (widgetObj.accountId.id ? widgetObj.accountId.id : widgetObj.accountId) : $stateParams.accountId) +
                             "&userId=" + (lineChartDataSource.userId ? lineChartDataSource.userId.id : null) +
@@ -188,7 +192,16 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                             "&dataSetReportName=" + lineChartDataSource.reportName +
                             '&widgetId=' + widgetObj.id +
                             '&url=' + lineChartDataSource.url +
-                            '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).success(function (response) {
+                            '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query);
+                    var httpUrl = url + chartUrl;
+
+                    var requestUrl = httpService.httpProcess('GET', httpUrl);
+                    requestUrl.then(function (response) {
+                        console.log("callback Response -->", response);
+                    });
+
+
+                    $http.get(httpUrl).success(function (response) {
                         console.log("response------->", response);
                         scope.loadingLine = false;
                         if (!response.data) {
@@ -288,7 +301,7 @@ app.directive('lineChartDirective', function ($http, $filter, $stateParams, orde
                                     var ySeriesData1 = chartData.map(function (a) {
                                         if (a.metrics1) {
                                             if (scatter) {
-                                               return [parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0]; 
+                                                return [parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0];
                                             }
                                             return parseFloat((angular.isDefined(a.metrics1[value.fieldName]) == true) ? a.metrics1[value.fieldName] : 0) || 0;
 
