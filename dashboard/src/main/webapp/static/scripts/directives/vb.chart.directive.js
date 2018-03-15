@@ -128,16 +128,12 @@ app.directive('chartDirective', function ($http, $filter, $stateParams, orderByF
                             scope.hideEmptyLine = true;
                         } else {
                             var chartData = response.data;
-                            console.log("sortFields--------->", sortFields);
-                            console.log("chartData------------->", chartData);
-                            console.log("maxRecord--------->", widgetObj.maxRecord)
                             chartData = chartFactory.sortData(sortFields, chartData, widgetObj.maxRecord);
                             if (xAxis) {
                                 xData = chartData.map(function (a) {
                                     return a[xAxis.fieldName];
                                 });
                             }
-                            console.log("chartDatafinal-------------------->", chartData);
                             var formattedDataTest = [];
                             var formattedDataVal = {};
                             var formattedData = [];

@@ -653,6 +653,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     }
 
     function columnHeaderDef(widget, y1Column, y2Column) {
+        console.log("columnHeaderDef--------->");
         $scope.hideSelectedColumn = true;
         $scope.afterLoadWidgetColumns = false;
         $scope.queryBuilderList = "";
@@ -885,6 +886,7 @@ app.controller('WidgetController', function ($scope, $http, $stateParams, $timeo
     };
 
     $scope.getNewDataSetObj = function (widget, chartTypeName) {
+                console.log("getNewDataSetObj--------->");
         $scope.saveBtnIsDisable = true;
         console.log("&&&&&&&&& widget", widget);
         console.log("chartTypeName --------", chartTypeName);

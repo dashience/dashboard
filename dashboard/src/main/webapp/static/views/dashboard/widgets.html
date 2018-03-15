@@ -456,12 +456,11 @@
                                 <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="{{'Resize-Right'| translate}}"><i class="fa fa-chevron-right"></i></a>
                             </div>
                         </div>
-
                         <!--                            <span class="{{widget.icon}}" draggable-widget="widget" draggable-widget-callback="moveWidget"></span>-->
                         <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
 
                     </div>
-                    <div class="panel-body" ng-if="widget.chartType != 'table' && widget.chartType != 'text' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                    <div class="panel-body" ng-if="(widget.chartType == 'line' || widget.chartType == 'area' || widget.chartType == 'bar' || widget.chartType == 'horizontalBar' || widget.chartType =='pie' || widget.chartType =='gauge' || widget.chartType == 'funnel' || widget.chartType =='scatter')  && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
                             <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                  chart-Directive 
