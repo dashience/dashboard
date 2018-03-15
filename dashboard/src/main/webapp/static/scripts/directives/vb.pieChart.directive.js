@@ -288,6 +288,7 @@ app.directive('pieChartDirective', function ($http, $stateParams, $filter, order
                             console.log("xTicks------->",xTicks)
                             var obj = {"10.35": 10.5, "20.45": 20.5, "30": 30.6, "40": 40.7, "50": 50.4, "60": 60.4};
                             var datas = ["10.35", "20.45", "30", "40", "50", "60"];
+                            //var colData = [[10.30,10.5],[20.45,20.4],[30.4,30.5],[20,20][13,14]];
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
