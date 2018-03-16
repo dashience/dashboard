@@ -254,7 +254,7 @@ public class GaService {
             // Create the GetReportsRequest object.
             GetReportsRequest getReport = new GetReportsRequest()
                     .setReportRequests(requests);
-
+            
             // Call the batchGet method.
             System.out.println("get Report ---> " + getReport);
             GetReportsResponse response = analyticsReporting.reports().batchGet(getReport).execute();

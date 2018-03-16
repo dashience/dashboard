@@ -153,7 +153,7 @@ app.controller('AccountController', function ($scope, $http, $state, $stateParam
                 accountId: accountId.id, //property.accountId,
                 propertyValue: property.propertyValue,
                 propertyRemark: property.propertyRemark
-            }
+            };
 
             $http({method: property.id ? 'PUT' : 'POST', url: 'admin/user/property', data: data}).success(function (response) {
                 getAccountProperty(accountId);
