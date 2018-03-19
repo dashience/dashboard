@@ -1007,7 +1007,7 @@ public class AdwordsService {
                         .includeZeroImpressions(false)
                         .build();
         session.setReportingConfiguration(reportingConfiguration);
-
+        
         reportDefinition.setSelector(selector);
 
         try {
