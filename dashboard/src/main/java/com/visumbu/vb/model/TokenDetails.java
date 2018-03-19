@@ -6,10 +6,16 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -25,31 +31,32 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "TokenDetails.findAll", query = "SELECT t FROM TokenDetails t")
-    , @NamedQuery(name = "TokenDetails.findById", query = "SELECT t FROM TokenDetails t WHERE t.tokenDetailsPK.id = :id")
+    , @NamedQuery(name = "TokenDetails.findById", query = "SELECT t FROM TokenDetails t WHERE t.id = :id")
     , @NamedQuery(name = "TokenDetails.findByTokenValue", query = "SELECT t FROM TokenDetails t WHERE t.tokenValue = :tokenValue")
     , @NamedQuery(name = "TokenDetails.findByTokenSecret", query = "SELECT t FROM TokenDetails t WHERE t.tokenSecret = :tokenSecret")
     , @NamedQuery(name = "TokenDetails.findByRefreshToken", query = "SELECT t FROM TokenDetails t WHERE t.refreshToken = :refreshToken")
     , @NamedQuery(name = "TokenDetails.findByScope", query = "SELECT t FROM TokenDetails t WHERE t.scope = :scope")
-    , @NamedQuery(name = "TokenDetails.findByAgencyId", query = "SELECT t FROM TokenDetails t WHERE t.tokenDetailsPK.agencyId = :agencyId")
+    , @NamedQuery(name = "TokenDetails.findByAgencyId", query = "SELECT t FROM TokenDetails t WHERE t.agencyId = :agencyId")
     , @NamedQuery(name = "TokenDetails.findByClientId", query = "SELECT t FROM TokenDetails t WHERE t.clientId = :clientId")
     , @NamedQuery(name = "TokenDetails.findByClientSecret", query = "SELECT t FROM TokenDetails t WHERE t.clientSecret = :clientSecret")
     , @NamedQuery(name = "TokenDetails.findByDataSourceType", query = "SELECT t FROM TokenDetails t WHERE t.dataSourceType = :dataSourceType")})
 public class TokenDetails implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @EmbeddedId
-    protected TokenDetailsPK tokenDetailsPK;
-    @Size(max = 255)
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Basic(optional = false)
+    @Column(name = "id")
+    private Integer id;
     @Column(name = "token_value")
     private String tokenValue;
-    @Size(max = 255)
+    @Size(max = 1000)
     @Column(name = "token_secret")
     private String tokenSecret;
-    @Lob
-    @Size(max = 16777215)
+    @Size(max = 255)
     @Column(name = "expiry_date")
     private String expiryDate;
-    @Size(max = 255)
+    @Size(max = 1000)
     @Column(name = "refresh_token")
     private String refreshToken;
     @Size(max = 255)
@@ -64,24 +71,30 @@ public class TokenDetails implements Serializable {
     @Size(max = 250)
     @Column(name = "data_source_type")
     private String dataSourceType;
+    @JoinColumn(name = "agency_id", referencedColumnName = "id")
+    @ManyToOne
+    private Agency agencyId;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @ManyToOne
+    private Account accountId;
+
+    public Account getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Account accountId) {
+        this.accountId = accountId;
+    }
+
+    public Agency getAgencyId() {
+        return agencyId;
+    }
+
+    public void setAgencyId(Agency agencyId) {
+        this.agencyId = agencyId;
+    }
 
     public TokenDetails() {
-    }
-
-    public TokenDetails(TokenDetailsPK tokenDetailsPK) {
-        this.tokenDetailsPK = tokenDetailsPK;
-    }
-
-    public TokenDetails(int id, int agencyId) {
-        this.tokenDetailsPK = new TokenDetailsPK(id, agencyId);
-    }
-
-    public TokenDetailsPK getTokenDetailsPK() {
-        return tokenDetailsPK;
-    }
-
-    public void setTokenDetailsPK(TokenDetailsPK tokenDetailsPK) {
-        this.tokenDetailsPK = tokenDetailsPK;
     }
 
     public String getTokenValue() {
@@ -149,20 +162,9 @@ public class TokenDetails implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (tokenDetailsPK != null ? tokenDetailsPK.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof TokenDetails)) {
-            return false;
-        }
-        TokenDetails other = (TokenDetails) object;
-        if ((this.tokenDetailsPK == null && other.tokenDetailsPK != null) || (this.tokenDetailsPK != null && !this.tokenDetailsPK.equals(other.tokenDetailsPK))) {
             return false;
         }
         return true;
@@ -170,7 +172,7 @@ public class TokenDetails implements Serializable {
 
     @Override
     public String toString() {
-        return "com.visumbu.vb.model.TokenDetails[ tokenDetailsPK=" + tokenDetailsPK + " ]";
+        return "com.visumbu.vb.model.TokenDetails[ id=" + id + " ]";
     }
-    
+
 }

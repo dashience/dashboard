@@ -5,7 +5,7 @@
  */
 package com.visumbu.vb.bean.map.auth;
 
-import org.codehaus.jackson.annotate.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  *

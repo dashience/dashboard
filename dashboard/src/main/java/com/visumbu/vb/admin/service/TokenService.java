@@ -6,8 +6,9 @@
 package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.TokenDao;
+import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.TokenDetails;
-import com.visumbu.vb.model.TokenDetailsPK;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.stereotype.Service;
@@ -22,13 +23,13 @@ public class TokenService {
 
     @Autowired
     private TokenDao tokenDao;
+
     public void insertTokenDetails(TokenDetails tokenDetail) {
         tokenDao.create(tokenDetail);
     }
 
     public TokenDetails getTokenObject(MultiValueMap<String, Object> data, AccessGrant tokenData) {
         TokenDetails tokenDetails = new TokenDetails();
-        TokenDetailsPK tokenDetailsPK = new TokenDetailsPK();
         tokenDetails.setTokenValue(tokenData.getAccessToken());
         tokenDetails.setRefreshToken(tokenData.getRefreshToken());
         tokenDetails.setExpiryDate(Long.toString(tokenData.getExpireTime()));
@@ -36,9 +37,8 @@ public class TokenService {
         tokenDetails.setClientId((String) data.getFirst("clientId"));
         tokenDetails.setClientSecret((String) data.getFirst("clientSecret"));
         tokenDetails.setDataSourceType((String) data.getFirst("source"));
-        tokenDetailsPK.setAgencyId((int) data.getFirst("agencyId"));
-        tokenDetailsPK.setId((int) data.getFirst("accountId"));
-        tokenDetails.setTokenDetailsPK(tokenDetailsPK);
+        tokenDetails.setAgencyId((Agency)data.getFirst("agencyId"));
+        tokenDetails.setAccountId((Account)data.getFirst("accountId"));
         return tokenDetails;
     }
 }

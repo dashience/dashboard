@@ -35,6 +35,7 @@ public String linkedInAuthorieUrl= "https://www.linkedin.com/oauth/v2/authorizat
 public String linkedInAccessTokenUrl= "https://www.linkedin.com/oauth/v2/accessToken" ;
 
 
+
     public String CALLBACK_URL = "http://tellyourstory.lino.com:8080/dashboard/admin/social/callback";
 
 }

@@ -5,7 +5,11 @@
  */
 package com.visumbu.vb.admin.oauth.service;
 
+import com.visumbu.vb.admin.service.UserService;
+import com.visumbu.vb.controller.BaseController;
+import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.TokenDetails;
+import com.visumbu.vb.model.VbUser;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
@@ -19,19 +23,35 @@ import org.springframework.util.MultiValueMap;
  * @author dashience
  */
 @Service("oAuthSelector")
-public class OAuthSelector {
+public class OAuthSelector extends BaseController {
 
     @Autowired
     private OAuth2Util oauth2Util;
 
     @Autowired
     private OAuth1Util oauth1Util;
+    
+    
+    @Autowired
+    private UserService userService;
 
     public MultiValueMap<String, Object> generateView(HttpServletRequest request) throws Exception {
         MultiValueMap<String, Object> returnMap = new LinkedMultiValueMap<>();
         String apiKey = request.getParameter("apiKey");
         String apiSecret = request.getParameter("apiSecret");
         String apiSource = request.getParameter("apiSource");
+        
+        VbUser user = userService.findByUsername(getUser(request));
+        System.out.println("user-------->"+user);
+        
+        System.out.println("user.getAgencyId()-------->"+user.getAgencyId());
+        Account account =  userService.getAccountId(Integer.parseInt((String)request.getParameter("accountId")));
+        
+         System.out.println("account)-------->"+account);
+        returnMap.add("agencyId",user.getAgencyId());
+        returnMap.add("accountId",account);
+        returnMap.add("apiKey",apiKey);
+        returnMap.add("apiSecret",apiSecret);
         returnMap.add("source", apiSource);
         if (apiSource.equals("facebook")) {
             returnMap.add("oauthType", "OAuth2");
@@ -40,7 +60,6 @@ public class OAuthSelector {
         } else if (apiSource.equals("linked in")) {
             Map<String,Object> parameters = new HashMap<>();
             parameters.put("companyId", request.getParameter("companyId"));
-            parameters.put("source", apiSource);
             returnMap.add("ExtraCredentials", parameters);
             returnMap.add("oauthType", "OAuth2");
             returnMap.add("useParameters", "true");
@@ -48,7 +67,7 @@ public class OAuthSelector {
         } else if (apiSource.equals("twitter")) {
             returnMap.add("oauthType", "OAuth1");
             return oauth1Util.generateOAuth1Url(apiKey, apiSecret, returnMap);
-        } else if (apiSource.equals("googleAnalytics")) {
+        } else if (apiSource.equalsIgnoreCase("google Analytics")) {
             returnMap.add("oauthType", "OAuth2");
             returnMap.add("useParameters", "true");
             return oauth2Util.gaTokenUtil(apiKey, apiSecret, returnMap);

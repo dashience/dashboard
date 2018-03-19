@@ -1,10 +1,14 @@
 //var myApp = angular.module('apiService', []);
 
-app.controller('socialController', function ($window, $scope, $http) {
+app.controller('socialController', function ($window, $scope, $http,$stateParams) {
     $scope.oAuth2Details = false;
     $scope.showDataSets = false;
     $scope.oAuthData = {};
     $scope.scheduler ={};
+    $scope.oAuthData.agencyId = $stateParams.agencyId;
+    $scope.oAuthData.accountId = $stateParams.accountId;
+    console.log("stateParams----->",$scope.oAuthData.agencyId);
+    console.log("stateParams----->",$scope.oAuthData.accountId);
     $scope.onload = function () {
         $http.get('admin/ui/dataSource').success(function (response) {
                 $scope.dataSources = response;
@@ -31,7 +35,7 @@ app.controller('socialController', function ($window, $scope, $http) {
         }
     };
     $scope.onSubmit = function () {
-        login("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source);
+        login("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source +"&agencyId=" + $scope.oAuthData.agencyId +"&accountId=" + $scope.oAuthData.accountId);
 //        $window.open("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source);
     };
     $scope.success = function () {
