@@ -27,6 +27,11 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 templateUrl: "static/views/reports/reportIndex.html",
                 controller: 'ReportIndexController'
             })
+            .state("index.oauth", {
+                url: "/oauth/:lan/:accountId/:accountName/:productId/:favouriteName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
+                templateUrl: "static/views/admin/oauth.html",
+                controller: 'socialController'
+            })
             .state("index.report.reports", {
                 url: "/report?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/reports/reports.html",

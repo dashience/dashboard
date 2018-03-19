@@ -4,6 +4,7 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:task="http://www.springframework.org/schema/task"
        xsi:schemaLocation="
 http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -12,13 +13,16 @@ http://www.springframework.org/schema/context/spring-context.xsd
 http://www.springframework.org/schema/tx
 http://www.springframework.org/schema/tx/spring-tx.xsd
 http://www.springframework.org/schema/mvc
-http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+http://www.springframework.org/schema/mvc/spring-mvc.xsd
+http://www.springframework.org/schema/task
+http://www.springframework.org/schema/task/spring-task.xsd">
 
     <context:property-placeholder location="/WEB-INF/database.properties" />
     <context:component-scan base-package="com.visumbu.vb.admin" />
 
     <tx:annotation-driven transaction-manager="hibernateTransactionManager"/>
     <mvc:annotation-driven />
+    <task:scheduler id="scheduler"/>
 
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="defaultContentType" value="text/html"/>
@@ -47,7 +51,7 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd">
         </property>
     </bean>
  
-    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJacksonJsonView">
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
         <property name="contentType" value="application/json;charset=UTF-8"/>
     </bean>
     <bean id="tilesConfigurer"
