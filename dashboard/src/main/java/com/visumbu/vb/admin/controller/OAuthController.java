@@ -1,7 +1,7 @@
 package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.oauth.service.Sheduler;
-import com.visumbu.vb.admin.oauth.service.OAuthSelector;
+import com.visumbu.vb.admin.oauth.service.OAuthSelectorImpl;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,19 +25,20 @@ import org.springframework.web.servlet.view.RedirectView;
 public class OAuthController {
 
     @Autowired
-    OAuthSelector oAuthSelector;
+    OAuthSelectorImpl oAuthSelector;
     @Autowired
     Sheduler Sheduler;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthController.class);
-    String successUrl = "http://tellyourstory.lino.com:8080/dashboard/admin/social/success";
+    String successUrl;
     private MultiValueMap<String, Object> oAuthData;
 
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
     public ModelAndView signin(HttpServletRequest request,
             HttpServletResponse response) {
-        
-        String authorizeUrl = "http://tellyourstory.lino.com:8080/dashboard/admin/social/error";
+        String domainName = request.getParameter("domainName");
+         successUrl = "http://"+domainName+"/dashboard/admin/social/success";
+        String authorizeUrl = "http://"+domainName+"/dashboard/admin/social/error";
         try {
             oAuthData = oAuthSelector.generateView(request);
             authorizeUrl = (String) oAuthData.getFirst("authorizeUrl");
@@ -97,6 +98,7 @@ public class OAuthController {
             oAuthData.add("oauth_token", oauth_token);
             oAuthData.add("oauth_verifier", oauth_verifier);
             oAuthSelector.getTokenDetails(oAuthData);
+            System.out.println("sucess url---------->"+successUrl);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 

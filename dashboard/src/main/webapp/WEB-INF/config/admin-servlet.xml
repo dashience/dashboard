@@ -17,13 +17,20 @@ http://www.springframework.org/schema/mvc/spring-mvc.xsd
 http://www.springframework.org/schema/task
 http://www.springframework.org/schema/task/spring-task.xsd">
 
-    <context:property-placeholder location="/WEB-INF/database.properties" />
+    <!--    <context:property-placeholder location="/WEB-INF/database.properties" />-->
     <context:component-scan base-package="com.visumbu.vb.admin" />
 
     <tx:annotation-driven transaction-manager="hibernateTransactionManager"/>
     <mvc:annotation-driven />
     <task:scheduler id="scheduler"/>
-
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <array>
+                <value>WEB-INF/database.properties</value>
+                <value>WEB-INF/application.properties</value>
+            </array>
+        </property>
+    </bean>
     <bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
         <property name="defaultContentType" value="text/html"/>
         <property name="ignoreAcceptHeader" value="true"/>

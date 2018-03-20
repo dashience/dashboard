@@ -20,7 +20,7 @@ import org.springframework.util.MultiValueMap;
  * @author dashience
  */
 @Service("oauth1Util")
-public class OAuth1Util {
+class OAuth1Util {
 
     @Autowired
     OAuth1ServiceConfig oAuth1configs;

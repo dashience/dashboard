@@ -5,31 +5,13 @@
  */
 package com.visumbu.vb.admin.controller;
 
-import com.visumbu.vb.admin.service.EnlivantService;
-import static com.visumbu.vb.admin.service.EnlivantService.getTopBoards;
 import com.visumbu.vb.admin.service.UiService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.ColumnDef;
-import com.visumbu.vb.bean.LoginUserBean;
-import com.visumbu.vb.bean.Permission;
-import com.visumbu.vb.bean.UrlBean;
-import com.visumbu.vb.bean.map.auth.SecurityAuthBean;
-import com.visumbu.vb.bean.map.auth.SecurityAuthRoleBean;
 import com.visumbu.vb.controller.BaseController;
-import com.visumbu.vb.model.Account;
-import com.visumbu.vb.model.AccountUser;
-import com.visumbu.vb.model.Agency;
-import com.visumbu.vb.model.AgencyLicence;
-import com.visumbu.vb.model.AgencyProduct;
-import com.visumbu.vb.model.Dealer;
-import com.visumbu.vb.model.Property;
-import com.visumbu.vb.model.UserAccount;
-import com.visumbu.vb.model.VbUser;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
 import com.visumbu.vb.utils.Rest;
-import com.visumbu.vb.utils.VbUtils;
-import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -37,18 +19,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TimeZone;
-import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import org.apache.commons.collections.OrderedMap;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -59,15 +36,10 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import static test.Linkedin.getColumnDefObject;
-//import static test.Pinterest.getColumnDefObject;
-import static test.Pinterest.processFollowings;
 
 /**
  *
