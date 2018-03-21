@@ -100,7 +100,7 @@ public class VbUser implements Serializable {
     @OneToMany(mappedBy = "userId")
     private Collection<DataSet> dataSetCollection;
     @OneToMany(mappedBy = "userId")
-    private Collection<DataSource_> dataSourceCollection;
+    private Collection<DataSource> dataSourceCollection;
 
     @OneToMany(mappedBy = "createdBy")
     private Collection<TabWidget> tabWidgetCollection;

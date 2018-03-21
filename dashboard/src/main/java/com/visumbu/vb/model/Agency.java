@@ -55,7 +55,7 @@ public class Agency implements Serializable {
     @OneToMany(mappedBy = "agencyId")
     private Collection<DataSet> dataSetCollection;
     @OneToMany(mappedBy = "agencyId")
-    private Collection<DataSource_> dataSourceCollection;
+    private Collection<DataSource> dataSourceCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -195,11 +195,11 @@ public class Agency implements Serializable {
 
     @XmlTransient
     @JsonIgnore
-    public Collection<DataSource_> getDataSourceCollection() {
+    public Collection<DataSource> getDataSourceCollection() {
         return dataSourceCollection;
     }
 
-    public void setDataSourceCollection(Collection<DataSource_> dataSourceCollection) {
+    public void setDataSourceCollection(Collection<DataSource> dataSourceCollection) {
         this.dataSourceCollection = dataSourceCollection;
     }
 

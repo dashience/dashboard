@@ -95,7 +95,7 @@ public class DataSet implements Serializable {
     private VbUser userId;
     @JoinColumn(name = "data_source_id", referencedColumnName = "id")
     @ManyToOne
-    private DataSource_ dataSourceId;
+    private DataSource dataSourceId;
     @JoinColumn(name = "join_data_set_id", referencedColumnName = "id")
     @ManyToOne
     private JoinDataSet joinDataSetId;
@@ -231,11 +231,11 @@ public class DataSet implements Serializable {
         this.userId = userId;
     }
 
-    public DataSource_ getDataSourceId() {
+    public DataSource getDataSourceId() {
         return dataSourceId;
     }
 
-    public void setDataSourceId(DataSource_ dataSourceId) {
+    public void setDataSourceId(DataSource dataSourceId) {
         this.dataSourceId = dataSourceId;
     }
 
