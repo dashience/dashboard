@@ -669,7 +669,7 @@ public class UiDao extends BaseDao {
 
     public List<DataSource> getDataSourceByUser(VbUser user) {
         String queryStr = "select d from DataSource d where d.agencyId = :agencyId";
-//        String queryStr = "select d from DataSource d where d.userId.id = :userId and d.agencyId = :agencyId";
+//        String queryStr = "select d from DataSource_ d where d.userId.id = :userId and d.agencyId = :agencyId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
 //        query.setParameter("userId", user.getId());
         query.setParameter("agencyId", user.getAgencyId());

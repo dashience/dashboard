@@ -1,6 +1,6 @@
 package com.visumbu.vb.admin.controller;
 
-import com.visumbu.vb.admin.oauth.service.Sheduler;
+import com.visumbu.vb.admin.scheduler.service.Sheduler;
 import com.visumbu.vb.admin.oauth.service.OAuthSelectorImpl;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.servlet.view.RedirectView;
+
+/**
+ * 
+ * @author Lino
+ */
 
 @RequestMapping(value = "/social")
 @Component
@@ -37,10 +41,10 @@ public class OAuthController {
     public ModelAndView signin(HttpServletRequest request,
             HttpServletResponse response) {
         String domainName = request.getParameter("domainName");
-         successUrl = "http://"+domainName+"/dashboard/admin/social/success";
-        String authorizeUrl = "http://"+domainName+"/dashboard/admin/social/error";
+        successUrl = "http://" + domainName + "/dashboard/admin/social/success";
+        String authorizeUrl = "http://" + domainName + "/dashboard/admin/social/error";
         try {
-            oAuthData = oAuthSelector.generateView(request);
+            oAuthData = oAuthSelector.generateOAuthUrl(request);
             authorizeUrl = (String) oAuthData.getFirst("authorizeUrl");
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(OAuthController.class.getName()).log(Level.SEVERE, null, ex);
@@ -58,9 +62,7 @@ public class OAuthController {
             HttpServletResponse response) {
         try {
             oAuthData.add("code", code);
-            System.out.println("code----->" + code);
             oAuthSelector.getTokenDetails(oAuthData);
-            System.out.println("code----->" + code);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 
@@ -75,7 +77,6 @@ public class OAuthController {
     public ModelAndView tokenGenetator(@RequestParam("code") String code, @RequestParam("state") String state,
             HttpServletRequest request,
             HttpServletResponse response) {
-        System.out.println("code----->" + code);
         try {
             oAuthData.add("code", code);
             oAuthSelector.getTokenDetails(oAuthData);
@@ -98,7 +99,6 @@ public class OAuthController {
             oAuthData.add("oauth_token", oauth_token);
             oAuthData.add("oauth_verifier", oauth_verifier);
             oAuthSelector.getTokenDetails(oAuthData);
-            System.out.println("sucess url---------->"+successUrl);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 

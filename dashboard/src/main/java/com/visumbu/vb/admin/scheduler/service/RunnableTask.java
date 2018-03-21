@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.visumbu.vb.admin.oauth.service;
+package com.visumbu.vb.admin.scheduler.service;
 
 import com.visumbu.vb.utils.Rest;
 import com.mongodb.DB;

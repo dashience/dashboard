@@ -666,12 +666,12 @@ public class UiService {
     }
 
     public DataSource delete(Integer id) {
-//        DataSource dataSource = read(id);
+//        DataSource_ dataSource = read(id);
         return (DataSource) uiDao.deleteDataSource(id);
     }
 
 //    public List<DataSource> getDataSource() {
-//        List<DataSource> dataSource = uiDao.read(DataSource.class);
+//        List<DataSource> dataSource = uiDao.read(DataSource_.class);
 //        return dataSource;
 //    }
     public List<DataSource> getDataSourceByUser(VbUser user) {

@@ -229,7 +229,7 @@ public class TabWidget implements Serializable {
     private VbUser createdBy;
     @JoinColumn(name = "data_source_id", referencedColumnName = "id")
     @ManyToOne
-    private DataSource dataSourceId;
+    private DataSource_ dataSourceId;
     @JoinColumn(name = "tab_id", referencedColumnName = "id")
     @ManyToOne
     private DashboardTabs tabId;
@@ -530,11 +530,11 @@ public class TabWidget implements Serializable {
         this.dataSetId = dataSetId;
     }
 
-    public DataSource getDataSourceId() {
+    public DataSource_ getDataSourceId() {
         return dataSourceId;
     }
 
-    public void setDataSourceId(DataSource dataSourceId) {
+    public void setDataSourceId(DataSource_ dataSourceId) {
         this.dataSourceId = dataSourceId;
     }
 

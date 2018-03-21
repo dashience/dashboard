@@ -20,7 +20,7 @@ import org.springframework.util.MultiValueMap;
 
 /**
  *
- * @author dashience
+ * @author Lino
  */
 @Service("oAuthSelector")
 public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
@@ -30,36 +30,29 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
 
     @Autowired
     private OAuth1Util oauth1Util;
-    
-    
+
     @Autowired
     private UserService userService;
 
     @Override
-    public MultiValueMap<String, Object> generateView(HttpServletRequest request) throws Exception {
+    public MultiValueMap<String, Object> generateOAuthUrl(HttpServletRequest request) throws Exception {
         MultiValueMap<String, Object> returnMap = new LinkedMultiValueMap<>();
         String apiKey = request.getParameter("apiKey");
         String apiSecret = request.getParameter("apiSecret");
         String apiSource = request.getParameter("apiSource");
-        
         VbUser user = userService.findByUsername(getUser(request));
-        System.out.println("user-------->"+user);
-        
-        System.out.println("user.getAgencyId()-------->"+user.getAgencyId());
-        Account account =  userService.getAccountId(Integer.parseInt((String)request.getParameter("accountId")));
-        
-         System.out.println("account)-------->"+account);
-        returnMap.add("agencyId",user.getAgencyId());
-        returnMap.add("accountId",account);
-        returnMap.add("apiKey",apiKey);
-        returnMap.add("apiSecret",apiSecret);
+        Account account = userService.getAccountId(Integer.parseInt((String) request.getParameter("accountId")));
+        returnMap.add("agencyId", user.getAgencyId());
+        returnMap.add("accountId", account);
+        returnMap.add("apiKey", apiKey);
+        returnMap.add("apiSecret", apiSecret);
         returnMap.add("source", apiSource);
         if (apiSource.equals("facebook")) {
             returnMap.add("oauthType", "OAuth2");
             returnMap.add("useParameters", "false");
             return oauth2Util.facebookTokenUtil(apiKey, apiSecret, returnMap);
         } else if (apiSource.equals("linked in")) {
-            Map<String,Object> parameters = new HashMap<>();
+            Map<String, Object> parameters = new HashMap<>();
             parameters.put("companyId", request.getParameter("companyId"));
             returnMap.add("ExtraCredentials", parameters);
             returnMap.add("oauthType", "OAuth2");
