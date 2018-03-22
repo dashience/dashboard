@@ -2,11 +2,9 @@ package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.scheduler.service.Sheduler;
 import com.visumbu.vb.admin.oauth.service.OAuthSelectorImpl;
-import com.visumbu.vb.admin.oauth.service.TokenDBUtils;
 import com.visumbu.vb.admin.oauth.service.TokenTemplate;
 import com.visumbu.vb.admin.service.TokenService;
 import com.visumbu.vb.admin.service.UiService;
-import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.TokenDetails;
 import java.util.logging.Level;
@@ -42,8 +40,6 @@ public class OAuthController {
     @Autowired
     TokenService tokenService;
     @Autowired
-    TokenDBUtils tokenDButils;
-    @Autowired
     UiService uiService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthController.class);
@@ -76,7 +72,7 @@ public class OAuthController {
         try {
             oAuthData.add("code", code);
             TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
-            tokenDButils.insertIntoDb(oAuthData, tokenTemplate,request);
+            tokenService.insertIntoDb(oAuthData, tokenTemplate,request);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 
@@ -94,7 +90,7 @@ public class OAuthController {
         try {
             oAuthData.add("code", code);
             TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
-            tokenDButils.insertIntoDb(oAuthData, tokenTemplate,request);
+            tokenService.insertIntoDb(oAuthData, tokenTemplate,request);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 
@@ -114,7 +110,7 @@ public class OAuthController {
             oAuthData.add("oauth_token", oauth_token);
             oAuthData.add("oauth_verifier", oauth_verifier);
             TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
-            tokenDButils.insertIntoDb(oAuthData, tokenTemplate,request);
+            tokenService.insertIntoDb(oAuthData, tokenTemplate,request);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 

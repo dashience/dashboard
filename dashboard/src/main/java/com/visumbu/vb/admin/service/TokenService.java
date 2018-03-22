@@ -7,9 +7,12 @@ package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.TokenDao;
 import com.visumbu.vb.admin.oauth.service.TokenTemplate;
+import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.TokenDetails;
+import com.visumbu.vb.model.VbUser;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
@@ -19,10 +22,12 @@ import org.springframework.util.MultiValueMap;
  * @author Lino
  */
 @Service("TokenService")
-public class TokenService {
+public class TokenService extends BaseController{
 
     @Autowired
     private TokenDao tokenDao;
+    @Autowired
+    UserService userService;
 
     public void insertTokenDetails(TokenDetails tokenDetail) {
         tokenDao.create(tokenDetail);
@@ -37,7 +42,16 @@ public class TokenService {
         tokenDetails.setClientId((String) data.getFirst("clientId"));
         tokenDetails.setClientSecret((String) data.getFirst("clientSecret"));
         tokenDetails.setDataSourceType((String) data.getFirst("source"));
-        tokenDetails.setAgencyId((Agency)data.getFirst("agencyId"));
+        tokenDetails.setAgencyId((Agency) data.getFirst("agencyId"));
         return tokenDetails;
+    }
+
+    public TokenDetails insertIntoDb(MultiValueMap<String, Object> dataMap, TokenTemplate tokenDetails, HttpServletRequest request) throws Exception {
+
+        VbUser user = userService.findByUsername(getUser(request));
+        dataMap.add("agencyId", user.getAgencyId());
+        TokenDetails tokenData = getTokenObject(dataMap, tokenDetails);
+        insertTokenDetails(tokenData);
+        return tokenData;
     }
 }
