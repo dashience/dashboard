@@ -5,8 +5,8 @@
  */
 package com.visumbu.vb.admin.oauth.service;
 
-import com.visumbu.vb.model.TokenDetails;
 import javax.servlet.http.HttpServletRequest;
+import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.util.MultiValueMap;
 
 /**
@@ -28,5 +28,5 @@ public interface OAuthSelector  {
     * @return The tokenDetails Entity object containing all token related data
     * @throws Exception On mismatch of callback url
     */
-   public TokenDetails getTokenDetails(MultiValueMap<String, Object> dataMap) throws Exception;
+   public TokenTemplate getTokenDetails(MultiValueMap<String, Object> dataMap) throws Exception;
 }

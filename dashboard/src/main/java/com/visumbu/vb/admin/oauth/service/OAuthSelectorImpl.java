@@ -8,7 +8,6 @@ package com.visumbu.vb.admin.oauth.service;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Account;
-import com.visumbu.vb.model.TokenDetails;
 import com.visumbu.vb.model.VbUser;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +39,9 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
         String apiKey = request.getParameter("apiKey");
         String apiSecret = request.getParameter("apiSecret");
         String apiSource = request.getParameter("apiSource");
+        System.out.println("reached apisource-------->");
         VbUser user = userService.findByUsername(getUser(request));
-        Account account = userService.getAccountId(Integer.parseInt((String) request.getParameter("accountId")));
         returnMap.add("agencyId", user.getAgencyId());
-        returnMap.add("accountId", account);
         returnMap.add("apiKey", apiKey);
         returnMap.add("apiSecret", apiSecret);
         returnMap.add("source", apiSource);
@@ -51,12 +49,12 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
             returnMap.add("oauthType", "OAuth2");
             returnMap.add("useParameters", "false");
             return oauth2Util.facebookTokenUtil(apiKey, apiSecret, returnMap);
-        } else if (apiSource.equals("linked in")) {
+        } else if (apiSource.equals("linkedin")) {
             Map<String, Object> parameters = new HashMap<>();
-            parameters.put("companyId", request.getParameter("companyId"));
             returnMap.add("ExtraCredentials", parameters);
             returnMap.add("oauthType", "OAuth2");
             returnMap.add("useParameters", "true");
+                      System.out.println("reached apisource--2------>");
             return oauth2Util.linkedInTokenUtil(apiKey, apiSecret, returnMap);
         } else if (apiSource.equals("twitter")) {
             returnMap.add("oauthType", "OAuth1");
@@ -70,7 +68,7 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
     }
 
     @Override
-    public TokenDetails getTokenDetails(MultiValueMap<String, Object> dataMap) throws Exception {
+    public TokenTemplate getTokenDetails(MultiValueMap<String, Object> dataMap) throws Exception {
 
         String oauthType = (String) dataMap.getFirst("oauthType");
         if (oauthType.equalsIgnoreCase("OAuth2")) {

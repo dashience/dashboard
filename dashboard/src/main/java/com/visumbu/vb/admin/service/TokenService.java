@@ -6,11 +6,11 @@
 package com.visumbu.vb.admin.service;
 
 import com.visumbu.vb.admin.dao.TokenDao;
+import com.visumbu.vb.admin.oauth.service.TokenTemplate;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.TokenDetails;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
@@ -28,17 +28,16 @@ public class TokenService {
         tokenDao.create(tokenDetail);
     }
 
-    public TokenDetails getTokenObject(MultiValueMap<String, Object> data, AccessGrant tokenData) {
+    public TokenDetails getTokenObject(MultiValueMap<String, Object> data, TokenTemplate tokenData) {
         TokenDetails tokenDetails = new TokenDetails();
-        tokenDetails.setTokenValue(tokenData.getAccessToken());
+        tokenDetails.setTokenValue(tokenData.getTokenValue());
         tokenDetails.setRefreshToken(tokenData.getRefreshToken());
-        tokenDetails.setExpiryDate(Long.toString(tokenData.getExpireTime()));
+        tokenDetails.setExpiryDate(Long.toString(tokenData.getExpiryDate()));
         tokenDetails.setScope(tokenData.getScope());
         tokenDetails.setClientId((String) data.getFirst("clientId"));
         tokenDetails.setClientSecret((String) data.getFirst("clientSecret"));
         tokenDetails.setDataSourceType((String) data.getFirst("source"));
         tokenDetails.setAgencyId((Agency)data.getFirst("agencyId"));
-        tokenDetails.setAccountId((Account)data.getFirst("accountId"));
         return tokenDetails;
     }
 }

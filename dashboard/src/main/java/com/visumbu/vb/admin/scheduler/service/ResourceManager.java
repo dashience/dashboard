@@ -10,36 +10,53 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.visumbu.vb.admin.service.UserService;
+import com.visumbu.vb.controller.BaseController;
+import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.TokenDetails;
+import com.visumbu.vb.model.VbUser;
+import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
  * @author dashience
  */
+@Transactional
 @Service
-public class ResourceManager {
+public class ResourceManager extends BaseController {
 
-    public String getOauthToken(String dataSourceName, String field, String expiryDate) {
-        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-            DB dataBaseName = mongoClient.getDB("dashience");
-            DBCollection collection = dataBaseName.getCollection("tokenData");
-            DBObject query = new BasicDBObject("source", dataSourceName);
-            DBObject tokenJson = collection.findOne(query);
-            DBObject tokenData = (DBObject) tokenJson.get("token");
-            mongoClient.close();
-            String tokenField = null;
-            if (field != null) {
-                tokenField = (String) tokenData.get(field);
-            }
-            if (expiryDate != null) {
-                String tokenExpiry = (String) tokenData.get(field);
-            }
-            return tokenField;
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
-        return null;
-    }
+    @Autowired
+    protected SessionFactory sessionFactory;
+    @Autowired
+    private UserService userService;
+//    public String getOauthToken(String dataSourceName, String field, String expiryDate) {
+//        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
+//            DB dataBaseName = mongoClient.getDB("dashience");
+//            DBCollection collection = dataBaseName.getCollection("tokenData");
+//            DBObject query = new BasicDBObject("source", dataSourceName);
+//            DBObject tokenJson = collection.findOne(query);
+//            DBObject tokenData = (DBObject) tokenJson.get("token");
+//            mongoClient.close();
+//            String tokenField = null;
+//            if (field != null) {
+//                tokenField = (String) tokenData.get(field);
+//            }
+//            if (expiryDate != null) {
+//                String tokenExpiry = (String) tokenData.get(field);
+//            }
+//            return tokenField;
+//        } catch (Exception ex) {
+//            System.out.println(ex);
+//        }
+//        return null;
+//    }
 
     public Object getClientDetails(String dataSourceName, String field) {
         try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
@@ -58,5 +75,20 @@ public class ResourceManager {
             System.out.println(ex);
         }
         return null;
+    }
+
+    public List<TokenDetails> getOauthToken(HttpServletRequest request, String dataSource) {
+        String userIdStr = request.getParameter("userId");
+        Integer userId = Integer.parseInt(userIdStr);
+        System.out.println("userId------------>"+userId);
+        Query userquery = sessionFactory.getCurrentSession().getNamedQuery("VbUser.findById");
+        userquery.setParameter("id", userId);
+        VbUser user = (VbUser)userquery.uniqueResult();
+        System.out.println("user-------->"+user);
+        String queryStr = "select d from TokenDetails d where d.agencyId = :agencyId and d.dataSourceType = :dataSourceType";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", user.getAgencyId());
+        query.setParameter("dataSourceType", request.getParameter("dataSourceName"));
+        return query.list();
     }
 }

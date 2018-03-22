@@ -2,7 +2,7 @@
     <div ng-controller="socialController">
         <h2>Authenticator</h2>
         <div class="btn-group ">
-            <button ng-repeat="source in dataSources" ng-class="source.oauth ? 'btn btn-success' : 'btn btn-danger'" ng-click="getOAuthToken($index)">{{source.name}}</button>
+            <button ng-repeat="source in dataSources" ng-class="source.oauthStatus ? 'btn btn-success' : 'btn btn-danger'" ng-click="getOAuthToken($index)">{{source.name}}</button>
         </div>
         <div style="margin-top:20px" ng-show="oAuth2Details" class="form-group row">
             <div class="col-xs-3">
@@ -18,7 +18,7 @@
             </div>
         </div>
         <div ng-show="showDataSets" class="btn-group-vertical" style="margin-top:20px">
-            <button ng-repeat="dataSet in dataSets" class="btn btn-primary" ng-click="setDataSet($index)" data-toggle="modal" data-target="#myModal">{{dataSet}}</button>
+            <button ng-repeat="dataSet in dataSets | filter : dataSet.dataSourceId.dataSourceType == oAuthData.source.name" class="btn btn-primary" ng-click="setDataSet(dataSet)" data-toggle="modal" data-target="#myModal">{{dataSet.name}}</button>
         </div>
         <!-- Modal -->
         <div id="myModal" class="modal fade" role="dialog">

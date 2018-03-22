@@ -30,10 +30,12 @@ public class Sheduler {
         trigger = new CronTrigger(cronExpression);
     }
 
-    public void start(String dataSourceName,String dataSetName) {
+    public void start(SchedulerTemplate template) {
         RunnableTask task = new RunnableTask();
-        task.dataSource = dataSourceName;
-        task.dataSet = dataSetName;
+        task.dataSource = template.getDataSourceName();
+        task.dataSet = template.getDataSetName();
+        task.accountId = template.getAccountId();
+        task.userId = template.getUserId();
         scheduledFuture = newTaskScheduler.schedule(task, trigger);
     }
 

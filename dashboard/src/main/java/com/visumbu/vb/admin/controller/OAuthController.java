@@ -2,6 +2,13 @@ package com.visumbu.vb.admin.controller;
 
 import com.visumbu.vb.admin.scheduler.service.Sheduler;
 import com.visumbu.vb.admin.oauth.service.OAuthSelectorImpl;
+import com.visumbu.vb.admin.oauth.service.TokenDBUtils;
+import com.visumbu.vb.admin.oauth.service.TokenTemplate;
+import com.visumbu.vb.admin.service.TokenService;
+import com.visumbu.vb.admin.service.UiService;
+import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.TokenDetails;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,13 +24,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.view.RedirectView;
 
 /**
- * 
+ *
  * @author Lino
  */
-
 @RequestMapping(value = "/social")
 @Component
 public class OAuthController {
@@ -32,6 +39,12 @@ public class OAuthController {
     OAuthSelectorImpl oAuthSelector;
     @Autowired
     Sheduler Sheduler;
+    @Autowired
+    TokenService tokenService;
+    @Autowired
+    TokenDBUtils tokenDButils;
+    @Autowired
+    UiService uiService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthController.class);
     String successUrl;
@@ -62,7 +75,8 @@ public class OAuthController {
             HttpServletResponse response) {
         try {
             oAuthData.add("code", code);
-            oAuthSelector.getTokenDetails(oAuthData);
+            TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
+            tokenDButils.insertIntoDb(oAuthData, tokenTemplate,request);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 
@@ -79,7 +93,8 @@ public class OAuthController {
             HttpServletResponse response) {
         try {
             oAuthData.add("code", code);
-            oAuthSelector.getTokenDetails(oAuthData);
+            TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
+            tokenDButils.insertIntoDb(oAuthData, tokenTemplate,request);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 
@@ -98,7 +113,8 @@ public class OAuthController {
         try {
             oAuthData.add("oauth_token", oauth_token);
             oAuthData.add("oauth_verifier", oauth_verifier);
-            oAuthSelector.getTokenDetails(oAuthData);
+            TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
+            tokenDButils.insertIntoDb(oAuthData, tokenTemplate,request);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 
@@ -107,6 +123,19 @@ public class OAuthController {
             java.util.logging.Logger.getLogger(OAuthController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    @RequestMapping(value = "/saveToken", method = RequestMethod.POST)
+    @ResponseBody
+    public TokenDetails saveToken(@RequestBody TokenDetails tokenDetails) {
+        tokenService.insertTokenDetails(tokenDetails);
+        return tokenDetails;
+    }
+
+    @RequestMapping(value = "/oauthStatus", method = RequestMethod.PUT)
+    @ResponseBody
+    public DataSource updateOauthStatus(@RequestBody DataSource dataSource) {
+        return uiService.update(dataSource);
     }
 
     @RequestMapping(value = "/error", method = RequestMethod.GET)

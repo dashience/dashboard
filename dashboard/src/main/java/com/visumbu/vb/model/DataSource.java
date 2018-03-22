@@ -111,6 +111,10 @@ public class DataSource implements Serializable {
         this.oauthStatus = oauthStatus;
     }
 
+    public boolean getOauthStatus() {
+        return oauthStatus;
+    }
+
     public DataSource(Integer id, boolean oauthStatus) {
         this.id = id;
         this.oauthStatus = oauthStatus;

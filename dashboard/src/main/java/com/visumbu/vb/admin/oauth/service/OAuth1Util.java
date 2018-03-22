@@ -12,6 +12,7 @@ import org.springframework.social.oauth1.OAuth1Parameters;
 import org.springframework.social.oauth1.OAuth1Template;
 import org.springframework.social.oauth1.OAuth1Version;
 import org.springframework.social.oauth1.OAuthToken;
+import org.springframework.social.oauth2.AccessGrant;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
 
@@ -24,7 +25,7 @@ class OAuth1Util {
 
     @Autowired
     OAuth1ServiceConfig oAuth1configs;
-    
+
     public OAuth1Template oAuth1Template;
     public OAuth1Parameters oAuth1Parameters;
     public OAuthToken requestToken;
@@ -37,14 +38,16 @@ class OAuth1Util {
         return returnMap;
     }
 
-    
-    public TokenDetails exchangeForAccessToken(MultiValueMap<String, Object> returnMap) {
+    public TokenTemplate exchangeForAccessToken(MultiValueMap<String, Object> returnMap) {
         AuthorizedRequestToken setToken = new AuthorizedRequestToken(requestToken, (String) returnMap.getFirst("oauth_verifier"));
         OAuthToken tokenDetails = oAuth1Template.exchangeForAccessToken(setToken, OAuth1Parameters.NONE);
-        TokenDetails tokenData = new TokenDetails();
-        tokenData.setTokenValue(tokenDetails.getValue());
-        tokenData.setTokenSecret(tokenDetails.getSecret());
-        return tokenData;
+        return getTokenTemplate(tokenDetails);
     }
 
+    public TokenTemplate getTokenTemplate(OAuthToken oAuthToken) {
+        TokenTemplate tokenTemplate = new TokenTemplate();
+        tokenTemplate.setTokenValue(oAuthToken.getValue());
+        tokenTemplate.setTokenSecret(oAuthToken.getSecret());
+        return tokenTemplate;
+    }
 }

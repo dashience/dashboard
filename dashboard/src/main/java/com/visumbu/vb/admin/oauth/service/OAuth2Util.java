@@ -24,8 +24,6 @@ class OAuth2Util {
 
     @Autowired
     OAuth2ServiceConfig oAuth2configs;
-    @Autowired
-    TokenService tokenService;
 
     private OAuth2Template oAuth2Template;
     private OAuth2Parameters oAuth2Parameters;
@@ -65,7 +63,7 @@ class OAuth2Util {
         return returnMap;
     }
 
-    public TokenDetails exchangeForAccessToken(MultiValueMap<String, Object> dataMap) throws Exception {
+    public TokenTemplate exchangeForAccessToken(MultiValueMap<String, Object> dataMap) throws Exception {
         String code = (String) dataMap.getFirst("code");
         boolean useParameters = Boolean.parseBoolean((String) dataMap.getFirst("useParameters"));
         if (useParameters) {
@@ -74,9 +72,7 @@ class OAuth2Util {
         System.out.println("code--------->"+code);
         System.out.println("oAuth2Parameters--------->"+oAuth2Parameters.getRedirectUri());
         AccessGrant tokenDetails = oAuth2Template.exchangeForAccess(code, oAuth2Parameters.getRedirectUri(), null);
-        TokenDetails tokenData = tokenService.getTokenObject(dataMap, tokenDetails);
-        tokenService.insertTokenDetails(tokenData);
-        return tokenData;
+        return getTokenTemplate(tokenDetails);
     }
 
     public void insertExtraDetails(MultiValueMap<String, Object> dataMap) throws Exception{
@@ -93,5 +89,14 @@ class OAuth2Util {
     }
     public Map getParameterMap(){
         return new HashMap<>();
+    }
+    
+    public TokenTemplate getTokenTemplate(AccessGrant accessGrant){
+        TokenTemplate tokenTemplate= new TokenTemplate();
+        tokenTemplate.setExpiryDate(accessGrant.getExpireTime());
+        tokenTemplate.setRefreshToken(accessGrant.getRefreshToken());
+        tokenTemplate.setScope(accessGrant.getScope());
+        tokenTemplate.setTokenValue(accessGrant.getAccessToken());
+        return tokenTemplate;
     }
 }

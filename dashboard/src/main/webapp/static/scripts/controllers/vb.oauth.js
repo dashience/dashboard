@@ -1,60 +1,64 @@
 //var myApp = angular.module('apiService', []);
 
-app.controller('socialController', function ($window, $scope, $http,$stateParams) {
+app.controller('socialController', function ($window, $scope, $http, $stateParams,$cookies) {
     $scope.oAuth2Details = false;
     $scope.showDataSets = false;
     $scope.oAuthData = {};
-    $scope.scheduler ={};
+    $scope.scheduler = {};
     $scope.oAuthData.accountId = $stateParams.accountId;
-    console.log("stateParams----->",$scope.oAuthData.accountId);
+    console.log("stateParams----->", $scope.oAuthData.accountId);
+    $scope.oAuthData.userId = $cookies.getObject("userId");
     $scope.oAuthData.domainName = location.host;
-    console.log("var x--->",$scope.oAuthData.domainName);
+    console.log("var x--->", $scope.oAuthData.domainName);
     $scope.onload = function () {
         $http.get('admin/ui/dataSource').success(function (response) {
-                $scope.dataSources = response;
-                console.log("response--------->",$scope.dataSources);
-            });
+            $scope.dataSources = response;
+            console.log("response--------->", $scope.dataSources);
+        });
     };
     $scope.onload();
 //    $scope.dataSources = [{name: 'facebook', oauth: false}, {name: 'linkedIn', oauth: false}, {name: 'twitter', oauth: false}, {name: 'googleAnalytics', oauth: false}];
     $scope.getOAuthToken = function (index) {
-        if ($scope.dataSources[index].oauth == true) {
+        if ($scope.dataSources[index].oauthStatus == true) {
             $scope.oAuth2Details = false;
-            $scope.oAuthData.source = $scope.dataSources[index].name;
-             $http({method: "GET", url: "admin/getDataSets/"+$scope.dataSources[index].name}).success(function (response) {
-                 console.log("response---------->",response);
-            $scope.dataSets = response[0].value;
-            $scope.showDataSets = true;
-            console.log("dataSets------------------>",$scope.dataSets);
-        });
+            $scope.oAuthData.source = $scope.dataSources[index].dataSourceType;
+            $http({method: "GET", url: "admin/ui/dataSet"}).success(function (response) {
+                console.log("response---------->", response);
+                $scope.dataSets = response;
+                $scope.showDataSets = true;
+                console.log("dataSets------------------>", $scope.dataSets);
+            });
         } else {
             $scope.showDataSets = false;
             $scope.oAuth2Details = true;
-            $scope.oAuthData.source = $scope.dataSources[index].name;
+            $scope.oAuthData.source = $scope.dataSources[index].dataSourceType;
             $scope.oAuthData.index = index;
         }
     };
     $scope.onSubmit = function () {
-        login("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source +"&accountId=" + $scope.oAuthData.accountId +"&domainName="+$scope.oAuthData.domainName);
+        login("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source + "&accountId=" + $scope.oAuthData.accountId + "&domainName=" + $scope.oAuthData.domainName);
 //        $window.open("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source);
     };
     $scope.success = function () {
         console.log("called-------->", $scope.oAuth2Details);
-        $scope.dataSources[$scope.oAuthData.index].oauth = true;
+        $scope.dataSources[$scope.oAuthData.index].oauthStatus = true;
         $scope.oAuth2Details = false;
-        $http({method:"PUT",url:"admin/putDataSource",data:$scope.dataSources[$scope.oAuthData.index]}).success(function(response){
-            console.log("response-------->",response);
+        $http({method: "PUT", url: "admin/social/oauthStatus", data: $scope.dataSources[$scope.oAuthData.index]}).success(function (response) {
+            console.log("response-------->", response);
         });
         console.log("oAuth2Details-------->", $scope.oAuth2Details);
     };
-    $scope.setDataSet = function(index){
-        $scope.scheduler.dataSetName = $scope.dataSets[index];
+    $scope.setDataSet = function (dataSet) {
+        console.log(dataSet);
+        $scope.scheduler.dataSetName = dataSet.reportName;
         $scope.scheduler.dataSourceName = $scope.oAuthData.source;
+        $scope.scheduler.accountId = $scope.oAuthData.accountId;
+        $scope.scheduler.userId = $scope.oAuthData.userId;
     };
-    $scope.scheduleData = function(scheduleData){
-        console.log("scheduleData-------->",scheduleData);
-        $http({method:"POST",url:"admin/schedule",data:scheduleData}).success(function(response){
-            console.log("response------>",response);
+    $scope.scheduleData = function (scheduleData) {
+        console.log("scheduleData-------->", scheduleData);
+        $http({method: "POST", url: "admin/schedule", data: scheduleData}).success(function (response) {
+            console.log("response------>", response);
         });
     };
     function login(url) {

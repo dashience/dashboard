@@ -1,0 +1,58 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.visumbu.vb.admin.scheduler.service;
+
+/**
+ *
+ * @author dashience
+ */
+public class SchedulerTemplate {
+
+    public String getCron() {
+        return cron;
+    }
+
+    public void setCron(String cron) {
+        this.cron = cron;
+    }
+
+    public String getDataSetName() {
+        return dataSetName;
+    }
+
+    public void setDataSetName(String dataSetName) {
+        this.dataSetName = dataSetName;
+    }
+
+    public String getDataSourceName() {
+        return dataSourceName;
+    }
+
+    public void setDataSourceName(String dataSourceName) {
+        this.dataSourceName = dataSourceName;
+    }
+    private String cron;
+    private String dataSetName;
+    private String dataSourceName;
+    private String accountId;
+    private String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+}
