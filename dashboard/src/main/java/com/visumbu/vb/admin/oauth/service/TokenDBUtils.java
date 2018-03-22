@@ -21,15 +21,16 @@ import javax.servlet.http.HttpServletRequest;
  * @author Lino
  */
 @Service
-public class TokenDBUtils extends BaseController{
+public class TokenDBUtils extends BaseController {
 
     @Autowired
     TokenService tokenService;
     @Autowired
-    private UserService userService;
+    UserService userService;
 
-    public TokenDetails insertIntoDb(MultiValueMap<String, Object> dataMap, TokenTemplate tokenDetails,HttpServletRequest request) throws Exception {
+    public TokenDetails insertIntoDb(MultiValueMap<String, Object> dataMap, TokenTemplate tokenDetails, HttpServletRequest request) throws Exception {
         VbUser user = userService.findByUsername(getUser(request));
+        dataMap.add("agencyId", user.getAgencyId());
         TokenDetails tokenData = tokenService.getTokenObject(dataMap, tokenDetails);
         tokenService.insertTokenDetails(tokenData);
         return tokenData;

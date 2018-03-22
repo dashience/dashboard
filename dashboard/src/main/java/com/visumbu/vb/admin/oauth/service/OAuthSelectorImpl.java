@@ -40,8 +40,6 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
         String apiSecret = request.getParameter("apiSecret");
         String apiSource = request.getParameter("apiSource");
         System.out.println("reached apisource-------->");
-        VbUser user = userService.findByUsername(getUser(request));
-        returnMap.add("agencyId", user.getAgencyId());
         returnMap.add("apiKey", apiKey);
         returnMap.add("apiSecret", apiSecret);
         returnMap.add("source", apiSource);
@@ -50,11 +48,8 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
             returnMap.add("useParameters", "false");
             return oauth2Util.facebookTokenUtil(apiKey, apiSecret, returnMap);
         } else if (apiSource.equals("linkedin")) {
-            Map<String, Object> parameters = new HashMap<>();
-            returnMap.add("ExtraCredentials", parameters);
             returnMap.add("oauthType", "OAuth2");
             returnMap.add("useParameters", "true");
-                      System.out.println("reached apisource--2------>");
             return oauth2Util.linkedInTokenUtil(apiKey, apiSecret, returnMap);
         } else if (apiSource.equals("twitter")) {
             returnMap.add("oauthType", "OAuth1");

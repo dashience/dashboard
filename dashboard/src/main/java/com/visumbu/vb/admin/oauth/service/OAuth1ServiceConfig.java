@@ -18,5 +18,5 @@ class OAuth1ServiceConfig {
 //    public String twitterAuthorizeUrl = "https://api.twitter.com/oauth/authorize";
 //    public String twitterAuthenticateUrl = "https://api.twitter.com/oauth/authorize";
 //    public String twitterAccessTokenUrl = "https://api.twitter.com/oauth/access_token";
-    public String CALLBACK_URL = "http://localhost:8080/SpringSocial/admin/social/callback";
+    public String CALLBACK_URL = "http://tellyourstory.lino.com:8080/dashboard/admin/social/callback";
 }

@@ -33,7 +33,8 @@ public class RunnableTask implements Runnable {
             headers.add("dataSourceName", dataSource);
             headers.add("dataSetName", dataSet);
             headers.add("accountId", accountId);
-            String output = Rest.getData("http://tellyourstory.lino.com:8080/dashboard/admin/getNewData?dataSourceName=linkedin&dataSetName=companyProfile&accountId=5&userId=" + userId, null);
+            headers.add("userId", userId);
+            String output = Rest.getData(Baseurl, headers);
             if (output != null) {
                 System.out.println("output---->" + output);
                 MongoClient mongoClient = new MongoClient("localhost", 27017);
