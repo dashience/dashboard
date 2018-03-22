@@ -66,7 +66,7 @@ public class OAuthController {
 
     @RequestMapping(value = "/callback", params = {"code"}, method = RequestMethod.GET)
     @ResponseBody
-    public ModelAndView tokenGenetator(@RequestParam("code") String code,
+    public ModelAndView tokenGenerator(@RequestParam("code") String code,
             HttpServletRequest request,
             HttpServletResponse response) {
         try {
@@ -84,7 +84,7 @@ public class OAuthController {
     }
 
     @RequestMapping(value = "/callback", params = {"code", "state"}, method = RequestMethod.GET)
-    public ModelAndView tokenGenetator(@RequestParam("code") String code, @RequestParam("state") String state,
+    public ModelAndView tokenGenerator(@RequestParam("code") String code, @RequestParam("state") String state,
             HttpServletRequest request,
             HttpServletResponse response) {
         try {
