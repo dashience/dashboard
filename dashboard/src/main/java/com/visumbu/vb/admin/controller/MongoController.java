@@ -19,6 +19,7 @@ import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.Property;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +48,7 @@ public class MongoController {
 
     @RequestMapping(value = "getNewData", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public Object getData(HttpServletRequest request, HttpServletResponse response) {
+    public List<Map<String, Object>> getData(HttpServletRequest request, HttpServletResponse response) {
         String dataSource = request.getParameter("dataSourceName");
         String accountIdStr = request.getParameter("accountId");
         Integer accountId = Integer.parseInt(accountIdStr);
@@ -55,7 +56,8 @@ public class MongoController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         if (dataSource.equalsIgnoreCase("linkedIn")) {
             String companyId = getAccountId(accountProperty, "linkedinCompanyId");
-            
+            System.out.println("Long.parseLong(companyId)---------"+Long.parseLong(companyId));
+            System.out.println("companyId---------"+companyId);
             return linkedIn.get(request,Long.parseLong(companyId));
         }
         return null;

@@ -66,7 +66,7 @@ app.controller('socialController', function ($window, $scope, $http, $stateParam
         var pollTimer = $window.setInterval(function () {
             console.log("win--->", win.document.URL);
             try {
-                console.log(win.document.URL);
+//                console.log(win.document.URL);
                 if (win.document.URL.indexOf("success") != -1) {
                     $window.clearInterval(pollTimer);
                     var url = win.document.URL;
