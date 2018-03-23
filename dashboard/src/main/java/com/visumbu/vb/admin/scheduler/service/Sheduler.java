@@ -32,10 +32,12 @@ public class Sheduler {
 
     public void start(SchedulerTemplate template) {
         RunnableTask task = new RunnableTask();
-        task.dataSource = template.getDataSourceName();
-        task.dataSet = template.getDataSetName();
-        task.accountId = template.getAccountId();
-        task.userId = template.getUserId();
+//        task.dataSource = template.getDataSourceName();
+//        task.dataSet = template.getDataSetName();
+        task.setAccountId(template.getAccountId()); 
+        task.setDataSet(template.getDataSet());
+//        task.userId = template.getUserId();
+
         scheduledFuture = newTaskScheduler.schedule(task, trigger);
     }
 

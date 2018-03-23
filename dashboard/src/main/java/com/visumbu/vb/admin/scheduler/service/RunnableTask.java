@@ -11,6 +11,9 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+import com.visumbu.vb.model.DataSet;
+import com.visumbu.vb.model.DataSource;
+import com.visumbu.vb.model.VbUser;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -20,20 +23,39 @@ import org.springframework.util.MultiValueMap;
  */
 public class RunnableTask implements Runnable {
 
-    public String dataSource;
-    public String dataSet;
-    public String accountId;
-    public String userId;
+    public DataSet getDataSet() {
+        return dataSet;
+    }
+
+    public void setDataSet(DataSet dataSet) {
+        this.dataSet = dataSet;
+    }
+
+    public String getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(String accountId) {
+        this.accountId = accountId;
+    }
+
+    private DataSet dataSet;
+    private String accountId;
     public String Baseurl = "http://tellyourstory.lino.com:8080/dashboard/admin/getNewData";
 
     @Override
     public void run() {
         try {
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-            headers.add("dataSourceName", dataSource);
-            headers.add("dataSetName", dataSet);
+            DataSource dataSource = dataSet.getDataSourceId();        
+            VbUser user = dataSet.getUserId(); 
+            String userId = user.getId().toString();
+            headers.add("dataSourceName", dataSource.getDataSourceType());
+            headers.add("dataSetName", dataSet.getReportName());
             headers.add("accountId", accountId);
             headers.add("userId", userId);
+            headers.add("productSegment", dataSet.getProductSegment());
+            headers.add("timeSegment", dataSet.getTimeSegment());
             String output = Rest.getData(Baseurl, headers);
             if (output != null) {
                 System.out.println("output---->" + output);
@@ -44,8 +66,7 @@ public class RunnableTask implements Runnable {
                 DBObject dataObj = new BasicDBObject("data", com.mongodb.util.JSON.parse(output));
                 DBObject dataInfo = new BasicDBObject("accountId", accountId);
                 dataInfo.put("userId", userId);
-                dataInfo.put("dataSourceName", dataSource);
-                dataInfo.put("dataSetName", dataSet);
+                dataInfo.put("dataSetId", dataSet.getId());
                 dataObj.put("dataInfo", dataInfo);
                 System.out.println("dataObj---->" + dataObj);
                 collection.insert(dataObj);

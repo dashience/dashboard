@@ -50,10 +50,8 @@ app.controller('socialController', function ($window, $scope, $http, $stateParam
     };
     $scope.setDataSet = function (dataSet) {
         console.log(dataSet);
-        $scope.scheduler.dataSetName = dataSet.reportName;
-        $scope.scheduler.dataSourceName = $scope.oAuthData.source;
+        $scope.scheduler.dataSet = dataSet;
         $scope.scheduler.accountId = $scope.oAuthData.accountId;
-        $scope.scheduler.userId = $scope.oAuthData.userId;
     };
     $scope.scheduleData = function (scheduleData) {
         console.log("scheduleData-------->", scheduleData);

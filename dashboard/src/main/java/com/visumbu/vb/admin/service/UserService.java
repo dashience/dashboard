@@ -97,6 +97,7 @@ public class UserService {
         VbUser user = null;
         if (dashiencePath == null || dashiencePath.equalsIgnoreCase("")) {
             user = userDao.findAdminUserByName(userBean.getUsername());
+            System.out.println("user---------->"+user);
             userBean.setIsAdmin("true");
         } else {
             String userName = userBean.getUsername();
