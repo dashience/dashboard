@@ -1,6 +1,6 @@
 //var myApp = angular.module('apiService', []);
 
-app.controller('socialController', function ($window, $scope, $http, $stateParams,$cookies) {
+app.controller('socialController', function ($window, $scope, $http, $stateParams, $cookies) {
     $scope.oAuth2Details = false;
     $scope.showDataSets = false;
     $scope.oAuthData = {};
@@ -24,7 +24,9 @@ app.controller('socialController', function ($window, $scope, $http, $stateParam
             $scope.oAuthData.source = $scope.dataSources[index].dataSourceType;
             $http({method: "GET", url: "admin/ui/dataSet"}).success(function (response) {
                 console.log("response---------->", response);
-                $scope.dataSets = response;
+                $scope.dataSets = response.filter(function (a) {
+                    return a.dataSourceId.dataSourceType == $scope.oAuthData.source;
+                });
                 $scope.showDataSets = true;
                 console.log("dataSets------------------>", $scope.dataSets);
             });
