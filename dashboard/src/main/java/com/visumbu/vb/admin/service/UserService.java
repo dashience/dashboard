@@ -96,9 +96,16 @@ public class UserService {
         String dashiencePath = userBean.getDashiencePath();
         VbUser user = null;
         if (dashiencePath == null || dashiencePath.equalsIgnoreCase("")) {
-            user = userDao.findAdminUserByName(userBean.getUsername());
-            System.out.println("user---------->"+user);
-            userBean.setIsAdmin("true");
+//            user = userDao.findAdminUserByName(userBean.getUsername());
+            List<VbUser> users = userDao.findByUserName(userBean.getUsername());
+            if (!users.isEmpty()) {
+                user = users.get(0);
+                System.out.println("user---------->" + user);
+                userBean.setIsAdmin("true");
+            }
+            else{
+                return null;
+            }
         } else {
             String userName = userBean.getUsername();
             Agency agency = userDao.findAgencyByDashiencePath(dashiencePath);
