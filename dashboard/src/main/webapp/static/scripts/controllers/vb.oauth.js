@@ -20,11 +20,20 @@ app.controller('socialController', function ($window, $scope, $http, $stateParam
 //    $scope.dataSources = [{name: 'facebook', oauth: false}, {name: 'linkedIn', oauth: false}, {name: 'twitter', oauth: false}, {name: 'googleAnalytics', oauth: false}];
     $scope.getOAuthToken = function (index) {
         if ($scope.dataSources[index].oauthStatus == true) {
+            $scope.dataSets = [];
             $scope.oAuth2Details = false;
             $scope.oAuthData.source = $scope.dataSources[index].dataSourceType;
+            console.log("source",$scope.oAuthData.source);
             $http({method: "GET", url: "admin/ui/dataSet"}).success(function (response) {
                 console.log("response---------->", response);
-                $scope.dataSets = response;
+//                response.forEach(function(value,key) {
+//                    if(value.dataSourceId.dataSourceType == $scope.oAuthData.source) {
+//                        $scope.dataSets.push(value);
+//                    }
+//                });
+                $scope.dataSets = response.filter(function(value) {
+                    return value.dataSourceId.dataSourceType == $scope.oAuthData.source;
+                })
                 $scope.showDataSets = true;
                 console.log("dataSets------------------>", $scope.dataSets);
             });
@@ -66,9 +75,9 @@ app.controller('socialController', function ($window, $scope, $http, $stateParam
         var win = $window.open(url);
 
         var pollTimer = $window.setInterval(function () {
-            console.log("win--->", win.document.URL);
+            //console.log("win--->", win.document.URL);
             try {
-                console.log(win.document.URL);
+                //console.log(win.document.URL);
                 if (win.document.URL.indexOf("success") != -1) {
                     $window.clearInterval(pollTimer);
                     var url = win.document.URL;

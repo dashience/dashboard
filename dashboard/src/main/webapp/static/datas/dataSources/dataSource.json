@@ -79,6 +79,10 @@
         {
             "type": "reviewTracker",
             "name": "Review Tracker"
+        },
+        {
+            "type": "youtube",
+            "name": "Youtube"
         }
     ]
 }

@@ -396,6 +396,13 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.timeSegFlag = false;
             $scope.productSegFlag = false;
             $scope.semRushFlag = false;
+        } else if (dataSource === "youtube") {
+            $scope.report = $scope.youtubePerformance;
+            $scope.dataSetFlag = true;
+            $scope.nwStatusFlag = false;
+            $scope.timeSegFlag = false;
+            $scope.productSegFlag = false;
+            $scope.semRushFlag = false;
         } else if (dataSource === "reviewTracker") {
             $scope.report = $scope.reviewTrackerPerformance;
             $scope.dataSetFlag = true;
@@ -1529,6 +1536,74 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             ]
         }
     ];
+
+    $scope.youtubePerformance = [
+        {
+            type: 'videoReports',
+            name: 'Video Reports',
+            timeSegments: [
+                {
+                    type: 'date',
+                    name: 'Day'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'channel_id',
+                    name: 'Channel'
+                },
+                {
+                    type: 'video_id',
+                    name: 'Video'
+                },
+                {
+                    type: 'country_code',
+                    name: 'Country'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        },
+        {
+            type: 'playListReports',
+            name: 'Playlist Reports',
+            timeSegments: [
+                {
+                    type: 'date',
+                    name: 'Day'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ],
+            productSegments: [
+                {
+                    type: 'channel_id',
+                    name: 'Channel'
+                },
+                {
+                    type: 'playlist_id',
+                    name: 'playlist'
+                },
+                {
+                    type: 'country_code',
+                    name: 'Country'
+                },
+                {
+                    type: 'none',
+                    name: 'None'
+                }
+            ]
+        }
+    ];
+
     $scope.adwordsPerformance = [
         {
             type: 'accountPerformance',
@@ -4719,6 +4794,32 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 getProductSegment(productList, productSegmentName)
             }
         }
+        if ($scope.dataSet.dataSourceId.dataSourceType == "youtube")
+        {
+            console.log("reportName", $scope.dataSet.reportName);
+            var index = getIndex($scope.dataSet.reportName, $scope.youtubePerformance);
+            $scope.timeSegment = $scope.youtubePerformance[index].timeSegments;
+            $scope.productSegment = $scope.youtubePerformance[index].productSegments;
+
+            var productList = $scope.productSegment;
+            var productSegmentName = dataSet.productSegment;
+
+            var timeSegmentList = $scope.timeSegment;
+            var timeSegmentName = dataSet.timeSegment;
+            $scope.timeSegFlag = true;
+            $scope.productSegFlag = true;
+            $scope.nwStatusFlag = false;
+            if (!dataSet.timeSegment) {
+                $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
+            } else {
+                getTimeSegment(timeSegmentList, timeSegmentName)
+            }
+            if (!dataSet.productSegment) {
+                $scope.dataSet.productSegment = {name: 'None', type: 'none'};
+            } else {
+                getProductSegment(productList, productSegmentName)
+            }
+        }
 //        if ($scope.dataSet.dataSourceId.dataSourceType == "linkedin")
 //        {
 //            var index = getIndex($scope.dataSet.reportName, $scope.linkedinPerformance);
@@ -4877,12 +4978,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
 
     $scope.columnsHeaderDefs = [];
     $scope.getDataSetColDefs = function (getDataSetColDefs) {
+        console.log("Test---->",getDataSetColDefs);
         $scope.columnsHeaderDefs = "";
         $scope.columnsHeaderDefs = getDataSetColDefs;
     };
 
     $scope.saveDataSet = function () {
         var dataSetList = $scope.dataSet;
+        console.log("dataSetList", dataSetList.timeSegment.type);
         if (dataSetList.timeSegment != null) {
             dataSetList.timeSegment = dataSetList.timeSegment.type;
         } else {
@@ -4904,16 +5007,20 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else {
             dataSet.dataSourceId = null;
         }
+        console.log("Data---->", dataSet);
         $scope.nwStatusFlag = true;
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
 //            $scope.columnHeaderByDataSetId = response;
+            console.log("columnsHeaderDefs---->",$scope.columnsHeaderDefs);
             var getDataSetId = response.id;
             var data = $scope.columnsHeaderDefs;
-            data.forEach(function (element) {
-                if (element.hasOwnProperty("isEdit")) {
-                    delete element.isEdit;
-                }
-            });
+            if (data != null) {
+                data.forEach(function (element) {
+                    if (element.hasOwnProperty("isEdit")) {
+                        delete element.isEdit;
+                    }
+                });
+            }
             var gatDataSourceType = dataSet.dataSourceId ? dataSet.dataSourceId.dataSourceType : null;
             if (gatDataSourceType != "sql" && data != null) {
                 $http({method: 'POST', url: 'admin/ui/saveDataSetColumnsForDataSet/' + getDataSetId, data: data}).success(function (response) {
@@ -5019,9 +5126,14 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = true;
                 $scope.semRushFlag = false;
-            } else if (dataSet.dataSourceId.dataSourceType === "analytics")
-            {
+            } else if (dataSet.dataSourceId.dataSourceType === "analytics") {
                 $scope.report = $scope.analyticsPerformance;
+                $scope.getTimeSegements(dataSet);
+                $scope.dataSetFlag = true;
+                $scope.nwStatusFlag = false;
+                $scope.semRushFlag = false;
+            } else if (dataSet.dataSourceId.dataSourceType === "youtube") {
+                $scope.report = $scope.youtubePerformance;
                 $scope.getTimeSegements(dataSet);
                 $scope.dataSetFlag = true;
                 $scope.nwStatusFlag = false;

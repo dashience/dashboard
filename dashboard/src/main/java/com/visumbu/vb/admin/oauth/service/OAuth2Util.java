@@ -55,7 +55,18 @@ class OAuth2Util {
         oAuth2Parameters = new OAuth2Parameters(parameters);
         return OAuth2UrlGenerator(apiKey, apiSecret, oAuth2configs.gaAuthorieUrl, oAuth2configs.gaAccessTokenUrl, returnMap);
     }
-
+    
+    MultiValueMap<String, Object> youTubeTokenUtil(String apiKey, String apiSecret, MultiValueMap<String, Object> returnMap) throws Exception {
+        Map<String, List<String>> parameters = getParameterMap();
+        parameters.put("redirect_uri", Arrays.asList(oAuth2configs.CALLBACK_URL));
+        parameters.put("scope", Arrays.asList(oAuth2configs.youtubeScope));
+        parameters.put("access_type", Arrays.asList("offline"));
+        parameters.put("include_granted_scopes", Arrays.asList("true"));
+        //parameters.put("response_type", Arrays.asList("code"));
+        oAuth2Parameters = new OAuth2Parameters(parameters);
+        return OAuth2UrlGenerator(apiKey, apiSecret, oAuth2configs.youtubeAuthorizeUrl, oAuth2configs.youtubeAccessTokenUrl, returnMap);
+    }
+    
     public MultiValueMap<String, Object> OAuth2UrlGenerator(String apiKey, String apiSecret, String authorizeUrl, String accessTokenUrl, MultiValueMap<String, Object> returnMap) throws Exception {
         oAuth2Template = new OAuth2Template(apiKey, apiSecret, authorizeUrl, accessTokenUrl);
         String oauthUrl = oAuth2Template.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, oAuth2Parameters);

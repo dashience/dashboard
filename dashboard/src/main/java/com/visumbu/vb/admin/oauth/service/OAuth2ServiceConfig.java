@@ -29,6 +29,12 @@ class OAuth2ServiceConfig {
     public String gaAccessTokenUrl;
     @Value("${app.config.oauth.ga.scope}")
     public String gaScope;
+    @Value("${app.config.oauth.youtube.authorizeUrl}")
+    public String youtubeAuthorizeUrl;
+    @Value("${app.config.oauth.youtube.accessTokenUrl}")
+    public String youtubeAccessTokenUrl;
+    @Value("${app.config.oauth.youtube.scope}")
+    public String youtubeScope;
    
 //public String facebookAuthorizeUrl= "https://www.facebook.com/v2.12/dialog/oauth";
 //
@@ -37,6 +43,6 @@ class OAuth2ServiceConfig {
 
 
 
-    public String CALLBACK_URL = "http://tellyourstory.lino.com:8080/dashboard/admin/social/callback";
+    public String CALLBACK_URL = "http://tellyourstory.jayaraj.com:8084/dashboard/admin/social/callback";
 
 }

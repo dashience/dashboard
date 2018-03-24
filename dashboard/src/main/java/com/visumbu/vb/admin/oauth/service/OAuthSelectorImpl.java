@@ -54,10 +54,14 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
         } else if (apiSource.equals("twitter")) {
             returnMap.add("oauthType", "OAuth1");
             return oauth1Util.generateOAuth1Url(apiKey, apiSecret, returnMap);
-        } else if (apiSource.equalsIgnoreCase("google Analytics")) {
+        } else if (apiSource.equalsIgnoreCase("analytics")) {
             returnMap.add("oauthType", "OAuth2");
             returnMap.add("useParameters", "true");
             return oauth2Util.gaTokenUtil(apiKey, apiSecret, returnMap);
+        } else if(apiSource.equalsIgnoreCase("youtube")) {
+            returnMap.add("oauthType", "OAuth2");
+            returnMap.add("useParameters", "true");
+            return oauth2Util.youTubeTokenUtil(apiKey,apiSecret,returnMap);
         }
         return returnMap;
     }

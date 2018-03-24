@@ -3921,6 +3921,71 @@
                     "type": "none"
                 }
             ]
-        }]
+        }],
+    "youtube":[{
+            "type": "videoReports",
+            "name": "Video Reports",
+            "timeSegments": [
+                {
+                    "type": "date",
+                    "name": "Day"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "channel_id",
+                    "name": "Channel"
+                },
+                {
+                    "type": "video_id",
+                    "name": "Video"
+                },
+                {
+                    "type": "country_code",
+                    "name": "Country"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        },
+        {
+            "type": "playListReports",
+            "name": "Playlist Reports",
+            "timeSegments": [
+                {
+                    "type": "date",
+                    "name": "Day"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ],
+            "productSegments": [
+                {
+                    "type": "channel_id",
+                    "name": "Channel"
+                },
+                {
+                    "type": "playlist_id",
+                    "name": "playlist"
+                },
+                {
+                    "type": "country_code",
+                    "name": "Country"
+                },
+                {
+                    "type": "none",
+                    "name": "None"
+                }
+            ]
+        }
+    ]
 }
 
