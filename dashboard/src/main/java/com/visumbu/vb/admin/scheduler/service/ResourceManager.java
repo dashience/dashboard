@@ -34,8 +34,22 @@ public class ResourceManager extends BaseController {
 
     @Autowired
     protected SessionFactory sessionFactory;
-    @Autowired
-    private UserService userService;
+
+    public List<TokenDetails> getOauthToken(HttpServletRequest request, String dataSource) {
+        String userIdStr = request.getParameter("userId");
+        Integer userId = Integer.parseInt(userIdStr);
+        System.out.println("userId------------>" + userId);
+        Query userquery = sessionFactory.getCurrentSession().getNamedQuery("VbUser.findById");
+        userquery.setParameter("id", userId);
+        VbUser user = (VbUser) userquery.uniqueResult();
+        System.out.println("user-------->" + user);
+        String queryStr = "select d from TokenDetails d where d.agencyId = :agencyId and d.dataSourceType = :dataSourceType";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("agencyId", user.getAgencyId());
+        query.setParameter("dataSourceType", request.getParameter("dataSourceName"));
+        return query.list();
+    }
+
 //    public String getOauthToken(String dataSourceName, String field, String expiryDate) {
 //        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
 //            DB dataBaseName = mongoClient.getDB("dashience");
@@ -57,38 +71,22 @@ public class ResourceManager extends BaseController {
 //        }
 //        return null;
 //    }
-
-    public Object getClientDetails(String dataSourceName, String field) {
-        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-            DB dataBaseName = mongoClient.getDB("dashience");
-            DBCollection collection = dataBaseName.getCollection("userDetails");
-            System.out.println("collection------->" + collection.toString());
-            DBObject query = new BasicDBObject("source", dataSourceName);
-            System.out.println("collection2------->" + collection.toString());
-            DBObject detailsJson = collection.findOne(query);
-            System.out.println("collection3------->" + detailsJson.toString());
-            Object requestedField = detailsJson.get(field);
-            System.out.println("the request field output------>" + requestedField);
-            mongoClient.close();
-            return requestedField;
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
-        return null;
-    }
-
-    public List<TokenDetails> getOauthToken(HttpServletRequest request, String dataSource) {
-        String userIdStr = request.getParameter("userId");
-        Integer userId = Integer.parseInt(userIdStr);
-        System.out.println("userId------------>"+userId);
-        Query userquery = sessionFactory.getCurrentSession().getNamedQuery("VbUser.findById");
-        userquery.setParameter("id", userId);
-        VbUser user = (VbUser)userquery.uniqueResult();
-        System.out.println("user-------->"+user);
-        String queryStr = "select d from TokenDetails d where d.agencyId = :agencyId and d.dataSourceType = :dataSourceType";
-        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("agencyId", user.getAgencyId());
-        query.setParameter("dataSourceType", request.getParameter("dataSourceName"));
-        return query.list();
-    }
+//    public Object getClientDetails(String dataSourceName, String field) {
+//        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
+//            DB dataBaseName = mongoClient.getDB("dashience");
+//            DBCollection collection = dataBaseName.getCollection("userDetails");
+//            System.out.println("collection------->" + collection.toString());
+//            DBObject query = new BasicDBObject("source", dataSourceName);
+//            System.out.println("collection2------->" + collection.toString());
+//            DBObject detailsJson = collection.findOne(query);
+//            System.out.println("collection3------->" + detailsJson.toString());
+//            Object requestedField = detailsJson.get(field);
+//            System.out.println("the request field output------>" + requestedField);
+//            mongoClient.close();
+//            return requestedField;
+//        } catch (Exception ex) {
+//            System.out.println(ex);
+//        }
+//        return null;
+//    }
 }

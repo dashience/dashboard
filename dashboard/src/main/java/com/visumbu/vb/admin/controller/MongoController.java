@@ -56,9 +56,20 @@ public class MongoController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         if (dataSource.equalsIgnoreCase("linkedIn")) {
             String companyId = getAccountId(accountProperty, "linkedinCompanyId");
-            System.out.println("Long.parseLong(companyId)---------"+Long.parseLong(companyId));
-            System.out.println("companyId---------"+companyId);
-            return linkedIn.get(request,Long.parseLong(companyId));
+            return linkedIn.get(request, Long.parseLong(companyId));
+        }
+        return null;
+    }
+
+    @RequestMapping(value = "schedule", method = RequestMethod.POST, produces = "application/json")
+    @ResponseBody
+    public Object scheduleMethod(HttpServletRequest request, HttpServletResponse response, @RequestBody SchedulerTemplate schedulerTemplate) {
+        try {
+            scheduler.setDelay(schedulerTemplate.getCron());
+            scheduler.start(schedulerTemplate);
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return "error occured";
         }
         return null;
     }
@@ -82,68 +93,54 @@ public class MongoController {
         return propertyAccountId;
     }
 
-    @RequestMapping(value = "getDataSource", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public Object getDataSource() {
-        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-            DB database = mongoClient.getDB("dashience");
-            DBCollection collection = database.getCollection("dataSource");
-            List<DBObject> allDataSources = collection.find().toArray();
-            mongoClient.close();
-            return allDataSources;
-        } catch (Exception ex) {
-            System.out.println("ex");
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "getDataSets/{dataSetName}", method = RequestMethod.GET, produces = "application/json")
-    @ResponseBody
-    public Object getDataSets(HttpServletRequest request, HttpServletResponse response, @PathVariable String dataSetName) {
-        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-            DB database = mongoClient.getDB("dashience");
-            DBCollection collection = database.getCollection("dataSet");
-            DBObject query = new BasicDBObject("name", dataSetName);
-            List<DBObject> allDataSources = collection.find(query).toArray();
-            mongoClient.close();
-            return allDataSources;
-        } catch (Exception ex) {
-            System.out.println("ex");
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "updateDataSets/{dataSetName}", method = RequestMethod.PUT, produces = "application/json")
-    @ResponseBody
-    public Object updateDataSets(HttpServletRequest request, HttpServletResponse response, @PathVariable String dataSetName) {
-        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-            DB database = mongoClient.getDB("dashience");
-            DBCollection collection = database.getCollection("dataSet");
-            System.out.println("dataSet------->" + request);
-            DBObject setQuery = new BasicDBObject("value", request.getAttribute("value"));
-            DBObject whereQuery = new BasicDBObject("name", dataSetName);
-            WriteResult allDataSources = collection.updateMulti(setQuery, whereQuery);
-            mongoClient.close();
-            return allDataSources;
-        } catch (Exception ex) {
-            System.out.println("ex");
-        }
-        return null;
-    }
-
-    @RequestMapping(value = "schedule", method = RequestMethod.POST, produces = "application/json")
-    @ResponseBody
-    public Object scheduleMethod(HttpServletRequest request, HttpServletResponse response, @RequestBody SchedulerTemplate schedulerTemplate) {
-        try {
-            scheduler.setDelay(schedulerTemplate.getCron());
-            scheduler.start(schedulerTemplate);
-        } catch (Exception ex) {
-            System.out.println(ex);
-            return "error occured";
-        }
-        return null;
-    }
-
+//    @RequestMapping(value = "getDataSource", method = RequestMethod.GET, produces = "application/json")
+//    @ResponseBody
+//    public Object getDataSource() {
+//        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
+//            DB database = mongoClient.getDB("dashience");
+//            DBCollection collection = database.getCollection("dataSource");
+//            List<DBObject> allDataSources = collection.find().toArray();
+//            mongoClient.close();
+//            return allDataSources;
+//        } catch (Exception ex) {
+//            System.out.println("ex");
+//        }
+//        return null;
+//    }
+//
+//    @RequestMapping(value = "getDataSets/{dataSetName}", method = RequestMethod.GET, produces = "application/json")
+//    @ResponseBody
+//    public Object getDataSets(HttpServletRequest request, HttpServletResponse response, @PathVariable String dataSetName) {
+//        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
+//            DB database = mongoClient.getDB("dashience");
+//            DBCollection collection = database.getCollection("dataSet");
+//            DBObject query = new BasicDBObject("name", dataSetName);
+//            List<DBObject> allDataSources = collection.find(query).toArray();
+//            mongoClient.close();
+//            return allDataSources;
+//        } catch (Exception ex) {
+//            System.out.println("ex");
+//        }
+//        return null;
+//    }
+//
+//    @RequestMapping(value = "updateDataSets/{dataSetName}", method = RequestMethod.PUT, produces = "application/json")
+//    @ResponseBody
+//    public Object updateDataSets(HttpServletRequest request, HttpServletResponse response, @PathVariable String dataSetName) {
+//        try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
+//            DB database = mongoClient.getDB("dashience");
+//            DBCollection collection = database.getCollection("dataSet");
+//            System.out.println("dataSet------->" + request);
+//            DBObject setQuery = new BasicDBObject("value", request.getAttribute("value"));
+//            DBObject whereQuery = new BasicDBObject("name", dataSetName);
+//            WriteResult allDataSources = collection.updateMulti(setQuery, whereQuery);
+//            mongoClient.close();
+//            return allDataSources;
+//        } catch (Exception ex) {
+//            System.out.println("ex");
+//        }
+//        return null;
+//    }
     @RequestMapping(value = "putDataSource", method = RequestMethod.PUT, produces = "application/json")
     @ResponseBody
     public Object updateDataSource(HttpServletRequest request, HttpServletResponse response, @RequestBody String jsonString) {
