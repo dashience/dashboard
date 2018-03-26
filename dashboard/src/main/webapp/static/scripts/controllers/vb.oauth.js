@@ -24,9 +24,7 @@ app.controller('socialController', function ($window, $scope, $http, $stateParam
             $scope.oAuthData.source = $scope.dataSources[index].dataSourceType;
             $http({method: "GET", url: "admin/ui/dataSet"}).success(function (response) {
                 console.log("response---------->", response);
-                $scope.dataSets = response.filter(function (a) {
-                    return a.dataSourceId.dataSourceType == $scope.oAuthData.source;
-                });
+                $scope.dataSets = response.filter(a => a.dataSourceId.dataSourceType == $scope.oAuthData.source);
                 $scope.showDataSets = true;
                 console.log("dataSets------------------>", $scope.dataSets);
             });
