@@ -460,7 +460,7 @@
                         <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
 
                     </div>
-                    <div class="panel-body" ng-if="(widget.chartType == 'line' || widget.chartType == 'area' || widget.chartType == 'bar' || widget.chartType == 'horizontalBar' || widget.chartType =='pie' || widget.chartType =='gauge' || widget.chartType == 'funnel' || widget.chartType =='scatter')  && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                    <div class="panel-body" ng-if="(widget.chartType == 'line' || widget.chartType == 'area' || widget.chartType == 'bar' || widget.chartType == 'horizontalBar' || widget.chartType =='pie' || widget.chartType =='gauge' || widget.chartType == 'funnel' || widget.chartType =='scatter' || widget.chartType=='combination' || widget.chartType =='stackedbar')  && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
                             <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                  chart-Directive 
