@@ -39,8 +39,8 @@ public class TokenService extends BaseController{
         tokenDetails.setRefreshToken(tokenData.getRefreshToken());
         tokenDetails.setExpiryDate(Long.toString(tokenData.getExpiryDate()));
         tokenDetails.setScope(tokenData.getScope());
-        tokenDetails.setClientId((String) data.getFirst("clientId"));
-        tokenDetails.setClientSecret((String) data.getFirst("clientSecret"));
+        tokenDetails.setClientId((String) data.getFirst("apiKey"));
+        tokenDetails.setClientSecret((String) data.getFirst("apiSecret"));
         tokenDetails.setDataSourceType((String) data.getFirst("source"));
         tokenDetails.setAgencyId((Agency) data.getFirst("agencyId"));
         return tokenDetails;

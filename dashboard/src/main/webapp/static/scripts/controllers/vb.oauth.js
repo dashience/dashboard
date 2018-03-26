@@ -17,7 +17,6 @@ app.controller('socialController', function ($window, $scope, $http, $stateParam
         });
     };
     $scope.onload();
-//    $scope.dataSources = [{name: 'facebook', oauth: false}, {name: 'linkedIn', oauth: false}, {name: 'twitter', oauth: false}, {name: 'googleAnalytics', oauth: false}];
     $scope.getOAuthToken = function (index) {
         if ($scope.dataSources[index].oauthStatus == true) {
             $scope.oAuth2Details = false;

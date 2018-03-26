@@ -7,8 +7,6 @@ package com.visumbu.vb.admin.scheduler.service;
 
 import com.mongodb.BasicDBObject;
 import com.visumbu.vb.utils.Rest;
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
