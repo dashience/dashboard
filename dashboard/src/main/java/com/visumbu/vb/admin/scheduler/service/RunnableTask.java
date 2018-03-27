@@ -14,18 +14,22 @@ import com.mongodb.client.MongoDatabase;
 import com.visumbu.vb.model.DataSet;
 import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.VbUser;
+import org.bson.Document;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 /**
  *
- * @author dashience
+ * @author lino
  */
 public class RunnableTask implements Runnable {
 
     private DataSet dataSet;
     private String accountId;
-    public String Baseurl = "http://tellyourstory.lino.com:8080/dashboard/admin/getNewData";
+    public String Baseurl = "http://lino.com:8080/dashboard/admin/getNewData";
 
     @Override
     public void run() {
@@ -33,6 +37,7 @@ public class RunnableTask implements Runnable {
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
             DataSource dataSource = dataSet.getDataSourceId();
             VbUser user = dataSet.getUserId();
+            int agencyId = dataSet.getAgencyId().getId();
             String userId = user.getId().toString();
             headers.add("dataSourceName", dataSource.getDataSourceType());
             headers.add("dataSetName", dataSet.getReportName());
@@ -45,15 +50,21 @@ public class RunnableTask implements Runnable {
                 System.out.println("output---->" + output);
                 MongoClient mongoClient = new MongoClient("localhost", 27017);
                 MongoDatabase database = mongoClient.getDatabase("dashience");
-                MongoCollection collection = database.getCollection("linkedIn");
+                MongoCollection collection = database.getCollection("collectData");
                 System.out.println("collection------>" + collection);
-                DBObject dataObj = new BasicDBObject("data", BasicDBObject.parse(output));
+                JSONParser parser = new JSONParser();
+                JSONArray json = (JSONArray) parser.parse(output);
+                DBObject dataObj = new BasicDBObject("data",json);
                 DBObject dataInfo = new BasicDBObject("accountId", accountId);
+                System.out.println("till account------------->");
                 dataInfo.put("userId", userId);
+                dataInfo.put("agencyId", agencyId);
                 dataInfo.put("dataSetId", dataSet.getId());
+                System.out.println("till account-----------g-->");
                 dataObj.put("dataInfo", dataInfo);
                 System.out.println("dataObj---->" + dataObj);
-                collection.insertOne(dataObj);
+                collection.insertOne(new Document(dataObj.toMap()));
+                mongoClient.close();
             }
         } catch (Exception ex) {
             System.out.println(ex);

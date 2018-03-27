@@ -11,17 +11,22 @@ import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteResult;
+import com.mongodb.client.FindIterable;
 import com.visumbu.vb.admin.scheduler.service.SchedulerTemplate;
 import com.visumbu.vb.admin.scheduler.service.Sheduler;
 import com.visumbu.vb.admin.service.LinkedInService;
+import com.visumbu.vb.admin.service.MongoDbService;
 import com.visumbu.vb.admin.service.UserService;
+import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.Property;
+import com.visumbu.vb.model.VbUser;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
@@ -33,10 +38,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  *
- * @author dashience
+ * @author Lino
  */
 @Controller
-public class MongoController {
+public class MongoController extends BaseController {
 
     @Autowired
     private Sheduler scheduler;
@@ -45,6 +50,8 @@ public class MongoController {
     private LinkedInService linkedIn;
     @Autowired
     private UserService userService;
+    @Autowired
+    private MongoDbService mongoService;
 
     @RequestMapping(value = "getNewData", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
@@ -72,6 +79,14 @@ public class MongoController {
             return "error occured";
         }
         return null;
+    }
+
+    @RequestMapping(value = "collectedData", method = RequestMethod.GET, produces = "application/json")
+    @ResponseBody
+    public List<Document> getScheduledData(HttpServletRequest request) {
+        VbUser user = userService.findByUsername(getUser(request));
+        int agencyId = user.getAgencyId().getId();
+        return mongoService.getDataByAgencyId(agencyId);
     }
 
     public String getFromMultiValueMap(MultiValueMap valueMap, String key) {

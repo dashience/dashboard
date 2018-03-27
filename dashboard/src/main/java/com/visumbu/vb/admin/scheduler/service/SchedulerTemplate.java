@@ -12,8 +12,10 @@ import com.visumbu.vb.model.DataSet;
  * @author dashience
  */
 public class SchedulerTemplate {
-        private String cron;
-        private String accountId;
+
+    private String cron;
+    private String accountId;
+    private DataSet dataSet;
 
     public String getAccountId() {
         return accountId;
@@ -22,8 +24,6 @@ public class SchedulerTemplate {
     public void setAccountId(String accountId) {
         this.accountId = accountId;
     }
-        
-    private DataSet dataSet;
 
     public DataSet getDataSet() {
         return dataSet;

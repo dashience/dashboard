@@ -3,6 +3,7 @@
 app.controller('socialController', function ($window, $scope, $http, $stateParams, $cookies) {
     $scope.oAuth2Details = false;
     $scope.showDataSets = false;
+    $scope.collectedData = false;
     $scope.oAuthData = {};
     $scope.scheduler = {};
     $scope.oAuthData.accountId = $stateParams.accountId;
@@ -58,6 +59,11 @@ app.controller('socialController', function ($window, $scope, $http, $stateParam
             console.log("response------>", response);
         });
     };
+    $scope.pullScheduledData = function(){
+        $http({method:"GET",url:"admin/collectedData"}).sucess(function(response){
+            console.log("response---------->",response);
+        });
+    }
     function login(url) {
         console.log("url----->", url);
         var win = $window.open(url);
