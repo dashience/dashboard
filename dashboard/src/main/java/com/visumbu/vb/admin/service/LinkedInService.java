@@ -63,6 +63,7 @@ public class LinkedInService {
         String accessToken = TokenDetails.get(0).getTokenValue();
 
         if (dataSetReportName.equalsIgnoreCase("companyProfile")) {
+            System.out.println("company profile called----------------->");
             return getCompanyProfile(accessToken, companyId);
         }
 

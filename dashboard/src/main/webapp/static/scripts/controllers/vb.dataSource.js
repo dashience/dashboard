@@ -1,21 +1,28 @@
-app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$rootScope', '$cookies', '$translate', function ($scope, $stateParams, $http, $rootScope, $cookies, $translate) {
+app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$rootScope', '$cookies', '$translate', '$window', function ($scope, $stateParams, $http, $rootScope, $cookies, $translate, $window) {
 //    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
-        $scope.authenticateFlag = true;
+        $scope.saveButtonStatus = true;
+        $scope.authenticateFlag = false;
+        $scope.oAuthData = {};
+        $scope.oAuthData.accountId = $stateParams.accountId;
+        console.log("stateParams----->", $scope.oAuthData.accountId);
+        $scope.oAuthData.userId = $cookies.getObject("userId");
+        $scope.oAuthData.domainName = location.host;
         $http.get('static/datas/dataSources/dataSource.json').success(function (response) {
             $scope.dataSourceTypes = response.dataSource;
         });
         function getItems() {
             $http.get('admin/ui/dataSource').success(function (response) {
                 $scope.dataSources = response;
+                console.log("dataSources----------->", $scope.dataSources);
             });
         }
         getItems();
-        
-            
-    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
-    var lan = $scope.agencyLanguage;
-    changeLanguage(lan);
+
+        $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+        var lan = $scope.agencyLanguage;
+        changeLanguage(lan);
 
         var lan = $scope.agencyLanguage;
         changeLanguage(lan);
@@ -60,15 +67,15 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
 //            }
         };
         //for authentication button flag enable status
-        $scope.authenticateStatus = function (name)
-        {
-            if (name.length != 0)
-            {
-                $scope.authenticateFlag = false;
-            } else {
-                $scope.authenticateFlag = true;
-            }
-        };
+//        $scope.authenticateStatus = function (name)
+//        {
+//            if (name.length != 0)
+//            {
+//                $scope.authenticateFlag = false;
+//            } else {
+//                $scope.authenticateFlag = true;
+//            }
+//        };
         $scope.getDataSource = function (data) {
             console.log(data);
             $("#dataSourceType").val(data.dataSourceType);
@@ -188,12 +195,19 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             if (dataSourceType == 'xls') {
                 $scope.showXLSFileUpload = true;
                 $scope.showCSVFileUpload = false;
+                $scope.authenticateFlag = false;
+                $scope.saveButtonStatus = true;
             } else if (dataSourceType == 'csv') {
                 $scope.showCSVFileUpload = true;
                 $scope.showXLSFileUpload = false;
+                $scope.authenticateFlag = false;
+                $scope.saveButtonStatus = true;
             } else {
                 $scope.showXLSFileUpload = false;
                 $scope.showCSVFileUpload = false;
+                $scope.authenticateFlag = true;
+                $scope.oAuthData.source = source.dataSourceType;
+                console.log("dataSource.datasourceType----->" + $scope.oAuthData.source);
             }
         }
         $scope.uploadFile = function (dataSource) {
@@ -218,6 +232,37 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 $scope.saveDataSource(dataSource);
             });
         }
+        $scope.onSubmit = function () {
+            login("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source + "&accountId=" + $scope.oAuthData.accountId + "&domainName=" + $scope.oAuthData.domainName);
+            //        $window.open("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source);
+        };
+        function login(url) {
+            var win = $window.open(url);
+
+            var pollTimer = $window.setInterval(function () {
+                try {
+//                console.log(win.document.URL);
+                    if (win.document.URL.indexOf("success") != -1) {
+                        $window.clearInterval(pollTimer);
+                        var url = win.document.URL;
+                        win.top.close();
+                        $scope.success();
+                    }
+                } catch (e) {
+                }
+            }, 500);
+        }
+        ;
+        $scope.success = function () {
+            console.log("called-------->", $scope.authenticateFlag);
+//            $scope.dataSources[$scope.oAuthData.index].oauthStatus = true;
+            $scope.authenticateFlag = true;
+            $scope.saveButtonStatus = true;
+//            $http({method: "PUT", url: "admin/social/oauthStatus", data: $scope.dataSources[$scope.oAuthData.index]}).success(function (response) {
+//                console.log("response-------->", response);
+//            });
+            console.log("oAuth2Details-------->", $scope.authenticateFlag);
+        };
     }]);
 app.directive('fileModel', ['$parse', function ($parse) {
         return {

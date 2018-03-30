@@ -16,7 +16,6 @@ import com.visumbu.vb.model.DataSource;
 import com.visumbu.vb.model.VbUser;
 import org.bson.Document;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -28,7 +27,8 @@ import org.springframework.util.MultiValueMap;
 public class RunnableTask implements Runnable {
 
     private DataSet dataSet;
-    private String accountId;
+    private int accountId;
+    private int scheduleId;
     public String Baseurl = "http://lino.com:8080/dashboard/admin/getNewData";
 
     @Override
@@ -41,7 +41,7 @@ public class RunnableTask implements Runnable {
             String userId = user.getId().toString();
             headers.add("dataSourceName", dataSource.getDataSourceType());
             headers.add("dataSetName", dataSet.getReportName());
-            headers.add("accountId", accountId);
+            headers.add("accountId", Integer.toString(accountId));
             headers.add("userId", userId);
             headers.add("productSegment", dataSet.getProductSegment());
             headers.add("timeSegment", dataSet.getTimeSegment());
@@ -54,12 +54,15 @@ public class RunnableTask implements Runnable {
                 System.out.println("collection------>" + collection);
                 JSONParser parser = new JSONParser();
                 JSONArray json = (JSONArray) parser.parse(output);
-                DBObject dataObj = new BasicDBObject("data",json);
+                DBObject dataObj = new BasicDBObject("data", json);
                 DBObject dataInfo = new BasicDBObject("accountId", accountId);
                 System.out.println("till account------------->");
                 dataInfo.put("userId", userId);
                 dataInfo.put("agencyId", agencyId);
                 dataInfo.put("dataSetId", dataSet.getId());
+                dataInfo.put("dataSourceName", dataSource.getDataSourceType());
+                dataInfo.put("dataSetName", dataSet.getReportName());
+                dataInfo.put("scheduleId", scheduleId);
                 System.out.println("till account-----------g-->");
                 dataObj.put("dataInfo", dataInfo);
                 System.out.println("dataObj---->" + dataObj);
@@ -79,11 +82,19 @@ public class RunnableTask implements Runnable {
         this.dataSet = dataSet;
     }
 
-    public String getAccountId() {
+    public int getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(String accountId) {
+    public void setAccountId(int accountId) {
         this.accountId = accountId;
+    }
+
+    public int getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(int scheduleId) {
+        this.scheduleId = scheduleId;
     }
 }

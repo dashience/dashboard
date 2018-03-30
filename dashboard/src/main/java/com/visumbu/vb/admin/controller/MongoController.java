@@ -19,6 +19,7 @@ import com.visumbu.vb.admin.service.MongoDbService;
 import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.MongoScheduler;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.VbUser;
 import java.util.Iterator;
@@ -61,9 +62,12 @@ public class MongoController extends BaseController {
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        System.out.println("accountproperty------->"+accountProperty);
         if (dataSource.equalsIgnoreCase("linkedIn")) {
             String companyId = getAccountId(accountProperty, "linkedinCompanyId");
+            System.out.println("companyid----------------->"+companyId);
             return linkedIn.get(request, Long.parseLong(companyId));
+            
         }
         return null;
     }
@@ -72,8 +76,10 @@ public class MongoController extends BaseController {
     @ResponseBody
     public Object scheduleMethod(HttpServletRequest request, HttpServletResponse response, @RequestBody SchedulerTemplate schedulerTemplate) {
         try {
-            scheduler.setDelay(schedulerTemplate.getCron());
-            scheduler.start(schedulerTemplate);
+//            scheduler.setDelay(schedulerTemplate.getCron());
+//            scheduler.start(schedulerTemplate);
+            MongoScheduler schedulerObj = getMongoScheduler(schedulerTemplate);
+            scheduler.insertNewScheduler(schedulerObj);
         } catch (Exception ex) {
             System.out.println(ex);
             return "error occured";
@@ -179,5 +185,16 @@ public class MongoController extends BaseController {
             System.out.println(ex);
         }
         return null;
+    }
+
+    private MongoScheduler getMongoScheduler(SchedulerTemplate schedulerTemplate) {
+        MongoScheduler scheduler = new MongoScheduler();
+        schedulerTemplate.getAccountId();
+        Integer accountId = Integer.parseInt(schedulerTemplate.getAccountId());
+        Account account = userService.getAccountId(accountId);
+        scheduler.setAccountId(account);
+        scheduler.setCron(schedulerTemplate.getCron());
+        scheduler.setDataSetId(schedulerTemplate.getDataSet());
+        return scheduler;
     }
 }

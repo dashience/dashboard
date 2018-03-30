@@ -37,6 +37,6 @@ class OAuth2ServiceConfig {
 
 
 
-    public String CALLBACK_URL = "http://tellyourstory.lino.com:8080/dashboard/admin/social/callback";
+    public String CALLBACK_URL = "http://lino.com:8080/dashboard/admin/social/callback";
 
 }

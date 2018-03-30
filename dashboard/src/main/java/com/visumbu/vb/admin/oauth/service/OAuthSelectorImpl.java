@@ -45,7 +45,7 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
         returnMap.add("source", apiSource);
         if (apiSource.equals("facebook")) {
             returnMap.add("oauthType", "OAuth2");
-            returnMap.add("useParameters", "false");
+            returnMap.add("useParameters", "true");
             return oauth2Util.facebookTokenUtil(apiKey, apiSecret, returnMap);
         } else if (apiSource.equals("linkedin")) {
             returnMap.add("oauthType", "OAuth2");

@@ -60,8 +60,10 @@ app.controller('socialController', function ($window, $scope, $http, $stateParam
         });
     };
     $scope.pullScheduledData = function(){
-        $http({method:"GET",url:"admin/collectedData"}).sucess(function(response){
+        $http({method:"GET",url:"admin/collectedData"}).success(function(response){
             console.log("response---------->",response);
+          $scope.scheduledDatas = response; 
+                $scope.collectedData = true;
         });
     }
     function login(url) {

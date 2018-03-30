@@ -5,45 +5,76 @@
  */
 package com.visumbu.vb.admin.scheduler.service;
 
-import java.util.concurrent.ScheduledFuture;
+import com.visumbu.vb.admin.dao.MongoSchedulerDao;
+import com.visumbu.vb.dao.BaseDao;
+import com.visumbu.vb.model.MongoScheduler;
+import com.visumbu.vb.utils.Rest;
+import java.util.List;
+import org.hibernate.Query;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.scheduling.support.CronTrigger;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 /**
  *
  * @author lino
  */
-//@EnableScheduling
+@EnableScheduling
 @Service
 public class Sheduler {
 
     @Autowired
-    ThreadPoolTaskScheduler newTaskScheduler;
-    ScheduledFuture scheduledFuture;
+    MongoSchedulerDao schedulerDao;
 
-    CronTrigger trigger;
+//    @Scheduled(cron = "0/20 * * ? * *")
+//    public void schedule() {
+//        List<MongoScheduler> schedulerList = schedulerDao.getCronSchedules("0/20 * * ? * *");
+//        System.out.println("cron----->" + schedulerList);
+//        if (schedulerList != null) {
+//            schedule(schedulerList);
+//        }
+//    }
 
-    public void setDelay(String cronExpression) {
-        System.out.println("the trigger = " + cronExpression);
-        trigger = new CronTrigger(cronExpression);
+    public void insertNewScheduler(MongoScheduler schedulerObj) {
+        schedulerDao.insert(schedulerObj);
     }
 
-    public void start(SchedulerTemplate template) {
-        RunnableTask task = new RunnableTask();
-        task.setAccountId(template.getAccountId()); 
-        task.setDataSet(template.getDataSet());
-
-        scheduledFuture = newTaskScheduler.schedule(task, trigger);
+    private void schedule(List<MongoScheduler> schedulerList) {
+        for (MongoScheduler schedule : schedulerList) {
+            RunnableTask task = new RunnableTask();
+            task.setAccountId(schedule.getAccountId().getId());
+            task.setDataSet(schedule.getDataSetId());
+            task.setScheduleId(schedule.getId());
+            task.run();
+        }
     }
-
-    public void changeTrigger(String cronExpression) {
-        System.out.println("change trigger to: " + cronExpression);
-        scheduledFuture.cancel(false);
-        trigger = new CronTrigger(cronExpression);
-//        start();
-    }
+//    @Autowired
+//    ThreadPoolTaskScheduler newTaskScheduler;
+//    ScheduledFuture scheduledFuture;
+//
+//    CronTrigger trigger;
+//
+//    public void setDelay(String cronExpression) {
+//        System.out.println("the trigger = " + cronExpression);
+//        trigger = new CronTrigger(cronExpression);
+//    }
+//
+//    public void start(SchedulerTemplate template) {
+//        RunnableTask task = new RunnableTask();
+//        task.setAccountId(template.getAccountId()); 
+//        task.setDataSet(template.getDataSet());
+//
+//        scheduledFuture = newTaskScheduler.schedule(task, trigger);
+//    }
+//
+//    public void changeTrigger(String cronExpression) {
+//        System.out.println("change trigger to: " + cronExpression);
+//        scheduledFuture.cancel(false);
+//        trigger = new CronTrigger(cronExpression);
+////        start();
+//    }
 //
 //    @Scheduled(cron = "0/20 * * ? * *")
 //    public void executeOnce() {

@@ -8,7 +8,6 @@ package com.visumbu.vb.admin.service;
 import com.visumbu.vb.admin.dao.TokenDao;
 import com.visumbu.vb.admin.oauth.service.TokenTemplate;
 import com.visumbu.vb.controller.BaseController;
-import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.TokenDetails;
 import com.visumbu.vb.model.VbUser;
@@ -47,7 +46,7 @@ public class TokenService extends BaseController{
     }
 
     public TokenDetails insertIntoDb(MultiValueMap<String, Object> dataMap, TokenTemplate tokenDetails, HttpServletRequest request) throws Exception {
-
+        System.out.println("user-------->"+getUser(request));
         VbUser user = userService.findByUsername(getUser(request));
         dataMap.add("agencyId", user.getAgencyId());
         TokenDetails tokenData = getTokenObject(dataMap, tokenDetails);

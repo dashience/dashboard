@@ -65,12 +65,8 @@ class OAuth2Util {
 
     public TokenTemplate exchangeForAccessToken(MultiValueMap<String, Object> dataMap) throws Exception {
         String code = (String) dataMap.getFirst("code");
-        boolean useParameters = Boolean.parseBoolean((String) dataMap.getFirst("useParameters"));
-        if (useParameters) {
-            oAuth2Template.setUseParametersForClientAuthentication(true);
-        }
-        System.out.println("code--------->"+code);
-        System.out.println("oAuth2Parameters--------->"+oAuth2Parameters.getRedirectUri());
+//        boolean useParameters = Boolean.parseBoolean((String) dataMap.getFirst("useParameters"));
+        oAuth2Template.setUseParametersForClientAuthentication(true);
         AccessGrant tokenDetails = oAuth2Template.exchangeForAccess(code, oAuth2Parameters.getRedirectUri(), null);
         return getTokenTemplate(tokenDetails);
     }

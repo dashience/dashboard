@@ -29,16 +29,16 @@
                         <tr>
                             <th scope="col">Scheduler Id</th>
                             <th scope="col">DataSource</th>
-                            <th scope="col">account Id</th>
+                            <th scope="col">DataSetName</th>
                             <th scope="col">Pulled Raw Data</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
+                        <tr ng-repeat="scheduledData in scheduledDatas">
+                            <td>{{scheduledData._id}}</td>
+                            <td>{{scheduledData.dataInfo.dataSourceName}}</td>
+                            <td>{{scheduledData.dataInfo.dataSetName}}</td>
+                            <td>{{scheduledData.data}}</td>
                         </tr>
                     </tbody>
                 </table>

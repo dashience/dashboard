@@ -72,7 +72,7 @@ public class OAuthController {
         try {
             oAuthData.add("code", code);
             TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
-            tokenService.insertIntoDb(oAuthData, tokenTemplate,request);
+            tokenService.insertIntoDb(oAuthData, tokenTemplate, request);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 
@@ -90,7 +90,7 @@ public class OAuthController {
         try {
             oAuthData.add("code", code);
             TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
-            tokenService.insertIntoDb(oAuthData, tokenTemplate,request);
+            tokenService.insertIntoDb(oAuthData, tokenTemplate, request);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 
@@ -110,7 +110,7 @@ public class OAuthController {
             oAuthData.add("oauth_token", oauth_token);
             oAuthData.add("oauth_verifier", oauth_verifier);
             TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
-            tokenService.insertIntoDb(oAuthData, tokenTemplate,request);
+            tokenService.insertIntoDb(oAuthData, tokenTemplate, request);
             RedirectView redirectView = new RedirectView(successUrl, true, true,
                     true);
 
