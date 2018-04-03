@@ -52,6 +52,7 @@ public class LinkedInService {
         String dataSetReportName = request.getParameter("dataSetName");
         String productSegment = request.getParameter("productSegment");
         String aggregation = request.getParameter("timeSegment");
+        String dataSourceId = request.getParameter("dataSourceId");
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
         Date startDate = cal.getTime();
@@ -59,7 +60,7 @@ public class LinkedInService {
         cal.add(Calendar.MONTH, -1);
         Date endDate = cal.getTime();
         System.out.println("endDate------------->" + endDate);
-        List<TokenDetails> TokenDetails = resourceManager.getOauthToken(request, "linkedIn");
+        List<TokenDetails> TokenDetails = resourceManager.getOauthToken(request, Integer.parseInt(dataSourceId));
         String accessToken = TokenDetails.get(0).getTokenValue();
 
         if (dataSetReportName.equalsIgnoreCase("companyProfile")) {

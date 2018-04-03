@@ -36,6 +36,7 @@ public class RunnableTask implements Runnable {
         try {
             MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
             DataSource dataSource = dataSet.getDataSourceId();
+            Integer dataSourceId = dataSource.getId();
             VbUser user = dataSet.getUserId();
             int agencyId = dataSet.getAgencyId().getId();
             String userId = user.getId().toString();
@@ -45,6 +46,7 @@ public class RunnableTask implements Runnable {
             headers.add("userId", userId);
             headers.add("productSegment", dataSet.getProductSegment());
             headers.add("timeSegment", dataSet.getTimeSegment());
+            headers.add("dataSourceId", Integer.toString(dataSourceId));
             String output = Rest.getData(Baseurl, headers);
             if (output != null) {
                 System.out.println("output---->" + output);

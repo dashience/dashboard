@@ -39,10 +39,12 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
         String apiKey = request.getParameter("apiKey");
         String apiSecret = request.getParameter("apiSecret");
         String apiSource = request.getParameter("apiSource");
-        System.out.println("reached apisource-------->");
+        String dataSourceId = request.getParameter("dataSourceId");
+        System.out.println("reached apisource-------->"+dataSourceId);
         returnMap.add("apiKey", apiKey);
         returnMap.add("apiSecret", apiSecret);
         returnMap.add("source", apiSource);
+        returnMap.add("dataSourceId", dataSourceId);
         if (apiSource.equals("facebook")) {
             returnMap.add("oauthType", "OAuth2");
             returnMap.add("useParameters", "true");

@@ -569,11 +569,18 @@ public class UiDao extends BaseDao {
         query.setParameter("joinDataSetId", joinDataSetId);
         query.executeUpdate();
     }
+    public void removeMongoScheduler(Integer id){
+        String queryStr = "delete from MongoScheduler m where m.dataSetId.id= :dataSetId";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("dataSetId", id);
+        query.executeUpdate();
+    }
 
     public void deleteDataSet(Integer id) {
         removeDataSetFromWidget(id);
         removeDataSetColumns(id);
         removeJoinDataSet(id);
+        removeMongoScheduler(id);
         String queryStr = "delete DataSet d where d.id = :dataSetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("dataSetId", id);

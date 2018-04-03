@@ -741,7 +741,7 @@ public class UiService {
         try {
             DataSource dbDataSource = new DataSource();
             BeanUtils.copyProperties(dbDataSource, dataSource);
-            uiDao.create(dbDataSource);
+            return (DataSource)uiDao.create(dbDataSource);
 
         } catch (IllegalAccessException ex) {
             Logger.getLogger(UiService.class.getName()).log(Level.SEVERE, null, ex);

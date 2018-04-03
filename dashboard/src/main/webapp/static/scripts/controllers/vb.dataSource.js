@@ -1,6 +1,5 @@
 app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$rootScope', '$cookies', '$translate', '$window', function ($scope, $stateParams, $http, $rootScope, $cookies, $translate, $window) {
 //    $scope.dataSourceTypes = [{type: "sql", name: "SQL"}, {type: "csv", name: "CSV"}];
-        $scope.saveButtonStatus = true;
         $scope.authenticateFlag = false;
         $scope.oAuthData = {};
         $scope.oAuthData.accountId = $stateParams.accountId;
@@ -119,7 +118,7 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
         };
         $scope.saveDataSource = function (dataSource) {
             console.log("Save DataSource");
-            console.log(dataSource)
+            console.log("dataSource-------------", dataSource);
             dataSource.code = $('#fbOauthToken').val();
             dataSource.accessToken = $('#fbAccessToken').val();
             var data = {
@@ -135,27 +134,45 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 accessToken: dataSource.accessToken ? dataSource.accessToken : '',
                 agencyId: dataSource.agencyId,
                 userId: dataSource.userId,
-                code: dataSource.code ? dataSource.code : ''
+                code: dataSource.code ? dataSource.code : '',
+                oauthStatus: dataSource.oauthStatus
             };
             if (data.name && data.dataSourceType) {
                 $http({method: dataSource.id ? 'PUT' : 'POST', url: 'admin/ui/dataSource', data: data}).success(function (response) {
+                    $scope.oAuthData.dataSource = response;
+                    console.log("response--------->", response);
+                    if (!response.oauthStatus) {
+                        $scope.authenticateFlag = true;
+                    } else {
+                        $scope.authenticateFlag = false;
+                    }
                     getItems();
                 });
             }
+            console.log("$scope.sourceFileName---------->", $scope.sourceFileName);
+            console.log("$scope.dataSource---------->", $scope.dataSource);
             dataSource = "";
-            $scope.dataSource = "";
+//            $scope.dataSource = "";
             $scope.sourceFileName = "";
-            $scope.selectedRow = null;
         };
         $scope.selectedRow = null;
         $scope.highlightDataSource = function (index) {
             $scope.selectedRow = index;
         };
         $scope.editDataSource = function (dataSource) {
+            console.log("dataSource--------->", dataSource);
             if (dataSource.dataSourceType === "csv" || dataSource.dataSourceType === "xls") {
                 $scope.editDataSourceType = true;
+                $scope.authenticateFlag = false;
             } else {
                 $scope.editDataSourceType = false;
+                if (dataSource.oauthStatus) {
+                    console.log("dataSource.oauthStatus1------>", dataSource.oauthStatus);
+                    $scope.authenticateFlag = false;
+                } else {
+                    console.log("dataSource.oauthStatus2------>", dataSource.oauthStatus);
+                    $scope.authenticateFlag = true;
+                }
             }
             var data = {
                 id: dataSource.id,
@@ -167,10 +184,12 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 dataSourceType: dataSource.dataSourceType,
                 sourceFile: dataSource.sourceFile,
                 agencyId: dataSource.agencyId.id,
-                userId: dataSource.userId.id
+                userId: dataSource.userId.id,
+                oauthStatus: dataSource.oauthStatus
             };
             $scope.dataSource = data;
             $scope.selectSourceType(dataSource);
+            $scope.oAuthData.dataSource = dataSource;
         };
         $scope.clearDataSource = function (dataSource) {
             $scope.dataSource = "";
@@ -196,18 +215,15 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
                 $scope.showXLSFileUpload = true;
                 $scope.showCSVFileUpload = false;
                 $scope.authenticateFlag = false;
-                $scope.saveButtonStatus = true;
             } else if (dataSourceType == 'csv') {
                 $scope.showCSVFileUpload = true;
                 $scope.showXLSFileUpload = false;
                 $scope.authenticateFlag = false;
-                $scope.saveButtonStatus = true;
             } else {
                 $scope.showXLSFileUpload = false;
                 $scope.showCSVFileUpload = false;
-                $scope.authenticateFlag = true;
+                $scope.oAuthData.status = false;
                 $scope.oAuthData.source = source.dataSourceType;
-                console.log("dataSource.datasourceType----->" + $scope.oAuthData.source);
             }
         }
         $scope.uploadFile = function (dataSource) {
@@ -233,7 +249,7 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
             });
         }
         $scope.onSubmit = function () {
-            login("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source + "&accountId=" + $scope.oAuthData.accountId + "&domainName=" + $scope.oAuthData.domainName);
+            login("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source + "&accountId=" + $scope.oAuthData.accountId + "&dataSourceId=" + $scope.oAuthData.dataSource.id + "&domainName=" + $scope.oAuthData.domainName);
             //        $window.open("admin/social/signin?apiKey=" + $scope.oAuthData.clientId + "&apiSecret=" + $scope.oAuthData.clientSecret + "&apiSource=" + $scope.oAuthData.source);
         };
         function login(url) {
@@ -254,14 +270,19 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
         }
         ;
         $scope.success = function () {
-            console.log("called-------->", $scope.authenticateFlag);
+            // console.log("called-------->", $scope.saveButtonStatus1);
 //            $scope.dataSources[$scope.oAuthData.index].oauthStatus = true;
-            $scope.authenticateFlag = true;
-            $scope.saveButtonStatus = true;
-//            $http({method: "PUT", url: "admin/social/oauthStatus", data: $scope.dataSources[$scope.oAuthData.index]}).success(function (response) {
-//                console.log("response-------->", response);
-//            });
-            console.log("oAuth2Details-------->", $scope.authenticateFlag);
+            $scope.oAuthData.dataSource.oauthStatus = true;
+            $http({method: "PUT", url: "admin/social/oauthStatus", data: $scope.oAuthData.dataSource}).success(function (response) {
+                console.log("response-------->", response);
+                getItems();
+            });
+            $scope.authenticateFlag = false;
+            dataSource = "";
+            $scope.dataSource = "";
+            $scope.sourceFileName = "";
+            $scope.selectedRow = null;
+            $scope.$apply();
         };
     }]);
 app.directive('fileModel', ['$parse', function ($parse) {

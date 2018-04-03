@@ -9,6 +9,7 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.batch.BatchRequest;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.analyticsreporting.v4.AnalyticsReporting;
@@ -49,6 +50,7 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.model.Goal;
 import com.google.api.services.analytics.model.Goals;
+import com.google.api.services.analyticsreporting.v4.AnalyticsReporting.Reports.BatchGet;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.bean.GaReport;
 import com.visumbu.vb.model.DefaultFieldProperties;
@@ -87,8 +89,7 @@ public class GaService {
 
         GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
                 httpTransport, JSON_FACTORY, "162577857765-uanp79mjictf7bkla9gotj5dhk4nr0ka.apps.googleusercontent.com", "xXIHWHPBQ9B9KpkFs_1tmniu",
-                Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).setDataStoreFactory(
-                dataStoreFactory).build();
+                Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).build();
         // Authorize.
         Credential credential = new AuthorizationCodeInstalledApp(flow1,
                 new LocalServerReceiver()).authorize("user");
@@ -257,8 +258,9 @@ public class GaService {
             
             // Call the batchGet method.
             System.out.println("get Report ---> " + getReport);
-            GetReportsResponse response = analyticsReporting.reports().batchGet(getReport).execute();
-            
+//            GetReportsResponse response = analyticsReporting.reports().batchGet(getReport).execute();
+            BatchGet request23 =  analyticsReporting.reports().batchGet(getReport).setAccessToken("");
+            GetReportsResponse response = request23.execute();
             // Return the response.
             return response;
         } catch (IOException ex) {

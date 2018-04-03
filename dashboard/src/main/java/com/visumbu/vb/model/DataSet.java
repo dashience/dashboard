@@ -24,6 +24,15 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.FetchType;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 /**
  *
@@ -87,6 +96,8 @@ public class DataSet implements Serializable {
     private Collection<JoinDataSet> joinDataSetCollection;
     @OneToMany(mappedBy = "dataSetIdSecond")
     private Collection<JoinDataSet> joinDataSetCollection1;
+    @OneToMany(mappedBy = "dataSetId")
+    private List<MongoScheduler> MongoSchedulers= new ArrayList<>();
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     @ManyToOne
     private Agency agencyId;
@@ -194,7 +205,7 @@ public class DataSet implements Serializable {
     public void setPublish(String publish) {
         this.publish = publish;
     }
-    
+
     @XmlTransient
     @JsonIgnore
     public Collection<JoinDataSet> getJoinDataSetCollection() {

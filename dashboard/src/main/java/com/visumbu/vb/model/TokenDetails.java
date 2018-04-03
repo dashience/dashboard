@@ -74,6 +74,17 @@ public class TokenDetails implements Serializable {
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     @ManyToOne
     private Agency agencyId;
+    @JoinColumn(name = "data_source_id", referencedColumnName = "id")
+    @ManyToOne
+    private DataSource dataSourceId;
+
+    public DataSource getDataSourceId() {
+        return dataSourceId;
+    }
+
+    public void setDataSourceId(DataSource dataSourceId) {
+        this.dataSourceId = dataSourceId;
+    }
 
 
     public Agency getAgencyId() {

@@ -7,6 +7,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.endDate = $stateParams.endDate;
     $scope.tab = 1;
     $scope.childTab = 3;
+    $scope.collectData = {};
+    $scope.scheduler = {};
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
     };
@@ -482,6 +484,32 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.semRushFlag = false;
             $scope.semFreqFlag = true;
         }
+    };
+    $scope.dataCollection = function (dataSet) {
+        $scope.enableDataCollection = false;
+        $scope.getLive = false;
+        $scope.schedule = false;
+        if (dataSet.dataSourceId.dataSourceType == "facebook") {
+            $scope.enableDataCollection = true;
+            $scope.getLive = true;
+            $scope.schedule = true;
+        }
+        console.log("dataSet------------>", dataSet);
+        if (dataSet.dataSourceId.dataSourceType == "linkedin") {
+            $scope.enableDataCollection = true;
+            $scope.getLive = true;
+            $scope.schedule = true;
+        }
+    }
+    $scope.setDataSet = function (dataSet) {
+
+        $scope.scheduler.accountId = $stateParams.accountId;
+    };
+    $scope.scheduleData = function (scheduler) {
+        console.log("scheduler-------->", scheduler);
+        $http({method: "POST", url: "admin/schedule", data: scheduler}).success(function (response) {
+            console.log("response------>", response);
+        });
     };
     $scope.linkedinPerformance = [
         {
@@ -4388,7 +4416,10 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
             $scope.productSegFlag = true;
             $scope.nwStatusFlag = false;
             $scope.semRushFlag = false;
-
+            var timeSegmentList = $scope.timeSegment;
+            var timeSegmentName = dataSet.timeSegment;
+            var productList = $scope.productSegment;
+            var productSegmentName = dataSet.productSegment;
             if ($scope.dataSet.reportName === 'companyProfile') {
                 if (!dataSet.timeSegment) {
                     $scope.dataSet.timeSegment = {name: 'None', type: 'none'};
@@ -4880,9 +4911,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.columnsHeaderDefs = "";
         $scope.columnsHeaderDefs = getDataSetColDefs;
     };
-
     $scope.saveDataSet = function () {
-        var dataSetList = $scope.dataSet;
+        var dataSetList = angular.copy($scope.dataSet);
         if (dataSetList.timeSegment != null) {
             dataSetList.timeSegment = dataSetList.timeSegment.type;
         } else {
@@ -4904,10 +4934,12 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         } else {
             dataSet.dataSourceId = null;
         }
-        $scope.nwStatusFlag = true;
+        console.log("dataSet--------->", dataSet);
+//        $scope.nwStatusFlag = true;
         $http({method: dataSet.id ? 'PUT' : 'POST', url: 'admin/ui/dataSet', data: dataSet}).success(function (response) {
 //            $scope.columnHeaderByDataSetId = response;
             var getDataSetId = response.id;
+            $scope.scheduler.dataSet = response;
             var data = $scope.columnsHeaderDefs;
             data.forEach(function (element) {
                 if (element.hasOwnProperty("isEdit")) {
@@ -4922,11 +4954,11 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 });
             }
         });
-        $scope.dataSet = "";
-        $scope.showPreviewChart = false;
-        $scope.previewData = null;
-        $scope.dataSetFlag = false;
-        $scope.columnHeaderByDataSetId = "";
+//        $scope.dataSet = "";
+//        $scope.showPreviewChart = false;
+//        $scope.previewData = null;
+//        $scope.dataSetFlag = false;
+//        $scope.columnHeaderByDataSetId = "";
     };
 
 //    $scope.savePublishDataSet = function(dataSet){
@@ -4946,6 +4978,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.columnHeaderByDataSetId = "";
     };
     $scope.editDataSet = function (dataSet) {
+        $scope.scheduler.dataSet = dataSet;
         $scope.columnHeaderByDataSetId = dataSet;
         $scope.nwStatusFlag = true;
         $scope.childTab = 3;
@@ -5050,7 +5083,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
                 $scope.semRushFlag = false;
             }
         }
-
+        $scope.dataCollection(dataSet);
 //        if (dataSet.dataSourceId.dataSourceType === "adwords" || dataSet.dataSourceId.dataSourceType === "analytics" || dataSet.dataSourceId.dataSourceType === "facebook" || dataSet.dataSourceId.dataSourceType === "instagram")
 //        {
 //            if (dataSet.dataSourceId.dataSourceType === "instagram")
@@ -5104,6 +5137,9 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $scope.dataSetFlag = false;
         $scope.columnHeaderByDataSetId = "";
         $scope.childTab = 3;
+        $scope.enableDataCollection = false;
+        $scope.getLive = false;
+        $scope.schedule = false;
     };
     $scope.deleteDataSet = function (dataSet, index) {
         $http({method: 'DELETE', url: 'admin/ui/dataSet/' + dataSet.id}).success(function (response) {

@@ -205,20 +205,20 @@
                                 </span>
                             </div>
                         </div>
-                        <div style="margin-top:20px" ng-show="authenticateFlag" class="form-group">
-                                <input type="text" class="form-control"  placeholder="Type Client Id" ng-model="oAuthData.clientId">
-                                <input type="text" class="form-control" placeholder="Type Client Secret" ng-model="oAuthData.clientSecret">
-                                <button class="btn btn-primary" ng-click='onSubmit()'>Authenticate</button>
-                        </div>
                         <input type="hidden" id="fbAccessToken" ng-model="dataSource.accessToken">
                         <input type="hidden" id="fbOauthToken" ng-model="dataSource.oauthToken">
                         <input type="hidden" id="dataSourceType" ng-model="dataSource.dataSourceType">
                         <div class="form-group pull-right">
-                            <button ng-if="!(dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls')" 
-                                    ng-disabled="saveButtonStatus" class="btn btn-info" ng-click="saveDataSource(dataSource)" translate>Save</button>
+                            <button ng-if="!(dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls')"
+                                    class="btn btn-info" ng-click="saveDataSource(dataSource)" translate>Save</button>
                             <button ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'"
                                     class="btn btn-info" ng-click="uploadFile(dataSource)" translate>Save</button>
                             <button class="btn btn-warning" ng-click="clearDataSource(dataSource)" translate>Cancel</button>
+                        </div>
+                        <div style="margin-top:20px" ng-show="authenticateFlag" class="form-group">
+                            <input type="text" class="form-control"  placeholder="Type Client Id" ng-model="oAuthData.clientId">
+                            <input type="text" class="form-control" placeholder="Type Client Secret" ng-model="oAuthData.clientSecret">
+                            <button class="btn btn-primary" ng-click='onSubmit()'>Authenticate</button>
                         </div>
                     </form>
                 </div>
