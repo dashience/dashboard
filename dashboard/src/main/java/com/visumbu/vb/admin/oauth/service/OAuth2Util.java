@@ -17,49 +17,25 @@ import org.springframework.social.oauth2.GrantType;
 import org.springframework.social.oauth2.OAuth2Parameters;
 import org.springframework.social.oauth2.OAuth2Template;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 @Service("oauth2Util")
 class OAuth2Util {
 
-    @Autowired
-    OAuth2ServiceConfig oAuth2configs;
-
     private OAuth2Template oAuth2Template;
     private OAuth2Parameters oAuth2Parameters;
 
-    public MultiValueMap<String, Object> facebookTokenUtil(String apiKey, String apiSecret, MultiValueMap<String, Object> returnMap) throws Exception {
-        Map<String, List<String>> parameters = getParameterMap();
-        parameters.put("redirect_uri", Arrays.asList(oAuth2configs.CALLBACK_URL));
-        parameters.put("scope", Arrays.asList(""));
+    public Map<String, Object> getOAuth2Token(String apiKey, String apiSecret, Map<String, List<String>> parameters, Map<String, String> oauthUrls) throws Exception {
         oAuth2Parameters = new OAuth2Parameters(parameters);
-        return OAuth2UrlGenerator(apiKey, apiSecret, oAuth2configs.facebookAuthorizeUrl, oAuth2configs.facebookAccessTokenUrl, returnMap);
-    }
-    
-
-    public MultiValueMap<String, Object> linkedInTokenUtil(String apiKey, String apiSecret, MultiValueMap<String, Object> returnMap) throws Exception {
-        Map<String, List<String>> parameters = getParameterMap();
-        parameters.put("redirect_uri", Arrays.asList(oAuth2configs.CALLBACK_URL));
-        parameters.put("scope", Arrays.asList(""));
-        parameters.put("state", Arrays.asList("MNReFWf45A53sdfnet424"));
-        oAuth2Parameters = new OAuth2Parameters(parameters);
-        return OAuth2UrlGenerator(apiKey, apiSecret, oAuth2configs.linkedInAuthorieUrl, oAuth2configs.linkedInAccessTokenUrl, returnMap);
+        Map<String, Object> returnMap = new HashMap<>();
+        return OAuth2UrlGenerator(apiKey, apiSecret, oauthUrls.get("authorizeUrl"), oauthUrls.get("accessTokenUrl"), returnMap);
     }
 
-    public MultiValueMap<String, Object> gaTokenUtil(String apiKey, String apiSecret, MultiValueMap<String, Object> returnMap) throws Exception {
-        Map<String, List<String>> parameters = getParameterMap();
-        parameters.put("redirect_uri", Arrays.asList(oAuth2configs.CALLBACK_URL));
-        parameters.put("scope", Arrays.asList(oAuth2configs.gaScope));
-        parameters.put("prompt", Arrays.asList("consent"));
-        parameters.put("access_type", Arrays.asList("offline"));
-        oAuth2Parameters = new OAuth2Parameters(parameters);
-        return OAuth2UrlGenerator(apiKey, apiSecret, oAuth2configs.gaAuthorieUrl, oAuth2configs.gaAccessTokenUrl, returnMap);
-    }
-
-    public MultiValueMap<String, Object> OAuth2UrlGenerator(String apiKey, String apiSecret, String authorizeUrl, String accessTokenUrl, MultiValueMap<String, Object> returnMap) throws Exception {
+    public Map<String, Object> OAuth2UrlGenerator(String apiKey, String apiSecret, String authorizeUrl, String accessTokenUrl, Map<String, Object> returnMap) throws Exception {
         oAuth2Template = new OAuth2Template(apiKey, apiSecret, authorizeUrl, accessTokenUrl);
         String oauthUrl = oAuth2Template.buildAuthenticateUrl(GrantType.AUTHORIZATION_CODE, oAuth2Parameters);
-        returnMap.add("authorizeUrl", oauthUrl);
+        returnMap.put("authorizeUrl", oauthUrl);
         return returnMap;
     }
 
@@ -71,7 +47,7 @@ class OAuth2Util {
         return getTokenTemplate(tokenDetails);
     }
 
-    public void insertExtraDetails(MultiValueMap<String, Object> dataMap) throws Exception{
+    public void insertExtraDetails(MultiValueMap<String, Object> dataMap) throws Exception {
         HashMap<String, String> extraCredentials = (HashMap<String, String>) dataMap.getFirst("ExtraCredentials");
         if (extraCredentials != null) {
             MongoClient mongoClient = new MongoClient("localhost", 27017);
@@ -83,12 +59,9 @@ class OAuth2Util {
             mongoClient.close();
         }
     }
-    public Map getParameterMap(){
-        return new HashMap<>();
-    }
-    
-    public TokenTemplate getTokenTemplate(AccessGrant accessGrant){
-        TokenTemplate tokenTemplate= new TokenTemplate();
+
+    public TokenTemplate getTokenTemplate(AccessGrant accessGrant) {
+        TokenTemplate tokenTemplate = new TokenTemplate();
         tokenTemplate.setExpiryDate(accessGrant.getExpireTime());
         tokenTemplate.setRefreshToken(accessGrant.getRefreshToken());
         tokenTemplate.setScope(accessGrant.getScope());
