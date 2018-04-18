@@ -10,10 +10,12 @@ import com.visumbu.vb.model.TokenDetails;
 import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,6 +33,7 @@ import org.springframework.web.servlet.view.RedirectView;
  */
 @RequestMapping(value = "/social")
 @Component
+@Scope("session")
 public class OAuthController {
 
     @Autowired
@@ -44,7 +47,7 @@ public class OAuthController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OAuthController.class);
     String successUrl;
-    private MultiValueMap<String, Object> oAuthData;
+    public static MultiValueMap<String, Object> oAuthData;
 
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
     public ModelAndView signin(HttpServletRequest request,
@@ -53,8 +56,11 @@ public class OAuthController {
         successUrl = "http://" + domainName + "/dashboard/admin/social/success";
         String authorizeUrl = "http://" + domainName + "/dashboard/admin/social/error";
         try {
+            HttpSession session = request.getSession();
+            System.out.println("session id-------->" + session.getId());
             oAuthData = oAuthSelector.generateOAuthUrl(request);
             authorizeUrl = (String) oAuthData.getFirst("authorizeUrl");
+            System.out.println("oauthData------>" + oAuthData);
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(OAuthController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -69,7 +75,11 @@ public class OAuthController {
     public ModelAndView tokenGenerator(@RequestParam("code") String code,
             HttpServletRequest request,
             HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        System.out.println("session id-------->" + session.getId());
         try {
+            System.out.println("code------------->" + code);
+            System.out.println("oAuthData------------->" + oAuthData);
             oAuthData.add("code", code);
             TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
             tokenService.insertIntoDb(oAuthData, tokenTemplate, request);
@@ -87,6 +97,8 @@ public class OAuthController {
     public ModelAndView tokenGenerator(@RequestParam("code") String code, @RequestParam("state") String state,
             HttpServletRequest request,
             HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        System.out.println("session id-------->" + session.getId());
         try {
             oAuthData.add("code", code);
             TokenTemplate tokenTemplate = oAuthSelector.getTokenDetails(oAuthData);
@@ -106,6 +118,8 @@ public class OAuthController {
     public ModelAndView oAuth1TokenGenerator(@RequestParam("oauth_token") String oauth_token, @RequestParam("oauth_verifier") String oauth_verifier,
             HttpServletRequest request,
             HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        System.out.println("session id-------->" + session.getId());
         try {
             oAuthData.add("oauth_token", oauth_token);
             oAuthData.add("oauth_verifier", oauth_verifier);

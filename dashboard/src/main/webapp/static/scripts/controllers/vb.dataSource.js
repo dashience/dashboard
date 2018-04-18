@@ -6,6 +6,7 @@ app.controller("DataSourceController", ['$scope', '$stateParams', '$http', '$roo
         console.log("stateParams----->", $scope.oAuthData.accountId);
         $scope.oAuthData.userId = $cookies.getObject("userId");
         $scope.oAuthData.domainName = location.host;
+        console.log("cookies-------------->",document.cookie);
         $http.get('static/datas/dataSources/dataSource.json').success(function (response) {
             $scope.dataSourceTypes = response.dataSource;
         });

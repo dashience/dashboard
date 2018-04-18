@@ -334,7 +334,7 @@ public class LinkedinService {
             long totalEvents = (long) jsonObj.get("_total");
 
             JSONArray jsonArray = (JSONArray) jsonObj.get("values");
-
+            System.out.println("jsonArray--------->"+jsonArray);
             for (Iterator<Map<String, Object>> iterator = jsonArray.iterator(); iterator.hasNext();) {
                 Map<String, Object> next = iterator.next();
                 likesCount = likesCount + (long) next.get("numLikes");

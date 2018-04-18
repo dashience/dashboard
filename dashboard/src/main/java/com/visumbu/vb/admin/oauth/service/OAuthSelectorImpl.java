@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -24,7 +25,8 @@ import org.springframework.util.MultiValueMap;
  * @author Lino
  */
 @Service("oAuthSelector")
-public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
+@Scope("session")
+public class OAuthSelectorImpl extends BaseController implements OAuthSelector{
 
     @Autowired
     private OAuth2Util oauth2Util;
@@ -37,7 +39,10 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
 
     @Override
     public MultiValueMap<String, Object> generateOAuthUrl(HttpServletRequest request) throws Exception {
+        System.out.println("oauth2util-------->"+oauth2Util);
+        System.out.println("oauth1Util-------->"+oauth1Util);
         String apiSource = request.getParameter("apiSource");
+        System.out.println("apiSource--------->"+apiSource);
         String apiKey = request.getParameter("apiKey");
         String apiSecret = request.getParameter("apiSecret");
         String dataSourceId = request.getParameter("dataSourceId");
@@ -59,7 +64,7 @@ public class OAuthSelectorImpl extends BaseController implements OAuthSelector {
             oauthUrls.put("accessTokenUrl", oAuth2configs.linkedInAccessTokenUrl);
 
             return oauth2ReturnMap(apiSource, apiKey, apiSecret, dataSourceId, parameters, oauthUrls);
-        } else if (apiSource.equalsIgnoreCase("google Analytics")) {
+        } else if (apiSource.equalsIgnoreCase("analytics")) {
             parameters.put("redirect_uri", Arrays.asList(oAuth2configs.CALLBACK_URL));
             parameters.put("scope", Arrays.asList(oAuth2configs.gaScope));
             parameters.put("prompt", Arrays.asList("consent"));

@@ -60,7 +60,7 @@ public class LinkedInService {
         cal.add(Calendar.MONTH, -1);
         Date endDate = cal.getTime();
         System.out.println("endDate------------->" + endDate);
-        List<TokenDetails> TokenDetails = resourceManager.getOauthToken(request, Integer.parseInt(dataSourceId));
+        List<TokenDetails> TokenDetails = resourceManager.getOauthToken(Integer.parseInt(dataSourceId));
         String accessToken = TokenDetails.get(0).getTokenValue();
 
         if (dataSetReportName.equalsIgnoreCase("companyProfile")) {
@@ -355,7 +355,7 @@ public class LinkedInService {
             long totalEvents = (long) jsonObj.get("_total");
 
             JSONArray jsonArray = (JSONArray) jsonObj.get("values");
-
+            
             for (Iterator<Map<String, Object>> iterator = jsonArray.iterator(); iterator.hasNext();) {
                 Map<String, Object> next = iterator.next();
                 likesCount = likesCount + (long) next.get("numLikes");

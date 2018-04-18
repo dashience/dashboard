@@ -5,6 +5,7 @@
  */
 package com.visumbu.vb.admin.controller;
 
+import com.visumbu.vb.admin.scheduler.service.ResourceManager;
 import com.visumbu.vb.admin.service.AdwordsService;
 import com.visumbu.vb.admin.service.DealerService;
 import com.visumbu.vb.admin.service.FacebookService;
@@ -34,6 +35,7 @@ import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.Report;
 import com.visumbu.vb.model.ReportWidget;
 import com.visumbu.vb.model.TabWidget;
+import com.visumbu.vb.model.TokenDetails;
 import com.visumbu.vb.model.WidgetColumn;
 import com.visumbu.vb.utils.CsvDataSet;
 import com.visumbu.vb.utils.DataExporter;
@@ -98,7 +100,8 @@ public class ProxyController {
     private UiService uiService;
     @Autowired
     private UserService userService;
-
+    @Autowired
+    private ResourceManager resourceManager;
     @Autowired
     private DealerService dealerService;
 
@@ -840,6 +843,8 @@ public class ProxyController {
             if (dataSetIdInt != null) {
                 DataSet dataSet = uiService.readDataSet(dataSetIdInt);
                 dataSourceType = (dataSourceType == null || dataSourceType.isEmpty()) ? dataSet.getDataSourceId().getDataSourceType() : dataSourceType;
+                Integer dataSourceId = dataSet.getDataSourceId().getId();
+                request.add("dataSourceId", dataSourceId.toString());
             }
         }
         String joinDataSetId = getFromMultiValueMap(request, "joinDataSetId");
@@ -931,13 +936,13 @@ public class ProxyController {
         } else {
             dataSetColumnList = uiService.getDataSetColumns(dataSetIdInt, widgetIdInt); // DataSetColumnsByDataSetId(dataSetIdInt, userIdInt);
         }
+        System.out.println("data before derived column---------->" + returnMap);
         if (dataSetColumnList.size() > 0) {
             List<Map<String, Object>> dataWithDerivedFunctions = addDerivedColumnsFunction(dataSetColumnList, dataList, request, httpRequest, response);
             List<Map<String, Object>> dataWithDerivedColumns = addDerivedColumnsExpr(dataSetColumnList, dataWithDerivedFunctions);
             System.out.println(dataSetColumnList);
             System.out.println("DATA INSIDE DERIVED COLUMN");
             System.out.println("dataWithDerivedColumns----------->" + dataWithDerivedColumns);
-            System.out.println("dataWithDerivedFunctions------------->" + dataWithDerivedFunctions);
             returnMap.put("data", dataWithDerivedColumns);
         }
         System.out.println("before data-------------->" + returnMap);
@@ -1287,6 +1292,7 @@ public class ProxyController {
             }
         }
         return returnData;
+
     }
 
     public Object getDataForDerivedFunctionColumn(List<Map<String, Object>> data, Object baseFieldValue, DataSetColumns dataSetColumn) {
@@ -1366,14 +1372,14 @@ public class ProxyController {
         String accountIdStr = getFromMultiValueMap(request, "accountId");
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
-         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
+        List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         if (domain == null) {
             domain = getFromMultiValueMap(request, "networkType");
         }
         if (domain == null || domain.isEmpty() || domain.equalsIgnoreCase("undefined") || domain.equalsIgnoreCase("none")) {
             domain = getAccountId(accountProperty, "semRushDomain");
         }
-        
+
         Date startDate = DateUtils.getStartDate(getFromMultiValueMap(request, "startDate"));
         Date endDate = DateUtils.getEndDate(getFromMultiValueMap(request, "endDate"));
 
@@ -1732,6 +1738,7 @@ public class ProxyController {
         String dataSetId = getFromMultiValueMap(request, "dataSetId");
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
+                String dataSourceId = getFromMultiValueMap(request,"dataSourceId");
         if (timeSegment != null && (timeSegment.isEmpty() || timeSegment.equalsIgnoreCase("undefined") || timeSegment.equalsIgnoreCase("null"))) {
             // //System.out.println("In ifffff timeSegment...");
             timeSegment = null;
@@ -1742,11 +1749,13 @@ public class ProxyController {
             productSegment = null;
         }
         Integer dataSetIdInt = null;
+        Integer dataSourceIdInt = null;
         DataSet dataSet = null;
 
         if (dataSetId != null) {
             try {
                 dataSetIdInt = Integer.parseInt(dataSetId);
+                dataSourceIdInt= Integer.parseInt(dataSourceId);
             } catch (Exception e) {
 
             }
@@ -1805,7 +1814,7 @@ public class ProxyController {
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
         String gaAccountId = getAccountId(accountProperty, "gaAccountId");
         String gaProfileId = getAccountId(accountProperty, "gaProfileId");
-        Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt);
+        Map dataMap = gaService.getGaReport(dataSetReportName, gaProfileId, startDate, endDate, timeSegment, productSegment, dataSetIdInt,dataSourceIdInt);
         List<Map<String, Object>> data = (List<Map<String, Object>>) dataMap.get("data");
         List<ColumnDef> columnDefs = getColumnDefObject(data);
         Map returnMap = new HashMap<>();
@@ -2000,7 +2009,7 @@ public class ProxyController {
     @RequestMapping(value = "testGa", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     Object testGa(HttpServletRequest request, HttpServletResponse response) {
-        return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"), null);
+        return gaService.getGaReport(request.getParameter("reportName"), "112725239", DateUtils.get30DaysBack(), new Date(), request.getParameter("timeSegment"), request.getParameter("productSegment"), null,null);
     }
 
     //linkedin 
@@ -2010,6 +2019,9 @@ public class ProxyController {
         String dataSetReportName = getFromMultiValueMap(request, "dataSetReportName");
         String timeSegment = getFromMultiValueMap(request, "timeSegment");
         String productSegment = getFromMultiValueMap(request, "productSegment");
+        String dataSourceId = getFromMultiValueMap(request, "dataSourceId");
+        String userIdStr = getFromMultiValueMap(request, "userId");
+        Integer userId = Integer.parseInt(userIdStr);
 
 //        if (timeSegment == null) {
 //            timeSegment = "daily";
@@ -2054,9 +2066,11 @@ public class ProxyController {
         Integer accountId = Integer.parseInt(accountIdStr);
         Account account = userService.getAccountId(accountId);
         List<Property> accountProperty = userService.getPropertyByAccountId(account.getId());
-        String linkedinAccessToken = getAccountId(accountProperty, "linkedinAccessToken");
+//        String linkedinAccessToken = getAccountId(accountProperty, "linkedinAccessToken");
         //       String linkedinAccessToken = "AQUdoyU6zxDDcLR8b0FLkAfQPsTiwsy5UUccA15GRRtx-U3cP_VRf8nUdfkM5iDlUGT6ECYE4k8ibguWvOgWwKY8yn5KGvduAob-VXvP5qyJKb8ZxDgnJixyHOMzf4f3ReMWBHK2p9vGuENCG5iP8Iqr_K6qN-1dwGJw3WnQ-YasfhnQ19JN9I9lhHXWGbPZajNjAtcV4VkuduCNfF2UhaHYQgbZtA3XIc8_dvF3P0Npg-tD8BsLQOVfKpWFcMZ0SrFdNzOjq9OK4NkD1Y9Kb2TTIccOZQ7rQnqLUcVevI1joOambAhO4uxn4AmMCym8VsXBe6grJYgbJtDbB8EzJz1bhsN-hA";
         String linkedinCompanyId = getAccountId(accountProperty, "linkedinCompanyId");
+        List<TokenDetails> TokenDetails = resourceManager.getOauthToken(Integer.parseInt(dataSourceId));
+        String linkedinAccessToken = TokenDetails.get(0).getTokenValue();
 
         try {
             Long companyId = Long.parseLong(linkedinCompanyId);
@@ -2802,7 +2816,7 @@ public class ProxyController {
         return null;
     }
 
-    private List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
+    public List<ColumnDef> getColumnDefObject(List<Map<String, Object>> data) {
         return getColumnDefObject(data, null);
     }
 

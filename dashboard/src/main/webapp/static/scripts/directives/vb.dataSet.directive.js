@@ -3,6 +3,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams, $translate
         restrict: 'A',
         scope: {
             path: '@',
+            userId:'@',
             getDataSetColumns: '&'
 //            dataSetId: '@'
                     // widgetColumns: '@',
@@ -356,6 +357,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams, $translate
             scope.loadingTable = true;
 
             var dataSourcePath = JSON.parse(scope.path)
+            var userId = scope.userId;
             var url = "admin/proxy/getData?";
             var dataSourcePassword = '';
             if (dataSourcePath.dataSourceId != null) {
@@ -475,6 +477,7 @@ app.directive('previewTable', function ($http, $filter, $stateParams, $translate
                         '&username=' + userName +
                         '&password=' + dataSourcePassword +
                         '&url=' + dataSourcePath.url +
+                        '&userId='+userId+
                         '&port=3306&schema=deeta_dashboard&query=' + encodeURI(dataSourcePath.query)).success(function (response) {
                     scope.dataSetColumns = [];
                     console.log(response.columnDefs);

@@ -35,15 +35,14 @@ public class ResourceManager extends BaseController {
     @Autowired
     protected SessionFactory sessionFactory;
 
-    public List<TokenDetails> getOauthToken(HttpServletRequest request, int dataSourceId) {
-        String userIdStr = request.getParameter("userId");
-        Integer userId = Integer.parseInt(userIdStr);
-        Query userquery = sessionFactory.getCurrentSession().getNamedQuery("VbUser.findById");
-        userquery.setParameter("id", userId);
-        VbUser user = (VbUser) userquery.uniqueResult();
-        String queryStr = "select d from TokenDetails d where d.agencyId = :agencyId and d.dataSourceId.id = :dataSourceId";
+    public List<TokenDetails> getOauthToken(int dataSourceId) {
+        System.out.println("dataSourceId------------>"+dataSourceId);
+//        Query userquery = sessionFactory.getCurrentSession().getNamedQuery("VbUser.findById");
+//        userquery.setParameter("id", userId);
+//        VbUser user = (VbUser) userquery.uniqueResult();
+        String queryStr = "select d from TokenDetails d where d.dataSourceId.id = :dataSourceId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("agencyId", user.getAgencyId());
+//        query.setParameter("agencyId", user.getAgencyId());
         query.setParameter("dataSourceId", dataSourceId);
         return query.list();
     }

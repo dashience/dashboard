@@ -7,6 +7,7 @@ package com.visumbu.vb.admin.oauth.service;
 
 import com.visumbu.vb.model.TokenDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.social.oauth1.AuthorizedRequestToken;
 import org.springframework.social.oauth1.OAuth1Parameters;
 import org.springframework.social.oauth1.OAuth1Template;
@@ -21,6 +22,7 @@ import org.springframework.util.MultiValueMap;
  * @author dashience
  */
 @Service("oauth1Util")
+@Scope("session")
 class OAuth1Util {
 
     @Autowired

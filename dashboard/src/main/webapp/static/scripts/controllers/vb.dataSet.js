@@ -9,6 +9,8 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
     $scope.childTab = 3;
     $scope.collectData = {};
     $scope.scheduler = {};
+    $scope.userId = $cookies.getObject("userId");
+    console.log("userId--->",$scope.userId);
     $scope.setTab = function (newTab) {
         $scope.tab = newTab;
     };
@@ -5110,7 +5112,7 @@ app.controller('DataSetController', function ($scope, $http, $stateParams, $filt
         $timeout(function () {
             $scope.previewData = dataSet;
         }, 50);
-        console.log("Data Set----------->", dataSet)
+
     };
     $scope.refreshDataSet = function (dataSet) {
 //        var tmpDataSet = dataSet

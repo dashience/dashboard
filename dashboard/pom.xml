@@ -93,7 +93,7 @@
             <artifactId>tiles-servlet</artifactId>
             <version>3.0.5</version>
         </dependency>
-<!--        <dependency>
+        <!--        <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
             <version>1.9.13</version>
@@ -267,7 +267,8 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>2.3.5</version>
-        </dependency>       <dependency>
+        </dependency>       
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.3.5</version>
@@ -493,6 +494,22 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>22.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>9.8.0-10</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.kcthota/JSONQuery -->
+        <dependency>
+            <groupId>com.kcthota</groupId>
+            <artifactId>JSONQuery</artifactId>
+            <version>0.0.5</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.4.0</version>
         </dependency>
 
         <!-- twitter code ends -->

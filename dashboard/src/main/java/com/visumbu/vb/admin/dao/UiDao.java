@@ -500,8 +500,15 @@ public class UiDao extends BaseDao {
         query.setParameter("dataSourceId", id);
         query.executeUpdate();
     }
+    public void removeTokenDetails(Integer id){
+        String stringQuery = "delete from TokenDetails t where t.dataSourceId.id = :dataSourceId";
+        Query query = sessionFactory.getCurrentSession().createQuery(stringQuery);
+        query.setParameter("dataSourceId", id);
+        query.executeUpdate();
+    }
 
     public DataSource deleteDataSource(Integer id) {
+        removeTokenDetails(id);
         removeDsFromWidget(id);
         List<DataSet> dataSetList = getDataSetByDataSourceId(id);
         for (Iterator<DataSet> iterator = dataSetList.iterator(); iterator.hasNext();) {

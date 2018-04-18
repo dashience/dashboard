@@ -5,6 +5,7 @@
  */
 package com.visumbu.vb.admin.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -52,10 +53,20 @@ import com.google.api.services.analytics.model.Goal;
 import com.google.api.services.analytics.model.Goals;
 import com.google.api.services.analyticsreporting.v4.AnalyticsReporting.Reports.BatchGet;
 import com.visumbu.vb.admin.dao.UiDao;
+import com.visumbu.vb.admin.scheduler.service.ResourceManager;
 import com.visumbu.vb.bean.GaReport;
 import com.visumbu.vb.model.DefaultFieldProperties;
+import com.visumbu.vb.model.TokenDetails;
 import com.visumbu.vb.utils.ApiUtils;
+import com.visumbu.vb.utils.Rest;
+import java.util.Iterator;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 /**
  *
@@ -67,86 +78,87 @@ public class GaService {
 
     @Autowired
     private UiDao uiDao;
-    // private static final String CLIENT_SECRET_JSON_RESOURCE = "F:\\GaToken\\client_secret_384381056232-sqrgb2u8j26gbkqi6dis682ojapsf85a.apps.googleusercontent.com.json";
-    // Replace with your view ID.
-    private static final String VIEW_ID = "82176546";
-    // The directory where the user's credentials will be stored.
-    private static final File DATA_STORE_DIR = new File("/tmp/");
+    @Autowired
+    private ResourceManager resourceManager;
+//    // private static final String CLIENT_SECRET_JSON_RESOURCE = "F:\\GaToken\\client_secret_384381056232-sqrgb2u8j26gbkqi6dis682ojapsf85a.apps.googleusercontent.com.json";
+//    // Replace with your view ID.
+//    private static final String VIEW_ID = "172698561";
+//    // The directory where the user's credentials will be stored.
+//    private static final File DATA_STORE_DIR = new File("/tmp/");
+//
+//    private static final String APPLICATION_NAME = "Hello Analytics Reporting";
+//    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
+//    private static NetHttpTransport httpTransport;
+//    private static FileDataStoreFactory dataStoreFactory;
+//    private static final AnalyticsReporting analyticsReporting = initializeAnalyticsReporting();
+    private static final String URL = "https://analyticsreporting.googleapis.com/v4/reports:batchGet";
 
-    private static final String APPLICATION_NAME = "Hello Analytics Reporting";
-    private static final JsonFactory JSON_FACTORY = GsonFactory.getDefaultInstance();
-    private static NetHttpTransport httpTransport;
-    private static FileDataStoreFactory dataStoreFactory;
-    private static AnalyticsReporting analyticsReporting = initializeAnalyticsReporting();
-
-    private static Analytics initializeAnalytics() throws Exception {
-        // Initializes an authorized analytics service object.
-
-        // Construct a GoogleCredential object with the service account email
-        // and p12 file downloaded from the developer console.
-        httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
-
-        GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
-                httpTransport, JSON_FACTORY, "162577857765-uanp79mjictf7bkla9gotj5dhk4nr0ka.apps.googleusercontent.com", "xXIHWHPBQ9B9KpkFs_1tmniu",
-                Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).build();
-        // Authorize.
-        Credential credential = new AuthorizationCodeInstalledApp(flow1,
-                new LocalServerReceiver()).authorize("user");
-
-        // Construct the Analytics service object.
-        return new Analytics.Builder(httpTransport, JSON_FACTORY, credential)
-                .setApplicationName(APPLICATION_NAME).build();
-    }
-
-    /**
-     * Initializes an authorized Analytics Reporting service object.
-     *
-     * @return The analytics reporting service object.
-     * @throws IOException
-     * @throws GeneralSecurityException
-     */
-    private static AnalyticsReporting initializeAnalyticsReporting() {
-
-        try {
-            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-            dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
-
-            // Load client secrets.
-            /*GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
-             new InputStreamReader(HelloAnalytics.class
-             .getResourceAsStream(CLIENT_SECRET_JSON_RESOURCE)));
-             */
-            // Set up authorization code flow for all authorization scopes.
-            /*GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
-             AnalyticsReportingScopes.all()).setDataStoreFactory(dataStoreFactory)
-             .build();
-             */
-            GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
-                    httpTransport, JSON_FACTORY, "384381056232-sqrgb2u8j26gbkqi6dis682ojapsf85a.apps.googleusercontent.com", "1nJygCmZKdFCOykaGmbjBpKy",
-                    Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).setDataStoreFactory(
-                    dataStoreFactory).build();
-            // Authorize.
-            Credential credential = new AuthorizationCodeInstalledApp(flow1,
-                    new LocalServerReceiver()).authorize("user");
-            // Construct the Analytics Reporting service object.
-            return new AnalyticsReporting.Builder(httpTransport, JSON_FACTORY, credential)
-                    .setApplicationName(APPLICATION_NAME).build();
-        } catch (GeneralSecurityException ex) {
-            Logger.getLogger(GaService.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(GaService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
-    }
-
-    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments, Integer dataSetId) {
+//    private static Analytics initializeAnalytics() throws Exception {
+//        // Initializes an authorized analytics service object.
+//
+//        // Construct a GoogleCredential object with the service account email
+//        // and p12 file downloaded from the developer console.
+//        httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+//        dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
+//
+//        GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
+//                httpTransport, JSON_FACTORY, "162577857765-uanp79mjictf7bkla9gotj5dhk4nr0ka.apps.googleusercontent.com", "xXIHWHPBQ9B9KpkFs_1tmniu",
+//                Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).build();
+//        // Authorize.
+//        Credential credential = new AuthorizationCodeInstalledApp(flow1,
+//                new LocalServerReceiver()).authorize("user");
+//
+//        // Construct the Analytics service object.
+//        return new Analytics.Builder(httpTransport, JSON_FACTORY, credential)
+//                .setApplicationName(APPLICATION_NAME).build();
+//    }
+//    /**
+//     * Initializes an authorized Analytics Reporting service object.
+//     *
+//     * @return The analytics reporting service object.
+//     * @throws IOException
+//     * @throws GeneralSecurityException
+//     */
+//    private static AnalyticsReporting initializeAnalyticsReporting() {
+//
+//        try {
+//            httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+//            dataStoreFactory = new FileDataStoreFactory(DATA_STORE_DIR);
+//
+//            // Load client secrets.
+//            /*GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY,
+//             new InputStreamReader(HelloAnalytics.class
+//             .getResourceAsStream(CLIENT_SECRET_JSON_RESOURCE)));
+//             */
+//            // Set up authorization code flow for all authorization scopes.
+//            /*GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(httpTransport, JSON_FACTORY, clientSecrets,
+//             AnalyticsReportingScopes.all()).setDataStoreFactory(dataStoreFactory)
+//             .build();
+//             */
+//            GoogleAuthorizationCodeFlow flow1 = new GoogleAuthorizationCodeFlow.Builder(
+//                    httpTransport, JSON_FACTORY, "384381056232-sqrgb2u8j26gbkqi6dis682ojapsf85a.apps.googleusercontent.com", "1nJygCmZKdFCOykaGmbjBpKy",
+//                    Collections.singleton(AnalyticsScopes.ANALYTICS_READONLY)).setDataStoreFactory(
+//                    dataStoreFactory).build();
+//            // Authorize.
+//            Credential credential = new AuthorizationCodeInstalledApp(flow1,
+//                    new LocalServerReceiver()).authorize("user");
+//            // Construct the Analytics Reporting service object.
+//            return new AnalyticsReporting.Builder(httpTransport, JSON_FACTORY, credential)
+//                    .setApplicationName(APPLICATION_NAME).build();
+//        } catch (GeneralSecurityException ex) {
+//            Logger.getLogger(GaService.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (IOException ex) {
+//            Logger.getLogger(GaService.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return null;
+//    }
+    public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments, Integer dataSetId, Integer dataSourceId) {
         Map<String, GaReport> gaReports = ApiUtils.getAllGaReports();
-        System.out.println("Ga Reports -----> "+gaReports);
+        System.out.println("Ga Reports -----> " + gaReports);
         GaReport gaReport = gaReports.get(reportName);
-        System.out.println("Ga Report ----> "+gaReport);
+        System.out.println("Ga Report ----> " + gaReport);
         String metricsList = gaReport.getFields();
-        System.out.println("MetricList ----> "+metricsList);
+        System.out.println("MetricList ----> " + metricsList);
         String productSegments = reqProductSegments == null ? null : reqProductSegments;
         if (productSegments == null || productSegments.trim().isEmpty() || productSegments.trim().equalsIgnoreCase("none")) {
             productSegments = null;
@@ -160,13 +172,14 @@ public class GaService {
         }
         String filter = gaReport.getDefaultFilter();
         System.out.println("Metric List " + metricsList + " Product Segments " + productSegments + " dimensions " + dimensions + " Filter " + filter);
-        GetReportsResponse gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, metricsList, dimensions, productSegments, filter);
+        String gaData = getGenericData(analyticsProfileId, startDate, endDate, null, null, dataSourceId, metricsList, dimensions, productSegments, filter);
         return getResponseAsMap(gaData);
     }
 
-    public GetReportsResponse getGenericData(String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2, String metrics, String dimentions, String productSegments, String filter) {
+    public String getGenericData(String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2, Integer dataSourceId, String metrics, String dimentions, String productSegments, String filter) {
         System.out.println(viewId);
         try {
+            String accessToken = getAccessToken(dataSourceId);
             List<DateRange> dateRangeList = new ArrayList<>();
             DateRange dateRange = new DateRange();
             dateRange.setStartDate(DateUtils.getGaStartDate(startDate1));
@@ -250,26 +263,33 @@ public class GaService {
             if (dimensionList != null && !dimensionList.isEmpty()) {
                 request.setDimensions(dimensionList);
             }
-            ArrayList<ReportRequest> requests = new ArrayList<ReportRequest>();
+            ArrayList<ReportRequest> requests = new ArrayList<>();
             requests.add(request);
             // Create the GetReportsRequest object.
             GetReportsRequest getReport = new GetReportsRequest()
                     .setReportRequests(requests);
-            
+            ObjectMapper objMapper = new ObjectMapper();
+
+//            List<TokenDetails> TokenDetails = resourceManager.getOauthToken(1, Integer.parseInt(dataSourceId));
+//            String accessToken = TokenDetails.get(0).getTokenValue();
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("access_token", accessToken);
+
+            String response = Rest.postWithBody(URL, params, objMapper.writeValueAsString(getReport));
             // Call the batchGet method.
-            System.out.println("get Report ---> " + getReport);
-//            GetReportsResponse response = analyticsReporting.reports().batchGet(getReport).execute();
-            BatchGet request23 =  analyticsReporting.reports().batchGet(getReport).setAccessToken("");
-            GetReportsResponse response = request23.execute();
-            // Return the response.
+            System.out.println("get Report ---> " + objMapper.writeValueAsString(getReport));
+            //            GetReportsResponse response = analyticsReporting.reports().batchGet(getReport).execute();
+//            BatchGet request23 = analyticsReporting.reports().batchGet(getReport).setAccessToken("");
+//            GetReportsResponse response = request23.execute();
+// Return the response.
             return response;
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(GaService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-    public GetReportsResponse getGenericData(String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2,
+    public String getGenericData(String viewId, Date startDate1, Date endDate1, Date startDate2, Date endDate2,
             String metrics, String dimentions, String filter, String orderBy, Integer maxResults) {
         try {
             List<DateRange> dateRangeList = new ArrayList<>();
@@ -332,31 +352,67 @@ public class GaService {
                     .setFiltersExpression(filter)
                     .setOrderBys(orderByList)
                     .setMetrics(metricList);
-            ArrayList<ReportRequest> requests = new ArrayList<ReportRequest>();
+            ArrayList<ReportRequest> requests = new ArrayList<>();
             requests.add(request);
             // Create the GetReportsRequest object.
             GetReportsRequest getReport = new GetReportsRequest()
                     .setReportRequests(requests);
+            String reportRequest = requests.toString();
+            MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+            params.add("access_token", "ya29.GlufBZZBgc7h7LWYOFwHLG8fcb83xws6dQ3tniCX-xahefWM69uLHr4dy6Y9EkNs5pRf84p89_JE6R638AitUBmLf7B3-r-Er3QaE412kzI05itruqLWJHi4nZ2G");
 
+            String response = Rest.postWithBody(URL, params, reportRequest);
             // Call the batchGet method.
-            GetReportsResponse response = analyticsReporting.reports().batchGet(getReport).execute();
+//            GetReportsResponse response = analyticsReporting.reports().batchGet(getReport).execute();
 
             // Return the response.
             return response;
-        } catch (IOException ex) {
+        } catch (Exception ex) {
             Logger.getLogger(GaService.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
 
-    public Map<String, List<Map<String, Object>>> getResponseAsMap(GetReportsResponse response) {
-        Map returnMap = new HashMap();
+    public Map<String, List<Map<String, Object>>> getResponseAsMap(String response) {
+        try {
+            Map returnMap = new HashMap();
 
-        for (Report report : response.getReports()) {
-            ColumnHeader header = report.getColumnHeader();
-            List<String> dimensionHeaders = header.getDimensions();
-            List<MetricHeaderEntry> metricHeaders = header.getMetricHeader().getMetricHeaderEntries();
-            List<ReportRow> rows = report.getData().getRows();
+            System.out.println("report--------->" + response);
+            List<String> dimensionHeaders = ApiUtils.getJsonArray(response, "$..dimensions");
+            JSONArray headerValue = ApiUtils.getJsonArray(response, "$..metricHeaderEntries");
+            List<MetricHeaderEntry> metricHeaders = new ArrayList<>();
+            for (Iterator<JSONObject> iterator = headerValue.iterator(); iterator.hasNext();) {
+                JSONObject next = iterator.next();
+                Object name = next.get("name");
+                Object type = next.get("type");
+                MetricHeaderEntry entry = new MetricHeaderEntry();
+                entry.set("name", name);
+                entry.set("type", type);
+                metricHeaders.add(entry);
+            }
+//                List<ReportRow> rowsold = report.getData().getRows();
+//                System.out.println("rows original--------->"+rowsold);
+//            List<MetricHeaderEntry> metricHeaders = header.getMetricHeader().getMetricHeaderEntries();
+            JSONArray allReports = ApiUtils.getJsonArray(response, "$..rows");
+            List<ReportRow> rows = new ArrayList<>();
+            for (Iterator<JSONObject> iterator = allReports.iterator(); iterator.hasNext();) {
+                JSONObject next = iterator.next();
+                List<String> dimensions = (List<String>) next.get("dimensions");
+                Object allMetrics = next.get("metrics");
+                JSONArray metrics = ApiUtils.getJsonArray(allMetrics.toString(), "$..values");
+                List<String> valueList = new ArrayList<>();
+                List<DateRangeValues> dateRangeList = new ArrayList<>();
+                DateRangeValues dateRangeValues = new DateRangeValues();
+                for (Iterator<String> metricesIterator = metrics.iterator(); metricesIterator.hasNext();) {
+                    valueList.add(metricesIterator.next());
+                }
+                dateRangeValues.setValues(valueList);
+                dateRangeList.add(dateRangeValues);
+                ReportRow entry = new ReportRow();
+                entry.setDimensions(dimensions);
+                entry.setMetrics(dateRangeList);
+                rows.add(entry);
+            }
             List<ColumnDef> columnDefs = new ArrayList<>();
             if (dimensionHeaders != null) {
                 for (int i = 0; i < dimensionHeaders.size(); i++) {
@@ -412,8 +468,11 @@ public class GaService {
                 data.add(dataMap);
             }
             returnMap.put("data", data);
+            return returnMap;
+        } catch (ParseException ex) {
+            Logger.getLogger(LinkedinService.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return returnMap;
+        return null;
     }
 
     /**
@@ -484,7 +543,7 @@ public class GaService {
 
         // Create the ReportRequest object.
         ReportRequest request = new ReportRequest()
-                .setViewId(VIEW_ID)
+                .setViewId("172698561")
                 .setDateRanges(dateRangeList)
                 .setDimensions(Arrays.asList(browser))
                 .setMetrics(Arrays.asList(sessions));
@@ -503,51 +562,67 @@ public class GaService {
         return response;
     }
 
-    public static String getGaGoals(String accountId, String viewId) {
-        String returnStr = "";
-        try {
-            Analytics analytics = initializeAnalytics();
-            try {
-                Goals goals = analytics.management().goals().list(accountId, "~all", "~all").execute();
-                for (Goal goal : goals.getItems()) {
-                    if (goal.getProfileId().equalsIgnoreCase(viewId) && goal.getActive()) {
-                        if (goal.getName().equalsIgnoreCase("Directions Page View") || goal.getName().equalsIgnoreCase("Directions Page Views")) {
-                            returnStr += "ga:goal" + goal.getId() + "Completions,directionsPageView;";
-                        } else if (goal.getName().equalsIgnoreCase("Inventory Page View") || goal.getName().equalsIgnoreCase("Inventory Page Views")) {
-                            returnStr += "ga:goal" + goal.getId() + "Completions,inventoryPageViews;";
-                        } else if (goal.getName().equalsIgnoreCase("Lead Submission") || goal.getName().equalsIgnoreCase("Lead Submission - General")) {
-                            returnStr += "ga:goal" + goal.getId() + "Completions,leadSubmission;";
-                        } else if (goal.getName().equalsIgnoreCase("Specials Page Views") || goal.getName().equalsIgnoreCase("Specials Page View")) {
-                            returnStr += "ga:goal" + goal.getId() + "Completions,specialsPageView;";
-                        } else if (goal.getName().equalsIgnoreCase("Time on Site > 2 Min") || goal.getName().equalsIgnoreCase("Time on Site > 2 Minutes")) {
-                            returnStr += "ga:goal" + goal.getId() + "Completions,timeOnSiteGt2Mins;";
-                        } else if (goal.getName().equalsIgnoreCase("VDP Views")) {
-                            returnStr += "ga:goal" + goal.getId() + "Completions,vdpViews;";
-                        }
-                    }
-                }
-
-            } catch (GoogleJsonResponseException e) {
-                System.err.println("There was a service error: "
-                        + e.getDetails().getCode() + " : "
-                        + e.getDetails().getMessage());
-            }
-
-        } catch (Exception ex) {
-            Logger.getLogger(GaService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return returnStr;
+    private String getAccessToken(String gaAccountId, String gaRefreshToken, String clientId, String clientSecret, String grant_type) throws IOException, ParseException {
+        String accessTokenUrl = "https://www.googleapis.com/oauth2/v4/token?client_id=" + clientId + "&client_secret=" + clientSecret + "&refresh_token="
+                + gaRefreshToken + "&grant_type=" + grant_type;
+        String tokenData = Rest.postRawForm(accessTokenUrl, "{}");
+        JSONParser parser = new JSONParser();
+        Object jsonObj = parser.parse(tokenData);
+        JSONObject array = (JSONObject) jsonObj;
+        String accessToken = (String) array.get("access_token");
+        return accessToken;
     }
 
-    public static void main(String[] args) {
-        try {
-            getGaGoals("43651400", "79919517");
-            AnalyticsReporting service = initializeAnalyticsReporting();
-            GetReportsResponse response = getReport(service);
-            printResponse(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//    public static String getGaGoals(String accountId, String viewId) {
+//        String returnStr = "";
+//        try {
+//            Analytics analytics = initializeAnalytics();
+//            try {
+//                Goals goals = analytics.management().goals().list(accountId, "~all", "~all").execute();
+//                for (Goal goal : goals.getItems()) {
+//                    if (goal.getProfileId().equalsIgnoreCase(viewId) && goal.getActive()) {
+//                        if (goal.getName().equalsIgnoreCase("Directions Page View") || goal.getName().equalsIgnoreCase("Directions Page Views")) {
+//                            returnStr += "ga:goal" + goal.getId() + "Completions,directionsPageView;";
+//                        } else if (goal.getName().equalsIgnoreCase("Inventory Page View") || goal.getName().equalsIgnoreCase("Inventory Page Views")) {
+//                            returnStr += "ga:goal" + goal.getId() + "Completions,inventoryPageViews;";
+//                        } else if (goal.getName().equalsIgnoreCase("Lead Submission") || goal.getName().equalsIgnoreCase("Lead Submission - General")) {
+//                            returnStr += "ga:goal" + goal.getId() + "Completions,leadSubmission;";
+//                        } else if (goal.getName().equalsIgnoreCase("Specials Page Views") || goal.getName().equalsIgnoreCase("Specials Page View")) {
+//                            returnStr += "ga:goal" + goal.getId() + "Completions,specialsPageView;";
+//                        } else if (goal.getName().equalsIgnoreCase("Time on Site > 2 Min") || goal.getName().equalsIgnoreCase("Time on Site > 2 Minutes")) {
+//                            returnStr += "ga:goal" + goal.getId() + "Completions,timeOnSiteGt2Mins;";
+//                        } else if (goal.getName().equalsIgnoreCase("VDP Views")) {
+//                            returnStr += "ga:goal" + goal.getId() + "Completions,vdpViews;";
+//                        }
+//                    }
+//                }
+//
+//            } catch (GoogleJsonResponseException e) {
+//                System.err.println("There was a service error: "
+//                        + e.getDetails().getCode() + " : "
+//                        + e.getDetails().getMessage());
+//            }
+//
+//        } catch (Exception ex) {
+//            Logger.getLogger(GaService.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return returnStr;
+//    }
+//
+//    public static void main(String[] args) {
+//        try {
+//            getGaGoals("43651400", "79919517");
+//            AnalyticsReporting service = initializeAnalyticsReporting();
+//            GetReportsResponse response = getReport(service);
+//            printResponse(response);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+    private String getAccessToken(Integer dataSourceId) throws IOException, ParseException {
+        List<TokenDetails> TokenDetails = resourceManager.getOauthToken(dataSourceId);
+        TokenDetails token = TokenDetails.get(0);
+        return getAccessToken(null, token.getRefreshToken(), token.getClientId(), token.getClientSecret(), "refresh_token");
     }
 
 }

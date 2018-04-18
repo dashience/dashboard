@@ -10,18 +10,18 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import com.mongodb.WriteResult;
-import com.mongodb.client.FindIterable;
 import com.visumbu.vb.admin.scheduler.service.SchedulerTemplate;
 import com.visumbu.vb.admin.scheduler.service.Sheduler;
 import com.visumbu.vb.admin.service.LinkedInService;
 import com.visumbu.vb.admin.service.MongoDbService;
 import com.visumbu.vb.admin.service.UserService;
+import com.visumbu.vb.bean.ColumnDef;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Account;
 import com.visumbu.vb.model.MongoScheduler;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.VbUser;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +31,6 @@ import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,7 +45,8 @@ public class MongoController extends BaseController {
 
     @Autowired
     private Sheduler scheduler;
-
+    @Autowired
+    private ProxyController proxyController;
     @Autowired
     private LinkedInService linkedIn;
     @Autowired
@@ -56,7 +56,7 @@ public class MongoController extends BaseController {
 
     @RequestMapping(value = "getNewData", method = RequestMethod.GET, produces = "application/json")
     @ResponseBody
-    public List<Map<String, Object>> getData(HttpServletRequest request, HttpServletResponse response) {
+    public Map<String, Object> getData(HttpServletRequest request, HttpServletResponse response) {
         String dataSource = request.getParameter("dataSourceName");
         String accountIdStr = request.getParameter("accountId");
         Integer accountId = Integer.parseInt(accountIdStr);
@@ -66,8 +66,12 @@ public class MongoController extends BaseController {
         if (dataSource.equalsIgnoreCase("linkedIn")) {
             String companyId = getAccountId(accountProperty, "linkedinCompanyId");
             System.out.println("companyid----------------->"+companyId);
-            return linkedIn.get(request, Long.parseLong(companyId));
-            
+           List<Map<String, Object>> data =  linkedIn.get(request, Long.parseLong(companyId));
+           List<ColumnDef> columnDefs = proxyController.getColumnDefObject(data);
+           Map returnMap = new HashMap();
+            returnMap.put("columnDefs", columnDefs);
+            returnMap.put("data", data);
+            return returnMap;
         }
         return null;
     }

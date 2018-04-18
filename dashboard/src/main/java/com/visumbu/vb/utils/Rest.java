@@ -20,6 +20,14 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -60,7 +68,7 @@ public class Rest {
             } else {
                 System.out.println("else condition");
                 System.out.println(urlString);
-                System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());              
+                System.out.println("Code ---->" + conn.getResponseCode() + " Message ----> " + conn.getResponseMessage());
             }
 
             BufferedReader br = new BufferedReader(new InputStreamReader(
@@ -172,12 +180,48 @@ public class Rest {
         return returnStr;
     }
 
+    public static String postWithBody(String url, MultiValueMap<String, String> params, String body) {
+        System.out.println("Body--->" + body);
+        String urlString = url;
+        if (params != null) {
+            UriComponents uriComponents = UriComponentsBuilder.fromHttpUrl(url).queryParams(params).build();
+            urlString = uriComponents.toUriString();
+            System.out.println("URL---->" + urlString);
+        }
+            System.out.println("URL---->" + urlString);
+        StringEntity postEntity = new StringEntity(body,
+                ContentType.APPLICATION_JSON);
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost post = new HttpPost(urlString);
+        CloseableHttpResponse response = null;
+        try {
+            post.setEntity(postEntity);
+            response = httpClient.execute(post);
+            System.out.println("response status line-------->"+response.getStatusLine());
+            if (response.getStatusLine().getStatusCode() != 200) {
+                return null;
+            }
+            String responseJSON = EntityUtils.toString(response.getEntity());
+            EntityUtils.consume(response.getEntity());
+            return responseJSON;
+        } catch (IOException | org.apache.http.ParseException ex) {
+            Logger.getLogger(Rest.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                response.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Rest.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+
     public static void main(String args[]) {
         try {
             String output = postRawForm(Settings.getSecurityTokenUrl(), "client_id=f8f06d06436f4104ade219fd7d535654&client_secret=ba082149c90f41c49e86f4862e22e980&grant_type=password&scope=FullControl&username=admin&password=admin123");
             ObjectMapper mapper = new ObjectMapper();
             SecurityTokenBean token = mapper.readValue(output, SecurityTokenBean.class);
-
+            System.out.println("on run---------------------------->");
             Map<String, String> accessHeader = new HashMap<>();
             accessHeader.put("Authorization", token.getAccessToken());
             String dataOut = getData(Settings.getSecurityAuthUrl() + "?Userid=00959ecd-41c5-4b92-8bd9-78c26d10486c", null, accessHeader);

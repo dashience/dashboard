@@ -29,7 +29,7 @@ public class RunnableTask implements Runnable {
     private DataSet dataSet;
     private int accountId;
     private int scheduleId;
-    public String Baseurl = "http://lino.com:8080/dashboard/admin/getNewData";
+    public String Baseurl = "http://lino.com:8080/dashboard/admin/getData";
 
     @Override
     public void run() {
