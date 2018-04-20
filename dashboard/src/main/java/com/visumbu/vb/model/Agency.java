@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,9 +16,12 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.Type;
 
 /**
@@ -31,10 +35,27 @@ import org.hibernate.annotations.Type;
     @NamedQuery(name = "Agency.findAll", query = "SELECT a FROM Agency a")
     , @NamedQuery(name = "Agency.findById", query = "SELECT a FROM Agency a WHERE a.id = :id")
     , @NamedQuery(name = "Agency.findByAgencyName", query = "SELECT a FROM Agency a WHERE a.agencyName = :agencyName")
+    , @NamedQuery(name = "Agency.findByAgencyDashiencePath", query = "SELECT a FROM Agency a WHERE a.agencyDashiencePath = :agencyDashiencePath")
     , @NamedQuery(name = "Agency.findByDescription", query = "SELECT a FROM Agency a WHERE a.description = :description")
     , @NamedQuery(name = "Agency.findByStatus", query = "SELECT a FROM Agency a WHERE a.status = :status")
     , @NamedQuery(name = "Agency.findByEmail", query = "SELECT a FROM Agency a WHERE a.email = :email")})
 public class Agency implements Serializable {
+
+    @Lob()
+    @Column(name = "logo")
+    private byte[] logo;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<DashboardTemplate> dashboardTemplateCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<AgencyProduct> agencyProductCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<Account> accountCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<VbUser> vbUserCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<DataSet> dataSetCollection;
+    @OneToMany(mappedBy = "agencyId")
+    private Collection<DataSource> dataSourceCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -46,6 +67,9 @@ public class Agency implements Serializable {
     @Column(name = "agency_name")
     private String agencyName;
     @Size(max = 4096)
+    @Column(name = "agency_dashience_path")
+    private String agencyDashiencePath;
+    @Size(max = 4096)
     @Column(name = "description")
     private String description;
     @Size(max = 45)
@@ -55,9 +79,10 @@ public class Agency implements Serializable {
     @Size(max = 255)
     @Column(name = "email")
     private String email;
-    @Type(type = "org.hibernate.type.StringClobType")
-    @Column(name = "logo")
-    private String logo;
+    
+    @Size(max = 255)
+    @Column(name = "agency_language")
+    private String agencyLanguage;
 
     public Agency() {
     }
@@ -106,12 +131,21 @@ public class Agency implements Serializable {
         this.email = email;
     }
 
-    public String getLogo() {
-        return logo;
+    public String getAgencyDashiencePath() {
+        return agencyDashiencePath;
     }
 
-    public void setLogo(String logo) {
-        this.logo = logo;
+    public void setAgencyDashiencePath(String agencyDashiencePath) {
+        this.agencyDashiencePath = agencyDashiencePath;
+    }
+
+
+    public String getAgencyLanguage() {
+        return agencyLanguage;
+    }
+
+    public void setAgencyLanguage(String agencyLanguage) {
+        this.agencyLanguage = agencyLanguage;
     }
 
     @Override
@@ -138,5 +172,72 @@ public class Agency implements Serializable {
     public String toString() {
         return "Agency{" + "id=" + id + ", agencyName=" + agencyName + ", description=" + description + ", status=" + status + ", email=" + email + '}';
     }
-    
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<VbUser> getVbUserCollection() {
+        return vbUserCollection;
+    }
+
+    public void setVbUserCollection(Collection<VbUser> vbUserCollection) {
+        this.vbUserCollection = vbUserCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DataSet> getDataSetCollection() {
+        return dataSetCollection;
+    }
+
+    public void setDataSetCollection(Collection<DataSet> dataSetCollection) {
+        this.dataSetCollection = dataSetCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DataSource> getDataSourceCollection() {
+        return dataSourceCollection;
+    }
+
+    public void setDataSourceCollection(Collection<DataSource> dataSourceCollection) {
+        this.dataSourceCollection = dataSourceCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTemplate> getDashboardTemplateCollection() {
+        return dashboardTemplateCollection;
+    }
+
+    public void setDashboardTemplateCollection(Collection<DashboardTemplate> dashboardTemplateCollection) {
+        this.dashboardTemplateCollection = dashboardTemplateCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<AgencyProduct> getAgencyProductCollection() {
+        return agencyProductCollection;
+    }
+
+    public void setAgencyProductCollection(Collection<AgencyProduct> agencyProductCollection) {
+        this.agencyProductCollection = agencyProductCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<Account> getAccountCollection() {
+        return accountCollection;
+    }
+
+    public void setAccountCollection(Collection<Account> accountCollection) {
+        this.accountCollection = accountCollection;
+    }
+
+    public byte[] getLogo() {
+        return logo;
+    }
+
+    public void setLogo(byte[] logo) {
+        this.logo = logo;
+    }
 }

@@ -9,12 +9,8 @@ import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.JsonFactory;
-import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
-import com.google.api.services.analytics.AnalyticsScopes;
 import com.google.api.services.analyticsreporting.v4.AnalyticsReporting;
 import com.google.api.services.analyticsreporting.v4.model.ColumnHeader;
 import com.google.api.services.analyticsreporting.v4.model.DateRange;
@@ -47,32 +43,17 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import com.google.api.services.analytics.Analytics;
 import com.google.api.services.analytics.AnalyticsScopes;
-import com.google.api.services.analytics.model.Accounts;
-import com.google.api.services.analytics.model.GaData;
-import com.google.api.services.analytics.model.Profiles;
-import com.google.api.services.analytics.model.Webproperties;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.client.http.HttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.api.services.analytics.model.Goal;
 import com.google.api.services.analytics.model.Goals;
 import com.visumbu.vb.admin.dao.UiDao;
 import com.visumbu.vb.bean.GaReport;
-import com.visumbu.vb.model.DatasetColumns;
 import com.visumbu.vb.model.DefaultFieldProperties;
 import com.visumbu.vb.utils.ApiUtils;
-import static com.visumbu.vb.utils.ShuntingYard.postfix;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.StringTokenizer;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import com.visumbu.vb.utils.ParsePost;
-import java.math.BigDecimal;
 
 /**
  *
@@ -160,8 +141,11 @@ public class GaService {
 
     public Map<String, List<Map<String, Object>>> getGaReport(String reportName, String analyticsProfileId, Date startDate, Date endDate, String reqDimensions, String reqProductSegments, Integer dataSetId) {
         Map<String, GaReport> gaReports = ApiUtils.getAllGaReports();
+        System.out.println("Ga Reports -----> "+gaReports);
         GaReport gaReport = gaReports.get(reportName);
+        System.out.println("Ga Report ----> "+gaReport);
         String metricsList = gaReport.getFields();
+        System.out.println("MetricList ----> "+metricsList);
         String productSegments = reqProductSegments == null ? null : reqProductSegments;
         if (productSegments == null || productSegments.trim().isEmpty() || productSegments.trim().equalsIgnoreCase("none")) {
             productSegments = null;
@@ -557,7 +541,6 @@ public class GaService {
         try {
             getGaGoals("43651400", "79919517");
             AnalyticsReporting service = initializeAnalyticsReporting();
-
             GetReportsResponse response = getReport(service);
             printResponse(response);
         } catch (Exception e) {

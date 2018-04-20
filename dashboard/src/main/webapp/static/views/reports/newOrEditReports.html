@@ -107,19 +107,19 @@
         word-wrap: break-word;
     }
     .pull-right-container {
-    padding-top: 5px !important;
-    padding-bottom: 5px !important;
-    padding-right: 15px !important;
-    padding-left: 15px !important;
-}
+        padding-top: 5px !important;
+        padding-bottom: 5px !important;
+        padding-right: 15px !important;
+        padding-left: 15px !important;
+    }
 </style>
 
 <div class="pull-right-container pull-right">
     <div class="btn-group"> 
-        <a ui-sref="index.report.reports({accountId: accountId, accountName: accountName, reportId: reportId, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> Back</a>
+        <a ui-sref="index.report.reports({accountId: accountId, accountName: accountName, reportId: reportId, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> <span translate>Back</span></a>
     </div>
     <div class="btn-group"> 
-        <a style="cursor: pointer;" ng-href="#viewReportPdf/{{accountId}}/{{reportId}}?startDate={{startDate}}&endDate={{endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
+        <a style="cursor: pointer;" ng-href="#viewReportPdf/{{agencyLanguage}}/{{accountId}}/{{userId}}/{{reportId}}?startDate={{startDate}}&endDate={{endDate}}&getTableType={{getTableType}}&compareStartDate={{compareDateRange.startDate}}&compareEndDate={{compareDateRange.endDate}}" target="_blank"><i class="fa fa-file-pdf-o"></i> PDF</a> 
         <!--<a style="cursor: pointer;" ng-click="downloadReportPdf()"><i class="fa fa-file-pdf-o"></i> PDF</a>--> 
     </div>
 </div>
@@ -140,116 +140,251 @@
                 </div>
                 <div class="col-md-9">
                     <div class="form-group col-sm-10">
-                        <label class="col-sm-2">Report Title</label>
+                        <label class="col-sm-2" translate>Report Title</label>
                         <div ng-hide="editReport" class="form-group col-sm-10">
                             {{reportTitle}}
                         </div>
                         <div ng-show="editReport" class="form-group col-sm-10">
-                            <input type="text" ng-model="reportTitle" class="form-control" placeholder="Title">
+                            <input type="text" ng-model="reportTitle" ng-change = "checkSaveValidate(reportTitle)" class="form-control" placeholder="{{'Title'| translate}}">
                         </div>
                     </div>
                     <div class="form-group col-sm-10">
-                        <label class="col-sm-2">Description</label>
+                        <label class="col-sm-2" translate>Description</label>
                         <div ng-hide="editReport" class="form-group col-sm-10" style="word-break: break-all;">
                             {{description?description:"-"}}
                         </div> 
                         <div ng-show="editReport" class="form-group col-sm-10">
-                            <textarea placeholder="Description" ng-model="description" class="form-control" style="min-height: 100px;"></textarea>
+                            <textarea placeholder="{{'Description'|translate}}" ng-model="description" class="form-control" style="min-height: 100px;"></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div ng-hide="editReport" class="pull-right">
-                    <button class="btn btn-block btn-success" ng-click="editReport = true;">Edit</button>
+                    <button class="btn btn-block btn-success" ng-click="editReportData()" translate>Edit</button>
                 </div>
                 <div ng-show="editReport" class="pull-right">
-                    <button class="btn btn-info" ng-click="saveReportData(); editReport = false;">Save</button>
+                    <button class="btn btn-info" data-toggle="modal" data-backdrop="static" data-target="#notification" ng-disabled="saveBtnIsDisable" ng-click="saveReportData();" translate>Save</button>
                 </div>
 
             </div>
         </div>
     </div>
 </div>
-<div class="row content">
-    <div ng-repeat="reportWidget in reportWidgets">
-        <div class="col-md-{{reportWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
-            <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="reportWidget">
-                <div class="panel-heading">
-                    <div class="panel-tools">
-                        <!--<i class="fa fa-heart" title="Favourites" ng-click="favourites = !favourites;favouritesNew(favourites)" ng-class="{'red' : favourites,'green':!favourites}"></i>-->
-                        <a ng-if="reportWidget.widgetId.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="reportWidget.widgetId.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="reportWidget.widgetId.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="reportWidget.widgetId.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="reportWidget.widgetId.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
-                        <a ng-if="reportWidget.widgetId.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
-                        <a class="edit" ng-click="editReportWidget(reportWidget);"
-
-                           ui-sref="index.editWidget({accountId: accountId, 
-                           accountName: accountName, 
-                           productId: 0, tabId: reportWidget.widgetId.tabId.id, 
-                           widgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})">
-                            <!--ui-sref="index.widgetEditByReport({accountId: accountId, accountName: accountName, reportId: reportId, reportWidgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})">-->
-                            <i class="fa fa-pencil"></i>
-                        </a>
-                        <a class="closebox" data-toggle="modal" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
-
-                        <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                        <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
-                    </div>
-                    <span class="{{reportWidget.icon}}"></span> 
-                    <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle}}</span>
-                </div>
-
-                <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'line'">
-                    <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
-                </div> 
-                <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'bar'">
-                    <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
-                </div> 
-                <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'pie'">
-                    <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{reportWidget.widgetId.dataSetId}}' widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
-                </div> 
-                <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'area'">
-                    <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
-                </div> 
-                <div class="box-body"  ng-if="reportWidget.widgetId.chartType === 'stackedbar'">
-                    <div>
-                        <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Columns="{{reportWidget.widgetId.columns}}" widget-Obj="{{reportWidget.widgetId}}"></div>
-                    </div>
-                </div>
-                <div class="box-body list" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
-                    <div class="table-responsive project-list">
-                        <div id="changes-height" class="project-list">
-                            <div set-Table-Chart-Fn="setTableChartFn(tableFn)" dynamic-Table dynamic-Table-Source="{{reportWidget.widgetId.dataSetId}}" widget-Id="{{reportWidget.widgetId.id}}" widget-Obj="{{reportWidget.widgetId}}" table-Footer="{{reportWidget.widgetId.tableFooter}}" widget-Columns="{{reportWidget.widgetId.columns}}"></div> 
-                        </div> 
-                    </div>
-                </div>
-                <div class="panel-body"  ng-if="reportWidget.widgetId.chartType === 'text'">
-                    <div class="col-md-12">
-                        <div class="text-widget">
-                            <span ng-bind-html="reportWidget.widgetId.content"></span>
+<div id="{{report}}" class="modal">
+    <div class="modal-dialog">
+        <div class="modal-content"><!--
+            <div class="modal-header">
+                <strong translate>Duplicate Widget</strong>
+            </div>-->
+            <div class="modal-body">
+                <div ng-show="saveLoading" class="text-center"><img src="static/img/logos/loader.gif" width="45"></div>
+                <span ng-hide="saveLoading" translate>New report added successfully</span>
+            </div>
+            <div class="modal-footer">
+                <button ng-hide="saveLoading" ng-hide class="btn btn-success btn-xs" data-dismiss="modal"> <span translate>Ok</span></button>
+            </div>
+        </div>
+    </div>
+</div>
+<div ng-show="firstDataSetLoading" class="text-center" style="color: #228995;"><img src="static/img/logos/loader.gif"></div>
+<div ng-hide="firstDataSetLoading" class="row content">
+    <div ui-if="loadStatus===true">
+        <div ng-repeat="reportWidget in reportWidgets">
+            <div ng-if="reportWidget.widgetId.chartType === 'ticker'">
+                <div class="col-sm-{{reportWidget.widgetId.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
+                    <div class="hpanel border-table" ng-drag="true" ng-drag-data="reportWidget">
+                        <div class="panel-tools ticker-icon">
+                            <a class="closebox" data-toggle="modal" title="{{'Delete'|translate}}" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
+                            <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
+                            <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
+                        </div>
+                        <div set-Ticker-Fn="setTickerFn(tickerFn)"
+                             widget-Obj="{{reportWidget.widgetId}}"
+                             ticker-Directive
+                             ticker-Title-Name="{{reportWidget.widgetId.widgetTitle}}"
+                             ticker-Source="{{reportWidget.widgetId.dataSetId}}"
+                             ticker-Id="{{reportWidget.widgetId.id}}" 
+                             url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
+                             ticker-Columns="{{reportWidget.widgetId.columns}}">
                         </div>
                     </div>
                 </div>
             </div>
-        </div>       
-        <div id="delete{{reportWidget.id}}" class="modal">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header" style="background-color:#9DD6D7;color:black;">
-                        <strong>Delete</strong>
-                        <strong><button class="close" data-dismiss="modal">&times;</button></strong>
-                    </div>
-                    <div class="modal-body">
-                        <span>Want to delete ? </span>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal">Yes</button>
-                        <button class="btn btn-danger btn-xs" data-dismiss="modal">No</button>
+            <div ng-if="reportWidget.widgetId.chartType !== 'ticker'">
+                <div class="col-md-{{reportWidget.widgetId.width}} table-deeta" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
+                    <div class="hpanel hgreen border-table" ng-hide="hidenewchart" ngsf-fullscreen="widgetCtrl" ng-drag="true" ng-drag-data="reportWidget">
+                        <div class="panel-heading">
+                            <div class="panel-tools">
+                                <!--<i class="fa fa-heart" title="Favourites" ng-click="favourites = !favourites;favouritesNew(favourites)" ng-class="{'red' : favourites,'green':!favourites}"></i>-->
+                                <a ng-if="reportWidget.widgetId.chartType === 'line'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="reportWidget.widgetId.chartType === 'bar'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="reportWidget.widgetId.chartType === 'horizontalBar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="reportWidget.widgetId.chartType === 'pie'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="reportWidget.widgetId.chartType === 'area'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="reportWidget.widgetId.chartType === 'stackedbar'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="reportWidget.widgetId.chartType === 'table'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="reportWidget.widgetId.chartType === 'scatter'" title="{{'Refresh'|translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="reportWidget.widgetId.chartType === 'gauge'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveGaugeFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="reportWidget.widgetId.chartType === 'map'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveMapFn()"><i class="fa fa-repeat"></i></a>
+
+                                <!--                        <a class="edit" ng-click="editReportWidget(reportWidget);"
+                                
+                                                           ui-sref="index.editWidget({accountId: accountId, 
+                                                           accountName: accountName, 
+                                                           productId: 0, tabId: reportWidget.widgetId.tabId.id, 
+                                                           widgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})">
+                                                            ui-sref="index.widgetEditByReport({accountId: accountId, accountName: accountName, reportId: reportId, reportWidgetId: reportWidget.widgetId.id, startDate: startDate, endDate: endDate})">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </a>-->
+                                <a class="closebox" data-toggle="modal" data-target="#delete{{reportWidget.id}}"><i class="fa fa-times"></i></a>
+
+                                <a ng-if="reportWidget.widgetId.width != 3" ng-click="reduceWidget(reportWidget.widgetId)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
+                                <a ng-if="reportWidget.widgetId.width != 12" ng-click="expandWidget(reportWidget.widgetId)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
+                            </div>
+                            <span class="{{reportWidget.icon}}"></span> 
+                            <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle?reportWidget.widgetId.widgetTitle:'Widget'}}</span>
+                        </div>
+                        <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'line' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                 widget-Id="{{reportWidget.widgetId.id}}"
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                 widget-Obj="{{reportWidget.widgetId}}"></div>
+                        </div> 
+                        <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'bar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                 widget-Id="{{reportWidget.widgetId.id}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                 widget-Obj="{{reportWidget.widgetId}}"></div>
+                        </div> 
+                        <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'horizontalBar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                            <div>
+                                <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                     bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{reportWidget.widgetId.id}}" 
+                                     widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}"
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     is-Horizontal-Bar="{{reportWidget.widgetId.isHorizontalBar}}">                                     
+                                </div>
+                            </div>
+                        </div>
+                        <div class="box-body" ng-if="reportWidget.widgetId.chartType === 'pie'">
+                            <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
+                                 pie-Chart-Directive pie-Chart-Source='{{reportWidget.widgetId.dataSetId}}' 
+                                 widget-Id="{{reportWidget.widgetId.id}}" 
+                                 widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                 widget-Obj="{{reportWidget.widgetId}}"></div>
+                        </div> 
+                        <div class="box-body" ng-if="(reportWidget.widgetId.chartType === 'area' || reportWidget.widgetId.chartType === 'combination') && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                            <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" 
+                                 area-Chart-Directive area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                 widget-Id="{{reportWidget.widgetId.id}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                 widget-Obj="{{reportWidget.widgetId}}"></div>
+                        </div> 
+                        <div class="box-body"  ng-if="reportWidget.widgetId.chartType === 'stackedbar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                            <div>
+                                <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarFn)" 
+                                     stacked-Bar-Chart-Directive 
+                                     stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{reportWidget.widgetId.id}}" 
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}">                                 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'funnel'">
+                            <div>
+                                <div funnel-Directive
+                                     funnel-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}" 
+                                     funnel-Id="{{reportWidget.widgetId.id}}"
+                                     funnel-Columns="{{reportWidget.widgetId.columns}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'scatter' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                            <div>
+                                <div scatter-Chart-Directive 
+                                     scatter-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{reportWidget.widgetId.id}}" 
+                                     url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}">                                     
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body" ng-if="reportWidget.widgetId.chartType === 'gauge'">
+                            <div set-gauge-Fn="setGaugeFn(gaugeFn)"
+                                 gauge-Directive 
+                                 gauge-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                 widget-Obj="{{reportWidget.widgetId}}"  
+                                 gauge-Id="{{reportWidget.widgetId.id}}"
+                                 gauge-Columns="{{reportWidget.widgetId.columns}}"
+                                 default-chart-color="{{defaultChartColor}}">
+                            </div>
+                        </div>  
+                        <div class="box-body list" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
+                            <div class="table-responsive project-list">
+                                <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOff'">
+                                    <div set-Table-Chart-Fn="setTableChartFn(tableFn)"
+                                         dynamic-Table dynamic-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                         widget-Id="{{reportWidget.widgetId.id}}" 
+                                         widget-Obj="{{reportWidget.widgetId}}" 
+                                         table-Footer="{{reportWidget.widgetId.tableFooter}}" 
+                                         widget-Columns="{{reportWidget.widgetId.columns}}"></div> 
+                                </div>
+                                <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
+                                    <div compare-Range-Table 
+                                         compare-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                         compare-Date-Range="{{compareDateRange}}"
+                                         widget-Id="{{reportWidget.widgetId.id}}" 
+                                         widget-Obj="{{reportWidget.widgetId}}" 
+                                         table-Footer="{{reportWidget.widgetId.tableFooter}}" 
+                                         widget-Columns="{{reportWidget.widgetId.columns}}">                                         
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-body"  ng-if="reportWidget.widgetId.chartType === 'text'">
+                                <div class="col-md-12">
+                                    <div class="text-widget">
+                                        <span ng-bind-html="reportWidget.widgetId.content"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>    
+                </div>
+                <div id="delete{{reportWidget.id}}" class="modal">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header" style="background-color:#9DD6D7;color:black;">
+                                <strong translate>Delete</strong>
+                                <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                            </div>
+                            <div class="modal-body">
+                                <span translate>Want to delete?</span>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-info btn-xs" ng-click="deleteReportWidget(reportWidget, $index)" data-dismiss="modal" translate>Yes</button>
+                                <button class="btn btn-danger btn-xs" data-dismiss="modal" translate>No</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

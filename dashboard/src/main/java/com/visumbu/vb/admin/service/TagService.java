@@ -97,8 +97,12 @@ public class TagService {
         return tagDao.getWidgetTagById(tagId);
     }
 
-    public List getWidgetTagByName(String tagName) {
-        return tagDao.getWidgetTagByName(tagName);
+    public List getWidgetTagByName(String tagName, VbUser vbUser) {
+        return tagDao.getWidgetTagByName(tagName, vbUser);
+    }
+    
+    public List getWidgetTagByUserId(String tagName, Integer userId) {
+        return tagDao.getWidgetTagByUserId(tagName, userId);
     }
 
     public WidgetTag deleteWidgetTag(Integer widgetTagId) {
@@ -173,5 +177,9 @@ public class TagService {
     public List<TabWidget> getAllFav(VbUser user) {
         Tag tag = tagDao.findTagName("Favourite");
         return tagDao.findAllWidgetsByTag(user, tag);
+    }
+
+    public String updateFavWidgetOrder(Integer favId, String widgetOrder) {
+        return tagDao.updateFavWidgetOrder(favId, widgetOrder);
     }
 }

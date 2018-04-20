@@ -1,8 +1,9 @@
-app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter, $timeout) {
+app.controller("NewOrEditSchedulerController", function ($scope, $http, $stateParams, $filter, $timeout, $translate) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
+    $scope.saveBtnIsDisable = true;
     $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly"];
 //    $scope.schedulerRepeats = ["Now", "Once", "Daily", "Weekly", "Monthly", "Yearly", "Year Of Week"];
     $scope.weeks = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -11,8 +12,14 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
         $scope.reports = response;
     });
     $scope.accounts = [];
+    $scope.agencyLanguage = $stateParams.lan//$cookies.getObject("agencyLanguage");
 
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
 
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
     var unique = function (origArr) {
         var newArr = [],
                 origLen = origArr.length,
@@ -44,56 +51,81 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
     });
 
     function dateFormat(date) {
-        return $filter('date')(date, 'MM/dd/yyyy')
+        return $filter('date')(date, 'MM/dd/yyyy');
     }
-
-    $scope.scheduler = {};
-    $http.get("admin/scheduler/scheduler/" + $stateParams.schedulerId).success(function (response) {
-        if (!response) {
-            $scope.scheduler = {
-                accountId: {id: $stateParams.accountId, accountName: $stateParams.accountName}
+    function initialize() {
+        $scope.scheduler = {};
+        $scope.scheduler.schedulerTime = '';
+        $http.get("admin/scheduler/scheduler/" + $stateParams.schedulerId).success(function (response) {
+            if (!response) {
+                $scope.saveBtnIsDisable = true;
+                const today = new Date();
+                var time = today.getHours() + ":" + today.getMinutes();
+                $scope.scheduler = {
+                    accountId: {id: $stateParams.accountId, accountName: $stateParams.accountName},
+                    schedulerType: 'pdf',
+                    schedulerName: '',
+                    startDate: '',
+                    endDate: '',
+                    schedulerRepeatType: '',
+                    schedulerWeekly: '',
+                    schedulerTime: time,
+                    schedulerMonthly: '',
+                    schedulerYearly: '',
+                    schedulerYearOfWeek: '',
+                    reportId: '',
+                    schedulerEmail: '',
+                    dateRangeName: '',
+                    lastNdays: '',
+                    lastNweeks: '',
+                    lastNmonths: '',
+                    lastNyears: '',
+                    customStartDate: '',
+                    customEndDate: '',
+                    isAccountEmail: '',
+                    lastExecutionStatus: ''
+                };
+                return;
             }
-            return;
-        }
-        var email;
-        if (response.schedulerEmail == null || "") {
-            email = ''
-        } else {
-            email = response.schedulerEmail.split(',');
-        }
-        $scope.schedulers = response;
-        $scope.scheduler = {
-            id: response.id,
-            schedulerName: response.schedulerName,
-            startDate: dateFormat(response.startDate),
-            endDate: dateFormat(response.endDate),
-            schedulerRepeatType: response.schedulerRepeatType,
-            schedulerWeekly: response.schedulerWeekly,
-            schedulerTime: response.schedulerTime,
-            schedulerMonthly: response.schedulerMonthly,
-            schedulerYearly: response.schedulerYearly,
-            schedulerYearOfWeek: response.schedulerYearOfWeek,
-            reportId: response.reportId,
-            schedulerType: response.schedulerType,
-            schedulerEmail: email,
-            dateRangeName: response.dateRangeName,
-            accountId: response.accountId,
-            lastNdays: response.lastNdays,
-            lastNweeks: response.lastNweeks,
-            lastNmonths: response.lastNmonths,
-            lastNyears: response.lastNyears,
-            customStartDate: response.customStartDate,
-            customEndDate: response.customEndDate,
-            isAccountEmail: response.isAccountEmail,
-            lastExecutionStatus: response.lastExecutionStatus,
-            status: response.status
-        };
-        console.log($scope.scheduler);
-    });
+            var email;
+            if (response.schedulerEmail === null || "") {
+                email = '';
+            } else {
+                email = response.schedulerEmail.split(',');
+            }
+            $scope.schedulers = response;
+            $scope.scheduler = {
+                id: response.id,
+                schedulerName: response.schedulerName,
+                startDate: dateFormat(response.startDate),
+                endDate: dateFormat(response.endDate),
+                schedulerRepeatType: response.schedulerRepeatType,
+                schedulerWeekly: response.schedulerWeekly,
+                schedulerTime: response.schedulerTime,
+                schedulerMonthly: response.schedulerMonthly,
+                schedulerYearly: response.schedulerYearly,
+                schedulerYearOfWeek: response.schedulerYearOfWeek,
+                reportId: response.reportId,
+                schedulerType: response.schedulerType,
+                schedulerEmail: email,
+                dateRangeName: response.dateRangeName,
+                accountId: response.accountId,
+                lastNdays: response.lastNdays,
+                lastNweeks: response.lastNweeks,
+                lastNmonths: response.lastNmonths,
+                lastNyears: response.lastNyears,
+                customStartDate: response.customStartDate,
+                customEndDate: response.customEndDate,
+                isAccountEmail: response.isAccountEmail,
+                lastExecutionStatus: response.lastExecutionStatus,
+                status: response.status
+            };
+        });
+    }
+    initialize();
     $scope.addNewScheduler = function () {
         $scope.scheduler = "";
     };
-
     function getWeeks(d) {
         var first = new Date(d.getFullYear(), 0, 1);
         var dayms = 1000 * 60 * 60 * 24;
@@ -162,17 +194,46 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             $scope.scheduler.lastNmonths = "";
             $scope.scheduler.lastNyears = "";
         }
-        
+
         $scope.showSchedulerMsg = false
-        $scope.showErrorDateRangeMessage = ""
-        
-        console.log(scheduler)
+        $scope.showErrorDateRangeMessage = "";
+    };
+
+    $scope.saveValidate = function (scheduler) {
+        $scope.saveBtnIsDisable = true;
+        if (scheduler.schedulerName !== "" && scheduler.schedulerEmail.length !== 0 && scheduler.schedulerType !== false) {
+            var response = checkSaveValidate(scheduler);
+            $scope.saveBtnIsDisable = response;
+        }
+    };
+
+    function checkSaveValidate(scheduler) {
+        var value = true;
+        if (scheduler.schedulerRepeatType === "Now") {
+            value = false;
+        } else if (scheduler.startDate !== '' && scheduler.endDate !== '') {
+            if (scheduler.schedulerRepeatType === "Once" || scheduler.schedulerRepeatType === "Daily") {
+                if (scheduler.schedulerTime !== '') {
+                    value = false;
+                }
+            } else if (scheduler.schedulerRepeatType === "Weekly") {
+                if (scheduler.schedulerWeekly !== '' && scheduler.schedulerTime !== '') {
+                    value = false;
+                }
+            } else if (scheduler.schedulerRepeatType === "Monthly") {
+                if (scheduler.schedulerMonthly !== '') {
+                    value = false;
+                }
+            }
+        }
+        return value;
     }
+
     $scope.saveScheduler = function (scheduler) {
         scheduler.dateRangeName = $("#customDateRangeName").text();
 
         if (scheduler.dateRangeName == "Select Date Duration") {
-            scheduler.dateRangeName = ""
+            scheduler.dateRangeName = "";
         }
 
         try {
@@ -260,21 +321,19 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
             scheduler.customEndDate = "";
         }
 
-
         if (!scheduler.dateRangeName) {
             $scope.showSchedulerMsg = true;
-            $scope.showErrorDateRangeMessage = "Select Date Duration"
+            $scope.showErrorDateRangeMessage = "Select Date Duration";
         } else {
             $scope.showSchedulerMsg = false;
             scheduler.schedulerEmail = emails;
             $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/scheduler', data: scheduler}).success(function (response) {
             });
-            $scope.scheduler = "";
-            $scope.showErrorDateRangeMessage = ""
+            $scope.showErrorDateRangeMessage = "";
+            initialize();
         }
 
     };
-
     $timeout(function () {
         $(function () {
             //Initialize Select2 Elements
@@ -300,9 +359,11 @@ app.controller("NewOrEditSchedulerController", function ($scope, $http, $statePa
                             'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
                             'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
                             'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
-                            'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
+                            'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
+                            'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().startOf('week')],
+//                        'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
-                            'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+//                        'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last 2 Weeks (Sun - Sat)': [moment().subtract(2, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
 //                        'Last Week (Mon - Sun)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').add(1, 'days')],
 //                        'Last Business Week (Mon - Fri)': [moment().subtract(1, 'week').startOf('week').add(1, 'days'), moment().subtract(1, 'week').add(1, 'days').endOf('week').subtract(1, 'days')],

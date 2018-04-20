@@ -1,9 +1,18 @@
-app.controller("SchedulerController", function ($scope, $http, localStorageService, $stateParams) {
+app.controller("SchedulerController", function ($scope, $http, localStorageService, $stateParams,$cookies,$translate) {
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
-    $scope.endDate = $stateParams.endDate;
+    $scope.endDate = $stateParams.endDate; 
+    
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");    
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
+        
     $http.get("admin/scheduler/scheduler").success(function (response) {
         $scope.schedulers = response;
     });
@@ -13,6 +22,7 @@ app.controller("SchedulerController", function ($scope, $http, localStorageServi
         });
     };
 //    $scope.schedularHistoryData = false;
+    var recentDate = [];
     $scope.showSchedulerHistory = function (scheduler) {
         $scope.schedularHistoryDetails = [];
         $http({method: 'GET', url: 'admin/scheduler/schedulerHistory/' + scheduler.id}).success(function (response) {
@@ -21,16 +31,24 @@ app.controller("SchedulerController", function ($scope, $http, localStorageServi
 //                $scope.schedularHistoryData = true;
 //            } else {
             $scope.schedularHistoryDetails = response;
+            console.log(response);
 //            }
+        });
+
+        angular.forEach($scope.schedularHistoryDetails, function (value, key) {
+            angular.forEach(value.schedulerId, function (val, key) {
+                recentDate = value.lastExecutionStatus;
+                console.log(recentDate)
+            });
         });
     };
 
     $scope.saveSchedulerStatus = function (scheduler) {
-        console.log(scheduler)
+        console.log(scheduler);
         $http({method: scheduler.id ? 'PUT' : 'POST', url: 'admin/scheduler/schedulerStatus/enableOrDisable', data: scheduler}).success(function (response) {
-            console.log(response)
+            console.log(response);
         });
-    }
+    };
 
     $scope.tableRowExpanded = false;
     $scope.tableRowIndexExpandedCurr = "";

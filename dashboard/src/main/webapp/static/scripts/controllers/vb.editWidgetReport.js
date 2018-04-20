@@ -1,4 +1,4 @@
-app.controller('WidgetEditReportController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state) {
+app.controller('WidgetEditReportController', function ($scope, $http, $stateParams, localStorageService, $timeout, $filter, $state, $cookies, $translate) {
     $scope.editWidgetData = []
     $scope.permission = localStorageService.get("permission");
     $scope.accountId = $stateParams.accountId;
@@ -8,6 +8,15 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
     $scope.widgets = [];
+
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 
     //Tabs
     $scope.tab = 1;
@@ -109,6 +118,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         {name: 'Min', value: "min"},
         {name: 'Max', value: "max"}
     ];
+    $scope.combinationChartTypes = "";
     $scope.combinationChartTypes = [
         {name: 'None', value: ""},
         {name: 'Line Chart', value: "line"},
@@ -166,7 +176,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
             widget.lastNmonths = "";
             widget.lastNyears = "";
         }
-    }
+    };
 
     $http.get('admin/ui/dataSource').success(function (response) {
         $scope.dataSources = response;
@@ -194,11 +204,11 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     $scope.tableDef = function (widget) {
         if (widget.columns) {
             if (widget.dataSetId) {
-                columnHeaderDef(widget)
+                columnHeaderDef(widget);
             }
         } else {
             if (widget.dataSetId) {
-                columnHeaderDef(widget)
+                columnHeaderDef(widget);
             }
         }
     };
@@ -234,7 +244,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
     }
 
     $scope.editWidget = function (widget) {    //Edit widget
-        tagWidgetId(widget)
+        tagWidgetId(widget);
         $scope.editPreviewTitle = false;
         $scope.y1Column = [];
         $scope.y2Column = [];
@@ -243,7 +253,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         $scope.tableDef(widget);
         $scope.selectedRow = widget.chartType;
         widget.previewUrl = widget.dataSetId; //widget.directUrl;
-        $scope.selectDataSource(widget.dataSourceId, widget)
+        $scope.selectDataSource(widget.dataSourceId, widget);
         widget.previewType = widget.chartType;
         $scope.editChartType = widget.chartType;
         if (widget.chartType == 'table' || widget.chartType == 'ticker') {
@@ -293,7 +303,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         $scope.editChartType = null;
         widget.previewUrl = dataSet;
         widget.columns = [];
-        var chartType = widget
+        var chartType = widget;
 
         var url = "admin/proxy/getData?";
         if (dataSet.dataSourceId.dataSourceType == "sql") {
@@ -648,35 +658,33 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         $scope.editChartType = null;
         var chartType = widget;
         $timeout(function () {
-            $scope.previewChart(chartType, widget)
+            $scope.previewChart(chartType, widget);
         }, 50);
-    }
+    };
 
     $scope.tags = [];
     $http.get('admin/tag').success(function (response) {
         $scope.tagsGroups = response;
         angular.forEach(response, function (value, key) {
-            $scope.tags.push(value.tagName)
+            $scope.tags.push(value.tagName);
         });
     });
 
     function tagWidgetId(widget) {
         widget.tagName = [];
         $http.get("admin/tag/widgetTag/" + widget.id).success(function (response) {
-            console.log(response)
             $scope.widgetTags = response;
             angular.forEach(response, function (value, key) {
-                console.log(value)
                 widget.tagName.push(value.tagId.tagName)
             });
         });
     }
 
     $scope.saveReportWidget = function (widget) {
+        widget.dateRangeName = $("#dateRangeName").text().trim();
         try {
-            $scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
-
-            $scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+            $scope.customStartDate = widget.dateRangeName !== "Select Date Duration" && widget.dateRangeName !== "None" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
+            $scope.customEndDate = widget.dateRangeName !== "Select Date Duration" && widget.dateRangeName !== "None" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
         } catch (e) {
 
         }
@@ -764,14 +772,14 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
                 $http({method: 'POST', url: "admin/tag/widgetTag", data: tagData});
             }
 //            $state.go("index.report.newOrEdit", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-            $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+            $state.go("index.report.newOrEdit", {lan: $stateParams.lan, accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
         });
 
     };
     $scope.closeWidget = function (widget) {
         $scope.widget = "";
 //        $state.go("index.report.newOrEdit", {productId: $stateParams.productId, accountId: $stateParams.accountId, accountName: $stateParams.accountName, tabId: $stateParams.tabId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
-        $state.go("index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate})
+        $state.go("index.report.newOrEdit", {lan: $stateParams.lan, accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate});
     };
 
     //Remove Tags
@@ -784,6 +792,39 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
         });
     };
 
+    $scope.setLineChartFn = function (lineFn) {
+        $scope.directiveLineFn = lineFn;
+    };
+    $scope.setAreaChartFn = function (areaFn) {
+        $scope.directiveAreaFn = areaFn;
+    };
+    $scope.setBarChartFn = function (barFn) {
+        $scope.directiveBarFn = barFn;
+    };
+    $scope.setGaugeFn = function (gaugeFn) {
+        $scope.directiveGaugeFn = gaugeFn;
+    };
+    $scope.setPieChartFn = function (pieFn) {
+        $scope.directivePieFn = pieFn;
+    };
+    $scope.setStackedBarChartFn = function (stackedBarChartFn) {
+        $scope.directiveStackedBarChartFn = stackedBarChartFn;
+    };
+    $scope.setTableChartFn = function (tableFn) {
+        $scope.directiveTableFn = tableFn;
+    };
+    $scope.setTickerFn = function (tickerFn) {
+        $scope.directiveTickerFn = tickerFn;
+    };
+    $scope.setFunnelFn = function (funnelFn) {
+        $scope.directiveFunnelFn = funnelFn;
+    };
+    $scope.setCustomDatePickerFn = function (customDateFn) {
+        $scope.directiveDateFn = customDateFn;
+    };
+    $scope.setMapFn = function (mapFn) {
+        $scope.directiveMapFn = mapFn;
+    };
     //Query Builder
 //    var data = '{"group": {"operator": "AND","rules": []}}';
 //    function htmlEntities(str) {
@@ -806,7 +847,7 @@ app.controller('WidgetEditReportController', function ($scope, $http, $statePara
 //        $scope.json = JSON.stringify(newValue, null, 2);
 //        $scope.output = computed(newValue.group);
 //    }, true);
-    $scope.currentLocation = "index.report.newOrEdit", {accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
+    $scope.currentLocation = "index.report.newOrEdit", {lan: $stateParams.lan, accountId: $stateParams.accountId, accountName: $stateParams.accountName, reportId: $stateParams.reportId, startDate: $stateParams.startDate, endDate: $stateParams.endDate};
     $scope.selectDateRangeName = function (widget) {
         widget.dateRangeName = "Custom";
         widget.lastNdays = "";
@@ -1202,10 +1243,16 @@ app.directive('reportWidgetTable', function ($http, $stateParams, $state, orderB
             }
 
             scope.save = function (column) {
+                widget.dateRangeName = $("#dateRangeName").text().trim();
+                if (widget.dateRangeName === "Custom") {
+                    scope.lastNDays = "";
+                    scope.lastNWeeks = "";
+                    scope.lastNMonths = "";
+                    scope.lastNYears = "";
+                }
                 try {
-                    scope.customStartDate = moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
-
-                    scope.customEndDate = moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
+                    scope.customStartDate = widget.dateRangeName !== "Select Date Duration" && widget.dateRangeName !== "None" ? moment($('#widgetDateRange').data('daterangepicker').startDate).format('MM/DD/YYYY') : $stateParams.startDate; //$scope.startDate.setDate($scope.startDate.getDate() - 1);
+                    scope.customEndDate = widget.dateRangeName !== "Select Date Duration" && widget.dateRangeName !== "None" ? moment($('#widgetDateRange').data('daterangepicker').endDate).format('MM/DD/YYYY') : $stateParams.endDate;
                 } catch (e) {
 
                 }
@@ -1323,11 +1370,11 @@ app.directive('customReportWidgetDateRange', function ($stateParams) {
                 $(element[0]).daterangepicker(
                         {
                             ranges: {
-//                        'Today': [moment(), moment()],
+                                'Today': [moment(), moment()],
                                 'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                                'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                                'Last 14 Days ': [moment().subtract(13, 'days'), moment()],
-                                'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                                'Last 7 Days': [moment().subtract(7, 'days'), moment().subtract(1, 'days')],
+                                'Last 14 Days ': [moment().subtract(14, 'days'), moment().subtract(1, 'days')],
+                                'Last 30 Days': [moment().subtract(30, 'days'), moment().subtract(1, 'days')],
                                 'This Week (Sun - Today)': [moment().startOf('week'), moment().endOf(new Date())],
 //                        'This Week (Mon - Today)': [moment().startOf('week').add(1, 'days'), moment().endOf(new Date())],
                                 'Last Week (Sun - Sat)': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
@@ -1343,8 +1390,8 @@ app.directive('customReportWidgetDateRange', function ($stateParams) {
 //                        'Last 2 Years': [moment().subtract(2, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
 //                        'Last 3 Years': [moment().subtract(3, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')]
                             },
-                            startDate: widgetStartDate ? widgetStartDate : moment().subtract(29, 'days'),
-                            endDate: widgetEndDate ? widgetEndDate : moment(),
+                            startDate: widgetStartDate ? widgetStartDate : moment().subtract(30, 'days'),
+                            endDate: widgetEndDate ? widgetEndDate : moment().subtract(1, 'days'),
                             maxDate: new Date(),
                         },
                         function (startDate, endDate) {

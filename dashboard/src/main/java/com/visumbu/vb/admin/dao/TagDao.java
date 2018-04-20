@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Repository("tagDao")
 public class TagDao extends BaseDao {
-    
+
     @Autowired
     private ReportDao reportDao;
 
@@ -42,7 +42,21 @@ public class TagDao extends BaseDao {
         String queryStr = "select t from WidgetTag t where t.tagId.id = :tagId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("tagId", tagId);
-        
+
+        List<WidgetTag> widgetTag = query.list();
+        for (Iterator<WidgetTag> iterator = widgetTag.iterator(); iterator.hasNext();) {
+            TabWidget tabWidget = iterator.next().getWidgetId();
+            tabWidget.setColumns(reportDao.getColumns(tabWidget));
+        }
+        return widgetTag;
+    }
+
+    public List getWidgetTagByName(String tagName, VbUser vbUser) {
+        String queryStr = "select t from WidgetTag t where t.tagId.tagName = :tagName and t.userId.id = :userId order by widgetOrder";
+        Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
+        query.setParameter("tagName", tagName);
+        query.setParameter("userId", vbUser.getId());
+
         List<WidgetTag> widgetTag = query.list();
         for (Iterator<WidgetTag> iterator = widgetTag.iterator(); iterator.hasNext();) {
             TabWidget tabWidget = iterator.next().getWidgetId();
@@ -51,17 +65,18 @@ public class TagDao extends BaseDao {
         return widgetTag;
     }
     
-    public List getWidgetTagByName(String tagName) {
-        String queryStr = "select t from WidgetTag t where t.tagId.tagName = :tagName";
+    public List getWidgetTagByUserId(String tagName, Integer userId) {
+        String queryStr = "select t from WidgetTag t where t.tagId.tagName = :tagName and t.userId.id = :userId order by widgetOrder";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("tagName", tagName);
-        
+        query.setParameter("userId", userId);
+
         List<WidgetTag> widgetTag = query.list();
         for (Iterator<WidgetTag> iterator = widgetTag.iterator(); iterator.hasNext();) {
             TabWidget tabWidget = iterator.next().getWidgetId();
             tabWidget.setColumns(reportDao.getColumns(tabWidget));
         }
-        return widgetTag;        
+        return widgetTag;
     }
 
     public WidgetTag findWidgetTag(Integer tagId) {
@@ -74,7 +89,7 @@ public class TagDao extends BaseDao {
         }
         return null;
     }
-    
+
     public WidgetTag findWidgetTagByWidget(Integer tagId, Integer widgetId) {
         String queryStr = "select t from WidgetTag t where t.tagId.id = :tagId and t.widgetId.id = :widgetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -86,6 +101,7 @@ public class TagDao extends BaseDao {
         }
         return null;
     }
+
     public WidgetTag findWidgetTagByUserNTag(Integer tagId, Integer widgetId, VbUser user) {
         String queryStr = "select t from WidgetTag t where t.tagId.id = :tagId and t.widgetId.id = :widgetId and t.userId = :user";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -98,7 +114,7 @@ public class TagDao extends BaseDao {
         }
         return null;
     }
-    
+
     public WidgetTag findWidgetTagByWidgetId(Integer widgetId) {
         String queryStr = "select t from WidgetTag t where t.widgetId.id = :widgetId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
@@ -109,8 +125,8 @@ public class TagDao extends BaseDao {
         }
         return null;
     }
-    
-     public WidgetTag deleteWidgetTag(Integer widgetTagId) {
+
+    public WidgetTag deleteWidgetTag(Integer widgetTagId) {
         String queryStr = "delete WidgetTag t where t.id = :widgetTagId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
         query.setParameter("widgetTagId", widgetTagId);
@@ -119,11 +135,27 @@ public class TagDao extends BaseDao {
     }
 
     public List<TabWidget> findAllWidgetsByTag(VbUser user, Tag tag) {
-        String queryStr = "select w.widgetId from WidgetTag w where w.userId = :user and w.tagId = :tag";
+        String queryStr = "select w.widgetId from WidgetTag w where w.userId.id = :userId";
         Query query = sessionFactory.getCurrentSession().createQuery(queryStr);
-        query.setParameter("tag", tag);
-        query.setParameter("user", user);
+//        query.setParameter("tag", tag);
+        query.setParameter("userId", user.getId());
         return query.list();
-    }   
+    }
+
+    public WidgetTag getFavWidgetById(Integer widgetTagId) {
+        WidgetTag reportWidget = (WidgetTag) sessionFactory.getCurrentSession().get(WidgetTag.class, widgetTagId);
+        return reportWidget;
+    }
+
+    public String updateFavWidgetOrder(Integer favId, String widgetOrder) {
+        String[] favOrderArray = widgetOrder.split(",");
+        for (int i = 0; i < favOrderArray.length; i++) {
+            Integer favWidgetId = Integer.parseInt(favOrderArray[i]);
+            WidgetTag widgetTag = getFavWidgetById(favWidgetId);
+            widgetTag.setWidgetOrder(i);
+            update(widgetTag);
+        }
+        return null;
+    }
 
 }

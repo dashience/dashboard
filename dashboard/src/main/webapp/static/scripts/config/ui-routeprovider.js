@@ -3,42 +3,44 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
     $stateProvider
             .state("index", {
                 url: "/index",
-                templateUrl: "static/views/vb.index.html",
-                //controller: "IndexController"
+                templateUrl: "static/views/vb.index.html"
+                        //controller: "IndexController"
             })
             .state("index.dashboard", {
-                url: "/dashboard/:accountId/:accountName/:productId",
+                url: "/dashboard/:lan/:accountId/:accountName/:productId/:templateId",
                 templateUrl: "static/views/dashboard/dashboard.html",
+                controller: "UiController"
             })
+
             .state("index.dashboard.widget", {
-                url: "/widget/:tabId?:startDate/:endDate",
+                url: "/widget/:tabId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/dashboard/widgets.html",
                 controller: 'WidgetController'
             })
             .state("index.editWidget", {
-                url: "/editWidget/:accountId/:accountName/:productId/:tabId/:widgetId?:startDate/:endDate",
+                url: "/editWidget/:lan/:accountId/:accountName/:productId/:tabId/:widgetId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/dashboard/editWidget.html",
                 controller: 'EditWidgetController'
             })
             .state("index.report", {
-                url: "/reportIndex/:accountId/:accountName",
+                url: "/reportIndex/:lan/:accountId/:accountName",
                 templateUrl: "static/views/reports/reportIndex.html",
                 controller: 'ReportIndexController'
             })
             .state("index.report.reports", {
-                url: "/report?:startDate/:endDate",
+                url: "/report?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/reports/reports.html",
                 controller: 'ReportController',
                 activetab: 'report'
             })
             .state("index.report.newOrEdit", {
-                url: "/newOrEdit/:reportId?:startDate/:endDate",
+                url: "/newOrEdit/:reportId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/reports/newOrEditReports.html",
                 controller: 'NewOrEditReportController',
                 activetab: 'report'
             })
             .state("index.widgetEditByReport", {
-                url: "/updateReportWidget/:accountId/:accountName/:reportId/:reportWidgetId?:startDate/:endDate",
+                url: "/updateReportWidget/:lan/:accountId/:accountName/:reportId/:reportWidgetId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/reports/editReportWidget.html",
                 controller: 'WidgetEditReportController'
             })
@@ -49,12 +51,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 //                activetab: 'template'
 //            })
             .state("index.dataSource", {
-                url: "/dataSource/:accountId/:accountName?:startDate/:endDate",
+                url: "/dataSource/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/source/dataSource.html",
                 controller: 'DataSourceController'
             })
             .state("index.dataSet", {
-                url: "/dataSet/:accountId/:accountName?:startDate/:endDate",
+                url: "/dataSet/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/source/dataSet.html",
                 controller: 'DataSetController'
             })
@@ -64,37 +66,37 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 //                controller: 'FranchiseMarketingController'
 //            })
             .state("index.schedulerIndex", {
-                url: "/schedulerIndex/:accountId/:accountName",
-                templateUrl: "static/views/scheduler/schedulerIndex.html",
+                url: "/schedulerIndex/:lan/:accountId/:accountName",
+                templateUrl: "static/views/scheduler/schedulerIndex.html"
 //                controller: 'SchedulerController'
             })
             .state("index.schedulerIndex.scheduler", {
-                url: "/scheduler?:startDate/:endDate",
+                url: "/scheduler?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/scheduler/scheduler.html",
                 controller: 'SchedulerController'
             })
             .state("index.schedulerIndex.editOrNewScheduler", {
-                url: "/editOrNewScheduler/:schedulerId?:startDate/:endDate",
+                url: "/editOrNewScheduler/:schedulerId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/scheduler/newOrEditScheduler.html",
                 controller: 'NewOrEditSchedulerController'
             })
             .state("index.user", {
-                url: "/user/:accountId/:accountName?:startDate/:endDate",
+                url: "/user/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/admin/user.html",
                 controller: 'UserController'
             })
             .state("index.account", {
-                url: "/account/:accountId/:accountName?:startDate/:endDate",
+                url: "/account/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/admin/account.html",
                 controller: 'AccountController'
             })
             .state("index.agency", {
-                url: "/agency/:accountId/:accountName?:startDate/:endDate",
+                url: "/agency/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/admin/agency.html",
                 controller: 'AgencyController'
             })
             .state("index.fieldSettings", {
-                url: "/fieldSettings/:accountId/:accountName?:startDate/:endDate",
+                url: "/fieldSettings/:lan/:accountId/:accountName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/fieldSettings/fieldSettings.html",
                 controller: 'FieldSettingsController'
             })
@@ -104,29 +106,29 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 //                controller: 'FavouritesController'
 //            })
             .state("index.viewFavouritesWidget", {
-                url: "/viewFavouritesWidget/:accountId/:accountName/:productId/:favouriteName?:startDate/:endDate",
+                url: "/viewFavouritesWidget/:lan/:accountId/:accountName/:productId/:favouriteName?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/admin/viewFavouritesWidget.html",
                 controller: 'ViewFavouritesWidgetController'
             })
             .state("index.settings", {
-                url: "/settings?:startDate/:endDate",
+                url: "/settings?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/admin/settings.html",
                 controller: 'SettingsController'
             })
             .state("viewPdf", {
-                url: "/viewPdf/:accountId/:accountName/:productId/:productName/:tabId?:startDate/:endDate",
+                url: "/viewPdf/:lan/:agencyId/:accountId/:accountName/:productId/:templateId/:userId/:tabId?:startDate/:endDate/:getTableType/:productName",
                 templateUrl: "static/views/pdf/vb.pdf.html",
-                controller:'PdfController'
+                controller: 'PdfController'
             })
             .state("viewReportPdf", {
-                url: "/viewReportPdf/:accountId/:reportId?:startDate/:endDate",
+                url: "/viewReportPdf/:lan/:accountId/:userId/:reportId?:startDate/:endDate/:getTableType/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/pdf/vb.reportPdf.html",
-                controller:'ReportPdfController'
+                controller: 'ReportPdfController'
             })
             .state("viewFavouritesPdf", {
-                url: "/viewFavouritesPdf/:accountId/:favouriteName?:startDate/:endDate",
+                url: "/viewFavouritesPdf/:lan/:accountId/:userId/:favouriteName?:startDate/:endDate/:getTableType",
                 templateUrl: "static/views/pdf/vb.favouritesPdf.html",
-                controller:'FavouritesPdfController'
+                controller: 'FavouritesPdfController'
             });
 //            .state("index.viewFavouritesWidget", {
 //                url: "/viewFavouritesWidget/:accountId/:accountName/:favouriteId/:favouriteName?:startDate/:endDate",
@@ -138,19 +140,35 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
     $urlRouterProvider.otherwise(function ($injector) {
         $injector.get('$state').go('index.dashboard');
     });
-
-
 //    $routeProvider.when('/viewPdf', {
 //        url: '/viewPdf/:accountId/:accountName/:tabId',
 //        templateUrl: 'static/views/pdf/vb.pdf.html'});
 //    $urlRouterProvider.otherwise('index/dashboard/1/1');
 });
-app.run(['$window', '$rootScope', '$stateParams',
-    function ($window, $rootScope, $stateParams) {
-        console.log($stateParams)
+app.run(['$window', '$rootScope', '$stateParams', '$state',
+    function ($window, $rootScope, $stateParams, $state) {
         //$rootScope.accountNameByPdf = $stateParams.accountName; 
 
         $rootScope.goBack = function () {
             $window.history.back();
-        }
-    }])
+        };
+        $rootScope.setParamByTemplateId = function (template) {
+            if ($stateParams.templateId != template.id) {
+                $state.go("index.dashboard.widget", {
+                    accountId: $stateParams.accountId,
+                    accountName: $stateParams.accountName,
+                    productId: template.agencyProductId.id,
+                    templateId: template.id,
+                    tabId: 0,
+                    startDate: $stateParams.startDate,
+                    endDate: $stateParams.endDate
+                });
+            }
+            $rootScope.setTmpIdByTab(template);
+            $stateParams.templateId = template.id;
+        };
+        $rootScope.setTmpIdByTab = function (template) {
+            $stateParams.templateId = template.id;
+            this.rootTemplateId = template.id; //$stateParams.templateId;
+        };
+    }]);

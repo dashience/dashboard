@@ -1,4 +1,4 @@
 /target/
 /api/target/
-/dashboard/target/
+target/
 database.properties

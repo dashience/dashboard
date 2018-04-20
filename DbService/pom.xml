@@ -275,6 +275,12 @@
             <artifactId>commons-dbutils</artifactId>
             <version>1.6</version>
         </dependency>
+        <!-- bing dependency -->
+        <dependency>
+            <groupId>com.microsoft.bingads</groupId>
+            <artifactId>microsoft.bingads</artifactId>
+            <version>10.4.10</version>
+        </dependency>
 
     </dependencies>
 

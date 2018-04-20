@@ -75,6 +75,17 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class VbUser implements Serializable {
 
     @OneToMany(mappedBy = "userId")
+    private Collection<LastUserAccount> lastUserAccountCollection;
+
+    @OneToMany(mappedBy = "userId")
+    private Collection<TemplateTabs> templateTabsCollection;
+    @OneToMany(mappedBy = "userId")
+    private Collection<DashboardTabs> dashboardTabsCollection;
+
+    @OneToMany(mappedBy = "userId")
+    private Collection<DashboardTemplate> dashboardTemplateCollection;
+
+    @OneToMany(mappedBy = "userId")
     private Collection<AgencyUser> agencyUserCollection;
 
     @OneToMany(mappedBy = "userId")
@@ -345,6 +356,46 @@ public class VbUser implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.VbUser[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTemplate> getDashboardTemplateCollection() {
+        return dashboardTemplateCollection;
+    }
+
+    public void setDashboardTemplateCollection(Collection<DashboardTemplate> dashboardTemplateCollection) {
+        this.dashboardTemplateCollection = dashboardTemplateCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<TemplateTabs> getTemplateTabsCollection() {
+        return templateTabsCollection;
+    }
+
+    public void setTemplateTabsCollection(Collection<TemplateTabs> templateTabsCollection) {
+        this.templateTabsCollection = templateTabsCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTabs> getDashboardTabsCollection() {
+        return dashboardTabsCollection;
+    }
+
+    public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
+        this.dashboardTabsCollection = dashboardTabsCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<LastUserAccount> getLastUserAccountCollection() {
+        return lastUserAccountCollection;
+    }
+
+    public void setLastUserAccountCollection(Collection<LastUserAccount> lastUserAccountCollection) {
+        this.lastUserAccountCollection = lastUserAccountCollection;
     }
 
 }

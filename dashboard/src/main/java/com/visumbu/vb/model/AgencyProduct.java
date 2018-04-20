@@ -42,6 +42,12 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "AgencyProduct.findByStatus", query = "SELECT a FROM AgencyProduct a WHERE a.status = :status")})
 public class AgencyProduct implements Serializable {
 
+    @OneToMany(mappedBy = "productId")
+    private Collection<LastUserAccount> lastUserAccountCollection;
+
+    @OneToMany(mappedBy = "agencyProductId")
+    private Collection<DashboardTemplate> dashboardTemplateCollection;
+
     @Type(type = "org.hibernate.type.StringClobType")
     @Column(name = "icon")
     private String icon;
@@ -67,6 +73,9 @@ public class AgencyProduct implements Serializable {
     @JoinColumn(name = "agency_id", referencedColumnName = "id")
     @ManyToOne
     private Agency agencyId;
+    @JoinColumn(name = "template_id", referencedColumnName = "id")
+    @ManyToOne
+    private DashboardTemplate templateId;
 
     public AgencyProduct() {
     }
@@ -124,6 +133,14 @@ public class AgencyProduct implements Serializable {
         this.agencyId = agencyId;
     }
 
+    public DashboardTemplate getTemplateId() {
+        return templateId;
+    }
+
+    public void setTemplateId(DashboardTemplate templateId) {
+        this.templateId = templateId;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;
@@ -155,6 +172,16 @@ public class AgencyProduct implements Serializable {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<LastUserAccount> getLastUserAccountCollection() {
+        return lastUserAccountCollection;
+    }
+
+    public void setLastUserAccountCollection(Collection<LastUserAccount> lastUserAccountCollection) {
+        this.lastUserAccountCollection = lastUserAccountCollection;
     }
     
 }

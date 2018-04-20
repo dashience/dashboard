@@ -100,7 +100,12 @@ public class TextMailWithAttachment {
             }
 
             // send the email
-            return email.send();
+            System.out.println("Deliveing mail....");
+            System.out.println("Subject: " + email.getSubject());
+            System.out.println("Message : " + props.getTxtMessage());
+            String result = email.send();
+            System.out.println("Deliveing mail.... Return Message -> " + result);
+            return "Sent";
 
         } catch (EmailException ex) {
             Logger.getLogger(TextMailWithAttachment.class.getName()).log(Level.SEVERE, null, ex);

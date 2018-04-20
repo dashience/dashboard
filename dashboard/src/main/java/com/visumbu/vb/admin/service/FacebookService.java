@@ -5,6 +5,8 @@
  */
 package com.visumbu.vb.admin.service;
 
+import com.visumbu.vb.admin.dao.SettingsDao;
+import com.visumbu.vb.model.Settings;
 import com.visumbu.vb.utils.ApiUtils;
 import com.visumbu.vb.utils.DateUtils;
 import com.visumbu.vb.utils.JsonSimpleUtils;
@@ -26,6 +28,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.visumbu.vb.utils.SettingsProperty;
 
 /**
  *
@@ -35,17 +40,28 @@ import org.json.simple.parser.ParseException;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class FacebookService {
 
-    public String ACCESS_TOKEN = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
-    public String ORGANIC_ACCESS_TOKEN = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
+    @Autowired
+    private SettingsDao settingsDao;
+
+//    public String ACCESS_TOKEN = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
+//    public String ACCESS_TOKEN = "EAAUAycrj0GsBAM3EgwLcQjz5zywESZBpHN76cERZCaxEZC9ZAzMjRzRxIznWM3u8s4DBwUvhMaQAGglDOIa9tSV7ZCVf9ZBajV9aA6khaCRmEZAQhIHUInBVYZBZAT5nycwniZCozuLcjhTm0eW5tAUxIugmvxszsivmh5ZClzuMZApZBJxd0RZBIDk1r0";
     public final String APP_SECRET = "b6659b47ba7b2b11179247bb3cd84f70";
     // public final Long ACCOUNT_ID = ExampleConfig.ACCOUNT_ID;
 //    public final String APP_SECRET = ExampleConfig.APP_SECRET;
-    public final String BASE_URL = "https://graph.facebook.com/v2.8/act_";
-    public final String BASE_URL_FEED = "https://graph.facebook.com/v2.8/";
+    public final String BASE_URL = "https://graph.facebook.com/v2.11/act_";
+    public final String BASE_URL_FEED = "https://graph.facebook.com/v2.11/";
     //public final APIContext context = new APIContext(ACCESS_TOKEN).enableDebug(true);
 
-    public List<Map<String,Object>> get(String accessToken, String dataSet, Long accountId, Long organicAccountId, Date startDate, Date endDate, String aggregation, String productSegement) {
-        this.ACCESS_TOKEN = accessToken;
+    public String ACCESS_TOKEN = "";
+
+    public List<Map<String, Object>> get(String dataSet, Long accountId, Long organicAccountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+//        this.ACCESS_TOKEN = accessToken;
+
+        //code to get access token from settings
+        List<Settings> facebookAccessToken = settingsDao.getProperty("facebookAccessToken");
+        String fbAccessToken = SettingsProperty.getSettingsProperty(facebookAccessToken, "facebookAccessToken");
+        this.ACCESS_TOKEN = fbAccessToken;
+
         if (aggregation == null) {
             aggregation = "";
         }
@@ -91,7 +107,6 @@ public class FacebookService {
         if (dataSet.equalsIgnoreCase("pageReactions")) {
             return getPageReactions(organicAccountId, startDate, endDate, aggregation, productSegement);
         }
-
         return null;
     }
 
@@ -140,7 +155,7 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
                 dataValueList.add(dataList);
             }
             return dataValueList;  //getActions(actionsArr);
@@ -153,7 +168,7 @@ public class FacebookService {
 
     public List<Map<String, Object>> getPageReactions(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
         try {
-            //ORGANIC_ACCESS_TOKEN
+            //ACCESS_TOKEN
 
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -166,7 +181,7 @@ public class FacebookService {
                         + "reactions.type(HAHA).summary(total_count).limit(0).as(haha),"
                         + "reactions.type(SAD).summary(total_count).limit(0).as(sad),"
                         + "reactions.type(ANGRY).summary(total_count).limit(0).as(angry)&"
-                        + "access_token=" + ORGANIC_ACCESS_TOKEN
+                        + "access_token=" + ACCESS_TOKEN
                         + "&until=" + endDateStr;
 
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -213,9 +228,9 @@ public class FacebookService {
 
             System.out.println("-------------- Account ID -->" + accountId);
             if (aggregation.equalsIgnoreCase("day")) {
-              
+
                 String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_views_total?"
-                        + "access_token=" + ORGANIC_ACCESS_TOKEN + "&since=" + startDateStr + "&until=" + endDateStr + "&period=day&limit=50";
+                        + "access_token=" + ACCESS_TOKEN + "&since=" + startDateStr + "&until=" + endDateStr + "&period=day&limit=50";
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                 System.out.println(fbUrl);
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -251,7 +266,7 @@ public class FacebookService {
             if (productSegment.equalsIgnoreCase("device")) {
                 //            String fbUrl = "https://graph.facebook.com/185042698207211/insights?pretty=0&until=1476489600&metric=page_views_by_site_logged_in_unique&period=days_28&access_token=EAANFRJpxZBZC0BAAqAeGjVgawF8X58ZCYRU824xzKpDcCN49s3wMGqie9MRdUZBnSK8pTsFw3KSOvfof88Oib6CCIOZBlnYQkkeYJrYdyOTJoELEZAmFAFKMoBg5cWvgbdnXdHmZAcYwsJQ6xL1XnMd8m6Hz4C7SAESJQLb36Qh0VSR3gIhiJOw";
                 String fbUrl = "https://graph.facebook.com/" + accountId + "/insights?pretty=0&until=" + endDateStr + "&"
-                        + "metric=page_views_by_site_logged_in_unique&period=days_28&access_token=" + ORGANIC_ACCESS_TOKEN;
+                        + "metric=page_views_by_site_logged_in_unique&period=days_28&access_token=" + ACCESS_TOKEN;
 
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                 System.out.println(fbUrl);
@@ -273,7 +288,7 @@ public class FacebookService {
                 int objectLength = deviceData.size() - 1;
                 List<Map<String, Object>> viewByDeviceListData = new ArrayList<>();
                 try {
-                    Map<String, Object> objectArray = (Map<String,Object>) deviceData.get(objectLength).get("value");
+                    Map<String, Object> objectArray = (Map<String, Object>) deviceData.get(objectLength).get("value");
 
                     objectArray.remove("API");
                     viewByDeviceListData.add(objectArray);
@@ -286,7 +301,7 @@ public class FacebookService {
             if (productSegment.equalsIgnoreCase("gender")) {
                 String fbUrl = "https://graph.facebook.com/" + accountId + "/insights?pretty=0&"
                         + "until=" + endDateStr + "&metric=page_views_by_age_gender_logged_in_unique&period=days_28&"
-                        + "access_token=" + ORGANIC_ACCESS_TOKEN;
+                        + "access_token=" + ACCESS_TOKEN;
 
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                 System.out.println(fbUrl);
@@ -328,7 +343,7 @@ public class FacebookService {
             //get total page views
             if (aggregation.equalsIgnoreCase("none") && productSegment.equalsIgnoreCase("none")) {
                 String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_views_total?access_token="
-                        + ORGANIC_ACCESS_TOKEN + "&until=" + endDateStr;
+                        + ACCESS_TOKEN + "&until=" + endDateStr;
 
                 System.out.println("************************************");
                 System.out.println(fbUrl);
@@ -376,7 +391,7 @@ public class FacebookService {
 
             if (productSegement.equalsIgnoreCase("city")) {
                 String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_fans_city?access_token="
-                        + ORGANIC_ACCESS_TOKEN + "&until=" + endDateStr;
+                        + ACCESS_TOKEN + "&until=" + endDateStr;
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                 System.out.println(fbUrl);
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -419,7 +434,7 @@ public class FacebookService {
             //get total organic likes
             if (aggregation.equalsIgnoreCase("none") && productSegement.equalsIgnoreCase("none")) {
                 String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_fans?access_token="
-                        + ORGANIC_ACCESS_TOKEN + "&until=" + endDateStr;
+                        + ACCESS_TOKEN + "&until=" + endDateStr;
 
                 System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
                 System.out.println(fbUrl);
@@ -462,7 +477,7 @@ public class FacebookService {
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
 
             String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_impressions_unique?"
-                    + "access_token=" + ORGANIC_ACCESS_TOKEN + "&until=" + endDateStr;
+                    + "access_token=" + ACCESS_TOKEN + "&until=" + endDateStr;
 
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             System.out.println(fbUrl);
@@ -501,14 +516,14 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String,Object>> getTotalEngagements(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String, Object>> getTotalEngagements(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
 
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
 
             String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/insights/page_engaged_users?access_token="
-                    + ORGANIC_ACCESS_TOKEN + "&until=" + endDateStr;
+                    + ACCESS_TOKEN + "&until=" + endDateStr;
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             System.out.println(fbUrl);
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
@@ -548,7 +563,7 @@ public class FacebookService {
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
             String fbUrl = "https://graph.facebook.com/v2.9/" + accountId + "/posts?fields=message,"
                     + "reactions.type(LIKE).summary(total_count).limit(0).as(like),comments&access_token="
-                    + ORGANIC_ACCESS_TOKEN + "&until=" + endDateStr;
+                    + ACCESS_TOKEN + "&until=" + endDateStr;
 
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             System.out.println(fbUrl);
@@ -597,13 +612,13 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String,Object>> getAccountPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
+    public List<Map<String, Object>> getAccountPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegment) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
 
             if (productSegment.equalsIgnoreCase("device")) {
-                List<Map<String,Object>> accountDevicePerformance = getDevicePerformance(accountId, startDate, endDate, aggregation);
+                List<Map<String, Object>> accountDevicePerformance = getDevicePerformance(accountId, startDate, endDate, aggregation);
                 return accountDevicePerformance;
             } else {
 
@@ -649,7 +664,7 @@ public class FacebookService {
                     if (costPerActionTypeArr != null) {
                         dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                     }
-                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
+                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
                     dataValueList.add(dataList);
                 }
                 return dataValueList;  //getActions(actionsArr);
@@ -694,7 +709,7 @@ public class FacebookService {
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
             List<Map<String, Object>> dataValueList = new ArrayList();
-            Map<String, Object> dataMap=new HashMap();
+            Map<String, Object> dataMap = new HashMap();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
@@ -708,7 +723,7 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataMap.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataMap.put("ctr", ApiUtils.removePercent(dataMap.get("ctr")+""));
+                dataMap.put("ctr", ApiUtils.removePercent(dataMap.get("ctr") + ""));
 
                 dataValueList.add(dataMap);
             }
@@ -763,7 +778,7 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
                 dataValueList.add(dataList);
             }
             return dataValueList;  //getActions(actionsArr);
@@ -799,7 +814,7 @@ public class FacebookService {
             JSONObject array = (JSONObject) jsonObj;
             JSONArray dataArr = (JSONArray) array.get("data");
             List<Map<String, Object>> dataValueList = new ArrayList();
-            Map<String, Object> dataList=new HashMap();
+            Map<String, Object> dataList = new HashMap();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 JSONArray actionsArr = (JSONArray) data.get("actions");
@@ -813,7 +828,7 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
                 dataValueList.add(dataList);
             }
             return dataValueList;
@@ -826,7 +841,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String,Object>> getAgePerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String, Object>> getAgePerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -863,7 +878,7 @@ public class FacebookService {
                     if (costPerActionTypeArr != null) {
                         dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                     }
-                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
+                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
                     dataValueList.add(dataList);
                 }
                 return dataValueList;
@@ -877,7 +892,7 @@ public class FacebookService {
         return null;
     }
 
-    public List<Map<String,Object>> getGenderPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
+    public List<Map<String, Object>> getGenderPerformance(Long accountId, Date startDate, Date endDate, String aggregation, String productSegement) {
         try {
             String startDateStr = DateUtils.dateToString(startDate, "YYYY-MM-dd");
             String endDateStr = DateUtils.dateToString(endDate, "YYYY-MM-dd");
@@ -907,14 +922,14 @@ public class FacebookService {
                     //JSONObject actions = (JSONObject) actionsArr.get(0);
                     List<Map<String, String>> returnList = new ArrayList<>();
                     JSONArray costPerActionTypeArr = (JSONArray) data.get("cost_per_action_type");
-                    Map<String,Object> dataList = getDataValue(data);
+                    Map<String, Object> dataList = getDataValue(data);
                     if (actionsArr != null) {
                         dataList.putAll(getActionsData(actionsArr, "actions_"));
                     }
                     if (costPerActionTypeArr != null) {
                         dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                     }
-                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
+                    dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
                     dataValueList.add(dataList);
                 }
                 return dataValueList;
@@ -936,7 +951,7 @@ public class FacebookService {
                     + "comments{message,comment_count,created_time,like_count},created_time,type&"
                     + "use_actual_created_time_for_backdated_post=true&limit=100&"
                     + "time_range[since]=" + startDateStr + "&time_range[until]=" + endDateStr
-                    + "&access_token=" + ORGANIC_ACCESS_TOKEN;
+                    + "&access_token=" + ACCESS_TOKEN;
 
             System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
             System.out.println(url);
@@ -960,13 +975,13 @@ public class FacebookService {
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
                 Map<String, Object> dataList = getDataValue(data);
-                dataList.put("created_time", DateUtils.dateToString(DateUtils.toDate(dataList.get("created_time")+"".replace("+0000", "").replace("T", " "), "yyyy-MM-dd HH:mm:ss"), "MM/dd/yyyy HH:mm"));
+                dataList.put("created_time", DateUtils.dateToString(DateUtils.toDate(dataList.get("created_time") + "".replace("+0000", "").replace("T", " "), "yyyy-MM-dd HH:mm:ss"), "MM/dd/yyyy HH:mm"));
                 dataList.put("date", startDateStr);
                 dataList.put("reactions", getActionsCount((JSONObject) data.get("reactions")) + "");
                 dataList.put("likes", getActionsCount((JSONObject) data.get("likes")) + "");
                 dataList.put("comments", getActionsCount((JSONObject) data.get("comments")) + "");
                 dataList.put("shares", getShareCount((JSONObject) data.get("shares")) + "");
-                dataList.put("engagements", (Long.parseLong(dataList.get("shares")+"") + Long.parseLong(dataList.get("likes")+"") + Long.parseLong(dataList.get("comments")+"")) + "");
+                dataList.put("engagements", (Long.parseLong(dataList.get("shares") + "") + Long.parseLong(dataList.get("likes") + "") + Long.parseLong(dataList.get("comments") + "")) + "");
                 dataValueList.add(dataList);
             }
             return dataValueList;
@@ -1098,7 +1113,7 @@ public class FacebookService {
             List<Map<String, Object>> dataValueList = new ArrayList();
             for (int i = 0; i < dataArr.size(); i++) {
                 JSONObject data = (JSONObject) dataArr.get(i);
-                Map<String,Object> dataList = getDataValue(data);
+                Map<String, Object> dataList = getDataValue(data);
 
                 dataValueList.add(dataList);
             }
@@ -1141,9 +1156,9 @@ public class FacebookService {
                 if (costPerActionTypeArr != null) {
                     dataList.putAll(getActionsData(costPerActionTypeArr, "cost_"));
                 }
-                dataList.put("date_start", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_start")+"", "yyyy-MM-dd"), "MM/dd/yyyy"));
-                dataList.put("date_stop", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_stop")+"", "yyyy-MM-dd"), "MM/dd/yyyy"));
-                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr")+""));
+                dataList.put("date_start", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_start") + "", "yyyy-MM-dd"), "MM/dd/yyyy"));
+                dataList.put("date_stop", DateUtils.dateToString(DateUtils.toDate(dataList.get("date_stop") + "", "yyyy-MM-dd"), "MM/dd/yyyy"));
+                dataList.put("ctr", ApiUtils.removePercent(dataList.get("ctr") + ""));
                 dataValueList.add(dataList);
             }
             return dataValueList;

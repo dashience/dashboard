@@ -26,11 +26,8 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-import javax.persistence.metamodel.SingularAttribute;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -80,7 +77,11 @@ import org.codehaus.jackson.annotate.JsonIgnore;
     , @NamedQuery(name = "TabWidget.findByLastNmonths", query = "SELECT t FROM TabWidget t WHERE t.lastNmonths = :lastNmonths")
     , @NamedQuery(name = "TabWidget.findByLastNweeks", query = "SELECT t FROM TabWidget t WHERE t.lastNweeks = :lastNweeks")
     , @NamedQuery(name = "TabWidget.findByLastNyears", query = "SELECT t FROM TabWidget t WHERE t.lastNyears = :lastNyears")
-    , @NamedQuery(name = "TabWidget.findByQueryFilter", query = "SELECT t FROM TabWidget t WHERE t.queryFilter = :queryFilter")})
+    , @NamedQuery(name = "TabWidget.findByQueryFilter", query = "SELECT t FROM TabWidget t WHERE t.queryFilter = :queryFilter")
+    , @NamedQuery(name = "TabWidget.findByTimeSegment", query = "SELECT t FROM TabWidget t WHERE t.timeSegment = :timeSegment")
+    , @NamedQuery(name = "TabWidget.findByProductSegment", query = "SELECT t FROM TabWidget t WHERE t.productSegment = :productSegment")
+    , @NamedQuery(name = "TabWidget.findBychartColorOption", query = "SELECT t FROM TabWidget t WHERE t.chartColorOption = :chartColorOption")
+    , @NamedQuery(name = "TabWidget.findByNetworkType", query = "SELECT t FROM TabWidget t WHERE t.networkType = :networkType")})
 public class TabWidget implements Serializable {
 
     @OneToMany(mappedBy = "widgetId")
@@ -190,9 +191,7 @@ public class TabWidget implements Serializable {
     @Size(max = 45)
     @Column(name = "is_grid_line")
     private String isGridLine;
-
-    @Lob
-    @Size(max = 65535)
+    @Size(max = 2147483647)
     @Column(name = "content")
     private String content;
     @Lob
@@ -210,6 +209,18 @@ public class TabWidget implements Serializable {
     @Size(max = 255)
     @Column(name = "datasource")
     private String datasource;
+    @Size(max = 255)
+    @Column(name = "time_segment")
+    private String timeSegment;
+    @Size(max = 255)
+    @Column(name = "product_segment")
+    private String productSegment;
+    @Size(max = 255)
+    @Column(name = "network_type")
+    private String networkType;
+    @Size(max = 255)
+    @Column(name = "chart_color_option")
+    private String chartColorOption;
     @JoinColumn(name = "data_set_id", referencedColumnName = "id")
     @ManyToOne
     private DataSet dataSetId;
@@ -222,6 +233,9 @@ public class TabWidget implements Serializable {
     @JoinColumn(name = "tab_id", referencedColumnName = "id")
     @ManyToOne
     private DashboardTabs tabId;
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @ManyToOne
+    private Account accountId;
 
     @Transient
     private List<WidgetColumn> columns;
@@ -628,6 +642,38 @@ public class TabWidget implements Serializable {
         this.isGridLine = isGridLine;
     }
 
+    public Account getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Account accountId) {
+        this.accountId = accountId;
+    }
+
+    public String getTimeSegment() {
+        return timeSegment;
+    }
+
+    public void setTimeSegment(String timeSegment) {
+        this.timeSegment = timeSegment;
+    }
+
+    public String getProductSegment() {
+        return productSegment;
+    }
+
+    public void setProductSegment(String productSegment) {
+        this.productSegment = productSegment;
+    }
+
+    public String getNetworkType() {
+        return networkType;
+    }
+
+    public void setNetworkType(String networkType) {
+        this.networkType = networkType;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -648,6 +694,14 @@ public class TabWidget implements Serializable {
         return true;
     }
 
+    public String getChartColorOption() {
+        return chartColorOption;
+    }
+
+    public void setChartColorOption(String chartColorOption) {
+        this.chartColorOption = chartColorOption;
+    }
+
     @Override
     public String toString() {
         return "com.visumbu.vb.model.TabWidget[ id=" + id + " ]";
@@ -662,5 +716,4 @@ public class TabWidget implements Serializable {
 //    public void setReportWidgetCollection(Collection<ReportWidget> reportWidgetCollection) {
 //        this.reportWidgetCollection = reportWidgetCollection;
 //    }
-
 }

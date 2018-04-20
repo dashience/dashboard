@@ -6,6 +6,7 @@
 package com.visumbu.vb.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -18,11 +19,14 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
+import org.codehaus.jackson.annotate.JsonIgnore;
 
 /**
  *
@@ -57,6 +61,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Scheduler.findByStatus", query = "SELECT s FROM Scheduler s WHERE s.status = :status")
     , @NamedQuery(name = "Scheduler.findByLastExecutionStatus", query = "SELECT s FROM Scheduler s WHERE s.lastExecutionStatus = :lastExecutionStatus")})
 public class Scheduler implements Serializable {
+
+    @OneToMany(mappedBy = "schedulerId")
+    private Collection<SchedulerHistory> schedulerHistoryCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -137,6 +144,9 @@ public class Scheduler implements Serializable {
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne
     private Account accountId;
+    @JoinColumn(name = "created_by", referencedColumnName = "id")
+    @ManyToOne
+    private VbUser createdBy;
 
     public Scheduler() {
     }
@@ -361,6 +371,14 @@ public class Scheduler implements Serializable {
         this.accountId = accountId;
     }
 
+    public VbUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(VbUser createdBy) {
+        this.createdBy = createdBy;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -384,5 +402,15 @@ public class Scheduler implements Serializable {
     @Override
     public String toString() {
         return "Scheduler{" + "id=" + id + ", schedulerName=" + schedulerName + ", startDate=" + startDate + ", endDate=" + endDate + ", schedulerWeekly=" + schedulerWeekly + ", schedulerTime=" + schedulerTime + ", schedulerMonthly=" + schedulerMonthly + ", schedulerYearOfWeek=" + schedulerYearOfWeek + ", schedulerRepeatType=" + schedulerRepeatType + ", schedulerNow=" + schedulerNow + ", schedulerYearly=" + schedulerYearly + ", schedulerStatus=" + schedulerStatus + ", schedulerType=" + schedulerType + ", customEndDate=" + customEndDate + ", customStartDate=" + customStartDate + ", dateRangeName=" + dateRangeName + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", schedulerEmail=" + schedulerEmail + ", isAccountEmail=" + isAccountEmail + ", status=" + status + ", lastExecutionStatus=" + lastExecutionStatus + ", reportId=" + reportId + ", agencyId=" + agencyId + ", accountId=" + accountId + '}';
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<SchedulerHistory> getSchedulerHistoryCollection() {
+        return schedulerHistoryCollection;
+    }
+
+    public void setSchedulerHistoryCollection(Collection<SchedulerHistory> schedulerHistoryCollection) {
+        this.schedulerHistoryCollection = schedulerHistoryCollection;
     }
 }

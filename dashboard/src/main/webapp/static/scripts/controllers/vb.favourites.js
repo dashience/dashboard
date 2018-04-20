@@ -1,11 +1,20 @@
-app.controller('FavouritesController', function($http,$scope, $stateParams){
+app.controller('FavouritesController', function ($http, $scope, $stateParams, $cookies, $translate,$rootScope) {
     $scope.accountId = $stateParams.accountId;
     $scope.accountName = $stateParams.accountName;
     $scope.startDate = $stateParams.startDate;
     $scope.endDate = $stateParams.endDate;
+
+    $scope.favourites = [];
+    $http.get("admin/tag").success(function (response) {
+        $scope.favourites = response;
+    })
+
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
     
-    $scope.favourites=[];
-     $http.get("admin/tag").success(function (response) {
-     $scope.favourites=response;
-     })    
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 })

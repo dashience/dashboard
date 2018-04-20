@@ -78,18 +78,23 @@ public class TagController extends BaseController {
     List getWidgetTag(HttpServletRequest request, HttpServletResponse response) {
         return tagService.getWidgetTag();
     }
-    
+
 //    @RequestMapping(value = "widgetTag/{tagId}", method = RequestMethod.GET, produces = "application/json")
 //    public @ResponseBody
 //    List getWidgetTagById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer tagId) {
 //        return tagService.getWidgetTagById(tagId);
 //    }
-    
-    
     @RequestMapping(value = "widgetTag/{tagName}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     List getWidgetTagByName(HttpServletRequest request, HttpServletResponse response, @PathVariable String tagName) {
-        return tagService.getWidgetTagByName(tagName);
+        VbUser user = userService.findByUsername(getUser(request));
+        return tagService.getWidgetTagByName(tagName, user);
+    }
+    
+    @RequestMapping(value = "widgetTag/{tagName}/{userId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getWidgetTagByUserId(HttpServletRequest request, HttpServletResponse response, @PathVariable String tagName, @PathVariable Integer userId) {
+        return tagService.getWidgetTagByUserId(tagName, userId);
     }
 
     @RequestMapping(value = "widgetTag/{widgetTagId}", method = RequestMethod.DELETE, produces = "application/json")
@@ -128,6 +133,14 @@ public class TagController extends BaseController {
         String username = getUser(request);
         VbUser user = userService.findByUsername(username);
         return tagService.getAllFav(user);
+    }
+
+    @RequestMapping(value = "favWidgetUpdateOrder/{favId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Object updateFavWidgetOrder(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer favId) {
+        String widgetOrder = request.getParameter("widgetOrder");
+        tagService.updateFavWidgetOrder(favId, widgetOrder);
+        return null;
     }
 
 //    @RequestMapping(value = "widgetTag/{widgetTagId}", method = RequestMethod.DELETE, produces = "application/json")

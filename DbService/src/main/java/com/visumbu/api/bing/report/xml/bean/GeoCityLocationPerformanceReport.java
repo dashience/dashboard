@@ -5,6 +5,7 @@
  */
 package com.visumbu.api.bing.report.xml.bean;
 
+import com.visumbu.api.adwords.report.xml.bean.GenericReport;
 import java.util.List;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -16,7 +17,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author duc-dev-04
  */
 @XmlRootElement(name = "Report")
-public class GeoCityLocationPerformanceReport {
+public class GeoCityLocationPerformanceReport implements GenericReport{
 
     private List<Column> keywordPerformanceReportColumns;
     private String reportName;
@@ -28,6 +29,10 @@ public class GeoCityLocationPerformanceReport {
     private String lastCompletedAvailableHour;
     private String potentialIncompleteData;
     private List<GeoCityLocationPerformanceRow> geoCityLocationPerformanceRows;
+    
+    public List getRows(){
+        return geoCityLocationPerformanceRows;
+    }
 
     public List<GeoCityLocationPerformanceRow> getGeoCityLocationPerformanceRows() {
         return geoCityLocationPerformanceRows;

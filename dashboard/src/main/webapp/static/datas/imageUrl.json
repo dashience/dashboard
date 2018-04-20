@@ -1,58 +1,83 @@
 [
     {
         "id": 1,
-        "url": "static/img/areachart.png",
         "type": "area",
         "name": "Area Chart",
         "icon": "fa-area-chart"
     },
     {
         "id": 2,
-        "url": "static/img/barchart.png",
         "type": "bar",
         "name": "Bar Chart",
         "icon": "fa-bar-chart"
     },
     {
         "id": 3,
-        "url": "static/img/linechart.ico",
+        "type": "horizontalBar",
+        "name": "Horizontal Bar Chart",
+        "icon": "fa-bar-chart fa-rotate-90"
+    },
+    {
+        "id": 4,
         "type": "line",
         "name": "Line Chart",
         "icon": "fa-line-chart"
     },
     {
-        "id": 4,
-        "url": "static/img/piechart.ico",
+        "id": 5,
         "type": "pie",
         "name": "Pie Chart",
         "icon": "fa-pie-chart"
     },    
     {
-        "id": 7,
+        "id": 6,
         "url": "static/img/table.png",
         "type": "table",
         "name": "Table",
         "icon": "fa-table"
     },
     {
-        "id": 8,
-        "url": "static/img/table.png",
+        "id": 7,
         "type": "ticker",
         "name": "Tickers",
         "icon": "fa-check"
     },
     {
-        "id": 9,
-        "url": "static/img/table.png",
+        "id": 8,
         "type": "text",
         "name": "Text",
         "icon": "fa-file-text-o"
     },
     {
-        "id": 10,
-        "url": "static/img/stackedbarchart.png",
+        "id": 9,
         "type": "stackedbar",
         "name": "Stacked Bar",
         "icon": "fa-braille"
+    },
+    {
+        "id": 10,
+        "type": "funnel",
+        "name": "Funnel",
+        "icon": "fa-filter"
+    },
+    {
+        "id": 11,
+        "url": "static/img/icons/scatter-plot.png",
+        "type": "scatter",
+        "name": "Scatter",
+        "icon": "fa-ellipsis-h"
+    },
+    {
+        "id": 12,
+        "type": "combination",
+        "name": "Combination Chart",
+        "icon": "fa-industry"
+    },
+    {
+        "id": 13,
+        "url": "static/img/icons/gauge.png",
+        "type": "gauge",
+        "name": "Gauge",
+        "icon": "fa-tachometer"
     }
 ]

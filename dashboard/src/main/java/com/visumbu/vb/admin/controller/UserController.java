@@ -18,9 +18,11 @@ import com.visumbu.vb.model.AccountUser;
 import com.visumbu.vb.model.Agency;
 import com.visumbu.vb.model.AgencyLicence;
 import com.visumbu.vb.model.AgencyProduct;
+import com.visumbu.vb.model.AgencyProperty;
 import com.visumbu.vb.model.AgencySettings;
 import com.visumbu.vb.model.Currency;
 import com.visumbu.vb.model.Dealer;
+import com.visumbu.vb.model.LastUserAccount;
 import com.visumbu.vb.model.Property;
 import com.visumbu.vb.model.UserAccount;
 import com.visumbu.vb.model.VbUser;
@@ -121,19 +123,46 @@ public class UserController extends BaseController {
     @RequestMapping(value = "login", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     LoginUserBean login(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginUserBean loginUserBean) {
+        HttpSession session = request.getSession();
+        Object agencyDashiencePathObject = session.getAttribute("agencyDashiencePath");
+        String agencyDashiencePath = null;
+        if (agencyDashiencePathObject != null) {
+            agencyDashiencePath = agencyDashiencePathObject + "";
+        }
+        if (agencyDashiencePath != null && !agencyDashiencePath.equalsIgnoreCase("")) {
+            loginUserBean.setDashiencePath(agencyDashiencePath);
+        }
+
         LoginUserBean userBean = userService.authenicate(loginUserBean);
         System.out.println("----------------------------------------------->");
         System.out.println(userBean);
-        HttpSession session = request.getSession();
+
         session.setAttribute("isAuthenticated", userBean.getAuthenticated());
         session.setAttribute("username", userBean.getUsername());
         session.setAttribute("agencyId", userBean.getAgencyId());
+        session.setAttribute("id",userBean.getId());
         if (userBean != null && userBean.getUsername() != null && userBean.getAuthenticated()) {
             VbUser user = userService.findByUsername(userBean.getUsername());
             userBean.setPermission(VbUtils.getPermissions(user, uiService.getUserPermissionById(user.getId())));
             session.setAttribute("permission", userBean.getPermission());
         }
         return userBean;
+    }
+
+    @RequestMapping(value = "getAgencyByDomain", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    Agency getAgencyByDomain(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession();
+        System.out.println("agencyDashiencePath ===> " + session.getAttribute("agencyDashiencePath"));
+        Object agencyDashiencePathObject = session.getAttribute("agencyDashiencePath");
+        String agencyDashiencePath = null;
+        if (agencyDashiencePathObject != null) {
+            agencyDashiencePath = agencyDashiencePathObject + "";
+        }
+        if (agencyDashiencePath != null && !agencyDashiencePath.equalsIgnoreCase("")) {
+            return userService.getAgencyByDomain(agencyDashiencePath);
+        }
+        return null;
     }
 
     @RequestMapping(value = "getPermission", method = RequestMethod.GET, produces = "application/json")
@@ -465,7 +494,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agency", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Object createAgency(HttpServletRequest request, HttpServletResponse response, @RequestBody Agency agency) {
-       
+
         return userService.createAgency(agency);
     }
 
@@ -559,7 +588,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agencySetting", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     AgencySettings createAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
-     
+
         return userService.createAgencySettings(agencySettings);
     }
 
@@ -568,12 +597,51 @@ public class UserController extends BaseController {
     AgencySettings updateAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
         return userService.updateAgencySettings(agencySettings);
     }
-    
+
     @RequestMapping(value = "agencySetting/{agencyId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     AgencySettings getAgencySettingsById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
         return userService.getAgencySettingsById(agencyId);
     }
+
+    @RequestMapping(value = "agencyProperty/{agencyId}", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    List getAgencyPropertyById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
+        return userService.getAgencyPropertyById(agencyId);
+    }
+
+    @RequestMapping(value = "agencyProperty", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    AgencyProperty createAgencyProperty(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencyProperty agencyProperty) {
+        return userService.createAgencyProperty(agencyProperty);
+    }
+
+    @RequestMapping(value = "agencyProperty", method = RequestMethod.PUT, produces = "application/json")
+    public @ResponseBody
+    AgencyProperty updateAgencyProperty(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencyProperty agencyProperty) {
+        return userService.updateAgencyProperty(agencyProperty);
+    }
+
+    @RequestMapping(value = "agencyProperty/{agencyPropertyId}", method = RequestMethod.DELETE, produces = "application/json")
+    public @ResponseBody
+    AgencyProperty deleteAgencyPropertyId(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyPropertyId) {
+        return userService.deleteAgencyPropertyId(agencyPropertyId);
+    }
+    
+    //last selected user account
+     @RequestMapping(value = "lastUserAccount/{productId}/{accountId}", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody
+    LastUserAccount createLastUserAccount(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer productId,@PathVariable Integer accountId) {
+        VbUser user=userService.findByUsername(getUser(request));
+        return userService.createLastUserAccount(productId,accountId,user);
+    }
+    @RequestMapping(value = "getLastUserAccount", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody
+    LastUserAccount getLastUserAccount(HttpServletRequest request, HttpServletResponse response) {
+        VbUser user=userService.findByUsername(getUser(request));
+        return userService.getLastUserAccount(user);
+    }
+    
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -581,4 +649,3 @@ public class UserController extends BaseController {
         e.printStackTrace();
     }
 }
- 

@@ -41,6 +41,15 @@ import org.hibernate.annotations.Type;
 public class Account implements Serializable {
 
     @OneToMany(mappedBy = "accountId")
+    private Collection<Property> propertyCollection;
+
+    @OneToMany(mappedBy = "accountId")
+    private Collection<LastUserAccount> lastUserAccountCollection;
+
+    @OneToMany(mappedBy = "accountId")
+    private Collection<DashboardTabs> dashboardTabsCollection;
+
+    @OneToMany(mappedBy = "accountId")
     private Collection<Scheduler> schedulerCollection;
 
     private static final long serialVersionUID = 1L;
@@ -156,6 +165,36 @@ public class Account implements Serializable {
     @Override
     public String toString() {
         return "com.visumbu.vb.model.Account[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<DashboardTabs> getDashboardTabsCollection() {
+        return dashboardTabsCollection;
+    }
+
+    public void setDashboardTabsCollection(Collection<DashboardTabs> dashboardTabsCollection) {
+        this.dashboardTabsCollection = dashboardTabsCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<LastUserAccount> getLastUserAccountCollection() {
+        return lastUserAccountCollection;
+    }
+
+    public void setLastUserAccountCollection(Collection<LastUserAccount> lastUserAccountCollection) {
+        this.lastUserAccountCollection = lastUserAccountCollection;
+    }
+
+    @XmlTransient
+    @JsonIgnore
+    public Collection<Property> getPropertyCollection() {
+        return propertyCollection;
+    }
+
+    public void setPropertyCollection(Collection<Property> propertyCollection) {
+        this.propertyCollection = propertyCollection;
     }
 
 }

@@ -11,19 +11,19 @@ import com.google.api.ads.common.lib.exception.OAuthException;
 import com.google.api.ads.common.lib.exception.ValidationException;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.ads.adwords.lib.client.reporting.ReportingConfiguration;
-import com.google.api.ads.adwords.lib.jaxb.v201609.DateRange;
-import com.google.api.ads.adwords.lib.jaxb.v201609.DownloadFormat;
-import com.google.api.ads.adwords.lib.jaxb.v201609.Predicate;
-import com.google.api.ads.adwords.lib.jaxb.v201609.PredicateOperator;
-import com.google.api.ads.adwords.lib.jaxb.v201609.ReportDefinition;
-import com.google.api.ads.adwords.lib.jaxb.v201609.ReportDefinitionDateRangeType;
-import com.google.api.ads.adwords.lib.jaxb.v201609.ReportDefinitionReportType;
+import com.google.api.ads.adwords.lib.jaxb.v201710.DateRange;
+import com.google.api.ads.adwords.lib.jaxb.v201710.DownloadFormat;
+import com.google.api.ads.adwords.lib.jaxb.v201710.Predicate;
+import com.google.api.ads.adwords.lib.jaxb.v201710.PredicateOperator;
+import com.google.api.ads.adwords.lib.jaxb.v201710.ReportDefinition;
+import com.google.api.ads.adwords.lib.jaxb.v201710.ReportDefinitionDateRangeType;
+import com.google.api.ads.adwords.lib.jaxb.v201710.ReportDefinitionReportType;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponse;
 import com.google.api.ads.adwords.lib.utils.ReportDownloadResponseException;
 import com.google.api.ads.adwords.lib.utils.ReportException;
-import com.google.api.ads.adwords.lib.utils.v201609.ReportDownloader;
+import com.google.api.ads.adwords.lib.utils.v201710.ReportDownloader;
 import com.google.common.collect.Lists;
-import com.google.api.ads.adwords.lib.jaxb.v201609.Selector;
+import com.google.api.ads.adwords.lib.jaxb.v201710.Selector;
 import com.visumbu.api.adwords.report.xml.bean.AccountReport;
 import com.visumbu.api.adwords.report.xml.bean.AccountReportRow;
 import com.visumbu.api.adwords.report.xml.bean.AdGroupReportRow;
@@ -53,9 +53,14 @@ import java.util.logging.Logger;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.visumbu.vb.admin.dao.SettingsDao;
+import com.visumbu.vb.model.Settings;
+import com.visumbu.vb.utils.SettingsProperty;
 
 /**
  *
@@ -65,21 +70,49 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class AdwordsService {
 
+    @Autowired
+    private SettingsDao settingsDao;
+
     private static final int PAGE_SIZE = 100;
     public static final String XML_FILE_DIR = "/tmp/";
     //private static String clientId = "162577857765-r9dvqjb6i7atjvjftdc8dq5pp80n8j2g.apps.googleusercontent.com";
-    private static String clientId = "117202177181-dfpvmamitf7acnn8ginmp5d0e813u584.apps.googleusercontent.com";
+//    
     //private static String clientSecret = "UxF3VNJFWfNBEQ86reUTk09M";
-    private static String clientSecret = "Z144G8Oqa15m93REF0k5z-vJ";
+
     //private static String refreshToken = "1/75VMEAe7i9UOm69maPpsPMaYH1e58R1xUGlulN--3Pg";
 //    private static String refreshToken = "1/0u_BRufKySoAJwzSUaN6YDkpJiCTZ-swHBp-TMi_HYjPuJ9BIEFVAKhwewnySfK3";
-    private static String refreshToken = "1/i4W9G31Xej2OklH_wihE8AxcDDqd9UeH4Vsi6eJaQshIGy3zvEMB0svvFz4NOj-b";
     //private static String developerToken = "X4glgfA7zjlwzeL3jNQjkw";
 //    private static String developerToken = "I-Ivbh_yb3mE7O8L7KRTFA";
-    private static String developerToken = "zA56sMrpDz_1Hrc_AbRwyA";
-
+    // -- Latest token details
+    //latest developer token
+//    private static String developerToken = "zA56sMrpDz_1Hrc_AbRwyA";
+    //latest client scret
+//      private static String clientSecret = "Z144G8Oqa15m93REF0k5z-vJ"; //new one
+    //latest referesh token below
+//    private static String refreshToken = "1/i4W9G31Xej2OklH_wihE8AxcDDqd9UeH4Vsi6eJaQshIGy3zvEMB0svvFz4NOj-b";
+    //latest client id
+//    private static String clientId = "117202177181-dfpvmamitf7acnn8ginmp5d0e813u584.apps.googleusercontent.com";
     private AdWordsSession getSession(String accountId) {
         try {
+
+            //code to get access token from settings
+            List<Settings> adwordsClientId = settingsDao.getProperty("adwordsClientId");
+            String clientId = SettingsProperty.getSettingsProperty(adwordsClientId, "adwordsClientId");
+
+            //adwords client secret
+            List<Settings> adwordsClientSecret = settingsDao.getProperty("adwordsClientSecret");
+            String clientSecret = SettingsProperty.getSettingsProperty(adwordsClientSecret, "adwordsClientSecret");
+
+            //adwords developer token
+            List<Settings> adwordsDeveloperToken = settingsDao.getProperty("adwordsDeveloperToken");
+            String developerToken = SettingsProperty.getSettingsProperty(adwordsDeveloperToken, "adwordsDeveloperToken");
+
+            //adwords referesh token
+            List<Settings> adwordsRefreshToken = settingsDao.getProperty("adwordsRefreshToken");
+            String refreshToken = SettingsProperty.getSettingsProperty(adwordsRefreshToken, "adwordsRefreshToken");
+
+            System.out.println("Adword Refresh Token-->" + refreshToken);
+
             Credential credential = new OfflineCredentials.Builder()
                     .forApi(OfflineCredentials.Api.ADWORDS)
                     .withClientSecrets(clientId, clientSecret)
@@ -105,7 +138,12 @@ public class AdwordsService {
         return null;
     }
 
-    public List<Map<String, Object>> get(String dataSetReportName, String adwordsAccountId, Date startDate, Date endDate, String aggregation, String productSegment, String filters) {
+    public List<Map<String, Object>> get(String dataSetReportName, String adwordsAccountId, Date startDate,
+            Date endDate, String aggregation, String productSegment, String filters) {
+
+        List<Settings> adwordsClientId = settingsDao.getProperty("adwordsClientId");
+        String clientId = SettingsProperty.getSettingsProperty(adwordsClientId, "adwordsClientId");
+
         if (aggregation == null) {
             aggregation = "";
         }
@@ -248,6 +286,9 @@ public class AdwordsService {
         String[] filterArr = filters.split(",");
         for (int i = 0; i < filterArr.length; i++) {
             String filter = filterArr[i];
+            if (filter.equalsIgnoreCase("all")) {
+                continue;
+            }
             final Predicate predicate = new Predicate();
             predicate.setField("AdNetworkType1");
             predicate.setOperator(PredicateOperator.IN);
@@ -652,7 +693,7 @@ public class AdwordsService {
 //    }
     public Object adWordsAsMap(Date startDate, Date endDate, String accountId, String[] fields, Map<String, String> filter, String aggregation, String reportType) {
         AdWordsSession session = getSession(accountId);
-        com.google.api.ads.adwords.lib.jaxb.v201609.Selector selector = new com.google.api.ads.adwords.lib.jaxb.v201609.Selector();
+        com.google.api.ads.adwords.lib.jaxb.v201710.Selector selector = new com.google.api.ads.adwords.lib.jaxb.v201710.Selector();
         selector.getFields().addAll(Lists.newArrayList(fields));
 
         if (filter != null) {
@@ -691,12 +732,12 @@ public class AdwordsService {
         // rows.
         ReportingConfiguration reportingConfiguration
                 = new ReportingConfiguration.Builder()
-                .skipReportHeader(true)
-                .skipColumnHeader(true)
-                .skipReportSummary(true)
-                // Enable to allow rows with zero impressions to show.
-                .includeZeroImpressions(false)
-                .build();
+                        .skipReportHeader(true)
+                        .skipColumnHeader(true)
+                        .skipReportSummary(true)
+                        // Enable to allow rows with zero impressions to show.
+                        .includeZeroImpressions(false)
+                        .build();
         session.setReportingConfiguration(reportingConfiguration);
 
         reportDefinition.setSelector(selector);
@@ -726,7 +767,7 @@ public class AdwordsService {
         }
         return null;
     }
-//
+
 //    public AdReport getKeywordReport(Date startDate, Date endDate, String accountId, String timeSegment, String productSegment, String filter) {
 //        AdWordsSession session = getSession(accountId);
 //        Selector selector = new Selector();
@@ -920,17 +961,42 @@ public class AdwordsService {
 //    
     Map<String, AdwordsReport> adwordsReports = ApiUtils.getAllAdwordsReports();
 
-    public List<Map<String, Object>> getAdwordsReport(String reportName, Date startDate, Date endDate, String accountId, String timeSegment, String productSegment, String filter) {
+    public List<Map<String, Object>> getAdwordsReport(String reportName, Date startDate, Date endDate, String accountId,
+            String timeSegment, String productSegment, String filter) {
+        System.out.println("filter ---> " + filter);
         AdwordsReport adwordsData = adwordsReports.get(reportName);
         System.out.println(adwordsData);
         String[] fields = adwordsData.getFields();
         ReportDefinitionReportType reportType = adwordsData.getReportType();
+        System.out.println("Adwords Account Id-->" + accountId);
         AdWordsSession session = getSession(accountId);
         Selector selector = new Selector();
         ArrayList<String> fieldList = Lists.newArrayList(fields);
-        if(timeSegment != null && timeSegment.equalsIgnoreCase("HourOfDay")){
-            fieldList.remove("AllConversions");
+        fieldList.remove("AllConversions");
+        if (timeSegment != null && timeSegment.equalsIgnoreCase("HourOfDay")) {
+        } else if (reportName != null && reportName.equalsIgnoreCase("videoPerformance")) {
+        } else {
+            fieldList.add("AllConversions");
         }
+
+        if (filter == null || filter.equalsIgnoreCase("none") || filter.equalsIgnoreCase("undefined")) {
+        } else {
+            fieldList.add("AdNetworkType1");
+        }
+
+        if (productSegment != null && productSegment.equalsIgnoreCase("AdNetworkType1")) {
+            fieldList.remove("AdNetworkType1");
+        } else {
+            fieldList.remove("AdNetworkType2");
+        }
+
+        System.out.println("FieldList 1====> " + fieldList);
+
+        if (filter == null) {
+        } else if (timeSegment == null && productSegment == null && filter.equalsIgnoreCase("SEARCH")) {
+            fieldList.remove("AdNetworkType2");
+        }
+        System.out.println("FieldList 2====> " + fieldList);
         selector.getFields().addAll(fieldList);
         System.out.println("Time Segment ===> " + timeSegment);
         System.out.println("Product Segment ===> " + productSegment);
@@ -957,12 +1023,12 @@ public class AdwordsService {
         // rows.
         ReportingConfiguration reportingConfiguration
                 = new ReportingConfiguration.Builder()
-                .skipReportHeader(true)
-                .skipColumnHeader(true)
-                .skipReportSummary(true)
-                // Enable to allow rows with zero impressions to show.
-                .includeZeroImpressions(false)
-                .build();
+                        .skipReportHeader(true)
+                        .skipColumnHeader(true)
+                        .skipReportSummary(true)
+                        // Enable to allow rows with zero impressions to show.
+                        .includeZeroImpressions(false)
+                        .build();
         session.setReportingConfiguration(reportingConfiguration);
 
         reportDefinition.setSelector(selector);
@@ -978,11 +1044,11 @@ public class AdwordsService {
             response.saveToFile(filename);
             Map dataMap = (Map) XmlUtils.getAsMap(filename);
             dataMap = (Map) dataMap.get("report");
-            if(dataMap == null) {
+            if (dataMap == null) {
                 return null;
             }
             dataMap = (Map) dataMap.get("table");
-            if(dataMap == null) {
+            if (dataMap == null) {
                 return null;
             }
             if (dataMap.get("row") instanceof Map) {

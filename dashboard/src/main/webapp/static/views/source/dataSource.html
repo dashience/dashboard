@@ -57,7 +57,7 @@
         <div class="panel-body header-title">
             <div id="hbreadcrumb" class="pull-right">
             </div>
-            <h2 class="font-bold m-b-xs ng-binding">
+            <h2 class="font-bold m-b-xs ng-binding" translate>
                 Data Source
             </h2>               
         </div>
@@ -74,11 +74,11 @@
                     <table class="table table-responsive table-fixed">
                         <thead>
                             <tr>
-                                <th class="col-xs-2">Name</th>
-                                <th class="col-xs-2">Type</th>
-                                <th class="col-xs-3">Connection String</th>
-                                <th class="col-xs-2">Driver</th>
-                                <th class="col-xs-2">User Name</th>
+                                <th class="col-xs-2" translate>Name</th>
+                                <th class="col-xs-2" translate>Type</th>
+                                <th class="col-xs-3" translate>Connection String</th>
+                                <th class="col-xs-2" translate>Driver</th>
+                                <th class="col-xs-2" translate>User Name</th>
                                 <th class="col-xs-1"></th>
                             </tr>
                         </thead>
@@ -90,35 +90,35 @@
                                 <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.sqlDriver?dataSource.sqlDriver:'-'}}</td>
                                 <td class="col-xs-2" ng-click="editDataSource(dataSource)">{{dataSource.userName?dataSource.userName:'-'}}</td>
                                 <td class="col-xs-1">
-                                    <button class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteDataSource{{dataSource.id}}"><i class="fa fa-trash-o"></i></button>
+                                    <button class="btn btn-default btn-xs" title="{{'Delete'|translate}}" data-toggle="modal" data-target="#deleteDataSource{{dataSource.id}}"><i class="fa fa-trash-o"></i></button>
                                     <div class="modal hmodal-success" id="deleteDataSource{{dataSource.id}}" tabindex="-1" role="dialog"  aria-hidden="true">
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="color-line"></div>
                                                 <div class="modal-header">
                                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title">Delete</h4>
+                                                    <h4 class="modal-title" translate>Delete</h4>
                                                     <small class="font-bold"></small>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form class="form-horizontal" role="form">
                                                         <div class="form-group">
                                                             <div class="col-sm-12  col-md-12">
-                                                                <span>Want to delete ?</span>
+                                                                <span translate>Want to delete?</span>
                                                             </div>
                                                         </div>
                                                     </form>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <div class="col-sm-12">
-                                                        <button type="button" class="btn btn-primary btn-xs " 
+                                                        <button  type="button" class="btn btn-primary btn-xs " 
                                                                 ng-click="deleteDataSource(dataSource, $index)" 
                                                                 data-dismiss="modal">
-                                                            <span class="fa fa-trash"></span> Yes
+                                                            <span class="fa fa-trash"></span><span translate> Yes</span>
                                                         </button>
                                                         <button type="button" class="btn btn-danger btn-xs " 
                                                                 data-dismiss="modal">
-                                                            <span class="fa fa-times"></span> No
+                                                            <span class="fa fa-times"></span><span translate> No</span>
                                                         </button>
                                                     </div>
                                                 </div>
@@ -139,18 +139,19 @@
                 <div class="panel-body">
                     <form class="col-md-12 form-horizontal" name="dataSourceForm">
                         <div class="form-group">
-                            <label>Name</label>
-                            <input class="form-control" type="text" ng-change="authenticateStatus(dataSource.name)" ng-model="dataSource.name" placeholder="Name">
+                            <label translate>Name</label>
+                            <input class="form-control" type="text" ng-change="authenticateStatus(dataSource.name)" ng-model="dataSource.name" placeholder="{{'Name'|translate}}">
                         </div>
                         <div class="form-group">
-                            <label>Type</label>
+                            <label translate>Type</label>
                             <select class="form-control" ng-model="dataSource.dataSourceType" ng-change="selectSourceType(dataSource)">
-                                <option value="" selected="selected" ng-disabled="true">Choose one</option>
+                                <option value="" selected="selected" ng-disabled="true">{{'Choose One'| translate}}</option>
                                 <option ng-repeat="sourceType in dataSourceTypes"  value="{{sourceType.type}}">{{sourceType.name}}</option>
                             </select>
                         </div>
-                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
-                            <label>Connection String</label>
+                        <div class="form-group" ng-if="dataSource.dataSourceType === 'sql' || dataSource.dataSourceType === 'skyZone' || dataSource.dataSourceType === 'autoMobiles' || dataSource.dataSourceType === 'dataSetSql' || dataSource.dataSourceType === 'semRush'">
+                            <label ng-if="dataSource.dataSourceType !== 'semRush'" translate>Connection String</label>
+                            <label ng-if="dataSource.dataSourceType === 'semRush'" translate>API Key</label>
                             <input type="text" class="form-control" ng-model="dataSource.connectionString">
                         </div>
 
@@ -159,12 +160,12 @@
                                                             <div class="fileUpload btn btn-primary">
                                                                 <span>Upload</span>
                                                                 <input class="upload" type="file" 
-                                                                       accept=".csv" onchange="angular.element(this).scope().csvFileUpload(event)" />
+                                                                        accept=".csv" onchange="angular.element(this).scope().csvFileUpload(event)" />
                                                             </div> 
                                                         </div>-->
                         <div class="form-group" ng-show="showCSVFileUpload">
                             <div class="fileUpload btn btn-primary">
-                                <label>Select</label>
+                                <label translate>Select</label>
                                 <input class="upload" type="file"
                                        file-model="myFile"
                                        accept=".csv"
@@ -173,7 +174,7 @@
                         </div>
                         <div class="form-group" ng-show="showXLSFileUpload">
                             <div class="fileUpload btn btn-primary">
-                                <label>Select</label>
+                                <label translate>Select</label>
                                 <input class="upload" type="file"
                                        file-model="myFile"
                                        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -187,34 +188,36 @@
                             </div>
                         </div>
                         <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
-                            <label>Driver</label>
+                            <label translate>Driver</label>
                             <input type="text" class="form-control" ng-model="dataSource.sqlDriver">
                         </div>
                         <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
-                            <label>User Name</label>
+                            <label translate>User Name</label>
                             <input type="text" class="form-control" ng-model="dataSource.userName">
                         </div>
                         <div class="form-group" ng-if="dataSource.dataSourceType === 'sql'">
-                            <label>Password</label>
-                            <input type="text" class="form-control" ng-model="dataSource.password">
+                            <!--<input type="text" class="form-control" ng-model="dataSource.password">-->        
+                            <label translate>Password</label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" ng-model="dataSource.password" id="password" name="password" >
+                                <span class="input-group-addon">
+                                    <i show-password class="fa fa-eye-slash" style="cursor: pointer" aria-hidden="true"></i>
+                                </span>
+                            </div>
                         </div>
                         <input type="hidden" id="fbAccessToken" ng-model="dataSource.accessToken">
                         <input type="hidden" id="fbOauthToken" ng-model="dataSource.oauthToken">
                         <input type="hidden" id="dataSourceType" ng-model="dataSource.dataSourceType">
                         <div class="form-group pull-right">
                             <button ng-if="!(dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls')" 
-                                    class="btn btn-info" ng-click="saveDataSource(dataSource)">Save</button>
+                                    class="btn btn-info" ng-click="saveDataSource(dataSource)" translate>Save</button>
                             <button ng-if="dataSource.dataSourceType === 'csv' || dataSource.dataSourceType === 'xls'"
-                                    class="btn btn-info" ng-click="uploadFile(dataSource)">Save</button>
-                            <button class="btn btn-warning" ng-click="clearDataSource(dataSource)">Cancel</button>
+                                    class="btn btn-info" ng-click="uploadFile(dataSource)" translate>Save</button>
+                            <button class="btn btn-warning" ng-click="clearDataSource(dataSource)" translate>Cancel</button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>  
-
-
-
-
     </div>
 </section>

@@ -63,16 +63,15 @@
     <div class="row">
         <div class="pull-right-container pull-right agency-bt">
             <div class="btn-group"> 
-                <a ui-sref="index.schedulerIndex.scheduler({accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> Back</a>
+                <a ui-sref="index.schedulerIndex.scheduler({lan: agencyLanguage, accountId: accountId,accountName: accountName, startDate: startDate, endDate: endDate})"><i class="fa fa-arrow-left"></i> <span translate>Back</span></a>
             </div>
             <div class="btn-group"> 
-                <button class="btn btn-success btn-sm" ng-click="addNewScheduler()">New</button>
+                <button class="btn btn-success btn-sm" ng-click="addNewScheduler()" translate>New</button>
             </div>
         </div>
     </div>
     <div class="hpanel">
-        <div class="panel-heading hbuilt">
-
+        <div class="panel-heading hbuilt" translate>
             Schedule Report
         </div>
         <div class="panel-body">
@@ -83,17 +82,19 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <div class="col-md-12">
-                                    <label>Schedule Name</label>
+                                    <label translate>Schedule Name</label>
                                     <div>
-                                        <input type="text" placeholder="Schedule Name" ng-model="scheduler.schedulerName" class="form-control">
+                                        <input type="text" placeholder="{{'Schedule Name'| translate}}" ng-model="scheduler.schedulerName" ng-change="saveValidate(scheduler)" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-12">
-                                    <label>Repeat</label>
+                                    <label translate>Repeat</label>
                                     <div>
-                                        <select class="form-control" ng-options="schedulerRepeat for schedulerRepeat in schedulerRepeats" ng-model="scheduler.schedulerRepeatType"></select>
+                                        <select class="form-control" ng-change="saveValidate(scheduler)" 
+                                                ng-options="schedulerRepeat for schedulerRepeat in schedulerRepeats"
+                                                ng-model="scheduler.schedulerRepeatType"></select>
                                     </div>
                                 </div>
                             </div>
@@ -101,42 +102,44 @@
                                 <!--<div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">-->
                                 <div class="col-md-12">
 
-                                    <label >Select Week</label>
+                                    <label translate>Select Week</label>
                                     <div>
-                                        <select class="form-control" ng-options="week for week in weeks" ng-model="scheduler.schedulerWeekly"></select>
+                                        <select class="form-control" ng-options="week for week in weeks" 
+                                                ng-model="scheduler.schedulerWeekly" 
+                                                ng-change="saveValidate(scheduler)"></select>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly'">
                                 <!--<div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Once' || scheduler.schedulerRepeatType === 'Daily' || scheduler.schedulerRepeatType === 'Weekly' || scheduler.schedulerRepeatType === 'Year Of Week'">-->
                                 <div class="col-md-12">
-                                    <label >Time</label>
+                                    <label translate>Time</label>
                                     <div>
-                                        <input type="text" jqdatepicker-Time placeholder="Time" ng-model="scheduler.schedulerTime" class="form-control">
+                                        <input type="text" jqdatepicker-Time placeholder="{{'Time'|translate}}" ng-model="scheduler.schedulerTime" ng-change="saveValidate(scheduler)" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group" ng-if="scheduler.schedulerRepeatType === 'Monthly'">
                                 <div class="col-md-12">
-                                    <label>Select Date And Time</label>
+                                    <label translate>Select Date And Time</label>
                                     <div>
-                                        <input type="text" jqdatetimepicker placeholder="Select Date And Time" ng-model="scheduler.schedulerMonthly" class="form-control">
+                                        <input type="text" jqdatetimepicker placeholder="{{'Select Date And Time'| translate}}" ng-model="scheduler.schedulerMonthly" ng-change="saveValidate(scheduler)" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group" ng-if="scheduler.schedulerRepeatType !== 'Now'">
                                 <div class="col-md-12">
-                                    <label>Start Date</label>
+                                    <label translate>Start Date</label>
                                     <div>
-                                        <input type="text" jqdatepicker placeholder="Start Date" ng-model="scheduler.startDate" class="form-control">
+                                        <input type="text" jqdatepicker placeholder="{{'Start Date'|translate}}" ng-model="scheduler.startDate" ng-change="saveValidate(scheduler)" class="form-control">
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group" ng-if="scheduler.schedulerRepeatType !== 'Now'">
                                 <div class="col-md-12">
-                                    <label>End Date</label>
+                                    <label translate>End Date</label>
                                     <div>
-                                        <input type="text" jqdatepicker placeholder="End Date" ng-disabled ng-model="scheduler.endDate" class="form-control">
+                                        <input type="text" jqdatepicker placeholder="{{'End Date'|translate}}" ng-disabled ng-model="scheduler.endDate" ng-change="saveValidate(scheduler)" class="form-control">
                                     </div>
 
                                 </div>
@@ -171,10 +174,10 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <div class="col-md-6">
-                                    <label>Report</label>
+                                    <label translate>Report</label>
                                     <div>
-                                        <ui-select ng-model="scheduler.reportId" theme="select2" ng-disabled="disabled" style="min-width:225px;">
-                                            <ui-select-match placeholder="Select Report...">
+                                        <ui-select ng-model="scheduler.reportId" ng-change="saveValidate(scheduler)" theme="select2" ng-disabled="disabled" style="min-width:225px;">
+                                            <ui-select-match placeholder="{{'Select Report'|translate}}">
                                                 <img ng-if="$select.selected.logo" style="width: 40px" ng-src="{{ $select.selected.logo}}" />
                                                 <img ng-if="!$select.selected.logo" style="width: 40px" ng-src="static/img/logos/emptyLogo.jpg" />
                                                 {{$select.selected.reportTitle}}
@@ -190,10 +193,10 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Account</label>
+                                    <label translate>Account</label>
                                     <div>
-                                        <ui-select ng-model="scheduler.accountId" theme="select2" ng-disabled="disabled" style="min-width:108px;">
-                                            <ui-select-match placeholder="Select Year Account...">{{$select.selected.accountName}}</ui-select-match>
+                                        <ui-select ng-model="scheduler.accountId" ng-change="saveValidate(scheduler)" theme="select2" ng-disabled="disabled" style="min-width:108px;">
+                                            <ui-select-match placeholder="{{'Select Account'|translate}}">{{$select.selected.accountName}}</ui-select-match>
                                             <ui-select-choices repeat="account in accounts | filter: $select.search">
                                                 <span ng-bind-html="account.accountName | highlight: $select.search"></span>
                                             </ui-select-choices>
@@ -205,25 +208,26 @@
                                 <div class="col-sm-6">
 
                                     <label class="scheduler-checkBox-label">
-                                        <span> Send to Account</span>
+                                        <span translate> Send to Account</span>
                                     </label>
-                                    <div> <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.isAccountEmail == true;" ng-model="scheduler.isAccountEmail" ng-true-value="1" />
+                                    <div> <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.isAccountEmail == true;" ng-model="scheduler.isAccountEmail" ng-change="saveValidate(scheduler)" ng-true-value="1"  />
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
-                                    <label>Date Range</label>
+                                    <label translate>Date Range</label>
                                     <div>
                                         <div>
                                             <button class="drop btn btn-default" type="button">
-                                                <span id="customDateRangeName">{{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}</span>
+                                                <span id="customDateRangeName">
+                                                    {{scheduler.dateRangeName?scheduler.dateRangeName:"Select Date Duration"}}
+                                                </span>
                                                 <span class="caret"></span></button>
                                             <ul class="dropdown-menu scheduler-list-style">
                                                 <li ng-click="selectDuration('Custom', scheduler)" >
-
                                                     <a>Custom</a>
                                                     <div class="col-md-12 custom-picker">
-                                                        <!--                                                        <label>Custom Range</label>-->
+                                                        <!-- <label>Custom Range</label>-->
                                                         <a class="pull-right custom-daterange-box" id="customDateRange" style="padding: 6px !important;">
                                                             <span class="date-border">
 
@@ -244,59 +248,58 @@
                                                                                                 <li ng-click="selectDuration('This Year', null)"><a>This Year</a></li>
                                                                                                 <li ng-click="selectDuration('Last Year', null)"><a>Last Year</a></li>-->
                                                 <li ng-click="selectDuration('Last N Days', scheduler)">
-                                                    <a>Last <input type="text"
-                                                                   ng-model="scheduler.lastNdays" 
-                                                                   ng-change="selectDuration('Last N Days', scheduler)" 
-                                                                   class="form-control" 
-                                                                   ng-model-options="{debounce: 500}"
-                                                                   style="width: 60px; display: contents; height: 25px;"> 
-                                                        Days
+                                                    <a><span translate>Last</span> <input type="text"
+                                                                                          ng-model="scheduler.lastNdays" 
+                                                                                          ng-change="selectDuration('Last N Days', scheduler)" 
+                                                                                          class="form-control" 
+                                                                                          ng-model-options="{debounce: 500}"
+                                                                                          style="width: 60px; display: contents; height: 25px;"> 
+                                                        <span translate>Days</span>
                                                     </a>
                                                 </li>
                                                 <li ng-click="selectDuration('Last N Weeks', scheduler)">
-                                                    <a>Last <input type="text" 
-                                                                   ng-model="scheduler.lastNweeks" 
-                                                                   ng-change="selectDuration('Last N Weeks', scheduler)"
-                                                                   class="form-control" 
-                                                                   ng-model-options="{debounce: 500}"
-                                                                   style="width: 60px; display: contents; height: 25px;"> 
-                                                        Weeks
+                                                    <a><span translate>Last</span><input type="text" 
+                                                                                         ng-model="scheduler.lastNweeks" 
+                                                                                         ng-change="selectDuration('Last N Weeks', scheduler)"
+                                                                                         class="form-control" 
+                                                                                         ng-model-options="{debounce: 500}"
+                                                                                         style="width: 60px; display: contents; height: 25px;"> 
+                                                        <span translate>Weeks</span>
                                                     </a>
                                                 </li>
                                                 <li ng-click="selectDuration('Last N Months', scheduler)">
-                                                    <a>Last <input type="text" 
-                                                                   ng-model="scheduler.lastNmonths" 
-                                                                   ng-change="selectDuration('Last N Months', scheduler)"
-                                                                   class="form-control" 
-                                                                   ng-model-options="{debounce: 500}"
-                                                                   style="width: 60px; display: contents; height: 25px;"> 
-                                                        Months
+                                                    <a><span translate>Last</span> <input type="text" 
+                                                                                          ng-model="scheduler.lastNmonths" 
+                                                                                          ng-change="selectDuration('Last N Months', scheduler)"
+                                                                                          class="form-control" 
+                                                                                          ng-model-options="{debounce: 500}"
+                                                                                          style="width: 60px; display: contents; height: 25px;"> 
+                                                        <span translate>Months</span>
                                                     </a>
                                                 </li>
                                                 <li ng-click="selectDuration('Last N Years', scheduler)">
-                                                    <a>Last <input type="text" 
-                                                                   ng-model="scheduler.lastNyears" 
-                                                                   ng-change="selectDuration('Last N Years', scheduler)"
-                                                                   class="form-control" 
-                                                                   ng-model-options="{debounce: 500}"
-                                                                   style="width: 60px; display: contents; height: 25px;"> 
-                                                        Years
+                                                    <a><span translate>Last</span> <input type="text" 
+                                                                                          ng-model="scheduler.lastNyears" 
+                                                                                          ng-change="selectDuration('Last N Years', scheduler)"
+                                                                                          class="form-control" 
+                                                                                          ng-model-options="{debounce: 500}"
+                                                                                          style="width: 60px; display: contents; height: 25px;"> 
+                                                        <span translate>Years</span>
                                                     </a>
                                                 </li>
-                                                <!--<li><a class="col-md-12" ng-click="selectDuration('None', scheduler)">None</a></li>-->
                                             </ul>
                                         </div>
                                     </div>
-                                    
+
                                     <span class="text-danger" ng-show="showSchedulerMsg">{{showErrorDateRangeMessage}}</span>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="col-md-12">
-                                    <label>Email Ids</label>
+                                    <label translate>Email Ids</label>
                                     <div>
-                                        <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
-                                            <ui-select-match placeholder="Email Ids...">{{$item}}</ui-select-match>
+                                        <ui-select multiple tagging tagging-label="" tagging-tokens="SPACE|,|/" ng-model="scheduler.schedulerEmail" ng-change="saveValidate(scheduler)" on-removed="removed($item)" theme="bootstrap" ng-disabled="disabled" class="form-control">
+                                            <ui-select-match placeholder="{{'Email Ids'|translate}}">{{$item}}</ui-select-match>
                                             <ui-select-choices repeat="accountEmail in accountEmails | filter:$select.search">
                                                 {{accountEmail}}
                                             </ui-select-choices>
@@ -310,23 +313,23 @@
                                 <div class="col-md-8">
 
 
-                                    <div class="col-sm-2">
+                                    <div>
                                         <label class="scheduler-checkBox-label">
-                                            <span>PDF</span>
+                                            <span translate>PDF</span>
                                         </label>
                                         <div>
-                                            <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'pdf'" ng-true-value="'pdf'" ng-model="scheduler.schedulerType" /> 
+                                            <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'pdf'" ng-true-value="'pdf'" ng-model="scheduler.schedulerType" ng-change="saveValidate(scheduler)" />
                                         </div>  
                                     </div>
-<!--                                    <div class="col-sm-2">
-                                        <label class="scheduler-checkBox-label">
-                                            <span>PPT</span>
-                                        </label>
-                                        <div>
-                                            <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'ppt'" ng-true-value="'ppt'" ng-model="scheduler.schedulerType" /> 
-
-                                        </div>
-                                    </div>-->
+                                    <!--                                    <div class="col-sm-2">
+                                                                            <label class="scheduler-checkBox-label">
+                                                                                <span>PPT</span>
+                                                                            </label>
+                                                                            <div>
+                                                                                <input class="scheduler-checkBox" type="checkbox" ng-checked="scheduler.schedulerType == 'ppt'" ng-true-value="'ppt'" ng-model="scheduler.schedulerType" /> 
+                                    
+                                                                            </div>
+                                                                        </div>-->
                                     <!--                                    <div class="col-sm-2">
                                                                             <label class="scheduler-checkBox-label">
                                                                                 <span>XLS</span>
@@ -342,8 +345,8 @@
                         </div>
                         <div class="form-group col-md-12">
                             <div class="col-sm-8">
-                                <button class="btn btn-success btn-sm" ng-click="saveScheduler(scheduler)"> Save</button>
-                                <button class="btn btn-warning btn-sm" ui-sref="index.schedulerIndex.scheduler({accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})"> Cancel</button>
+                                <button class="btn btn-success btn-sm" ng-disabled="saveBtnIsDisable" ng-click="saveScheduler(scheduler)" translate> Save</button>
+                                <button class="btn btn-warning btn-sm" ui-sref="index.schedulerIndex.scheduler({lan: agencyLanguage, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate})" translate> Cancel</button>
                             </div>
                         </div>
                     </form> 

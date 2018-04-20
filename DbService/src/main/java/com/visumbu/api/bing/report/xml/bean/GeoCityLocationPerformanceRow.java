@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class GeoCityLocationPerformanceRow {
+
     private Data clicks;
     private Data impressions;
     private Data averageCpc;
@@ -28,6 +29,16 @@ public class GeoCityLocationPerformanceRow {
     private Data accountName;
     private Data state;
     private Data averagePosition;
+    private Data gregorianDate;
+
+    public Data getGregorianDate() {
+        return gregorianDate;
+    }
+
+    @XmlElement(name = "GregorianDate")
+    public void setGregorianDate(Data gregorianDate) {
+        this.gregorianDate = gregorianDate;
+    }
 
     public Data getClicks() {
         return clicks;
@@ -158,5 +169,5 @@ public class GeoCityLocationPerformanceRow {
     @Override
     public String toString() {
         return "GeoCityLocationPerformanceRow{" + "clicks=" + clicks + ", impressions=" + impressions + ", averageCpc=" + averageCpc + ", ctr=" + ctr + ", spend=" + spend + ", conversions=" + conversions + ", costPerConversion=" + costPerConversion + ", conversionRate=" + conversionRate + ", timePeriod=" + timePeriod + ", city=" + city + ", country=" + country + ", accountName=" + accountName + ", state=" + state + ", averagePosition=" + averagePosition + '}';
-    }    
+    }
 }

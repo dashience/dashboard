@@ -11,7 +11,6 @@ import com.visumbu.vb.admin.service.UserService;
 import com.visumbu.vb.bean.SchedulerBean;
 import com.visumbu.vb.controller.BaseController;
 import com.visumbu.vb.model.Scheduler;
-import com.visumbu.vb.model.SchedulerHistory;
 import com.visumbu.vb.model.VbUser;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +49,7 @@ public class SchedulerController extends BaseController {
     Scheduler createScheduler(HttpServletRequest request, HttpServletResponse response, @RequestBody SchedulerBean schedulerBean) {
         VbUser user = userService.findByUsername(getUser(request));
         schedulerBean.setAgencyId(user.getAgencyId());
+        schedulerBean.setCreatedBy(user);
         System.out.println("Test");
         Scheduler scheduler = schedulerService.createScheduler(schedulerBean);
         if (scheduler.getSchedulerRepeatType().equalsIgnoreCase("Now")) {
@@ -59,6 +59,7 @@ public class SchedulerController extends BaseController {
             System.out.println("scheduledTasks: "+scheduledTasks);
             timeService.executeTasks(scheduledTasks);
         }
+        System.out.println("scheduler"+scheduler);
         return scheduler;
     }
 
@@ -67,6 +68,7 @@ public class SchedulerController extends BaseController {
     Scheduler updateScheduler(HttpServletRequest request, HttpServletResponse response, @RequestBody SchedulerBean schedulerBean) {
         VbUser user = userService.findByUsername(getUser(request));
         schedulerBean.setAgencyId(user.getAgencyId());
+        schedulerBean.setCreatedBy(user);
         Scheduler scheduler = schedulerService.updateScheduler(schedulerBean);
         if (scheduler.getSchedulerRepeatType().equalsIgnoreCase("Now")) {
             System.out.println("Test 1");

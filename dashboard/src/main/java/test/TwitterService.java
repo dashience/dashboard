@@ -92,8 +92,8 @@ import org.json.JSONObject;
 public class TwitterService {
 	
 	
-	private String twitter_consumer_key = "oLj3MfsjMYSkxOrTYwaBh9xrW";
-	private String twitter_consumer_secret = "l9cAcUdOpYABTvNv4qSJDgvII6UOjIrj81IJmRXllQflR6m8q7";	
+	private String twitter_consumer_key = "3oaqt0QK31AGCAzHlX3c9xPbL";
+	private String twitter_consumer_secret = "AuVaSXpGPJWLYMCzDiera1avN8MfChN2mGysCmWeDXPzVlDVZC";	
 	
 	public String encode(String value) 
 	{
@@ -140,7 +140,7 @@ public class TwitterService {
 	// INPUT: nothing
 	// OUTPUT: if successful, twitter API will return oauth_token, oauth_token_secret and oauth_token_confirmed
 	
-	public  JSONObject startTwitterAuthentication()
+	public JSONObject startTwitterAuthentication()
 	{
 		JSONObject jsonresponse = new JSONObject();
 		
@@ -335,23 +335,13 @@ public class TwitterService {
 			
 		}
 		return jsonresponse;
-	}
-	
-	// once you've got the generic request token, send the user to the authorization page. They grant access and either
-	// a) are shown a pin number 
-	// b) sent to the callback url with information
-	// In either case, turn the authorization code into a twitter access token for that user. 
-	
-	// My example here is uses a pin and oauth_token (from the previous request token call)
-	// INPUT: pin, generic request token
-	// OUTPUT: if successful, twitter API will return access_token, access_token_secret, screen_name and user_id
-	
+}
 	public JSONObject getTwitterAccessTokenFromAuthorizationCode(String verifier_or_pin, String oauth_token)
 	{
 		JSONObject jsonresponse = new JSONObject();
 		
 		// this particular request uses POST
-		String get_or_post = "POST";
+		String get_or_post = "GET";
 		
 		// I think this is the signature method used for all Twitter API calls
 		String oauth_signature_method = "HMAC-SHA1";
@@ -372,9 +362,9 @@ public class TwitterService {
 		    		"&oauth_timestamp=" + oauth_timestamp + "&oauth_token=" + encode(oauth_token) + "&oauth_version=1.0";		
 		System.out.println("parameter_string=" + parameter_string);
 		
-		String twitter_endpoint = "https://api.twitter.com/oauth/access_token";
+		String twitter_endpoint = "https://api.twitter.com/1.1/lists/statuses.json";
 		String twitter_endpoint_host = "api.twitter.com";
-		String twitter_endpoint_path = "/oauth/access_token";
+		String twitter_endpoint_path = "/lists/statuses.json";
 		String signature_base_string = get_or_post + "&"+ encode(twitter_endpoint) + "&" + encode(parameter_string);
 			
 		String oauth_signature = "";
@@ -1104,11 +1094,11 @@ public class TwitterService {
 		String parameter_string = "oauth_consumer_key=" + twitter_consumer_key + "&oauth_nonce=" + oauth_nonce + "&oauth_signature_method=" + oauth_signature_method + 
 			"&oauth_timestamp=" + oauth_timestamp + "&oauth_token=" + encode(oauth_token) + "&oauth_version=1.0";	
 		//System.out.println("parameter_string=" + parameter_string);
-		String twitter_endpoint = "https://api.twitter.com/1.1/account/verify_credentials.json";
+		String twitter_endpoint = "https://api.twitter.com/1.1/statuses/mentions_timeline.json";
 		String twitter_endpoint_host = "api.twitter.com";
-		String twitter_endpoint_path = "/1.1/account/verify_credentials.json";
+		String twitter_endpoint_path = "/1.1/statuses/mentions_timeline.json";
 		String signature_base_string = get_or_post + "&"+ encode(twitter_endpoint) + "&" + encode(parameter_string);
-		//System.out.println("signature_base_string=" + signature_base_string);
+		System.out.println("signature_base_string=" + signature_base_string);
 		
 		// this time the base string is signed using twitter_consumer_secret + "&" + encode(oauth_token_secret) instead of just twitter_consumer_secret + "&"
 		String oauth_signature = "";
@@ -1123,7 +1113,7 @@ public class TwitterService {
 		
 		String authorization_header_string = "OAuth oauth_consumer_key=\"" + twitter_consumer_key + "\",oauth_signature_method=\"HMAC-SHA1\",oauth_timestamp=\"" + oauth_timestamp + 
 				"\",oauth_nonce=\"" + oauth_nonce + "\",oauth_version=\"1.0\",oauth_signature=\"" + encode(oauth_signature) + "\",oauth_token=\"" + encode(oauth_token) + "\"";
-		//System.out.println("authorization_header_string=" + authorization_header_string);
+		System.out.println("authorization_header_string=" + authorization_header_string);
 
 
 		 HttpParams params = new SyncBasicHttpParams();
@@ -1165,6 +1155,8 @@ public class TwitterService {
 				 request2.addHeader("Authorization", authorization_header_string); // always add the Authorization header
 				 httpexecutor.preProcess(request2, httpproc, context);
 				 HttpResponse response2 = httpexecutor.execute(request2, conn, context);
+                                 System.out.println("request2 ------>"+request2);
+                                 System.out.println("response ------>"+response2);
 				 response2.setParams(params);
 				 httpexecutor.postProcess(response2, httpproc, context);
 
@@ -1310,12 +1302,13 @@ public class TwitterService {
 				 // the following line adds 3 params to the request just as the parameter string did above. They must match up or the request will fail.
 				 BasicHttpEntityEnclosingRequest request2 = new BasicHttpEntityEnclosingRequest("GET", twitter_endpoint_path + "?id=" + id);
 				 request2.setParams(params);
-				 request2.addHeader("Authorization", authorization_header_string); // always add the Authorization header
+				 request2.addHeader("Authorization", authorization_header_string); 
+                                    System.out.println("response1--------"+request2);// always add the Authorization header
 				 httpexecutor.preProcess(request2, httpproc, context);
 				 HttpResponse response2 = httpexecutor.execute(request2, conn, context);
 				 response2.setParams(params);
 				 httpexecutor.postProcess(response2, httpproc, context);
-
+                                 System.out.println("response--------"+response2);
 				 if(response2.getStatusLine().toString().indexOf("500") != -1)
 				 {
 					 jsonresponse.put("response_status", "error");
@@ -1378,6 +1371,8 @@ public class TwitterService {
 	public static void main(String[] args) {
 
 		TwitterService twitter = new TwitterService();
+                twitter.startTwitterAuthentication();
+                
         
 	}
 

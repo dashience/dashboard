@@ -77,7 +77,13 @@
         margin-bottom: 10px;
         overflow: hidden;
     }
-
+    .sub-description{
+        border: 1px solid #eaeaea;
+        padding: 5px 0px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        overflow: hidden;
+    }
     .h-150 {
         min-height: 110px;
     }
@@ -112,9 +118,11 @@
     .head-title {
         background: #555 !important;
         color: #fff;
-        min-height: 40px;
+        overflow: hidden;
         padding: 10px 10px;
         border-radius: 2px;
+        margin-bottom: 10px;
+        position: relative
     }
     .pageBreak{   
         page-break-inside:avoid;
@@ -122,16 +130,25 @@
     p{   
         page-break-inside:avoid;
     }
-    .user-select-logo{
-        margin-top: 20px;
+    .description{
+        font-size: 16px;
+        clear: both;
     }
     @media print  {
+        .table-responsive{
+            overflow: hidden !important;
+        }
         .pdfButton {
             display:none !important;
+            margin-top: -20px !important;
         }
-        .pdf-title-color{
+        .pdf-title-color span{
             background: transparent !important;
             color: #fff !important; 
+        }
+        .description{
+            color: #000 !important; 
+            font-size: 16px !important;
         }
         .pdf-subtitle-color{     
             background: transparent !important;
@@ -140,10 +157,14 @@
         .table{
             width: 99% !important;
         }
+        .text-widget {
+            word-wrap: break-word;
+        }
     }
     @media screen {
         .pdfButton {
             display:block;
+            margin-top: -20px !important;
         }
     }
 </style>
@@ -153,44 +174,48 @@
         <div class="header-pdf">        
             <img src="static/img/logos/dashience-logo.jpg" width="80"> &nbsp;
             <img src="{{userAccountLogo}}" width="100"> 
-            <img class="pull-right user-select-logo" src="{{pdfLogo}}" width="100"> 
+            <!--<img class="pull-right user-select-logo" src="{{pdfLogo}}" width="100">--> 
         </div>
-        <div class="head-title">
-            <h2 class="pdf-title-color">{{reportPdfTitle}}</h2>
-            <div class="pdfButton pull-right">
-                <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button>
-            </div>
-        </div>    
         <div class="sub-header">
             <div class="col-md-12">
 
                 <div class="section-block pull-left">
                     <h4 class="pdf-subtitle-color">{{reportPdfStartDate}} - {{reportPdfEndDate}}</h4>
-                    <h2><strong>{{userAccountName}}</strong></h2>
+                    <h2><strong>{{userAccountName}}</strong><strong ng-if="reportPdfTitle != null && reportPdfTitle.length != 0">{{" - " + reportPdfTitle}}</strong></h2>
                 </div>
 
                 <div class="pull-right">
                     <div class="section-right-block">                    
-                        <p>Email: info@dashience.com<br>Phone: 773-446-7565</p>                    
+                        <p class="pdf-subtitle-color"><span translate>Email</span>: info@dashience.com<br><span translate>Phone</span>: 773-446-7565</p><br>
+                        <div class="pdfButton">
+                            <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button><br>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div class="sub-description">
+            <div class="pull-left col-md-12">
+                <p class="description">{{reportPdfDescription}}</p>                 
+            </div>
+        </div> 
+
         <div class="content">
             <div class="row">                
                 <div class="pageBreak" ng-repeat="reportWidget in reportWidgets">
-
                     <div class="hpanel col-fixed-{{reportWidget.widgetId.width}} pageBreak" ng-if="reportWidget.widgetId.chartType == 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)" 
+                             widget-Obj="{{reportWidget.widgetId}}"
                              ticker-Directive ticker-Source="{{reportWidget.widgetId.dataSetId}}" 
                              ticker-Title-Name="{{reportWidget.widgetId.widgetTitle}}" 
                              ticker-Id="{{reportWidget.widgetId.id}}" 
+                             
                              ticker-Columns="{{reportWidget.widgetId.columns}}">                                 
                         </div>
                     </div>
 
-                    <div class="hpanel col-fixed-{{reportWidget.widgetId.width}}" ng-if="reportWidget.widgetId.chartType != 'ticker'">
+                    <div class="hpanel pageBreak col-fixed-{{reportWidget.widgetId.width}}" ng-if="reportWidget.widgetId.chartType != 'ticker'">
                         <div class="panel-heading">                           
                             <span class="text-capitalize">{{reportWidget.widgetId.widgetTitle?reportWidget.widgetId.widgetTitle:'Widget'}}</span>
                         </div>
@@ -200,6 +225,8 @@
                                      line-Chart-Directive 
                                      line-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
                                      widget-Obj="{{reportWidget.widgetId}}">                                         
                                 </div>
@@ -207,12 +234,27 @@
                         </div>
                         <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'bar'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
-                                <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                {{getTableType}}--->Table Type<div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
                                      bar-Chart-Directive 
                                      bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
                                      widget-Obj="{{reportWidget.widgetId}}">                                         
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'horizontalBar'">
+                            <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">>
+                                {{getTableType}}--->Table Type<div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                     bar-Chart-Directive bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}" default-chart-color="{{defaultChartColor}}"
+                                     is-Horizontal-Bar="{{reportWidget.widgetId.isHorizontalBar}}">                                     
                                 </div>
                             </div>
                         </div>
@@ -227,25 +269,49 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'area'">
+                        <div class="panel-body pageBreak"  ng-if="reportWidget.widgetId.chartType === 'area' || reportWidget.widgetId.chartType === 'combination'">
                             <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
                                      area-Chart-Directive 
                                      area-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
                                      widget-Obj="{{reportWidget.widgetId}}"></div>
                             </div>
                         </div>
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'scatter'">
+                            <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
+                                <div scatter-Chart-Directive 
+                                     scatter-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Columns="{{reportWidget.widgetId.columns}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}">                                     
+                                </div>
+                            </div>
+                        </div>                       
                         <div class="list pageBreak" ng-if="reportWidget.widgetId.chartType === 'table'" adjust-height>
                             <div class="table-responsive project-list" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
-                                <div id="changes-height" class="project-list">
+                                <div id="changes-height" class="project-list" ng-if="getTableType=='compareOff'">
                                     <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
                                          dynamic-Table pdf-function="addToPdf(test)" 
                                          dynamic-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
                                          widget-Id="{{reportWidget.widgetId.id}}" widget-Obj="{{reportWidget.widgetId}}" 
                                          table-Footer="{{reportWidget.widgetId.tableFooter}}" 
                                          widget-Columns="{{reportWidget.widgetId.columns}}"></div>
+                                </div>
+                                <div id="changes-height" class="project-list" ng-if="getTableType=='compareOn'">
+                                     <div compare-Range-Table 
+                                     compare-Table-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Id="{{reportWidget.widgetId.id}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}" 
+                                     table-Footer="{{reportWidget.widgetId.tableFooter}}" 
+                                     widget-Columns="{{reportWidget.widgetId.columns}}">                                         
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -262,11 +328,32 @@
                                      stacked-Bar-Chart-Directive 
                                      stacked-Bar-Chart-Source="{{reportWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{reportWidget.widgetId.id}}" 
+                                      url-type="{{getTableType}}"
+                                     compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{reportWidget.widgetId.columns}}" 
                                      widget-Obj="{{reportWidget.widgetId}}">                                         
                                 </div>
                             </div>
                         </div> 
+                        <div class="panel-body pageBreak" ng-if="reportWidget.widgetId.chartType === 'funnel'">
+                            <div class="col-fixed-{{reportWidget.widgetId.width}}" style="width:{{(1300 * reportWidget.widgetId.width) / 12}}px">
+                                <div funnel-Directive
+                                     funnel-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                     widget-Obj="{{reportWidget.widgetId}}" 
+                                     funnel-Id="{{reportWidget.widgetId.id}}"
+                                     funnel-Columns="{{reportWidget.widgetId.columns}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="hpanel col-fixed-{{reportWidget.widgetId.width}} pageBreak" ng-if="reportWidget.widgetId.chartType == 'gauge'">
+                            <div set-Gauge-Fn="setGaugeFn(gaugeFn)" 
+                                 widget-Obj="{{reportWidget.widgetId}}"
+                                 gauge-Directive gauge-Source="{{reportWidget.widgetId.dataSetId}}" 
+                                 gauge-Title-Name="{{reportWidget.widgetId.widgetTitle}}" 
+                                 gauge-Id="{{reportWidget.widgetId.id}}" 
+                                 gauge-Columns="{{reportWidget.widgetId.columns}}">                                 
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

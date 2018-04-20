@@ -8,22 +8,7 @@
         margin-top: -2px;
         padding: 0px;
     }
-    .previewChart {
-        border-radius: 5px;
-        border: none;
-        font-size: 30px;
-        padding: 20px;
-        color: #99a5aa;
-        line-height: 1px;
-    }
-    .selected {
-        color: rgb(240, 173, 78);
-        font-size: 30px;
-        line-height: 1px;
-        border-radius: 5px;
-        border: none;
-        padding: 1vw;
-    }
+
     .wid i{
         font-size:30px;
         color: #99a5aa !important;
@@ -62,19 +47,6 @@
     .thirdrow {
         margin: 5px 11px;
         width: 260px;
-    }
-
-    .btn-apps {
-        border-radius: 3px;
-        position: relative;
-        padding: 15px 5px;
-        margin: 5px 0px 5px 10px;
-        min-width: 80px;
-        text-align: center;
-        color: #666;
-        border: 1px solid #ddd;
-        background-color: #fcfcfc;
-        font-size: 12px;
     }
 
     .lay-wid {
@@ -251,76 +223,203 @@
     .alignright {
         float:right;
     }
+    .editWidget-modal-top{
+        margin-top: 5px !important;
+    }
+    .ui-select-multiple.ui-select-bootstrap .ui-select-match .close {
+        float: right;
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1;
+        color: #000;
+        text-shadow: 0 1px 0 #fff;
+        filter: alpha(opacity=20);
+        opacity: .2;
+        margin-top: 0px;
+        margin-right: 0px;
+    }
 </style>
+
+
 <div class="row add-widget">
     <div class="pull-right-container pull-right">
         <div class="btn-group">
-            <a class="refresh" ng-click="pageRefresh()"><i class="fa fa-repeat"></i> Refresh Data</a>
+            <a class="refresh" ng-click="pageRefresh()"><i class="fa fa-repeat"></i> <span translate>Refresh Data</span></a>
         </div>
         <div class="btn-group" ng-if="permission.downloadReport === true;">
-            <!--<a class="refresh" ng-click="downloadUiPdf()"><i class="fa fa-print"></i> Print</a>-->
-            <a class="refresh" ng-href="#viewPdf/{{accountId}}/{{accountName}}/{{productID}}/{{productName}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}" target="_blank"><i class="fa fa-print"></i> Print</a>
+            <a class="refresh" ng-href="#viewPdf/{{agencyLanguage}}/{{agencyId}}/{{accountId}}/{{accountName}}/{{productID}}/{{templateId}}/{{userId}}/{{widgetTabId}}?startDate={{widgetStartDate}}&endDate={{widgetEndDate}}&getTableType={{getTableType}}&productName={{dashboardName}}" target="_blank"><i class="fa fa-print"></i> <span translate>Print</span></a>
         </div>
-<!--                <div class="btn-group">
-                    <a class="refresh" ng-href="static/views/demo/testPdf.html" target="_blank"><i class="fa fa-print"></i> C3</a>
-                </div>-->
-<!--        <div class="btn-group">
-            <div class="dropdown">
-                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">Export
-                    <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li class="btn-group">
-                        <a class="refresh" ng-click="downloadPdf()"><i class="fa fa-file-pdf-o"></i> Export PDF</a>
-                    </li>
-                    <li class="btn-group">
-                        <a class="refresh" ng-click="downloadPpt()"><i class="fa fa-file-powerpoint-o"></i> Export PPT</a>
-                    </li>
-                </ul>
-            </div>
-        </div>-->
-        <div class="btn-group dropdown" ng-if="permission.addWidget === true;">
+        <div class="btn-group dropdown" ng-if="(permission.addWidget === true) && (templateUserId === userId)">
             <a class="dropdown-toggle" type="button" data-toggle="dropdown">
-                <button type="button" class="btn btn-block btn-info" ng-click="addWidget()"><i class="fa fa-plus-circle"></i> Add Widget</button>
+                <button type="button" class="btn btn-block btn-info" ng-click="clearChartType()"
+                        data-toggle="modal" data-target="#editWidget" 
+                        data-backdrop="static" data-keyboard="false">
+                    <i class="fa fa-plus-circle"></i> <span translate>Add Widget</span>
+                </button>
             </a>
         </div>
     </div>
 </div>
 <div ng-show="loading" class="text-center"><img src="static/img/logos/loader.gif" width="100"></div>
 <div>
+
+
+
+    <!--    
+        <div ng-show="show">
+            <div class="loading"><img src="http://www.nasa.gov/multimedia/videogallery/ajax-loader.gif" width="20" height="20" />LOADING...</div>
+        </div>
+        
+        
+    -->
     <div ng-repeat="widget in widgets">
         <div ng-if="widget.chartType == 'ticker'">
-            <!--            <div class="col-sm-{{widget.width}}">
-                            <div class="hpanel border-table">-->
             <div class="col-sm-{{widget.width}}" ng-drop="true" ng-drop-success="onDropComplete($index, $data, $event)">
                 <div class="hpanel border-table" ng-drag="true" ng-drag-data="widget">
-                    <div class="panel-tools">
-                        <a class="refresh" ng-click="directiveTickerFn()" title="Refresh"><i class="fa fa-repeat"></i></a>
-                        <a ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
-
-                        <a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
-                        <a ng-if="permission.deleteWidget === true;" class="closebox" title="Delete" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
-
-                        <a ng-if="widget.width != 3" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                        <a ng-if="widget.width != 12" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
+                    <div class="panel-tools ticker-icon">
+                        <a title="{{'Favorites'|translate}}" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
+                        <a ng-show="showCreateReport" title="{{'Report'|translate}}" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
+                        <a class="refresh" ng-click="directiveTickerFn()" title="{{'Refresh'|translate}}"><i class="fa fa-repeat"></i></a>
+                        <!--<a ng-if="templateUserId === userId" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="{{'Duplicate Widget'|translate}}"><i class="fa fa-files-o" aria-hidden="true" ></i></a>-->
+                        <a ng-if ="templateUserId === userId" data-toggle="modal" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" 
+                           title="{{'Duplicate Widget'| translate}}" data-backdrop="static" data-target="#duplicate{{widget.id}}">
+                            <i class="fa fa-files-o" aria-hidden="true" ></i>
+                        </a>
+                        <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" 
+                           ng-click='setWidgetItems(widget); undo(widget, false)' 
+                           class="edit" title="{{'Edit'|translate}}" 
+                           data-toggle="modal" 
+                           data-target="#editWidget" 
+                           data-backdrop="static" 
+                           data-keyboard="false"><i class="fa fa-pencil"></i>
+                        </a>
+                        <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" 
+                           title="{{'Delete'|translate}}" data-toggle="modal" data-target="#delete{{widget.id}}"><i class="fa fa-times"></i></a>
+                        <a ng-if="permission.downloadReport === true;" ng-click="downloadXLSByWidget(widget)" title="{{'Download XLS'|translate}}">
+                            <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                        </a>
+                        <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="{{'Resize-Left'|translate}}"><i class="fa fa-chevron-left"></i></a>
+                        <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="{{'Resize-Right'|translate}}"><i class="fa fa-chevron-right"></i></a>
                     </div>
-                    <div set-Ticker-Fn="setTickerFn(tickerFn)" ticker-Directive ticker-Source="{{widget.dataSetId}}" ticker-Title-Name="{{widget.widgetTitle}}" ticker-Id="{{widget.id}}" ticker-Columns="{{widget.columns}}"></div>
+                    <div set-Ticker-Fn="setTickerFn(tickerFn)"
+                         widget-Obj="{{widget}}" 
+                         ticker-Directive 
+                         ticker-Source="{{widget.dataSetId}}" 
+                         ticker-Title-Name="{{widget.widgetTitle}}" 
+                         ticker-Id="{{widget.id}}" 
+                         ticker-Columns="{{widget.columns}}"
+                         compare-Date-Range="{{compareDateRange}}"
+                         url-Type="{{getTableType}}"
+                         default-chart-color="{{defaultChartColor}}">                             
+                    </div>
                 </div>
             </div>
+
+            <!-- duplicate widget -->
+            <div id="duplicate{{widget.id}}" class="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <strong translate>Duplicate Widget</strong>
+                        </div>
+                        <div class="modal-body">
+                            <div ng-show="duplicateLoading" class="text-center"><img src="static/img/logos/loader.gif" width="45"></div>
+                            <span ng-hide="duplicateLoading" translate>Duplicate Widget Added Bottom of the Page</span>
+                        </div>
+                        <div class="modal-footer">
+
+                            <button ng-hide="duplicateLoading" ng-hide class="btn btn-success btn-xs" data-dismiss="modal"> <span translate>Ok</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- delete widget -->
             <div id="delete{{widget.id}}" class="modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <strong>Delete</strong>
-                            <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                            <strong translate>Delete</strong>
+                            <strong><button class="close" data-dismiss="modal" title='Close' translate>&times;</button></strong>
                         </div>
                         <div class="modal-body">
-                            <span>Want to delete ? </span>
+                            <span translate>Want to delete?</span>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> Yes</button>
-                            <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
+                            <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> <span translate>Yes</span></button>
+                            <button class="btn btn-danger btn-xs" data-dismiss="modal"> <span translate>No</span></button>
                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="report-bottomMenu pull-right" ng-if="showReportList[widget.id] == true;">
+                <div class="report-menuHeader">
+                    <div class="col-md-10">
+                        <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
+                        <h1 class="report-header-title">Add {{widget.widgetTitle| limitTo : 20}} {{(widget.widgetTitle.length > 20)? "....": ""}} To Report</h1>
+                    </div>
+                    <div class="report-header-tools pull-right">
+                        <button class="report-header-closeBtn" ng-click="clearReport(); showReportList[widget.id] = false;"><i class="fa fa-close"></i></button>
+                    </div>
+                </div>
+                <div class="report-menuBody">
+                    <label class="col-sm-2" translate>Report</label>
+                    <div class="col-sm-10">
+                        <ui-select ng-model="widget.reportWidget" on-select="selectReport(widget.reportWidget)" theme="select2" ng-disabled="disabled" style="width: 220px;">
+                            <ui-select-match placeholder="{{'Select Report'|translate}}">{{$select.selected.reportTitle}}</ui-select-match>
+                            <ui-select-choices repeat="report in reportList | filter: $select.search">
+                                <span ng-bind-html="report.reportTitle | highlight: $select.search"></span>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="text-center" ng-if="hideReportsTable === true;">
+                        <img src="static/img/logos/loader.gif" width="40">
+                    </div>
+                    <div ng-hide="hideReportsTable" class="report-body-content">
+                        <div class="row report-chat-box">
+                            <div class="report-body-img" ng-if="hideReportsTable === false;">
+                                <img ng-if="reportLogo" class="report-body-imgs in" src="{{reportLogo}}">
+                                <img ng-if="!reportLogo" class="report-body-imgs in" ng-src="static/img/logos/deeta-logo.png" />
+                            </div>
+                            <div class="form-group">
+                                <ul class="report-body-descr" ng-if="reportDescription">
+                                    <li class="report-desc-list" ng-init="limit = 150; moreShown = false">
+                                        <p>
+                                            {{reportDescription| limitTo: limit}} {{reportDescription.length > limit ? '...' : ''}}
+                                            <a ng-show="reportDescription.length > limit" href ng-click="limit = reportDescription.length; moreShown = true" translate>  More</a>
+                                            <a ng-show="moreShown" href ng-click="limit = 150; moreShown = false" translate> Less </a>
+                                        </p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+                            <div class="col-sm-12">
+                                <table class="table table-bordered" ng-show="showReportWidgetName">
+                                    <thead>
+                                        <tr>
+                                            <th translate>S.No</th>
+                                            <th translate>Widget Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="titleName in reportWidgetTitle">
+                                            <td>{{$index + 1}}</td>
+                                            <td>{{titleName.widgetId.widgetTitle}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div ng-show="showReportEmptyMessage">
+                                    <h4><span>{{reportEmptyMessage}}</span></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="report-footer-btn">
+                        <button class="btn btn-success pull-left" ng-click="goReport()"><span translate>Goto</span> <span translate>Report</span></button>
+                        <button class="btn btn-success" ng-click="addWidgetToReport(widget); showReportList[widget.id] = false;" style="float: right" translate>Add</button>
                     </div>
                 </div>
             </div>
@@ -333,52 +432,139 @@
                     <div class="panel-heading">
                         <div class="panel-tools">
                             <div> 
-                                <a title="Favourites" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
-                                <a ng-show="showCreateReport" title="Report" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
-                                <a ng-if="widget.chartType === 'line'" title="Refresh" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'bar'" title="Refresh" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'pie'" title="Refresh" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'area'" title="Refresh" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'stackedbar'" title="Refresh" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
-                                <a ng-if="widget.chartType === 'table'" title="Refresh" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
+                                <a title="{{'Favorites'| translate}}" ng-click="toggleFavourite(widget)"><i class="fa fa-heart" ng-class="{'red':widget.isFav,'black':!widget.isFav}"></i></a>
+                                <a ng-show="showCreateReport" title="{{'Report'| translate}}" ng-click="showReportList[widget.id] = true;"><i class="fa fa-file-text"></i></a>
+                                <a ng-if="widget.chartType === 'line'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveLineFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'bar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'horizontalBar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveBarFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'pie'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directivePieFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'area'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveAreaFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'stackedbar'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveStackedBarChartFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'table'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'scatter'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveScatterFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'gauge'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveGaugeFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'map'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveMapFn()"><i class="fa fa-repeat"></i></a>
+                                <a ng-if="widget.chartType === 'funnel'" title="{{'Refresh'| translate}}" class="refresh" ng-click="directiveFunnelFn()"><i class="fa fa-repeat"></i></a>
                                 <!--<a ng-if="widget.chartType === 'text'" class="refresh" ng-click="directiveTableFn()"><i class="fa fa-repeat"></i></a>-->
-                                <a ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" title="Duplicate Widget"><i class="fa fa-files-o" aria-hidden="true" ></i></a>
-                                <a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil"></i></a>
-                                <a ng-if="permission.deleteWidget === true;" class="closebox" data-toggle="modal" data-target="#delete{{widget.id}}" title="Delete"><i class="fa fa-times"></i></a>
-
-                                <a ng-if="widget.width != 3" ng-click="reduceWidget(widget)" title="Resize-Left"><i class="fa fa-chevron-left"></i></a>
-                                <a ng-if="widget.width != 12" ng-click="expandWidget(widget)" title="Resize-Right"><i class="fa fa-chevron-right"></i></a>
+                                <!--                                <a ng-if ="templateUserId === userId" 
+                                                                   ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate});" title="{{'Duplicate Widget'| translate}}">
+                                                                    <i class="fa fa-files-o" aria-hidden="true" ></i>
+                                                                </a>-->
+                                <a ng-if ="templateUserId === userId" data-toggle="modal" data-backdrop="static" data-target="#duplicate{{widget.id}}"
+                                   title="{{'Duplicate Widget'| translate}}" ng-click="widgetDuplicate({productId: productID, accountId: accountID, accountName: accountName, tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})" >
+                                    <i class="fa fa-files-o" aria-hidden="true" ></i>
+                                </a>
+                                <a ng-if="(permission.addWidget === true) && (templateUserId === userId)" ng-click='setWidgetItems(widget); undo(widget, false)' class="edit" title="{{'Edit'| translate}}" data-toggle="modal" data-target="#editWidget" data-backdrop="static" data-keyboard="false"><i class="fa fa-pencil"></i></a>
+                                <!--<a ng-if="permission.addWidget === true;" class="edit" title="Edit" ui-sref="index.editWidget({productId: productID,accountId: accountID, accountName: accountName,tabId: widgetTabId, widgetId: widget.id, startDate: widgetStartDate, endDate: widgetEndDate})"><i class="fa fa-pencil">test</i></a>-->
+                                <a ng-if="(permission.deleteWidget === true) && (templateUserId === userId)" class="closebox" title="{{'Delete'| translate}}" data-toggle="modal" data-target="#delete{{widget.id}}" ><i class="fa fa-times"></i></a>
+                                <a ng-if="permission.downloadReport === true;" ng-click="downloadXLSByWidget(widget)" title="{{'Download XLS'| translate}}">
+                                    <i class="fa fa-file-excel-o" aria-hidden="true"></i>
+                                </a>
+                                <a ng-if="widget.width != 3 && templateUserId === userId" ng-click="reduceWidget(widget)" title="{{'Resize-Left'| translate}}"><i class="fa fa-chevron-left"></i></a>
+                                <a ng-if="widget.width != 12 && templateUserId === userId" ng-click="expandWidget(widget)" title="{{'Resize-Right'| translate}}"><i class="fa fa-chevron-right"></i></a>
                             </div>
                         </div>
 
-                        <span class="{{widget.icon}}" draggable-widget="widget" draggable-widget-callback="moveWidget"></span>
+                        <!--                            <span class="{{widget.icon}}" draggable-widget="widget" draggable-widget-callback="moveWidget"></span>-->
                         <span class="text-capitalize">{{widget.widgetTitle?widget.widgetTitle:'Widget'}}</span>
 
                     </div>
-                    <div class="panel-body" ng-if="widget.chartType === 'line'">
+                    <div class="panel-body" ng-if="widget.chartType === 'line' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
+                                 line-Chart-Directive line-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                            </div>
                         </div>
                     </div>
-                    <div class="panel-body" ng-if="widget.chartType === 'bar'">
+                    <div class="panel-body" ng-if="widget.chartType === 'bar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 url-Type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                            </div>
                         </div>
                     </div>
+                    <div class="panel-body" ng-if="widget.chartType === 'horizontalBar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                        <div>
+                            <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                 bar-Chart-Directive bar-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 url-Type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}"
+                                 is-Horizontal-Bar="{{widget.isHorizontalBar}}">                                     
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="panel-body" ng-if="widget.chartType === 'pie'">
                         <div>
-                            <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-Pie-Chart-Fn="setPieChartFn(pieFn)" 
+                                 pie-Chart-Directive pie-Chart-Source='{{widget.dataSetId}}' 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                            </div>
                         </div>
                     </div>
-                    <div class="panel-body"  ng-if="widget.chartType === 'area'">
+                    <div class="panel-body"  ng-if="(widget.chartType === 'area' || widget.chartType === 'combination') && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-Area-Chart-Fn="setAreaChartFn(areaFn)"
+                                 area-Chart-Directive area-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}"
+                                 widget-Columns="{{widget.columns}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-body" ng-if="widget.chartType === 'scatter' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                        <div>
+                            <div set-Scatter-Chart-Fn="setScatterChartFn(scatterFn)" 
+                                 get-Scatter-Widget-Obj="getWidgetObjScatter(obj)"
+                                 scatter-Chart-Directive scatter-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" 
+                                 widget-Columns="{{widget.columns}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                            </div>
                         </div>
                     </div>
                     <div class="list" ng-if="widget.chartType === 'table'" adjust-height>
                         <div class="table-responsive project-list">
-                            <div id="changes-height" class="project-list">
-                                <div set-Table-Chart-Fn="setTableChartFn(tableFn)" dynamic-Table pdf-function="addToPdf(test)" dynamic-Table-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Obj="{{widget}}" table-Footer="{{widget.tableFooter}}" widget-Columns="{{widget.columns}}"></div>
+                            <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOff'">
+                                <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
+                                     dynamic-Table pdf-function="addToPdf(test)" 
+                                     dynamic-Table-Source="{{widget.dataSetId}}" 
+                                     widget-Id="{{widget.id}}" 
+                                     widget-Obj="{{widget}}" 
+                                     table-Footer="{{widget.tableFooter}}" 
+                                     widget-Columns="{{widget.columns}}">                                         
+                                </div>
+                            </div>
+                            <!--                            <div compare-Range-Table></div>-->
+                            <div id="changes-height" class="project-list" ng-if="getTableType == 'compareOn'">
+                                <div compare-Range-Table 
+                                     compare-Table-Source="{{widget.dataSetId}}" 
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Id="{{widget.id}}" 
+                                     widget-Obj="{{widget}}" 
+                                     table-Footer="{{widget.tableFooter}}" 
+                                     widget-Columns="{{widget.columns}}">                                         
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -389,54 +575,117 @@
                             </div>
                         </div>
                     </div>
-                    <div class="panel-body"  ng-if="widget.chartType === 'stackedbar'">
+                    <div class="panel-body"  ng-if="widget.chartType === 'stackedbar' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
                         <div>
-                            <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" stacked-Bar-Chart-Directive stacked-Bar-Chart-Source="{{widget.dataSetId}}" widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" widget-Obj="{{widget}}"></div>
+                            <div set-stacked-Bar-Chart-Fn="setStackedBarChartFn(stackedBarChartFn)" 
+                                 stacked-Bar-Chart-Directive 
+                                 stacked-Bar-Chart-Source="{{widget.dataSetId}}" 
+                                 widget-Id="{{widget.id}}" widget-Columns="{{widget.columns}}" 
+                                 url-type="{{getTableType}}"
+                                 compare-Date-Range="{{compareDateRange}}"
+                                 widget-Obj="{{widget}}" default-chart-color="{{defaultChartColor}}">                                     
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-body" ng-if="widget.chartType === 'funnel' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                        <div>
+                            <div set-Funnel-Fn="setFunnelFn(funnelFn)"  widget-Obj="{{widget}}"
+                                 funnel-Directive funnel-Source="{{widget.dataSetId}}" 
+                                 funnel-Title-Name="{{widget.widgetTitle}}" 
+                                 funnel-Id="{{widget.id}}" funnel-Columns="{{widget.columns}}" default-chart-color="{{defaultChartColor}}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-body" ng-if="widget.chartType === 'gauge' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                        <div set-gauge-Fn="setGaugeFn(gaugeFn)"
+                             gauge-Directive 
+                             gauge-Source="{{widget.dataSetId}}" 
+                             widget-Obj="{{widget}}"  
+                             gauge-Id="{{widget.id}}"
+                             gauge-Columns="{{widget.columns}}"
+                             default-chart-color="{{defaultChartColor}}">
+                        </div>
+                    </div>  
+
+                    <div class='panel-body' ng-if="widget.chartType === 'map' && (getTableType == 'compareOn' || getTableType == 'compareOff')">
+                        <div map-Directive 
+                             map-City="{{cities}}"
+                             map-Source="{{widget.dataSetId}}"
+                             widget-Columns="{{widget.columns}}">                     
+                        </div> 
+                    </div>
+
+                </div>
+            </div>  
+
+
+            <!-- duplicate widget popup -->
+            <div id="duplicate{{widget.id}}" class="modal">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <strong translate>Duplicate Widget</strong>
+                        </div>
+                        <div class="modal-body">
+                            <div ng-show="duplicateLoading" class="text-center"><img src="static/img/logos/loader.gif" width="45"></div>
+                            <span ng-hide="duplicateLoading" translate>Duplicate Widget Added Bottom of the Page</span>
+                        </div>
+                        <div class="modal-footer">
+
+                            <button ng-hide="duplicateLoading" ng-hide class="btn btn-success btn-xs" data-dismiss="modal"> <span translate>Ok</span></button>
                         </div>
                     </div>
                 </div>
-            </div>  
+            </div><!--
+        
+            <!-- delete widget popup -->
             <div id="delete{{widget.id}}" class="modal">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <strong>Delete</strong>
-                            <strong><button class="close" data-dismiss="modal">&times;</button></strong>
+                            <strong translate>Delete</strong>
+                            <strong><button class="close" data-dismiss="modal" title="Close" translate>&times;</button></strong>
                         </div>
                         <div class="modal-body">
-                            <span>Want to delete ? </span>
+                            <span translate>Want to delete?</span>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> Yes</button>
-                            <button class="btn btn-danger btn-xs" data-dismiss="modal"> No</button>
+                            <button class="btn btn-info btn-xs" ng-click="deleteWidget(widget, $index)" data-dismiss="modal"> <span translate>Yes</span></button>
+                            <button class="btn btn-danger btn-xs" data-dismiss="modal"> <span translate>No</span></button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="report-bottomMenu pull-right" ng-show="showReportList[widget.id]">
+
+            <div class="report-bottomMenu pull-right" ng-if="showReportList[widget.id] == true;">
                 <div class="report-menuHeader">
                     <div class="col-md-10">
                         <!--<i class="report-header-icon fa fa-user" title="{{widget.widgetTitle}}"></i>-->
-                        <h1 class="report-header-title">Add {{widget.widgetTitle}} To Report</h1>
+                        <h1 class="report-header-title">Add {{widget.widgetTitle| limitTo : 20}} {{(widget.widgetTitle.length > 20)? "....": ""}} To Report</h1>
                     </div>
                     <div class="report-header-tools pull-right">
                         <button class="report-header-closeBtn" ng-click="clearReport(); showReportList[widget.id] = false;"><i class="fa fa-close"></i></button>
                     </div>
                 </div>
                 <div class="report-menuBody">
-                    <label class="col-sm-2">Report</label>
+                    <label class="col-sm-2" translate>Report</label>
                     <div class="col-sm-10">
                         <ui-select ng-model="widget.reportWidget" on-select="selectReport(widget.reportWidget)" theme="select2" ng-disabled="disabled" style="width: 220px;">
-                            <ui-select-match placeholder="Select Report...">{{$select.selected.reportTitle}}</ui-select-match>
+                            <ui-select-match placeholder="{{'Select Report'| translate}}">{{$select.selected.reportTitle}}</ui-select-match>
                             <ui-select-choices repeat="report in reportList | filter: $select.search">
                                 <span ng-bind-html="report.reportTitle | highlight: $select.search"></span>
                             </ui-select-choices>
                         </ui-select>
                     </div>
-                    <div class="report-body-content">
+                    <div class="text-center" ng-if="hideReportsTable === true;">
+                        <img src="static/img/logos/loader.gif" width="40">
+                    </div>
+                    <div ng-hide="hideReportsTable" class="report-body-content">
                         <div class="row report-chat-box">
-                            <div class="report-body-img">
-                                <img class="report-body-imgs in" src="{{reportLogo}}">
+                            <div class="report-body-img" ng-if="hideReportsTable === false;">
+                                <img ng-if="reportLogo" class="report-body-imgs in" src="{{reportLogo}}">
+                                <img ng-if="!reportLogo" class="report-body-imgs in" ng-src="static/img/logos/deeta-logo.png" />
                             </div>
                             <div class="form-group">
                                 <ul class="report-body-descr" ng-if="reportDescription">
@@ -456,8 +705,8 @@
                                 <table class="table table-bordered" ng-show="showReportWidgetName">
                                     <thead>
                                         <tr>
-                                            <th>Sl.No</th>
-                                            <th>Widget Name</th>
+                                            <th translate>S.No</th>
+                                            <th translate>Widget Name</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -468,20 +717,26 @@
                                     </tbody>
                                 </table>
                                 <div ng-show="showReportEmptyMessage">
-                                    <span><h4>{{reportEmptyMessage}}</h4></span>
+                                    <h4><span>{{reportEmptyMessage}}</span></h4>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="report-footer-btn">
-                        <button class="btn btn-success pull-left" ng-click="goReport()">Goto Report</button>
-                        <button class="btn btn-success" ng-click="addWidgetToReport(widget); showReportList[widget.id] = false;" style="float: right">Add</button>
+                        <button class="btn btn-success pull-left" ng-click="goReport()"><span translate>Goto</span> <span translate>Report</span></button>
+                        <button class="btn btn-success" ng-click="addWidgetToReport(widget); showReportList[widget.id] = false;" style="float: right" translate>Add</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div id="editWidget" class="showEditWidget modal">
+        <div class="editWidget-modal-top modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div ng-include="'static/views/form/widgetCreateForm.html'"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-
-

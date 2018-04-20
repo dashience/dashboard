@@ -123,6 +123,9 @@
         page-break-inside:avoid;
     }
     @media print  {
+        .table-responsive{
+            overflow: hidden !important;
+        }
         .pdfButton {
             display:none !important;
         }
@@ -136,6 +139,9 @@
         }
         .table{
             width: 99% !important;
+        }
+        .text-widget {
+            word-wrap: break-word;
         }
     }
 
@@ -154,7 +160,7 @@
             <img src="{{favAccountLogo}}" width="100"> 
         </div>
         <div class="head-title">
-            <h2 class="pdf-title-color">Favourites</h2>
+            <h2 class="pdf-title-color" translate>Favorites</h2>
             <div class="pdfButton pull-right">
                 <button class="btn btn-default btn-xs pdf" ng-click="downloadUiPdf()">Pdf</button>
             </div>
@@ -167,7 +173,7 @@
                 </div>
                 <div class="pull-right">
                     <div class="section-right-block">                    
-                        <p class="pdf-subtitle-color">Email: info@dashience.com<br>Phone: 773-446-7565</p>                    
+                        <p class="pdf-subtitle-color"><span translate>Email</span> info@dashience.com<br><span translate>Phone</span> 773-446-7565</p>                    
                     </div>
                 </div>
             </div>
@@ -179,9 +185,12 @@
                     <div class="hpanel col-fixed-{{favPdfWidget.widgetId.width}} pageBreak" ng-if="favPdfWidget.widgetId.chartType == 'ticker'">
                         <div set-Ticker-Fn="setTickerFn(tickerFn)" 
                              ticker-Directive 
+                             widget-Obj="{{favPdfWidget.widgetId}}"
                              ticker-Source="{{favPdfWidget.widgetId.dataSetId}}" 
                              ticker-Title-Name="{{favPdfWidget.widgetId.widgetTitle}}" 
                              ticker-Id="{{favPdfWidget.widgetId.id}}" 
+                             url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
                              ticker-Columns="{{favPdfWidget.widgetId.columns}}">                                 
                         </div>
                     </div>
@@ -195,7 +204,9 @@
                                 <div set-Line-Chart-Fn="setLineChartFn(lineFn)" 
                                      line-Chart-Directive 
                                      line-Chart-Source="{{favPdfWidget.widgetId.dataSetId}}" 
-                                     widget-Id="{{favPdfWidget.widgetId.id}}" 
+                                     widget-Id="{{favPdfWidget.widgetId.id}}"
+                                     url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{favPdfWidget.widgetId.columns}}" 
                                      widget-Obj="{{favPdfWidget.widgetId}}">                                         
                                 </div>
@@ -207,8 +218,23 @@
                                      bar-Chart-Directive 
                                      bar-Chart-Source="{{favPdfWidget.widgetId.dataSetId}}"
                                      widget-Id="{{favPdfWidget.widgetId.id}}" 
+                                     url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{favPdfWidget.widgetId.columns}}" 
                                      widget-Obj="{{favPdfWidget.widgetId}}">                                         
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'horizontalBar'">
+                            <div class="col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
+                                <div set-Bar-Chart-Fn="setBarChartFn(barFn)" 
+                                     bar-Chart-Directive bar-Chart-Source="{{favPdfWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{favPdfWidget.widgetId.id}}" 
+                                     url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
+                                     widget-Columns="{{favPdfWidget.widgetId.columns}}" 
+                                     widget-Obj="{{favPdfWidget.widgetId}}" default-chart-color="{{defaultChartColor}}"
+                                     is-Horizontal-Bar="{{favPdfWidget.widgetId.isHorizontalBar}}">                                     
                                 </div>
                             </div>
                         </div>
@@ -222,20 +248,34 @@
                                      widget-Obj="{{favPdfWidget.widgetId}}"></div>
                             </div>
                         </div>
-                        <div class="panel-body pageBreak"  ng-if="favPdfWidget.widgetId.chartType === 'area'">
+                        <div class="panel-body pageBreak"  ng-if="favPdfWidget.widgetId.chartType === 'area' || favPdfWidget.widgetId.chartType === 'combination'">
                             <div class="col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
                                 <div set-Area-Chart-Fn="setAreaChartFn(areaFn)" 
                                      area-Chart-Directive 
                                      area-Chart-Source="{{favPdfWidget.widgetId.dataSetId}}" 
-                                     widget-Id="{{favPdfWidget.widgetId.id}}" 
+                                     widget-Id="{{favPdfWidget.widgetId.id}}"
+                                     url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{favPdfWidget.widgetId.columns}}" 
                                      widget-Obj="{{favPdfWidget.widgetId}}">                                         
                                 </div>
                             </div>
                         </div>
+                        <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'scatter'">
+                            <div class="col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
+                                <div scatter-Chart-Directive 
+                                     scatter-Chart-Source="{{favPdfWidget.widgetId.dataSetId}}" 
+                                     widget-Id="{{favPdfWidget.widgetId.id}}" 
+                                     url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
+                                     widget-Columns="{{favPdfWidget.widgetId.columns}}" 
+                                     widget-Obj="{{favPdfWidget.widgetId}}">                                     
+                                </div>
+                            </div>
+                        </div>    
                         <div class="list pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'table'" adjust-height>
                             <div class="table-responsive project-list col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
-                                <div id="changes-height" class="project-list">
+                                <div id="changes-height" class="project-list" ng-if="getTableType=='compareOff'">
                                     <div set-Table-Chart-Fn="setTableChartFn(tableFn)" 
                                          dynamic-Table 
                                          pdf-function="addToPdf(test)" 
@@ -245,7 +285,18 @@
                                          table-Footer="{{favPdfWidget.widgetId.tableFooter}}"
                                          widget-Columns="{{favPdfWidget.widgetId.columns}}"></div>
                                 </div>
+                                <div id="changes-height" class="project-list" ng-if="getTableType=='compareOn'">
+                                    <div compare-Range-Table 
+                                     compare-Table-Source="{{favPdfWidget.widgetId.dataSetId}}" 
+                                     compare-Date-Range="{{compareDateRange}}"
+                                     widget-Id="{{favPdfWidget.widgetId.id}}" 
+                                     widget-Obj="{{favPdfWidget.widgetId}}" 
+                                     table-Footer="{{favPdfWidget.widgetId.tableFooter}}" 
+                                     widget-Columns="{{favPdfWidget.widgetId.columns}}">                                         
+                                </div>
+                                </div>
                             </div>
+                            
                         </div>
                         <div class="panel-body pageBreak"  ng-if="favPdfWidget.widgetId.chartType === 'text'">
                             <div class="col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
@@ -260,11 +311,32 @@
                                      stacked-Bar-Chart-Directive 
                                      stacked-Bar-Chart-Source="{{favPdfWidget.widgetId.dataSetId}}" 
                                      widget-Id="{{favPdfWidget.widgetId.id}}" 
+                                     url-type="{{getTableType}}"
+                             compare-Date-Range="{{compareDateRange}}"
                                      widget-Columns="{{favPdfWidget.widgetId.columns}}" 
-                                     idget-Obj="{{favPdfWidget.widgetId}}">                                         
+                                     widget-Obj="{{favPdfWidget.widgetId}}">                                         
                                 </div>
                             </div>
                         </div> 
+                        <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'funnel'">
+                            <div class="col-fixed-{{favPdfWidget.widgetId.width}}" style="width:{{(1300 * favPdfWidget.widgetId.width) / 12}}px">
+                                <div funnel-Directive
+                                     funnel-Source="{{favPdfWidget.widgetId.dataSetId}}" 
+                                     widget-Obj="{{favPdfWidget.widgetId}}" 
+                                     funnel-Id="{{favPdfWidget.widgetId.id}}"
+                                     funnel-Columns="{{favPdfWidget.widgetId.columns}}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel-body pageBreak" ng-if="favPdfWidget.widgetId.chartType === 'gauge'">
+                            <div>
+                                <div gauge-Directive 
+                                     gauge-Source="{{favPdfWidget.widgetId.dataSetId}}" 
+                                     widget-Obj="{{favPdfWidget.widgetId}}" 
+                                     gauge-Id="{{favPdfWidget.widgetId.id}}" 
+                                     gauge-Columns="{{favPdfWidget.widgetId.columns}}"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

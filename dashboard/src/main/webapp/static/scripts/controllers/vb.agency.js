@@ -1,4 +1,11 @@
-app.controller('AgencyController', function ($scope, $http) {
+app.controller('AgencyController', function ($scope, $http, $translate, $stateParams) {
+    $scope.agencyLanguage = $stateParams.lan;//$cookies.getObject("agencyLanguage");    
+    var lan = $scope.agencyLanguage;
+    changeLanguage(lan);
+
+    function changeLanguage(key) {
+        $translate.use(key);
+    }
 
     // currency-format
 //   $scope.getCurrencyDataFromServer = function() {
@@ -43,6 +50,12 @@ app.controller('AgencyController', function ($scope, $http) {
 //        {countryName: "EU", timezoneFormat: '€'}
 //    ];
 
+    $scope.languages = [
+        {lanName: "English", lanType: 'en'},
+        {lanName: "Chinesh", lanType: 'cn'},
+        {lanName: "Spanish", lanType: "sp"}
+    ];
+
 
 //Tabs
     $scope.tab = 1;
@@ -77,6 +90,20 @@ app.controller('AgencyController', function ($scope, $http) {
             $scope.agency.logo = e.target.result;
         });
     };
+    //Default Templates
+
+    function getTemplateByAgency(agency) {
+        $http.get('admin/ui/getDefaultTemplate/' + agency.id).success(function (response) {
+            console.log(response);
+            $scope.templates = response;
+        });
+    }
+
+    $scope.selectDefaultTemplate = function (template) {
+        console.log(template);
+        $scope.templateId = template.id;
+    };
+
     $scope.saveAgency = function (agency) {
         if ($scope.agency.logo === "static/img/logos/deeta-logo.png") {
             $scope.agency.logo = "";
@@ -84,14 +111,16 @@ app.controller('AgencyController', function ($scope, $http) {
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
+            agencyDashiencePath: agency.agencyDashiencePath,
             email: agency.email,
             description: agency.description,
             status: agency.status,
+            agencyLanguage: agency.agencyLanguage ? agency.agencyLanguage.lanType : null,
             logo: $scope.agency.logo
         };
         $http({method: agency.id ? 'PUT' : 'POST', url: 'admin/user/agency', data: data}).success(function (response) {
             $scope.agencyById = data;
-            console.log(response)
+            console.log(response);
             getAgency();
             if (response.status == true) {
                 $scope.agency = {logo: "static/img/logos/deeta-logo.png"};
@@ -113,14 +142,24 @@ app.controller('AgencyController', function ($scope, $http) {
     };
     $scope.selectedRow = null;
     $scope.editAgency = function (agency, index) {
-        getAgencyLicence(agency)
+        getAgencyLicence(agency);
         $scope.agencyById = agency;
+        getTemplateByAgency(agency);
+
+        $scope.languages.forEach(function (val, k) {
+            if (agency.agencyLanguage == val.lanType) {
+                agency.agencyLanguage = val;
+            }
+        })
+
 
         var data = {
             id: agency.id,
             agencyName: agency.agencyName,
+            agencyDashiencePath: agency.agencyDashiencePath,
             email: agency.email,
             description: agency.description,
+            agencyLanguage: agency.agencyLanguage,
             status: agency.status,
             logo: agency.logo ? agency.logo : "static/img/logos/deeta-logo.png"
         };
@@ -141,6 +180,7 @@ app.controller('AgencyController', function ($scope, $http) {
         $scope.searchAgencyItem = agencyList;
     }
     $scope.agencyProducts = [];
+    $scope.agencyProperties = [];
     function getAgencyLicence(agency) {
         $http.get('admin/user/agencyLicence/' + agency.id).success(function (response) {
             $scope.agencyLicence = {}
@@ -156,6 +196,7 @@ app.controller('AgencyController', function ($scope, $http) {
 
         $http.get('admin/user/agencyProduct/' + agency.id).success(function (response) {
             $scope.agencyProducts = response;
+            console.log(response)
         });
 
         $http.get('admin/user/agencySetting/' + agency.id).success(function (response) {
@@ -166,7 +207,10 @@ app.controller('AgencyController', function ($scope, $http) {
             $scope.agencySetting.id = response.id;
             $scope.agencySetting.currencyId = response.currencyId;
             $scope.agencySetting.timeZoneId = response.timeZoneId;
+        });
 
+        $http.get('admin/user/agencyProperty/' + agency.id).success(function (response) {
+            $scope.agencyProperties = response;
         });
     }
 
@@ -256,6 +300,9 @@ app.controller('AgencyController', function ($scope, $http) {
                 secondaryPhone: agencyUser.secondaryPhone,
                 agencyId: $scope.agencyById.id,
             };
+            
+            console.log("agency user data");
+            console.log(agencyUserData);
             $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
                 getAgencyLicence($scope.agencyById);
                 if (response.status == true) {
@@ -293,8 +340,9 @@ app.controller('AgencyController', function ($scope, $http) {
             productName: agencyProduct.productName,
             icon: $scope.agencyProduct.icon,
             agencyId: $scope.agencyById.id,
-            showProduct: agencyProduct.showProduct
-        }
+            showProduct: agencyProduct.showProduct,
+            templateId: $scope.templateId
+        };
         $scope.agencyProduct = data;
         $scope.selectedRows = index;
         $scope.showAgencyProductForm = true;
@@ -316,6 +364,7 @@ app.controller('AgencyController', function ($scope, $http) {
         });
     };
     $scope.saveAgencyProduct = function (agencyProduct) {
+        console.log(agencyProduct.template)
         var agencyProductId = $scope.agencyById;
         if ($scope.agencyProduct.icon === "static/img/logos/deeta-logo.png") {
             $scope.agencyProduct.icon = "";
@@ -340,7 +389,8 @@ app.controller('AgencyController', function ($scope, $http) {
                     productName: agencyProduct.productName,
                     icon: $scope.agencyProduct.icon,
                     agencyId: $scope.agencyById.id,
-                    showProduct: agencyProduct.showProduct
+                    showProduct: agencyProduct.showProduct,
+                    templateId: agencyProduct.templateId
                 };
                 $http({method: agencyProduct.id ? 'PUT' : 'POST', url: 'admin/user/agencyProduct', data: data}).success(function (response) {
                     getAgencyLicence(agencyProductId);
@@ -371,7 +421,8 @@ app.controller('AgencyController', function ($scope, $http) {
             productName: agencyProduct.productName,
             icon: agencyProduct.icon,
             agencyId: $scope.agencyById.id,
-            showProduct: agencyProduct.showProduct
+            showProduct: agencyProduct.showProduct,
+            templateId: agencyProduct.templateId
         };
         $scope.agencyProduct = data;
         $scope.showAgencyProductForm = true;
@@ -393,6 +444,43 @@ app.controller('AgencyController', function ($scope, $http) {
 //        if (order) {
         $http({method: 'GET', url: 'admin/user/productUpdateOrder/' + agencyProductId.id + "?productOrder=" + order});
 //        }
+    };
+
+    $scope.addAgencyProperties = function () {
+        $scope.agencyProperties.push({isEdit: true});
+    };
+    $scope.saveAgencyProperty = function (agencyProperty) {
+        var agencyId = $scope.agencyById;
+        if (!agencyId) {
+            var dialog = bootbox.dialog({
+                title: 'Alert',
+                message: '<p>Select Agency</p>'
+            });
+            dialog.init(function () {
+                setTimeout(function () {
+                    dialog.modal('hide');
+                }, 2000);
+            });
+        } else {
+            var data = {
+                id: agencyProperty.id,
+                propertyName: agencyProperty.propertyName,
+                propertyValue: agencyProperty.propertyValue,
+                agencyId: agencyId ? agencyId.id : null
+            };
+
+            $http({method: agencyProperty.id ? 'PUT' : 'POST', url: 'admin/user/agencyProperty', data: data}).success(function (response) {
+                getAgencyLicence(agencyId);
+            });
+
+            $scope.agencyProperty = "";
+        }
+    };
+
+    $scope.deleteAgencyProperty = function (agencyProperty, index) {
+        $http({method: 'Delete', url: 'admin/user/agencyProperty/' + agencyProperty.id}).success(function (response) {
+            $scope.agencyProperties.splice(index, 1);
+        });
     };
 });
 app.directive("datePicker", function () {

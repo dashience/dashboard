@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author duc-dev-04
+ * @author dashience
  */
 @Entity
 @Table(name = "property")
@@ -31,8 +31,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @NamedQueries({
     @NamedQuery(name = "Property.findAll", query = "SELECT p FROM Property p")
     , @NamedQuery(name = "Property.findById", query = "SELECT p FROM Property p WHERE p.id = :id")
-    , @NamedQuery(name = "Property.findByPropertyName", query = "SELECT p FROM Property p WHERE p.propertyName = :propertyName")
-    , @NamedQuery(name = "Property.findByPropertyValue", query = "SELECT p FROM Property p WHERE p.propertyValue = :propertyValue")})
+    , @NamedQuery(name = "Property.findByPropertyName", query = "SELECT p FROM Property p WHERE p.propertyName = :propertyName")})
 public class Property implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,13 +43,14 @@ public class Property implements Serializable {
     @Size(max = 255)
     @Column(name = "property_name")
     private String propertyName;
-    @Size(max = 255)
-    @Column(name = "property_value")
-    private String propertyValue;
     @Lob
-    @Size(max = 65535)
+    @Size(max = 2147483647)
     @Column(name = "property_remark")
     private String propertyRemark;
+    @Lob
+    @Size(max = 2147483647)
+    @Column(name = "property_value")
+    private String propertyValue;
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ManyToOne
     private Account accountId;
@@ -78,20 +78,20 @@ public class Property implements Serializable {
         this.propertyName = propertyName;
     }
 
-    public String getPropertyValue() {
-        return propertyValue;
-    }
-
-    public void setPropertyValue(String propertyValue) {
-        this.propertyValue = propertyValue;
-    }
-
     public String getPropertyRemark() {
         return propertyRemark;
     }
 
     public void setPropertyRemark(String propertyRemark) {
         this.propertyRemark = propertyRemark;
+    }
+
+    public String getPropertyValue() {
+        return propertyValue;
+    }
+
+    public void setPropertyValue(String propertyValue) {
+        this.propertyValue = propertyValue;
     }
 
     public Account getAccountId() {

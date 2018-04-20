@@ -1,0 +1,76 @@
+{
+    "dataSource": [
+        {
+            "type": "sql",
+            "name": "SQL"
+        },
+        {
+            "type": "csv",
+            "name": "CSV"
+        },
+        {
+            "type": "https",
+            "name": "HTTPS"
+        },
+        {
+            "type": "xls",
+            "name": "XLS"
+        },
+        {
+            "type": "facebook",
+            "name": "Facebook"
+        },
+        {
+            "type": "twitter",
+            "name": "Twitter"
+        },
+        {
+            "type": "googlePlus",
+            "name": "Google Plus"
+        },
+        {
+            "type": "instagram",
+            "name": "Instagram"
+        },
+        {
+            "type": "adwords",
+            "name": "Google AdWords"
+        },
+        {
+            "type": "analytics",
+            "name": "Google Analytics"
+        },
+        {
+            "type": "pinterest",
+            "name": "Pinterest"
+        },
+        {
+            "type": "linkedin",
+            "name": "LinkedIn"
+        },
+        {
+            "type": "bing",
+            "name": "Bing"
+        },
+        {
+            "type": "join",
+            "name": "Join"
+        },
+        {
+            "type": "skyZone",
+            "name": "SkyZone"
+        },
+        {
+            "type": "autoMobiles",
+            "name": "AutoMobiles"
+        },
+        {
+            "type": "dataSetSql",
+            "name": "SQL Data Set"
+        },
+        {
+            "type": "semRush",
+            "name": "SEM Rush"
+        }
+    ]
+}

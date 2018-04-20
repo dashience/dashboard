@@ -5,17 +5,9 @@
  */
 package com.visumbu.vb.bean;
 
-import java.util.Date;
+import com.visumbu.vb.model.Account;
+import com.visumbu.vb.model.VbUser;
 import java.util.List;
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
 
 /**
  *
@@ -67,6 +59,13 @@ public class TabWidgetBean {
     private String queryFilter;
     private String isGridLine;
     private List<WidgetColumnBean> widgetColumns;
+    private Account accountId; 
+    private VbUser createdBy;
+    private String timeSegment;
+    private String productSegment;
+    private String networkType;
+    private Integer templateUserId;
+    private String chartColorOption;  //added by subhadra
 
     public Integer getId() {
         return id;
@@ -324,7 +323,6 @@ public class TabWidgetBean {
         this.frequencyDuration = frequencyDuration;
     }
 
-
     public Integer getDataSetId() {
         return dataSetId;
     }
@@ -413,7 +411,6 @@ public class TabWidgetBean {
         this.jsonData = jsonData;
     }
     
-
     public String getQueryFilter() {
         return queryFilter;
     }
@@ -429,11 +426,66 @@ public class TabWidgetBean {
     public void setIsGridLine(String isGridLine) {
         this.isGridLine = isGridLine;
     }
-    
+
+    public Account getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Account accountId) {
+        this.accountId = accountId;
+    }
+
+    public VbUser getCreatedBy() {
+        return createdBy;
+    }
+
+    public void setCreatedBy(VbUser createdBy) {
+        this.createdBy = createdBy;
+    }   
+
+    public String getTimeSegment() {
+        return timeSegment;
+    }
+
+    public void setTimeSegment(String timeSegment) {
+        this.timeSegment = timeSegment;
+    }
+
+    public String getProductSegment() {
+        return productSegment;
+    }
+
+    public void setProductSegment(String productSegment) {
+        this.productSegment = productSegment;
+    }
+
+    public String getNetworkType() {
+        return networkType;
+    }
+
+    public void setNetworkType(String networkType) {
+        this.networkType = networkType;
+    }
+
+    public Integer getTemplateUserId() {
+        return templateUserId;
+    }
+
+    public void setTemplateUserId(Integer templateUserId) {
+        this.templateUserId = templateUserId;
+    }
+
+    public String getChartColorOption() {
+        return chartColorOption;
+    }
+
+    public void setChartColorOption(String chartColorOption) {
+        this.chartColorOption = chartColorOption;
+    }
 
     @Override
     public String toString() {
-        return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", customRange=" + customRange + ", frequencyDuration=" + frequencyDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", content=" + content + ", dateRangeName=" + dateRangeName + ", customStartDate=" + customStartDate + ", customEndDate=" + customEndDate + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", widgetColumns=" + widgetColumns + '}';
-    }
+        return "TabWidgetBean{" + "id=" + id + ", chartType=" + chartType + ", closable=" + closable + ", col=" + col + ", dataset=" + dataset + ", datasource=" + datasource + ", dimension=" + dimension + ", displayColumns=" + displayColumns + ", editable=" + editable + ", filters=" + filters + ", icon=" + icon + ", minHeight=" + minHeight + ", minimizable=" + minimizable + ", paginationCount=" + paginationCount + ", refreshable=" + refreshable + ", row=" + row + ", sort=" + sort + ", status=" + status + ", widgetTitle=" + widgetTitle + ", width=" + width + ", widthClass=" + widthClass + ", widgetOrder=" + widgetOrder + ", directUrl=" + directUrl + ", productName=" + productName + ", tableFooter=" + tableFooter + ", zeroSuppression=" + zeroSuppression + ", dateDuration=" + dateDuration + ", customRange=" + customRange + ", frequencyDuration=" + frequencyDuration + ", productDisplayName=" + productDisplayName + ", maxRecord=" + maxRecord + ", dataSetId=" + dataSetId + ", dataSourceId=" + dataSourceId + ", content=" + content + ", dateRangeName=" + dateRangeName + ", customStartDate=" + customStartDate + ", customEndDate=" + customEndDate + ", lastNdays=" + lastNdays + ", lastNmonths=" + lastNmonths + ", lastNweeks=" + lastNweeks + ", lastNyears=" + lastNyears + ", jsonData=" + jsonData + ", queryFilter=" + queryFilter + ", isGridLine=" + isGridLine + ", widgetColumns=" + widgetColumns + ", accountId=" + accountId + ", createdBy=" + createdBy + ", timeSegment=" + timeSegment + ", productSegment=" + productSegment + ", networkType=" + networkType + '}';
+    }   
 
 }

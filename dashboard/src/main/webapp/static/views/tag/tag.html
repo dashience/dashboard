@@ -38,7 +38,7 @@
         <div class="panel-body header-title">
             <div id="hbreadcrumb" class="pull-right">
             </div>
-            <h2 class="font-bold m-b-xs ng-binding">
+            <h2 class="font-bold m-b-xs ng-binding" translate>
                 Tags
             </h2>               
         </div>
@@ -58,16 +58,16 @@
                             <div class="col-md-12">
                                 <form class="form-horizontal">
                                     <div class="form-group">
-                                        <label>Tag Name</label>
+                                        <label translate>Tag Name</label>
                                         <input class="form-control" type="text" ng-model="tag.tagName">
                                     </div>
                                     <div class="form-group">
-                                        <label>Description</label>
+                                        <label translate>Description</label>
                                         <input class="form-control" type="text" ng-model="tag.description">
                                     </div>
                                     <div class="form-group pull-right">
-                                        <button class="btn btn-info" ng-click="saveTag(tag)">Save</button>
-                                        <button class="btn btn-warning" ng-click="clearTag(tag)">Cancel</button>
+                                        <button class="btn btn-info" ng-click="saveTag(tag)" translate>Save</button>
+                                        <button class="btn btn-warning" ng-click="clearTag(tag)" translate>Cancel</button>
                                     </div>
                                 </form>
                             </div>
@@ -85,8 +85,8 @@
                     <table class="table table-responsive table-fixed">
                         <thead>
                             <tr>
-                                <th class="col-xs-5">Sl.No</th>
-                                <th class="col-xs-6">Tag Name</th>
+                                <th class="col-xs-5" translate>S.No</th>
+                                <th class="col-xs-6" translate>Tag Name</th>
 
                             </tr>
                         </thead>
@@ -101,15 +101,15 @@
                                             <div class="modal-content">
                                                 <div class="color-line"></div>
                                                 <div class="modal-header">
-                                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                                    <h4 class="modal-title">Delete</h4>
+                                                    <button type="button" class="close" data-dismiss="modal" title="{{'Close'|translate}}" >&times;</button>
+                                                    <h4 class="modal-title" translate>Delete</h4>
                                                     <small class="font-bold"></small>
                                                 </div>
                                                 <div class="modal-body">
                                                     <form class="form-horizontal" role="form">
                                                         <div class="form-group">
                                                             <div class="col-sm-12  col-md-12">
-                                                                <span>Want to delete ?</span>
+                                                                <span translate>Want to delete?</span>
                                                             </div>
                                                         </div>
                                                     </form>
@@ -119,11 +119,11 @@
                                                         <button type="button" class="btn btn-primary btn-xs " 
                                                                 ng-click="deleteTag(tag, $index)" 
                                                                 data-dismiss="modal">
-                                                            <span class="fa fa-trash"></span> Yes
+                                                            <span class="fa fa-trash"></span> <span translate>Yes</span>
                                                         </button>
                                                         <button type="button" class="btn btn-danger btn-xs " 
                                                                 data-dismiss="modal">
-                                                            <span class="fa fa-times"></span> No
+                                                            <span class="fa fa-times"></span> <span translate>No</span>
                                                         </button>
                                                     </div>
                                                 </div>
