@@ -1,8 +1,9 @@
 
-app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
+app.config(function ($stateProvider, $urlRouterProvider) {
     $stateProvider
             .state("index", {
-                url: "/index",
+//                url: "/index",
+                url: "/index?lan&accountId&accountName&productId&templateId",
                 templateUrl: "static/views/vb.index.html"
                         //controller: "IndexController"
             })
@@ -23,12 +24,12 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
                 controller: 'EditWidgetController'
             })
             .state("index.report", {
-                url: "/reportIndex/:lan/:accountId/:accountName",
+                url: "/reportIndex", // /:lan/:accountId/:accountName",
                 templateUrl: "static/views/reports/reportIndex.html",
                 controller: 'ReportIndexController'
             })
             .state("index.report.reports", {
-                url: "/report?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
+                url: "/report", //?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/reports/reports.html",
                 controller: 'ReportController',
                 activetab: 'report'
@@ -138,37 +139,43 @@ app.config(function ($stateProvider, $urlRouterProvider, $routeProvider) {
 
 
     $urlRouterProvider.otherwise(function ($injector) {
-        $injector.get('$state').go('index.dashboard');
+        $injector.get('$state').go('index');
     });
 //    $routeProvider.when('/viewPdf', {
 //        url: '/viewPdf/:accountId/:accountName/:tabId',
 //        templateUrl: 'static/views/pdf/vb.pdf.html'});
 //    $urlRouterProvider.otherwise('index/dashboard/1/1');
 });
-app.run(['$window', '$rootScope', '$stateParams', '$state',
-    function ($window, $rootScope, $stateParams, $state) {
-        //$rootScope.accountNameByPdf = $stateParams.accountName; 
 
-        $rootScope.goBack = function () {
-            $window.history.back();
-        };
-        $rootScope.setParamByTemplateId = function (template) {
-            if ($stateParams.templateId != template.id) {
-                $state.go("index.dashboard.widget", {
-                    accountId: $stateParams.accountId,
-                    accountName: $stateParams.accountName,
-                    productId: template.agencyProductId.id,
-                    templateId: template.id,
-                    tabId: 0,
-                    startDate: $stateParams.startDate,
-                    endDate: $stateParams.endDate
-                });
-            }
-            $rootScope.setTmpIdByTab(template);
-            $stateParams.templateId = template.id;
-        };
-        $rootScope.setTmpIdByTab = function (template) {
-            $stateParams.templateId = template.id;
-            this.rootTemplateId = template.id; //$stateParams.templateId;
-        };
+app.config(['$locationProvider', function ($locationProvider) {
+        $locationProvider.hashPrefix('');
     }]);
+
+
+//app.run(['$window', '$rootScope', '$stateParams', '$state',
+//    function ($window, $rootScope, $stateParams, $state) {
+//        //$rootScope.accountNameByPdf = $stateParams.accountName; 
+//
+//        $rootScope.goBack = function () {
+//            $window.history.back();
+//        };
+//        $rootScope.setParamByTemplateId = function (template) {
+//            if ($stateParams.templateId != template.id) {
+//                $state.go("index.dashboard.widget", {
+//                    accountId: $stateParams.accountId,
+//                    accountName: $stateParams.accountName,
+//                    productId: template.agencyProductId.id,
+//                    templateId: template.id,
+//                    tabId: 0,
+//                    startDate: $stateParams.startDate,
+//                    endDate: $stateParams.endDate
+//                });
+//            }
+//            $rootScope.setTmpIdByTab(template);
+//            $stateParams.templateId = template.id;
+//        };
+//        $rootScope.setTmpIdByTab = function (template) {
+//            $stateParams.templateId = template.id;
+//            this.rootTemplateId = template.id; //$stateParams.templateId;
+//        };
+//    }]);

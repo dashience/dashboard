@@ -12,7 +12,7 @@
         </init-param>
         <init-param>
             <param-name>dashience-domain</param-name>
-            <param-value>dashience.com</param-value>
+            <param-value>sankari.com</param-value>
         </init-param>
     </filter>
     <filter-mapping>

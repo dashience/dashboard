@@ -1,4 +1,19 @@
-<div class="normalheader transition animated fadeIn">
+<div class="row clearfix">
+    <!-- Task Info -->
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+         <div ui-view></div>
+        
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<!--<div class="normalheader transition animated fadeIn">
     <div class="hpanel">
         <div class="panel-body header-title">
             <div id="hbreadcrumb" class="pull-right">
@@ -13,11 +28,11 @@
 <section class="content">
     <div class="nav-tabs-custom col-md-12">
         <ul class="nav nav-tabs">
-            <!--            <li ng-class="{active: $state.current.activetab == 'template'}">
+                        <li ng-class="{active: $state.current.activetab == 'template'}">
                             <a ui-sref="index.report.template({reportId: reportId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;">
                                 Template
                             </a>
-                        </li>-->
+                        </li>
             <li ng-class="{active: $state.current.activetab == 'report'}">
                 <a ui-sref="index.report.reports({lan: agencyLanguage, locationId: locationId, reportId: reportId, startDate: startDate, endDate: endDate})" style="padding:3px 15px;display: inline-block;" translate>
                     Reports
@@ -30,4 +45,4 @@
             <div ui-view></div>
         </div>
     </div>
-</section>
+</section>-->

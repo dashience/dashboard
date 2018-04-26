@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Deeta | Dashboard</title>
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <link rel="shortcut icon" href="static/img/favicon.ico" type="image/x-icon">
+        <link href="static1/lib/fonts/pe-icon-7-stroke/css/pe-icon-7-stroke.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/animate.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/fonts/rajdhani/stylesheet.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/fonts/proxima/stylesheet.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/css/dashboardTab.css" rel="stylesheet">
+        <link href="static1/css/dashboard.css" rel="stylesheet">
+        <link href="static1/lib/css/bootstrap.min.css" rel="stylesheet">
+        <link href="static1/lib/css/select.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/select2.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/selectize.default.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/font-awesome.min.css" rel="stylesheet">
+        <link href="static1/lib/fonts/enigmatic_regular_macroman/stylesheet.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/js/c3/c3.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/ionicons.min.css" rel="stylesheet">
+        <link href="static/lib/css/angular-datepicker.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/L2T.css" rel="stylesheet">
+        <link href="static1/lib/css/skin-blue.min.css" rel="stylesheet">
+        <link href="static1/lib/js/datepicker/jquery.datetimepicker.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/daterangepicker.css" rel="stylesheet">
+        <link href="static1/lib/js/ui-table/ui-grid.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/js/ng-sortable/ng-sortable.min.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/buttons.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/nspopover/nsPopover.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/query-builder.default.min.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/smart-area.css" rel="stylesheet" type="text/css"/>
+        <link href="static1/lib/css/spectrum.css" rel="stylesheet" type="text/css"/>
+        <!--<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.0/select2.css">-->
+        <!--        <link href="static/lib/css/mobileview/libs.min.css" rel="stylesheet" type="text/css"/>
+        <link href="static/lib/css/mobileview/docs.min.css" rel="stylesheet" type="text/css"/>
+        <link href="static/lib/css/mobileview/angular-motion.min.css" rel="stylesheet" type="text/css"/>-->
+
+
+
+        <style type="text/css">
+            .mar-top {
+                margin-top: 8px;
+            }
+            .pull-right {
+                padding: 0px 4px;
+            }
+        </style>
+    </head>
+
+    <body ng-app="VizBoardApp">
+
+        <div ui-view="" class="wrapper-container"></div>
+
+
+        <script src="static1/lib/js/d3/d3.v3.js" type="text/javascript"></script>
+        <script src="static1/lib/js/c3/c3.js" type="text/javascript"></script>
+        <script src="static1/lib/js/jquery/jquery-3.2.0.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/jquery/jquery-ui.min.js" type="text/javascript"></script>
+        <!--        <script src="static/lib/js/moment/moment.js" type="text/javascript"></script>-->
+
+
+        <script src="static1/lib/js/jquery/jquery.dragtable.js" type="text/javascript"></script>
+        <!--Funnel-->
+        <script src="static1/lib/js/funnel/d3-funnel.js" type="text/javascript"></script>
+
+        <!--<script src="https://cdn.rawgit.com/jakezatecky/d3-funnel/0.3.2/d3-funnel.js"></script>-->
+        <script src="static1/lib/js/bootstrap.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/datepicker/jquery.datetimepicker.full.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/jquery/select2.full.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/jquery/jquery.inputmask.js" type="text/javascript"></script>
+        <script src="static1/lib/js/jquery/jquery.inputmask.date.extensions.js" type="text/javascript"></script>
+        <script src="static1/lib/js/jquery/jquery.inputmask.extensions.js" type="text/javascript"></script>
+
+        <script src="static1/lib/js/jquery/moment.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/jquery/daterangepicker.js" type="text/javascript"></script>
+
+        <script src="static1/lib/js/jquery/bootstrap-datepicker.js" type="text/javascript"></script>
+        <script src="static1/lib/js/jquery/bootstrap-colorpicker.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/jquery/bootstrap-timepicker.min.js" type="text/javascript"></script>
+
+
+        <script src="static1/lib/js/jquery/icheck.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/jquery/app.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/queryBuilder/sql-parser.js" type="text/javascript"></script>
+        <script src="static1/lib/js/queryBuilder/query-builder.standalone.js" type="text/javascript"></script>
+        <!--color spectrum-->
+        <script src="static1/lib/js/spectrum/spectrum.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/angular.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/angular-sanitize.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/ng-sortable/ng-sortable.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/angular-ui-router.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/angular-route.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/angular-ui.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/angular-animate.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/angular-cookie.min.js" type="text/javascript"></script>
+
+        <script src="static1/lib/js/angular/angular-translate.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/angular-translate-loader-static-files.js" type="text/javascript"></script>
+        <!--<script src="https://cdn.rawgit.com/angular-translate/bower-angular-translate-loader-static-files/2.15.2/angular-translate-loader-static-files.js"></script>-->
+
+        <!--        <script src="static/lib/js/select2/select2.min.js" type="text/javascript"></script>
+                <script src="static/lib/js/select2/select2.js" type="text/javascript"></script>-->
+        <!--        <script src="http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.0/select2.min.js"></script>
+                <script src="http://rawgithub.com/angular-ui/ui-select2/master/src/select2.js"></script>-->
+        <!--<script src="static/lib/js/pdf/html2canvas.min.js" type="text/javascript"></script>-->
+        <!--<script src="static/lib/js/pdf/jspdf.debug.js" type="text/javascript"></script>-->
+        <!--<script src="static/lib/js/pdf/saveHtmlToPdf.min.js" type="text/javascript"></script>-->
+        <script src="static1/lib/js/angular/ui-bootstrap-tpls.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/angular-local-storage.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/underscore-min.js" type="text/javascript"></script>
+        <!--<script src="static/lib/js/ui-table/ui-grid.js" type="text/javascript"></script>-->
+        <script src="static1/lib/js/angular/select.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/angular-filter.min.js" type="text/javascript"></script>
+        <script src="static1/lib/js/angular/smart-table.debug.js" type="text/javascript"></script>
+        <script src="static1/lib/js/paginations/dirPagination.js" type="text/javascript"></script>
+        <script src="static1/lib/js/marked.js" type="text/javascript"></script>
+        <script src="static1/lib/js/screenfull/angular-screenfull.js" type="text/javascript"></script>
+        <script src="static1/lib/js/screenfull/screenfull.js" type="text/javascript"></script> 
+        <script src="static1/lib/js/draganddrop/ngDraggable.js" type="text/javascript"></script>
+        <script src="static1/lib/js/ckeditor/ckeditor.js" type="text/javascript"></script>
+        <script src="static1/lib/js/nspopover/nsPopover.js" type="text/javascript"></script>
+        <script src="static1/lib/js/nspopover/lodash.js" type="text/javascript"></script>
+        <script src="static1/lib/js/bootbox/bootbox.js" type="text/javascript"></script>
+        <script src="static1/lib/js/smartArea/smart-area.js" type="text/javascript"></script>
+
+
+        <!--        <script src="static/lib/js/mobileview/libs.min.js" type="text/javascript"></script>
+                <script src="static/lib/js/mobileview/docs.min.js" type="text/javascript"></script>
+                <script src="static/lib/js/mobileview/angular-motion.docs.min.js" type="text/javascript"></script>-->
+
+        <script src="static1/lib/js/app-deeta.js" type="text/javascript"></script>
+        <script src="static1/scripts/app.js"></script>
+        <script src="static1/scripts/config/ui-routeprovider.js"></script>
+        <script src="static1/scripts/filters/vb.customfilter.filter.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.ticker.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.dynamicTable.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.lineChart.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.barChart.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.pieChart.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.areaChart.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.stackedBarChart.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.scatterChart.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.compareTable.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.funnelChart.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.gauge.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.sortable.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.dataSet.directive.js" type="text/javascript"></script>
+        <script src="static1/scripts/directives/vb.derivedDateRange.directive.js" type="text/javascript"></script>
+        <!--<script src="static/scripts/directives/vb.map.directive.js" type="text/javascript"></script>-->
+
+        <!--<script src="static/scripts/controllers/vb.index.js" type="text/javascript"></script>-->
+        <!--<script src="static/scripts/controllers/vb.dashboard.js" type="text/javascript"></script>-->
+        <script src="static1/scripts/controllers/vb.header.js" type="text/javascript"></script>    
+        <script src="static1/scripts/controllers/vb.footer.js" type="text/javascript"></script>
+        <!--<script src="static/scripts/controllers/vb.leftMenu.js" type="text/javascript"></script>-->    
+        <script src="static1/scripts/controllers/vb.dashboardTab.js" type="text/javascript"></script>    
+        <script src="static1/scripts/controllers/vb.widgets.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.editWidget.js" type="text/javascript"></script>
+        <script src="static1/lib/js/draganddrop/ng-draggable-widgets.js" type="text/javascript"></script>
+        <!--<script src="static/lib/draganddrop/ng-draggable-widgets.js" type="text/javascript"></script>-->
+        <!--<script src="static/scripts/controllers/charts.js" type="text/javascript"></script>--> 
+        <script src="static1/scripts/controllers/vb.reportIndex.js" type="text/javascript"></script>    
+        <script src="static1/scripts/controllers/vb.reportTemplate.js" type="text/javascript"></script>    
+        <script src="static1/scripts/controllers/vb.reports.js" type="text/javascript"></script>    
+        <script src="static1/scripts/controllers/vb.newOrEditReport.js" type="text/javascript"></script>
+        <!--<script src="static/scripts/controllers/vb.editWidgetReport.js" type="text/javascript"></script>-->
+        <script src="static1/scripts/controllers/vb.dataSource.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.dataSet.js" type="text/javascript"></script>
+        <!--<script src="static/scripts/controllers/vb.franchiseMarketing.js" type="text/javascript"></script>-->
+        <script src="static1/scripts/controllers/vb.scheduler.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.newOrEditScheduler.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.user.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.account.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.agency.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.fieldSettings.js" type="text/javascript"></script>
+        <!--<script src="static/scripts/controllers/vb.tag.js" type="text/javascript"></script>-->
+        <script src="static1/scripts/controllers/vb.favourites.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.viewFavouritesWidget.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.settings.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.pdf.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.reportPdf.js" type="text/javascript"></script>
+        <script src="static1/scripts/controllers/vb.favouritesPdf.js" type="text/javascript"></script>
+
+        <script src="static1/scripts/config/lang.js" type="text/javascript"></script>
+        <!-- Page script -->
+
+        <!-- Map-->
+<!--            <script src="static/lib/js/map/map.js" type="text/javascript"></script>
+            <script src="static/lib/js/map/ng-map.js" type="text/javascript"></script>-->
+
+<!--        <script src="https://maps.google.com/maps/api/js"></script>
+        <script src="https://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js"></script>-->
+
+    </body>
+</html>

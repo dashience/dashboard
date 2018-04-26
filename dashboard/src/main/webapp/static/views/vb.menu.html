@@ -1,0 +1,156 @@
+<section>
+    <!-- Left Sidebar -->
+    <aside id="leftsidebar" class="sidebar">
+        <!-- User Info -->
+        <div class="user-info">
+            <div class="image">
+                <img src="static/images/user.png" width="48" height="48" alt="User" />
+            </div>
+            <div class="info-container">
+                <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">John Doe</div>
+                <div class="email">Signed In</div>
+                <div class="btn-group user-helper-dropdown">
+                    <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
+                    <ul class="dropdown-menu pull-right">
+                        <li><a href="javascript:void(0);"><i class="material-icons">person</i>Profile</a></li>
+                        <li role="seperator" class="divider"></li>
+                        <li><a href="javascript:void(0);"><i class="material-icons">input</i>Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- #User Info -->
+        <!-- Menu -->
+        <div class="menu">
+            <ul class="list">
+                <li class="active">
+                    <a href="javascript:void(0);" class="menu-toggle">
+                        <i class="material-icons col-light-blue">widgets</i>
+                        <span>Dashboards</span>
+                    </a>
+                    <ul class="ml-menu">
+                        <li ng-repeat="product in headerMenuObj.products| orderBy:'productOrder'" ng-if="product.showProduct">
+                            <a> 
+                                <i class="col-amber">
+                                    <img class="product-icon img-responsive" ng-src="{{product.icon}}"/>
+                                </i>
+                                <span ng-click="setParamsProduct(product)">{{product.productName}}</span></a>
+                        </li>
+
+
+                        <!--                        <li>
+                                                         <a href="javascript:void(0);" class="menu-toggle">
+                                                             <i class="material-icons col-light-blue">content_copy</i>
+                                                             <span>Custom Dashboard</span>
+                                                         </a>
+                                                         <ul class="ml-menu">
+                                                             <li>
+                                                                 <a href="pages/widgets/infobox/infobox-1.html">Custom Dashboard-1</a>
+                                                             </li>
+                                                             <li>
+                                                                 <a href="pages/widgets/infobox/infobox-2.html">Custom Dashboard-2</a>
+                                                             </li>
+                                                         </ul>
+                                                     </li>-->
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle">
+                        <i class="material-icons col-red">update</i>
+                        <span>Reports</span>
+                    </a>
+                    <ul class="ml-menu">
+                        <li ng-if="headerMenuObj.permission.viewReport === true;" ng-click="getProduct('Reports')">
+                            <a data-ui-sref="index.report.reports({lan: headerMenuObj.lan, accountId: headerMenuObj.accountId, accountName: headerMenuObj.accountName, startDate: headerMenuObj.startDate, endDate: headerMenuObj.endDate, compareStatus: headerMenuObj.compareStatus, compareStartDate: headerMenuObj.compareStartDate, compareEndDate: headerMenuObj.compareEndDate})">
+                                <i class="fa fa-file-archive-o text-info" aria-hidden="true"></i>Reports
+                            </a>
+                        </li>
+                        <li ng-if="headerMenuObj.isAdmin == 'admin'" ng-click="getProduct('Agency')">
+                            <a data-ui-sref="index.agency({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
+                                <i class="fa fa-cog text-warning"></i>Agency
+                            </a>
+                        </li>
+                        <li ng-if="headerMenuObj.permission.scheduleReport === true;" ng-click="getProduct('Scheduler')">
+                            <a data-ui-sref="index.schedulerIndex.scheduler({lan: headerMenuObj.lan, accountId: headerMenuObj.accountId, accountName: headerMenuObj.accountName, startDate: headerMenuObj.startDate, endDate: headerMenuObj.endDate, compareStatus: headerMenuObj.compareStatus, compareStartDate:headerMenuObj.compareStartDate, compareEndDate:headerMenuObj.compareEndDate})">
+                                <i class="fa fa-clock-o text-danger" aria-hidden="true"></i>Scheduler</a>
+                        </li>
+                        <li ng-if="headerMenuObj.isAdmin !== 'admin'" ng-click="getProduct('Favorites')">
+                            <a data-ui-sref="index.viewFavouritesWidget({lan: headerMenuObj.lan, accountId: headerMenuObj.accountId, accountName: headerMenuObj.accountName, productId: 0, favouriteName: 'Favourite', startDate: headerMenuObj.startDate, endDate: headerMenuObj.endDate, compareStatus: headerMenuObj.compareStatus, compareStartDate: headerMenuObj.compareStartDate, compareEndDate: headerMenuObj.compareEndDate})">
+                                <i class="fa fa-heart text-info" aria-hidden="true"></i> Favorites</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle">
+                        <i class="material-icons col-amber">assignment</i>
+                        <span>Add Data</span>
+                    </a>
+                    <ul class="ml-menu">
+                        <li ng-if="headerMenuObj.permission.createDataSource === true;" ng-click="getProduct('DataSource')">
+                            <a data-ui-sref="index.dataSource({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
+                                <i class="fa fa-database datasource" aria-hidden="true"></i>DataSource
+                            </a>
+                        </li>
+
+                        <li ng-if="headerMenuObj.permission.createDataSet === true;" ng-click="getProduct('DataSets')">
+                            <a data-ui-sref="index.dataSet({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
+                                <i class="fa fa-dashcube text-success"></i>DataSets
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="javascript:void(0);" class="menu-toggle">
+                        <i class="material-icons col-light-blue">people</i>
+                        <span>Settings</span>
+                    </a>
+                    <ul class="ml-menu">
+                        <li ng-if="headerMenuObj.permission.createAccount === true;" ng-click="getProduct('Account')">
+                            <a data-ui-sref="index.account({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
+                                <i class="fa fa-cog text-warning"></i>Account</a>
+                        </li>
+                        <li ng-if="headerMenuObj.permission.createUser === true;" ng-click="getProduct('Users')">
+                            <a data-ui-sref="index.user({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
+                                <i class="fa fa-users text-info"></i> Users</a>
+                        </li>
+                        <li ng-if="headerMenuObj.isAdmin === 'admin'" ng-click="getProduct('Account Settings')">
+                            <a data-ui-sref="index.settings({lan: lan, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
+                                <i class="fa fa-gear text-info"></i>Account Settings
+                            </a>
+                        </li>
+                        <li ng-if="headerMenuObj.isAdmin === 'admin'" ng-click="getProducts('Field Settings')">
+                            <a data-ui-sref="index.fieldSettings({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
+                                <i class="fa fa-cog text-danger"></i>Field Settings
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <!-- #Menu -->
+        <!-- Footer -->
+        <div class="legal">
+            <div class="copyright">
+                &copy; Dashience. All Rights Reserved.
+            </div>
+        </div>
+        <!-- #Footer -->
+    </aside>
+    <!-- #END# Left Sidebar -->
+</section>
+<script>
+    $(function () {
+        $.AdminBSB.browser.activate();
+        $.AdminBSB.leftSideBar.activate();
+        $.AdminBSB.rightSideBar.activate();
+        $.AdminBSB.navbar.activate();
+        $.AdminBSB.dropdownMenu.activate();
+        $.AdminBSB.input.activate();
+        $.AdminBSB.select.activate();
+        $.AdminBSB.search.activate();
+
+        setTimeout(function () {
+            $('.page-loader-wrapper').fadeOut();
+        }, 50);
+    });
+</script>

@@ -1,9 +1,8 @@
 //angular.module('MultiLanguageApp', ['pascalprecht.translate'])
 app.config(function ($translateProvider) {
-
-
+    
     $translateProvider.useStaticFilesLoader({
-        prefix: 'static/datas/languages/',
+        prefix: 'static/json/languages/',
         suffix: '.json'
     });
 //    $translateProvider.preferredLanguage('en');
