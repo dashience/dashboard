@@ -1337,7 +1337,7 @@ public class ProxyController {
             } else {
                 returnMap.put(dataSetColumn.getFieldName(), data.get(dataSetColumn.getFieldName()));
             }
-
+                
         }
         return returnMap;
     }

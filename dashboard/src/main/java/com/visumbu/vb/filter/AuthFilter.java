@@ -57,7 +57,6 @@ public class AuthFilter implements Filter {
                 subDomain = request.getServerName().substring(0, request.getServerName().indexOf(urlDomain) - 1);
             }
             System.out.println(subDomain);
-
             HttpServletResponse httpResponse = (HttpServletResponse) response;
             HttpSession session = httpRequest.getSession();
             String url = httpRequest.getServletPath();

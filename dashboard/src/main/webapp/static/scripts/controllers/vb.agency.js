@@ -71,7 +71,10 @@ app.controller('AgencyController', function ($scope, $http, $translate, $statePa
     $scope.agencies = [];
     function getAgency() {
         $http.get('admin/user/agency').success(function (response) {
-            $scope.agencies = response;
+//            $scope.agencies = response;
+            angular.forEach(response, function (val, key) {
+                $scope.agencies.unshift(val);
+            });
         });
     }
     getAgency();
@@ -300,7 +303,7 @@ app.controller('AgencyController', function ($scope, $http, $translate, $statePa
                 secondaryPhone: agencyUser.secondaryPhone,
                 agencyId: $scope.agencyById.id,
             };
-            
+
             console.log("agency user data");
             console.log(agencyUserData);
             $http({method: agencyUser.id ? 'PUT' : 'POST', url: 'admin/ui/user', data: agencyUserData}).success(function (response) {
