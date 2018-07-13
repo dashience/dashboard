@@ -1,3 +1,10 @@
+<style>
+    .img-size{
+        width:35px;
+    }    
+</style>
+
+
 <section>
     <!-- Left Sidebar -->
     <aside id="leftsidebar" class="sidebar">
@@ -29,12 +36,12 @@
                         <span>Dashboards</span>
                     </a>
                     <ul class="ml-menu">
-                        <li ng-repeat="product in headerMenuObj.products| orderBy:'productOrder'" ng-if="product.showProduct">
+                        <li ng-repeat="product in headerCtrl.products| orderBy:'productOrder'" ng-if="product.showProduct">
                             <a> 
                                 <i class="col-amber">
-                                    <img class="product-icon img-responsive" ng-src="{{product.icon}}"/>
+                                    <img class="product-icon img-responsive img-size" ng-src="{{product.icon}}"/>
                                 </i>
-                                <span ng-click="setParamsProduct(product)">{{product.productName}}</span></a>
+                                <span ng-click="headerCtrl.setParamsProduct(product)">{{product.productName}}</span></a>
                         </li>
 
 
@@ -60,23 +67,29 @@
                         <span>Reports</span>
                     </a>
                     <ul class="ml-menu">
-                        <li ng-if="headerMenuObj.permission.viewReport === true;" ng-click="getProduct('Reports')">
-                            <a data-ui-sref="index.report.reports({lan: headerMenuObj.lan, accountId: headerMenuObj.accountId, accountName: headerMenuObj.accountName, startDate: headerMenuObj.startDate, endDate: headerMenuObj.endDate, compareStatus: headerMenuObj.compareStatus, compareStartDate: headerMenuObj.compareStartDate, compareEndDate: headerMenuObj.compareEndDate})">
-                                <i class="fa fa-file-archive-o text-info" aria-hidden="true"></i>Reports
+                        <li ng-if="headerCtrl.authObj.permission.viewReport == true;" ng-click="headerCtrl.getProduct('Reports')">
+                            <a data-ui-sref="index.report.reports({lan: headerCtrl.lan, accountId: headerCtrl.accountId, accountName: headerCtrl.accountName, startDate: headerCtrl.startDate, endDate: headerCtrl.endDate, compareStatus: headerCtrl.compareStatus, compareStartDate: headerCtrl.compareStartDate, compareEndDate: headerCtrl.compareEndDate})">
+                                <i class="fa fa-file-archive-o text-info" aria-hidden="true"></i>
+                                <span>Reports</span>
                             </a>
                         </li>
-                        <li ng-if="headerMenuObj.isAdmin == 'admin'" ng-click="getProduct('Agency')">
+                        <li ng-if="headerCtrl.authObj.isAdmin == 'admin'" ng-click="headerCtrl.getProduct('Agency')">
                             <a data-ui-sref="index.agency({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
-                                <i class="fa fa-cog text-warning"></i>Agency
+                                <i class="fa fa-cog text-warning"></i>
+                                <span>Agency</span>
                             </a>
                         </li>
-                        <li ng-if="headerMenuObj.permission.scheduleReport === true;" ng-click="getProduct('Scheduler')">
-                            <a data-ui-sref="index.schedulerIndex.scheduler({lan: headerMenuObj.lan, accountId: headerMenuObj.accountId, accountName: headerMenuObj.accountName, startDate: headerMenuObj.startDate, endDate: headerMenuObj.endDate, compareStatus: headerMenuObj.compareStatus, compareStartDate:headerMenuObj.compareStartDate, compareEndDate:headerMenuObj.compareEndDate})">
-                                <i class="fa fa-clock-o text-danger" aria-hidden="true"></i>Scheduler</a>
+                        <li ng-if="headerCtrl.authObj.permission.scheduleReport === true;" ng-click="headerCtrl.getProduct('Scheduler')">
+                            <a data-ui-sref="index.schedulerIndex.scheduler({lan: headerCtrl.lan, accountId: headerCtrl.accountId, accountName: headerCtrl.accountName, startDate: headerCtrl.startDate, endDate: headerCtrl.endDate, compareStatus: headerCtrl.compareStatus, compareStartDate: headerCtrl.compareStartDate, compareEndDate: headerCtrl.compareEndDate})">
+                                <i class="fa fa-clock-o text-danger" aria-hidden="true"></i>
+                                <span>Scheduler</span>
+                            </a>
                         </li>
-                        <li ng-if="headerMenuObj.isAdmin !== 'admin'" ng-click="getProduct('Favorites')">
-                            <a data-ui-sref="index.viewFavouritesWidget({lan: headerMenuObj.lan, accountId: headerMenuObj.accountId, accountName: headerMenuObj.accountName, productId: 0, favouriteName: 'Favourite', startDate: headerMenuObj.startDate, endDate: headerMenuObj.endDate, compareStatus: headerMenuObj.compareStatus, compareStartDate: headerMenuObj.compareStartDate, compareEndDate: headerMenuObj.compareEndDate})">
-                                <i class="fa fa-heart text-info" aria-hidden="true"></i> Favorites</a>
+                        <li ng-if="headerCtrl.authObj.isAdmin !== 'admin'" ng-click="headerCtrl.getProduct('Favorites')">
+                            <a data-ui-sref="index.viewFavouritesWidget({lan: headerCtrl.lan, accountId: headerCtrl.accountId, accountName: headerCtrl.accountName, productId: 0, favouriteName: 'Favourite', startDate: headerCtrl.startDate, endDate: headerCtrl.endDate, compareStatus: headerCtrl.compareStatus, compareStartDate: headerCtrl.compareStartDate, compareEndDate: headerCtrl.compareEndDate})">
+                                <i class="fa fa-heart text-info" aria-hidden="true"></i>
+                                <span>Favorites</span>
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -85,16 +98,20 @@
                         <i class="material-icons col-amber">assignment</i>
                         <span>Add Data</span>
                     </a>
+
                     <ul class="ml-menu">
-                        <li ng-if="headerMenuObj.permission.createDataSource === true;" ng-click="getProduct('DataSource')">
+
+                        <li ng-if="headerCtrl.authObj.permission.createDataSource === true;" ng-click="headerCtrl.getProduct('DataSource')">
                             <a data-ui-sref="index.dataSource({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
-                                <i class="fa fa-database datasource" aria-hidden="true"></i>DataSource
+                                <i class="fa fa-database datasource" aria-hidden="true"></i>
+                                <span>DataSource</span>
                             </a>
                         </li>
 
-                        <li ng-if="headerMenuObj.permission.createDataSet === true;" ng-click="getProduct('DataSets')">
+                        <li ng-if="headerCtrl.authObj.permission.createDataSet === true;" ng-click="headerCtrl.getProduct('DataSets')">
                             <a data-ui-sref="index.dataSet({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
-                                <i class="fa fa-dashcube text-success"></i>DataSets
+                                <i class="fa fa-dashcube text-success"></i>
+                                <span>DataSets</span>
                             </a>
                         </li>
                     </ul>
@@ -105,22 +122,28 @@
                         <span>Settings</span>
                     </a>
                     <ul class="ml-menu">
-                        <li ng-if="headerMenuObj.permission.createAccount === true;" ng-click="getProduct('Account')">
+                        <li ng-if="headerCtrl.authObj.permission.createAccount === true;" ng-click="headerCtrl.getProduct('Account')">
                             <a data-ui-sref="index.account({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
-                                <i class="fa fa-cog text-warning"></i>Account</a>
-                        </li>
-                        <li ng-if="headerMenuObj.permission.createUser === true;" ng-click="getProduct('Users')">
-                            <a data-ui-sref="index.user({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
-                                <i class="fa fa-users text-info"></i> Users</a>
-                        </li>
-                        <li ng-if="headerMenuObj.isAdmin === 'admin'" ng-click="getProduct('Account Settings')">
-                            <a data-ui-sref="index.settings({lan: lan, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
-                                <i class="fa fa-gear text-info"></i>Account Settings
+                                <i class="fa fa-cog text-warning"></i>
+                                <span>Account</span>
                             </a>
                         </li>
-                        <li ng-if="headerMenuObj.isAdmin === 'admin'" ng-click="getProducts('Field Settings')">
+                        <li ng-if="headerCtrl.authObj.permission.createUser === true;" ng-click="headerCtrl.getProduct('Users')">
+                            <a data-ui-sref="index.user({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
+                                <i class="fa fa-users text-info"></i>
+                                <span>Users</span>
+                            </a>
+                        </li>
+                        <li ng-if="headerCtrl.authObj.isAdmin === 'admin'" ng-click="headerCtrl.getProduct('Account Settings')">
+                            <a data-ui-sref="index.settings({lan: lan, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
+                                <i class="fa fa-gear text-info"></i>
+                                <span>Account Settings</span>
+                            </a>
+                        </li>
+                        <li ng-if="headerCtrl.authObj.isAdmin === 'admin'" ng-click="headerCtrl.getProduct('Field Settings')">
                             <a data-ui-sref="index.fieldSettings({lan: lan, accountId: accountId, accountName: accountName, startDate: startDate, endDate: endDate, compareStatus: compareStatus, compareStartDate:compareStartDate, compareEndDate:compareEndDate})">
-                                <i class="fa fa-cog text-danger"></i>Field Settings
+                                <i class="fa fa-cog text-danger"></i>
+                                <span>Field Settings</span>
                             </a>
                         </li>
                     </ul>

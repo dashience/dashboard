@@ -1,23 +1,22 @@
-app.directive('barChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
-    return{
+app.directive('areaChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
+    return {
         restrict: 'A',
-        template: '<div ng-show="loadingBar" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
-                '<div ng-show="hideEmptyBar" class="text-center">{{barEmptyMessage}}</div>',
+        template: '<div ng-show="loadingArea" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
+                '<div ng-show="hideEmptyArea" class="text-center">{{areaEmptyMessage}}</div>',
         scope: {
-            setBarChartFn: '&',
-            barChartSource: '@',
+            setAreaChartFn: '&',
             widgetId: '@',
-            barChartId: '@',
+            areaChartSource: '@',
             widgetColumns: '@',
+            pieChartId: '@',
             widgetObj: '@',
             defaultChartColor: '@',
-            isHorizontalBar: '@',
             compareDateRange: '@',
             urlType: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
-            scope.loadingBar = true;
+            scope.loadingArea = true;
             var yAxis = [];
             var columns = [];
             var xAxis;
@@ -27,8 +26,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var displayDataFormat = {};
             var y2 = {show: false, label: ''};
             var axes = {};
-            var startDate = "";
-            var endDate = "";
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
@@ -42,7 +39,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 if (value.displayFormat) {
                     var format = value.displayFormat;
                     var displayName = value.displayName;
-
                     if (value.displayFormat && value.displayFormat != 'H:M:S') {
                         labels["format"][displayName] = function (value) {
                             if (format.indexOf("%") > -1) {
@@ -52,7 +48,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                         };
                     } else {
                         labels["format"][displayName] = function (value) {
-                            return formatBySecond(parseInt(value))
+                            return formatBySecond(parseInt(value));
                         };
                     }
                 } else {
@@ -71,6 +67,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 if (value.yAxis) {
                     yAxis.push({fieldName: value.fieldName, displayName: value.displayName, displayFormat: value.displayFormat});
                     axes[value.displayName] = 'y' + (value.yAxis > 1 ? 2 : '');
+//                    axes[value.fieldName] = 'y' + (value.yAxis > 1 ? 2 : '');
                 }
                 if (value.yAxis > 1) {
                     y2 = {show: true, label: ''};
@@ -79,8 +76,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
                 }
                 if (value.combinationType) {
-                    console.log(value.fieldName + " --- " + value.combinationType);
-                    combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
+                    combinationTypes.push({fieldName: value.fieldName, displayName: value.displayName, combinationType: value.combinationType});
                 }
             });
             var xData = [];
@@ -100,7 +96,6 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     } else if (value.fieldType == "number") {
                         if (value.sortOrder == "asc") {
                             fieldsOrder.push(function (a) {
-
                                 var parsedValue = parseFloat(a[value.fieldName]);
                                 if (isNaN(parsedValue)) {
                                     return 0;
@@ -110,6 +105,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                         } else if (value.sortOrder == "desc") {
                             fieldsOrder.push(function (a) {
                                 var parsedValue = parseFloat(a[value.fieldName]);
+
                                 if (isNaN(parsedValue)) {
                                     return 0;
                                 }
@@ -153,13 +149,10 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                         }
                     }
                 });
-                    return $filter('orderBy')(list, fieldsOrder);
-                
-                
-            };
+                return $filter('orderBy')(list, fieldsOrder);
 
+            };
             function maximumRecord(maxValue, list) {
-//                alert(maxValue.maxRecord)
                 var maxData;
                 if (maxValue.maxRecord > 0) {
                     maxData = list.slice(0, maxValue.maxRecord);
@@ -182,11 +175,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var monthEndWithoutCompare = "&startDate=" + startDate1 + "&endDate=" + endDate1;
             var compareRange = JSON.parse(scope.compareDateRange);
             var isCompare = scope.urlType;
-            console.log("compareDateRange-------->", scope.compareDateRange)
-            console.log("********* URL TYPE ************ -->",scope.urlType);
-            console.log("urlType------------------------------>",scope.urlType);
             var url;
-            if (isCompare === 'compareOn') {
+            if (isCompare == 'compareOn') {
                 var compareStartDate = compareRange.startDate;
                 var compareEndDate = compareRange.endDate;
                 dateRangeType = '&startDate1=' + $stateParams.startDate +
@@ -198,20 +188,21 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 dateRangeType = '&startDate=' + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
                 url = "admin/proxy/getData?";
             }
-            var barChartDataSource = JSON.parse(scope.barChartSource);
-            if (scope.barChartSource) {
 
-                var getWidgetObj = JSON.parse(scope.widgetObj);
+            var areaChartDataSource = JSON.parse(scope.areaChartSource);
+            if (scope.areaChartSource) {
 //                var url = "admin/proxy/getData?";
-//                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                if (areaChartDataSource.dataSourceId.dataSourceType == "sql") {
 //                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
 //                }
+
                 var dataSourcePassword;
-                if (barChartDataSource.dataSourceId.password) {
-                    dataSourcePassword = barChartDataSource.dataSourceId.password;
+                if (areaChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = areaChartDataSource.dataSourceId.password;
                 } else {
                     dataSourcePassword = '';
                 }
+                var getWidgetObj = JSON.parse(scope.widgetObj);
                 var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
 //                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
                 var widgetChartColors;
@@ -243,34 +234,35 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     setNetworkType = getWidgetObj.networkType;
                 }
 
-                scope.refreshBarChart = function () {
-                    $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
-                            "&dataSetId=" + barChartDataSource.id +
+                scope.refreshAreaChart = function () {
+                    $http.get(url + 'connectionUrl=' + areaChartDataSource.dataSourceId.connectionString +
+                            "&dataSetId=" + areaChartDataSource.id +
                             "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
-                            "&userId=" + (barChartDataSource.userId ? barChartDataSource.userId.id : null) +
-                            "&dataSetReportName=" + barChartDataSource.reportName +
-                            "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
-                            "&location=" + $stateParams.locationId +
+                            "&userId=" + (areaChartDataSource.userId ? areaChartDataSource.userId.id : null) +
+                            "&dataSetReportName=" + areaChartDataSource.reportName +
+                            "&driver=" + areaChartDataSource.dataSourceId.sqlDriver +
+//                            "&location=" + $stateParams.locationId +
 //                            "&startDate=" + $stateParams.startDate +
 //                            "&endDate=" + $stateParams.endDate +
                             dateRangeType +
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            '&username=' + barChartDataSource.dataSourceId.userName +
+                            '&username=' + areaChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
                             '&widgetId=' + scope.widgetId +
-                            '&url=' + barChartDataSource.url +
-                            '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
-                        scope.loadingBar = false;
+                            '&url=' + areaChartDataSource.url +
+                            '&port=3306&schema=vb&query=' + encodeURI(areaChartDataSource.query)).then(function (response) {
+
+                        scope.loadingArea = false;
                         if (!response) {
-                            scope.barEmptyMessage = "No Data Found";
-                            scope.hideEmptyBar = true;
+                            scope.areaEmptyMessage = "No Data Found";
+                            scope.hideEmptyArea = true;
                             return;
                         }
                         if (response.data.length === 0) {
-                            scope.barEmptyMessage = "No Data Found";
-                            scope.hideEmptyBar = true;
+                            scope.areaEmptyMessage = "No Data Found";
+                            scope.hideEmptyArea = true;
                         } else {
                             var loopCount = 0;
                             var sortingObj;
@@ -280,9 +272,10 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                             if (sortFields.length > 0) {
                                 angular.forEach(sortFields, function (value, key) {
                                     if (value.fieldType != 'day') {
+                                        console.log("sort fields ---->",sortFields)
                                         sortingObj = scope.orderData(chartData, sortFields);
                                         if (chartMaxRecord.maxRecord) {
-                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj);
                                         } else {
                                             chartData = sortingObj;
                                         }
@@ -295,55 +288,34 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                                 return dateOrders.indexOf(item[value.fieldName]) * -1;
                                             }
                                         });
-
                                         if (chartMaxRecord.maxRecord) {
-                                            chartData = maximumRecord(chartMaxRecord, sortingObj)
+                                            chartData = maximumRecord(chartMaxRecord, sortingObj);
                                         } else {
-                                            console.log("sortingobj -->", sortingObj);
                                             chartData = sortingObj;
                                         }
                                     }
                                 });
                             } else {
-                                console.log("ome");
-                            }
-                            if (chartMaxRecord.maxRecord > 0) {
-                                chartData = chartData.slice(0, chartMaxRecord.maxRecord);
+                                var responseObject = response.data;
+                                if (chartMaxRecord.maxRecord) {
+                                    chartData = maximumRecord(chartMaxRecord, responseObject);
+                                } else {
+                                    console.log("sortingobj -->", sortingObj);
+                                    chartData = responseObject;
+                                }
                             }
                             xTicks = [xAxis.fieldName];
                             xData = chartData.map(function (a) {
                                 xTicks.push(loopCount);
                                 loopCount++;
-                                if(isNaN(a[xAxis.fieldName])){
-                                    return (!!a[xAxis.fieldName]) ? a[xAxis.fieldName].charAt(0).toUpperCase() + a[xAxis.fieldName].substr(1).toLowerCase() : '';
-                                }else{
-                                    return a[xAxis.fieldName];
-                                }
+                                return a[xAxis.fieldName];
                             });
                             columns.push(xTicks);
-                            console.log("Bar chart XData -->", xData);
-                            console.log("Bar chart XTicks -->", xTicks);
-                            console.log("Bar chart chartData -->", chartData);
-                            console.log("Bar chart yAxis -->", yAxis);
+                            console.log("&&&&&&&&&&&&& chart data ->", chartData);
                             angular.forEach(yAxis, function (value, key) {
                                 var ySeriesData = chartData.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
-//                                var ySeriesData1 = chartData.map(function (a) {
-//                                    
-//                                    if (a.metrics1) {
-//                                        return a.metrics1[value.fieldName] || "0";
-//                                    } else {
-//                                        return 0;
-//                                    }
-//                                });
-//                                var ySeriesData2 = chartData.map(function (a) {
-//                                    if (a.metrics2) {
-//                                        return a.metrics2[value.fieldName] || "0";
-//                                    } else {
-//                                        return 0;
-//                                    }
-//                                });
                                 var ySeriesData1 = chartData.map(function (a) {
                                     if (a.metrics1 === null) {
                                         a.metrics1 = {}
@@ -371,8 +343,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 if (isCompare == 'compareOn') {
                                     var sumaryRange1 = response.summary.dateRange1.startDate + " - " + response.summary.dateRange1.endDate;
                                     var sumaryRange2 = response.summary.dateRange2.startDate + " - " + response.summary.dateRange2.endDate;
-                                    var joinCompare1 = value.displayName + " (" + sumaryRange1 + ")";
-                                    var joinCompare2 = value.displayName + " (" + sumaryRange2 + ")";
+                                    var joinCompare1 = value.fieldName + " (" + sumaryRange1 + ")";
+                                    var joinCompare2 = value.fieldName + " (" + sumaryRange2 + ")";
                                     ySeriesData1.unshift(joinCompare1);
                                     ySeriesData2.unshift(joinCompare2);
                                     columns.push(ySeriesData1);
@@ -415,53 +387,58 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                             return value;
                                         };
                                     }
+                                    angular.forEach(combinationTypes, function (combinationValue, key) {
+                                        if (combinationValue.fieldName == value.fieldName) {
+                                            chartCombinationtypes[[joinCompare1]] = combinationValue.combinationType;
+                                            chartCombinationtypes[[joinCompare2]] = combinationValue.combinationType;
+                                        }
+                                    });
                                 } else {
+//                                    ySeriesData.unshift(value.fieldName);
                                     ySeriesData.unshift(value.displayName);
                                     columns.push(ySeriesData);
+
                                 }
-
-
 //                            angular.forEach(yAxis, function (value, key) {
 //                                ySeriesData = chartData.map(function (a) {
 //                                    return a[value.fieldName] || "0";
 //                                });
-//                                ySeriesData.unshift(value.displayName);
+////                                ySeriesData.unshift(value.displayName);
+//                                ySeriesData.unshift(value.fieldName);
 //                                columns.push(ySeriesData);
                             });
-                            angular.forEach(combinationTypes, function (value, key) {
-                                chartCombinationtypes[[value.fieldName]] = value.combinationType;
-                            });
+                            if (isCompare != 'compareOn') {
+                                angular.forEach(combinationTypes, function (value, key) {
+                                    chartCombinationtypes[[value.displayName]] = value.combinationType;
+                                });
+                            }
+                            var data = {
+                                x: xAxis.fieldName,
+                                columns: columns,
+                                labels: labels,
+                                type: 'area',
+                                axes: axes,
+                                types: chartCombinationtypes
+                            };
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {
                                 gridLine = true;
                             } else {
                                 gridLine = false;
                             }
-
-                            try {
-                                var isRotate = JSON.parse(scope.isHorizontalBar);
-
-                            } catch (exception) {
-                            }
-                            var left;
-                            if (isRotate === true) {
-                                left = 75;
-                            } else {
-                                left = 50;
-                            }
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
                                     right: 50,
                                     bottom: 10,
-                                    left: left,
+                                    left: 50
                                 },
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
                                     columns: columns,
                                     labels: labels,
-                                    type: 'bar',
+                                    type: 'area',
                                     axes: axes,
                                     types: chartCombinationtypes
                                 },
@@ -470,14 +447,11 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 },
                                 tooltip: {show: false},
                                 axis: {
-                                    rotated: isRotate,
                                     x: {
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
                                             },
-                                            multiline: true,
-                                            fit: true,
                                             culling: false
                                         }
                                     },
@@ -495,8 +469,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                         }
                     });
                 };
-                scope.setBarChartFn({barFn: scope.refreshBarChart});
-                scope.refreshBarChart();
+                scope.setAreaChartFn({areaFn: scope.refreshAreaChart});
+                scope.refreshAreaChart();
             }
         }
     };

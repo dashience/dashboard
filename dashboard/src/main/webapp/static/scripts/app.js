@@ -1,4 +1,4 @@
-var app = angular.module("DashienceApp", ['ui.router', 'ui.bootstrap', 'ui', 'ngSanitize', 'pascalprecht.translate','ngCookies','LocalStorageModule']);
+var app = angular.module("DashienceApp", ['ui.router', 'ui.bootstrap', 'ui', 'ngSanitize', 'pascalprecht.translate','ngCookies','LocalStorageModule','oc.lazyLoad']);
 //var app = angular.module("DashienceApp", ["ui.router", 'ngRoute', "ui.bootstrap", "ui", "ngCookies", "angularScreenfull", "ngDraggable", "angularUtils.directives.dirPagination", 'smart-table', 'angular.filter', 'ngSanitize', 'ui.select', 'ui.sortable', 'LocalStorageModule', 'nsPopover', 'ng-draggable-widgets', 'ngSanitize', 'ngAnimate', 'smartArea', 'pascalprecht.translate']);
 
 //document.addEventListener("DOMContentLoaded", function() {

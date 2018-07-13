@@ -23,24 +23,24 @@
                         <th translate>S.No</th>
                         <th translate>Report Name</th>
                         <th translate>Agency</th>
-                        <th ng-if="schedulerObj.permission.createReport === true ||
-                                    schedulerObj.permission.downloadReport === true ||
-                                    schedulerObj.permission.deleteReport === true">
+                        <th ng-if="reportObj.permission.createReport === true ||
+                                    reportObj.permission.downloadReport === true ||
+                                    reportObj.permission.deleteReport === true">
                         </th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="report in schedulerObj.reports">
+                    <tr ng-repeat="report in reportObj.reports">
                         <td>{{$index + 1}}</td>
                         <td>{{report.reportTitle}}</td>
                         <td>{{report.agencyId.agencyName}}</td>
-                        <td ng-if="schedulerObj.permission.createReport === true ||
-                                    schedulerObj.permission.downloadReport === true ||
-                                    schedulerObj.permission.deleteReport === true">
-                            <button title="{{'Edit Report'|translate}}" ng-if="schedulerObj.permission.createReport === true;"  class="btn btn-default btn-xs" >
+                        <td ng-if="reportObj.permission.createReport === true ||
+                                    reportObj.permission.downloadReport === true ||
+                                    reportObj.permission.deleteReport === true">
+                            <button title="{{'Edit Report'|translate}}" ng-if="reportObj.permission.createReport === true;"  class="btn btn-default btn-xs" >
                                 <i class="fa fa-pencil"></i>
                             </button>
-                            <button title="{{'Delete Report'|translate}}" ng-if="schedulerObj.permission.deleteReport === true;" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteReport{{report.id}}">
+                            <button title="{{'Delete Report'|translate}}" ng-if="reportObj.permission.deleteReport === true;" class="btn btn-default btn-xs" data-toggle="modal" data-target="#deleteReport{{report.id}}">
                                 <i class="fa fa-trash"></i>
                             </button>
                             <div class="modal hmodal-success" id="deleteReport{{report.id}}" tabindex="-1" role="dialog"  aria-hidden="true">

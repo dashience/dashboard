@@ -1,29 +1,29 @@
-app.directive('barChartDirective', function ($http, $stateParams, $filter, orderByFilter) {
+app.directive('lineChartDirective', function ($http, $filter, $stateParams, orderByFilter) {
     return{
         restrict: 'A',
-        template: '<div ng-show="loadingBar" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
-                '<div ng-show="hideEmptyBar" class="text-center">{{barEmptyMessage}}</div>',
+        template: '<div ng-show="loadingLine" class="text-center"><img src="static/img/logos/loader.gif" width="40"></div>' +
+                '<div ng-show="hideEmptyLine" class="text-center">{{lineEmptyMessage}}</div>',
         scope: {
-            setBarChartFn: '&',
-            barChartSource: '@',
+            setLineChartFn: '&',
+            lineChartSource: '@',
             widgetId: '@',
-            barChartId: '@',
             widgetColumns: '@',
+            lineChartId: '@',
             widgetObj: '@',
             defaultChartColor: '@',
-            isHorizontalBar: '@',
             compareDateRange: '@',
             urlType: '@'
         },
         link: function (scope, element, attr) {
             var labels = {format: {}};
-            scope.loadingBar = true;
+            scope.loadingLine = true;
             var yAxis = [];
             var columns = [];
             var xAxis;
             var ySeriesOrder = 1;
             var sortField = "";
             var sortOrder = 0;
+            var sortDataType = "number";
             var displayDataFormat = {};
             var y2 = {show: false, label: ''};
             var axes = {};
@@ -32,6 +32,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var sortFields = [];
             var combinationTypes = [];
             var chartCombinationtypes = [];
+
             if (!scope.widgetColumns) {
                 return;
             }
@@ -79,9 +80,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                     sortFields.push({fieldName: value.fieldName, sortOrder: value.sortOrder, fieldType: value.fieldType});
                 }
                 if (value.combinationType) {
-                    console.log(value.fieldName + " --- " + value.combinationType);
                     combinationTypes.push({fieldName: value.fieldName, combinationType: value.combinationType});
                 }
+
             });
             var xData = [];
             var xTicks = [];
@@ -153,13 +154,9 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                         }
                     }
                 });
-                    return $filter('orderBy')(list, fieldsOrder);
-                
-                
+                return $filter('orderBy')(list, fieldsOrder);
             };
-
             function maximumRecord(maxValue, list) {
-//                alert(maxValue.maxRecord)
                 var maxData;
                 if (maxValue.maxRecord > 0) {
                     maxData = list.slice(0, maxValue.maxRecord);
@@ -182,11 +179,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
             var monthEndWithoutCompare = "&startDate=" + startDate1 + "&endDate=" + endDate1;
             var compareRange = JSON.parse(scope.compareDateRange);
             var isCompare = scope.urlType;
-            console.log("compareDateRange-------->", scope.compareDateRange)
-            console.log("********* URL TYPE ************ -->",scope.urlType);
-            console.log("urlType------------------------------>",scope.urlType);
             var url;
-            if (isCompare === 'compareOn') {
+            if (isCompare == 'compareOn') {
                 var compareStartDate = compareRange.startDate;
                 var compareEndDate = compareRange.endDate;
                 dateRangeType = '&startDate1=' + $stateParams.startDate +
@@ -198,22 +192,23 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 dateRangeType = '&startDate=' + $stateParams.startDate + "&endDate=" + $stateParams.endDate;
                 url = "admin/proxy/getData?";
             }
-            var barChartDataSource = JSON.parse(scope.barChartSource);
-            if (scope.barChartSource) {
+            var lineChartDataSource = JSON.parse(scope.lineChartSource);
+            if (scope.lineChartSource) {
 
-                var getWidgetObj = JSON.parse(scope.widgetObj);
 //                var url = "admin/proxy/getData?";
-//                if (barChartDataSource.dataSourceId.dataSourceType == "sql") {
+//                if (lineChartDataSource.dataSourceId.dataSourceType == "sql") {
 //                    url = "admin/proxy/getJson?url=../dbApi/admin/dataSet/getData&";
 //                }
                 var dataSourcePassword;
-                if (barChartDataSource.dataSourceId.password) {
-                    dataSourcePassword = barChartDataSource.dataSourceId.password;
+                if (lineChartDataSource.dataSourceId.password) {
+                    dataSourcePassword = lineChartDataSource.dataSourceId.password;
                 } else {
                     dataSourcePassword = '';
                 }
+                var getWidgetObj = JSON.parse(scope.widgetObj);
                 var defaultColors = scope.defaultChartColor ? JSON.parse(scope.defaultChartColor) : "";
-//                var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+                //var defaultColors = ['#59B7DE', '#D7EA2B', '#FF3300', '#E7A13D', '#3F7577', '#7BAE16'];
+
                 var widgetChartColors;
                 if (getWidgetObj.chartColorOption) {
                     widgetChartColors = getWidgetObj.chartColorOption.split(',');
@@ -242,35 +237,33 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                 } else {
                     setNetworkType = getWidgetObj.networkType;
                 }
-
-                scope.refreshBarChart = function () {
-                    $http.get(url + 'connectionUrl=' + barChartDataSource.dataSourceId.connectionString +
-                            "&dataSetId=" + barChartDataSource.id +
+                scope.refreshLineChart = function () {
+                    $http.get(url + 'connectionUrl=' + lineChartDataSource.dataSourceId.connectionString +
+                            "&dataSetId=" + lineChartDataSource.id +
                             "&accountId=" + (getWidgetObj.accountId ? (getWidgetObj.accountId.id ? getWidgetObj.accountId.id : getWidgetObj.accountId) : $stateParams.accountId) +
-                            "&userId=" + (barChartDataSource.userId ? barChartDataSource.userId.id : null) +
-                            "&dataSetReportName=" + barChartDataSource.reportName +
-                            "&driver=" + barChartDataSource.dataSourceId.sqlDriver +
-                            "&location=" + $stateParams.locationId +
+                            "&userId=" + (lineChartDataSource.userId ? lineChartDataSource.userId.id : null) +
+                            "&driver=" + lineChartDataSource.dataSourceId.sqlDriver +
 //                            "&startDate=" + $stateParams.startDate +
 //                            "&endDate=" + $stateParams.endDate +
                             dateRangeType +
                             "&productSegment=" + setProductSegment +
                             "&timeSegment=" + setTimeSegment +
                             "&networkType=" + setNetworkType +
-                            '&username=' + barChartDataSource.dataSourceId.userName +
+                            '&username=' + lineChartDataSource.dataSourceId.userName +
                             '&password=' + dataSourcePassword +
+                            "&dataSetReportName=" + lineChartDataSource.reportName +
                             '&widgetId=' + scope.widgetId +
-                            '&url=' + barChartDataSource.url +
-                            '&port=3306&schema=vb&query=' + encodeURI(barChartDataSource.query)).success(function (response) {
-                        scope.loadingBar = false;
-                        if (!response) {
-                            scope.barEmptyMessage = "No Data Found";
-                            scope.hideEmptyBar = true;
+                            '&url=' + lineChartDataSource.url +
+                            '&port=3306&schema=vb&query=' + encodeURI(lineChartDataSource.query)).then(function (response) {
+                        scope.loadingLine = false;
+                        if (!response.data) {
+                            scope.lineEmptyMessage = "No Data Found";
+                            scope.hideEmptyLine = true;
                             return;
                         }
                         if (response.data.length === 0) {
-                            scope.barEmptyMessage = "No Data Found";
-                            scope.hideEmptyBar = true;
+                            scope.lineEmptyMessage = "No Data Found";
+                            scope.hideEmptyLine = true;
                         } else {
                             var loopCount = 0;
                             var sortingObj;
@@ -287,7 +280,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                             chartData = sortingObj;
                                         }
                                     } else {
-                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                                        var dateOrders = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
                                         sortingObj = orderByFilter(chartData, function (item) {
                                             if (value.sortOrder === 'asc') {
                                                 return dateOrders.indexOf(item[value.fieldName]);
@@ -299,34 +292,26 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                         if (chartMaxRecord.maxRecord) {
                                             chartData = maximumRecord(chartMaxRecord, sortingObj)
                                         } else {
-                                            console.log("sortingobj -->", sortingObj);
                                             chartData = sortingObj;
                                         }
                                     }
                                 });
-                            } else {
-                                console.log("ome");
                             }
                             if (chartMaxRecord.maxRecord > 0) {
                                 chartData = chartData.slice(0, chartMaxRecord.maxRecord);
                             }
-                            xTicks = [xAxis.fieldName];
-                            xData = chartData.map(function (a) {
-                                xTicks.push(loopCount);
-                                loopCount++;
-                                if(isNaN(a[xAxis.fieldName])){
-                                    return (!!a[xAxis.fieldName]) ? a[xAxis.fieldName].charAt(0).toUpperCase() + a[xAxis.fieldName].substr(1).toLowerCase() : '';
-                                }else{
+                            if (xAxis) {
+                                xTicks = [xAxis.fieldName];
+                                console.log("chart data ----->",chartData)
+                                xData = chartData.data.map(function (a) {
+                                    xTicks.push(loopCount);
+                                    loopCount++;
                                     return a[xAxis.fieldName];
-                                }
-                            });
-                            columns.push(xTicks);
-                            console.log("Bar chart XData -->", xData);
-                            console.log("Bar chart XTicks -->", xTicks);
-                            console.log("Bar chart chartData -->", chartData);
-                            console.log("Bar chart yAxis -->", yAxis);
+                                });
+                                columns.push(xTicks);
+                            }
                             angular.forEach(yAxis, function (value, key) {
-                                var ySeriesData = chartData.map(function (a) {
+                                var ySeriesData = chartData.data.map(function (a) {
                                     return a[value.fieldName] || "0";
                                 });
 //                                var ySeriesData1 = chartData.map(function (a) {
@@ -344,7 +329,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
 //                                        return 0;
 //                                    }
 //                                });
-                                var ySeriesData1 = chartData.map(function (a) {
+                                var ySeriesData1 = chartData.data.map(function (a) {
                                     if (a.metrics1 === null) {
                                         a.metrics1 = {}
                                     }
@@ -356,10 +341,11 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                         }
                                     }
                                 });
-                                var ySeriesData2 = chartData.map(function (a) {
+                                var ySeriesData2 = chartData.data.map(function (a) {
                                     if (a.metrics2 === null) {
                                         a.metrics2 = {}
                                     }
+
                                     if (a.hasOwnProperty("metrics2")) {
                                         if (Object.keys(a.metrics2).length !== 0) {
                                             return a.metrics2[value.fieldName] || "0";
@@ -419,8 +405,7 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                     ySeriesData.unshift(value.displayName);
                                     columns.push(ySeriesData);
                                 }
-
-
+                                //yaxis mapping data
 //                            angular.forEach(yAxis, function (value, key) {
 //                                ySeriesData = chartData.map(function (a) {
 //                                    return a[value.fieldName] || "0";
@@ -428,40 +413,39 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
 //                                ySeriesData.unshift(value.displayName);
 //                                columns.push(ySeriesData);
                             });
+
+
                             angular.forEach(combinationTypes, function (value, key) {
                                 chartCombinationtypes[[value.fieldName]] = value.combinationType;
                             });
+
+                            var data = {
+                                x: xAxis.fieldName,
+                                columns: columns,
+                                labels: labels,
+                                type: 'area',
+                                axes: axes,
+                                types: chartCombinationtypes
+                            };
+
                             var gridLine = false;
                             if (gridData.isGridLine == 'Yes') {
                                 gridLine = true;
                             } else {
                                 gridLine = false;
                             }
-
-                            try {
-                                var isRotate = JSON.parse(scope.isHorizontalBar);
-
-                            } catch (exception) {
-                            }
-                            var left;
-                            if (isRotate === true) {
-                                left = 75;
-                            } else {
-                                left = 50;
-                            }
                             var chart = c3.generate({
                                 padding: {
                                     top: 10,
                                     right: 50,
                                     bottom: 10,
-                                    left: left,
+                                    left: 50,
                                 },
                                 bindto: element[0],
                                 data: {
                                     x: xAxis.fieldName,
                                     columns: columns,
                                     labels: labels,
-                                    type: 'bar',
                                     axes: axes,
                                     types: chartCombinationtypes
                                 },
@@ -470,14 +454,11 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                                 },
                                 tooltip: {show: false},
                                 axis: {
-                                    rotated: isRotate,
                                     x: {
                                         tick: {
                                             format: function (x) {
                                                 return xData[x];
                                             },
-                                            multiline: true,
-                                            fit: true,
                                             culling: false
                                         }
                                     },
@@ -495,8 +476,8 @@ app.directive('barChartDirective', function ($http, $stateParams, $filter, order
                         }
                     });
                 };
-                scope.setBarChartFn({barFn: scope.refreshBarChart});
-                scope.refreshBarChart();
+                scope.setLineChartFn({lineFn: scope.refreshLineChart});
+                scope.refreshLineChart();
             }
         }
     };

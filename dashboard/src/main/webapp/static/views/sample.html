@@ -1,0 +1,580 @@
+﻿<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <title>Dashience | Dashboard</title>
+        <!-- Favicon-->
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+        <!-- Google Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet"> 
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" type="text/css">
+
+        <!-- Bootstrap Core Css -->
+        <link href="plugins/bootstrap/css/bootstrap.css" rel="stylesheet">
+
+        <!-- Waves Effect Css -->
+        <link href="plugins/node-waves/waves.css" rel="stylesheet" />
+
+        <!-- Animation Css -->
+        <link href="plugins/animate-css/animate.css" rel="stylesheet" />
+
+        <link href="plugins/bootstrap-select/css/bootstrap-select.css" rel="stylesheet" />
+
+        <!-- Custom Css -->
+        <link href="css/style.css" rel="stylesheet">
+
+        <!-- AdminBSB Themes. You can choose a theme from css/themes instead of get all themes -->
+        <!--<link href="css/themes/all-themes.css" rel="stylesheet" />-->
+    </head>
+
+    <body class="theme-red">
+        <!-- Page Loader -->
+        <div class="page-loader-wrapper">
+            <div class="loader">
+                <div class="preloader">
+                    <div class="spinner-layer pl-red">
+                        <div class="circle-clipper left">
+                            <div class="circle"></div>
+                        </div>
+                        <div class="circle-clipper right">
+                            <div class="circle"></div>
+                        </div>
+                    </div>
+                </div>
+                <p>Please wait...</p>
+            </div>
+        </div>
+        <!-- #END# Page Loader -->
+        <!-- Overlay For Sidebars -->
+        <div class="overlay"></div>
+        <!-- #END# Overlay For Sidebars -->
+        <!-- Search Bar -->
+        <!--<div class="search-bar">
+            <div class="search-icon">
+                <i class="material-icons">search</i>
+            </div>
+            <input type="text" placeholder="START TYPING...">
+            <div class="close-search">
+                <i class="material-icons">close</i>
+            </div>
+        </div>-->
+        <!-- #END# Search Bar -->
+        <!-- Top Bar -->
+        <nav class="navbar">
+            <div class="navbar-header">
+                <a href="javascript:void(0);" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false"></a>
+                <a href="javascript:void(0);" class="bars"></a>
+                <a class="navbar-brand" href="index.html"><img src="images/dashience-logo-approved.png" width="120" class="dashience-logo" /></a>
+                <a class="navbar-brand" href="index.html"><img src="images/coworkersllc.png" width="100" /></a>
+            </div>
+            <div class="container-fluid">
+                <div class="block-header pull-left">
+                    <h2><strong>Dashboard:</strong> Overall</h2>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right pull-right">
+                        <!-- Call Search -->
+
+
+                        <li>
+                            <a class="demo-google-material-icon"> <i class="material-icons">refresh</i> <div class="caption">Refresh Data</div> </a>
+                        </li>
+                        <li>
+                            <a class="demo-google-material-icon"> <i class="material-icons">print</i> <div class="caption">Print</div> </a>
+                        </li>
+                        <li class="item-box-green">
+                            <a class="demo-google-material-icon"> <i class="material-icons">add_circle_outline</i> <div class="caption">Add Widget</div></a>
+                        </li>
+
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <!-- #Top Bar -->
+        <section>
+            <!-- Left Sidebar -->
+            <aside id="leftsidebar" class="sidebar">
+                <!-- User Info -->
+                <div class="user-info">
+                    <div class="image">
+                        <i class="material-icons">account_circle</i>
+                    </div>
+                    <div class="info-container">
+                        <div class="name" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><strong>John Doe</strong></div>
+                        <div class="email">Singned In</div>
+                        <div class="btn-group user-helper-dropdown">
+                            <i class="material-icons" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">keyboard_arrow_down</i>
+                            <ul class="dropdown-menu pull-right">
+                                <li><a href="javascript:void(0);"><i class="material-icons">person</i>Profile</a></li>
+                                <li role="seperator" class="divider"></li>
+                                <li><a href="javascript:void(0);"><i class="material-icons">input</i>Sign Out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!-- #User Info -->
+                <!-- Menu -->
+                <div class="menu">
+                    <ul class="list">
+                        <li class="active">
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <img src="images/dashboard.png" width="28" height="30"  />
+                                <!--<i class="material-icons col-light-blue">widgets</i>-->
+                                <span>Dashboards</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li>
+                                    <a> <i class="material-icons col-amber">trending_down</i>
+                                        <span>Adwords</span></a>
+                                </li>
+                                <li>
+                                    <a><i class="material-icons col-red">pie_chart</i>
+                                        <span>Analytics</span></a>
+                                </li>
+                                <li>
+                                    <a href="javascript:void(0);" class="menu-toggle">
+                                        <i class="material-icons col-light-blue">content_copy</i>
+                                        <span>Custom Dashboard</span>
+                                    </a>
+                                    <ul class="ml-menu">
+                                        <li>
+                                            <a href="pages/widgets/infobox/infobox-1.html">Custom Dashboard-1</a>
+                                        </li>
+                                        <li>
+                                            <a href="pages/widgets/infobox/infobox-2.html">Custom Dashboard-2</a>
+                                        </li>
+
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <img src="images/dashboard.png" width="28" height="30"  />
+                                <span>Reports</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li>
+                                    <a href="pages/ui/alerts.html">Reports 1</a>
+                                </li>
+                                <li>
+                                    <a href="pages/ui/animations.html">Reports 2</a>
+                                </li>
+
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <i class="material-icons col-amber">assignment</i>
+                                <span>Add Data</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li>
+                                    <a href="pages/forms/basic-form-elements.html">Data 1</a>
+                                </li>
+                                <li>
+                                    <a href="pages/forms/advanced-form-elements.html">Data 2</a>
+                                </li>
+
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href="javascript:void(0);" class="menu-toggle">
+                                <i class="material-icons col-light-blue">people</i>
+                                <span>Users</span>
+                            </a>
+                            <ul class="ml-menu">
+                                <li>
+                                    <a href="pages/medias/image-gallery.html">Settings</a>
+                                </li>
+                                <li>
+                                    <a href="pages/medias/carousel.html">Profile</a>
+                                </li>
+                            </ul>
+                        </li>
+
+
+                    </ul>
+                </div>
+                <!-- #Menu -->
+                <!-- Footer -->
+                <div class="legal">
+                    <div class="copyright">
+                        &copy; Dashience. All Rights Reserved.
+                    </div>
+
+                </div>
+                <!-- #Footer -->
+            </aside>
+            <!-- #END# Left Sidebar -->
+
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+                <!-- Widgets -->
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+                            <div class="col-md-6">
+                                <h2 class="dashboard-title">Hello John Doe</h2></div>
+
+                            <div class="col-lg-3 col-md-3">
+
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        <i class="material-icons">date_range</i>
+                                    </span>
+                                    <div class="form-line">
+                                        <input type="text" class="form-control datetime" placeholder="30/07/2016 - 30/08/2016">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-3 col-md-3">
+                                <div class="input-group">
+                                    <select class="form-control">
+                                        <option value="">-- Accounts --</option>
+                                        <option value="CoWorkers">CoWorkers</option>
+                                        <option value="HannaMD">HannaMD</option>
+
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                <!--<div class="row clearfix">
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box bg-pink hover-expand-effect">
+                            <div class="icon">
+                                <i class="material-icons">playlist_add_check</i>
+                            </div>
+                            <div class="content">
+                                <div class="text">NEW TASKS</div>
+                                <div class="number count-to" data-from="0" data-to="125" data-speed="15" data-fresh-interval="20"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box bg-cyan hover-expand-effect">
+                            <div class="icon">
+                                <i class="material-icons">help</i>
+                            </div>
+                            <div class="content">
+                                <div class="text">NEW TICKETS</div>
+                                <div class="number count-to" data-from="0" data-to="257" data-speed="1000" data-fresh-interval="20"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box bg-light-green hover-expand-effect">
+                            <div class="icon">
+                                <i class="material-icons">forum</i>
+                            </div>
+                            <div class="content">
+                                <div class="text">NEW COMMENTS</div>
+                                <div class="number count-to" data-from="0" data-to="243" data-speed="1000" data-fresh-interval="20"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box bg-orange hover-expand-effect">
+                            <div class="icon">
+                                <i class="material-icons">person_add</i>
+                            </div>
+                            <div class="content">
+                                <div class="text">NEW VISITORS</div>
+                                <div class="number count-to" data-from="0" data-to="1225" data-speed="1000" data-fresh-interval="20"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>-->
+
+                <div class="row clearfix">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="panel panel-default mb20 mini-box panel-hovered">
+                            <div class="panel-body">
+                                <div class="clearfix">
+                                    <div class="info left">
+                                        <h4 class="mt0 text-color-1 text-bold">$30,200</h4>
+                                        <h5 class="text-light mb0">Total Leads</h5>
+                                    </div>
+
+                                    <div class="icon right">
+                                        <i class="material-icons">person_add</i>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="panel-footer clearfix bg-pink-1">
+                                <p class="mt0 mb0 pull-left">% change</p>
+                                <span sparkline="" class="right" type="bar" bar-color="#fff" width="1.15em" height="1.15em">
+                                    8.5%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="panel panel-default mb20 mini-box panel-hovered">
+                            <div class="panel-body">
+                                <div class="clearfix">
+                                    <div class="info left">
+                                        <h4 class="mt0 text-color-2 text-bold">320K+</h4>
+                                        <h5 class="text-light mb0">Total Clicks</h5>
+                                    </div>
+                                    <div class="icon right">
+                                        <i class="material-icons">forum</i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer clearfix bg-cyan-1">
+                                <p class="mt0 mb0 pull-left">% change</p>
+                                <span sparkline="" class="right" type="bar" bar-color="#fff" width="1.15em" height="1.15em">
+                                    28.5%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="panel panel-default mb20 mini-box panel-hovered">
+                            <div class="panel-body">
+                                <div class="clearfix">
+                                    <div class="info left">
+                                        <h4 class="mt0 text-color-3 text-bold">110</h4>
+                                        <h5 class="text-light mb0">Avg time on page<br> in Paid Search</h5>
+                                    </div>
+                                    <div class="icon right">
+                                        <i class="material-icons">help</i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer clearfix bg-light-green-1">
+                                <p class="mt0 mb0 pull-left">% change</p>
+                                <span sparkline="" class="right" type="bar" bar-color="#fff" width="1.15em" height="1.15em">
+                                    2.5%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="panel panel-default mb20 mini-box panel-hovered">
+                            <div class="panel-body">
+                                <div class="clearfix">
+                                    <div class="info left">
+                                        <h4 class="mt0 text-color-4 text-bold">10K+</h4>
+                                        <h5 class="text-light mb0">New Sessions in Total</h5>
+                                    </div>
+                                    <div class="icon right">
+                                        <i class="material-icons">playlist_add_check</i>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer clearfix bg-orange-1">
+                                <p class="mt0 mb0 pull-left">% change</p>
+                                <span sparkline="" class="right" type="bar" bar-color="#fff" width="1.15em" height="1.15em">
+                                    0.5%
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #end mini boxes -->
+                </div>
+
+
+                <div class="row clearfix">
+                    <!-- Task Info -->
+                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                        <div class="card">
+                            <div class="header">
+                                <h2>Top Campaigns Performance</h2>
+                                <ul class="header-dropdown m-r--5">
+                                    <li class="dropdown">
+                                        <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                            <i class="material-icons">more_vert</i>
+                                        </a>
+                                        <ul class="dropdown-menu pull-right">
+                                            <li><a href="javascript:void(0);">Action</a></li>
+                                            <li><a href="javascript:void(0);">Another action</a></li>
+                                            <li><a href="javascript:void(0);">Something else here</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped dashboard-task-infos">
+                                        <thead>
+                                            <tr>
+
+                                                <th>Campaign</th>
+                                                <th>Impressions</th>
+                                                <th>Clicks</th>
+                                                <th>CTR</th>
+                                                <th>Cost</th>
+                                                <th>Avg CPC</th>
+                                                <th>Conversions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+
+                                                <td>BMW</td>
+                                                <td>4240</td>
+                                                <td>316</td>
+                                                <td>
+                                                    7.45%
+                                                </td>
+                                                <td>$2561.44</td>
+                                                <td>$8.11</td>
+                                                <td>4</td>
+                                            </tr>
+                                            <tr>
+
+                                                <td>Nissan</td>
+                                                <td>4240</td>
+                                                <td>316</td>
+                                                <td>
+                                                    7.45%
+                                                </td>
+                                                <td>$2561.44</td>
+                                                <td>$8.11</td>
+                                                <td>4</td>
+                                            </tr>
+                                            <tr>
+
+                                                <td>Audi</td>
+                                                <td>4240</td>
+                                                <td>316</td>
+                                                <td>
+                                                    7.45%
+                                                </td>
+                                                <td>$2561.44</td>
+                                                <td>$8.11</td>
+                                                <td>4</td>
+                                            </tr>
+                                            <tr>
+
+                                                <td>Toyota</td>
+                                                <td>4240</td>
+                                                <td>316</td>
+                                                <td>
+                                                    7.45%
+                                                </td>
+                                                <td>$2561.44</td>
+                                                <td>$8.11</td>
+                                                <td>4</td>
+                                            </tr>
+                                            <tr>
+
+                                                <td>BMM</td>
+                                                <td>4240</td>
+                                                <td>316</td>
+                                                <td>
+                                                    7.45%
+                                                </td>
+                                                <td>$2561.44</td>
+                                                <td>$8.11</td>
+                                                <td>4</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- #END# Task Info -->
+
+
+                </div>
+
+                <div class="row clearfix">
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                        <div class="card">
+
+                            <div class="body">
+                                <div class="row clearfix data-source-padding">
+                                    <div class="col-md-12">
+                                        <b>Data Source</b>
+                                        <div class="form-group form-float">
+                                            <div class="form-line">
+                                                <input type="text" class="form-control">
+                                                <label class="form-label"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <b>Type</b>
+                                        <div class="input-group">
+                                            <select class="form-control">
+
+                                                <option value="Google Adwords">Google Adwords</option>
+                                                <option value="Google Analytics">Google Analytics</option>
+
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <b>Public</b>
+                                        <div class="input-group">
+                                            <div class="demo-switch">
+                                                <div class="switch">
+                                                    <label><input type="checkbox" checked><span class="lever"></span></label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                </div>
+        </section>
+
+        <!-- Jquery Core Js -->
+        <script src="plugins/jquery/jquery.min.js"></script>
+
+        <!-- Bootstrap Core Js -->
+        <script src="plugins/bootstrap/js/bootstrap.js"></script>
+
+        <!-- Select Plugin Js -->
+        <script src="plugins/bootstrap-select/js/bootstrap-select.js"></script>
+
+        <!-- Slimscroll Plugin Js -->
+        <script src="plugins/jquery-slimscroll/jquery.slimscroll.js"></script>
+
+        <!-- Waves Effect Plugin Js -->
+        <script src="plugins/node-waves/waves.js"></script>
+
+        <!-- Jquery CountTo Plugin Js -->
+        <script src="plugins/jquery-countto/jquery.countTo.js"></script>
+
+
+
+        <!-- Custom Js -->
+        <script src="js/admin.js"></script>
+        <script src="js/pages/index.js"></script>
+
+        <script src="js/pages/forms/basic-form-elements.js"></script>
+
+        <!-- Demo Js -->
+        <script src="js/demo.js"></script>
+    </body>
+
+</html>

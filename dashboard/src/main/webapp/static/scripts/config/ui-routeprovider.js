@@ -1,22 +1,73 @@
 
-app.config(function ($stateProvider, $urlRouterProvider) {
+app.config(function ($stateProvider, $urlRouterProvider, $ocLazyLoadProvider) {
+
     $stateProvider
             .state("index", {
 //                url: "/index",
                 url: "/index?lan&accountId&accountName&productId&templateId",
-                templateUrl: "static/views/vb.index.html"
-                        //controller: "IndexController"
+                templateUrl: "static/views/vb.index.html",
+                controller: "HeaderController",
+                controllerAs: "headerCtrl",
+                resolve: {
+//                    serviceData: ['$ocLazyLoad', '$injector', function ($ocLazyLoad, $injector) {
+//                            return $ocLazyLoad.load('http_service')
+//
+//                        }],
+
+
+                    resolveObj: function (httpService, $q, loginFactory) {
+                        var authObj = loginFactory.getAuthObj()
+                        console.log(loginFactory.getAuthObj())
+
+                        var service = {};
+                        var requestUrl = serviceUrl;
+                        service.base_property = httpService.httpProcess('GET', requestUrl.propertyUrl);
+                        service.getUserAccount = httpService.httpProcess('GET', requestUrl.userAccUrl);
+                        service.getLastUserAccount = httpService.httpProcess('GET', requestUrl.lastUserAccUrl);
+                        service.getAgencyProduct = httpService.httpProcess('GET', requestUrl.productUrl + authObj.agencyId.id)
+                        var qRequests = $q.all(service).then(function (response) {
+                            return response;
+                        });
+                        return qRequests;
+                    },
+                    loadHeaderCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
+                            // you can lazy load files for an existing module
+                            return $ocLazyLoad.load('headerController');
+                        }]
+
+                }
+
             })
             .state("index.dashboard", {
-                url: "/dashboard/:lan/:accountId/:accountName/:productId/:templateId",
+                url: "/dashboard", // /:lan/:accountId/:accountName/:productId/:templateId",
                 templateUrl: "static/views/dashboard/dashboard.html",
-                controller: "UiController"
+                controller: "DashboardController",
+                controllerAs: "dashboardCtrl",
+                resolve: {
+                    loadDirectives: ['$ocLazyLoad', '$q', '$stateParams', function ($ocLazyLoad, $q, $stateParams) {
+                            var lazyDeferred = {};
+
+                            lazyDeferred = $q.defer();
+                            return $ocLazyLoad.load(['areaChart', 'barChart', 'compareTable', 'dataSet', 'derivedDateRange',
+                                'dynamicTable', 'funnelChart', 'gauge', 'lineChart', 'map', 'pieChart', 'scatterChart',
+                                'sortable', 'stackedBarChart', 'ticker']).then(function () {
+                                var template = "<" + $stateParams.directive + "></" + $stateParams.directive + ">";
+                                return lazyDeferred.resolve(template);
+                            });
+
+                        }],
+                    loadDashboardCtrl: ['$ocLazyLoad', function ($ocLazyLoad) {
+                            // you can lazy load files for an existing module
+                            return $ocLazyLoad.load('static/scripts/controller/vb.dashboardTab.js');
+                        }]
+                }
             })
 
             .state("index.dashboard.widget", {
                 url: "/widget/:tabId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
                 templateUrl: "static/views/dashboard/widgets.html",
-                controller: 'WidgetController'
+                controller: "WidgetController",
+                controllerAs: "widgetCtrl"
             })
             .state("index.editWidget", {
                 url: "/editWidget/:lan/:accountId/:accountName/:productId/:tabId/:widgetId?:startDate/:endDate/:compareStatus/:compareStartDate/:compareEndDate",
@@ -139,7 +190,7 @@ app.config(function ($stateProvider, $urlRouterProvider) {
 
 
     $urlRouterProvider.otherwise(function ($injector) {
-        $injector.get('$state').go('index');
+        $injector.get('$state').go('index.dashboard');
     });
 //    $routeProvider.when('/viewPdf', {
 //        url: '/viewPdf/:accountId/:accountName/:tabId',

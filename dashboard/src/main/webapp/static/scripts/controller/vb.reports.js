@@ -1,35 +1,35 @@
 app.controller("ReportController", function ($scope, $http, $stateParams, $state, httpService, $window, $translate) {
     var authObj = {};
-    var schedulerObj = {};
+    var reportObj = {};
     authObj = angular.fromJson(sessionStorage.getItem('auth'));
     authObj.lan = sessionStorage.getItem('agencyLanguage');
-
-    schedulerObj.permission = authObj.permission;
-    schedulerObj.startDate = $stateParams.startDate;
-    schedulerObj.endDate = $stateParams.endDate;
-    schedulerObj.reportId = $stateParams.reportId;
-    schedulerObj.accountId = $stateParams.accountId;
-    schedulerObj.userId = authObj.id;
+    
+    reportObj.permission = authObj.permission;
+    reportObj.startDate = $stateParams.startDate;
+    reportObj.endDate = $stateParams.endDate;
+    reportObj.reportId = $stateParams.reportId;
+    reportObj.accountId = $stateParams.accountId;
+    reportObj.userId = authObj.id;
     $scope.saveBtnIsDisable = true;
 //    console.log(schedulerObj.userId);
-    schedulerObj.accountName = $stateParams.accountName;
+    reportObj.accountName = $stateParams.accountName;
     $scope.reportWidgets = [];
-    if (schedulerObj.permission.scheduleReport === true) {
+    if (reportObj.permission.scheduleReport === true) {
         $scope.showSchedulerReport = true;
     } else {
         $scope.showSchedulerReport = false;
     }
 
-    schedulerObj.lan = $stateParams.lan;//$cookies.getObject("agencyLanguage");
+    reportObj.lan = $stateParams.lan;//$cookies.getObject("agencyLanguage");
 
-    var lan = schedulerObj.lan;
+    var lan = reportObj.lan;
     changeLanguage(lan);
 
     function changeLanguage(key) {
         $translate.use(key);
     }
 
-    schedulerObj.getTableType = $stateParams.getTableType;
+    reportObj.getTableType = $stateParams.getTableType;
 //    var compareStartDate = localStorageService.get("comparisonStartDate");
     var compareStartDate = $stateParams.compareStartDate;
 //    var compareEndDate = localStorageService.get("comparisonEndDate");
@@ -71,7 +71,7 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
         console.log(response)
 
 //    $http.get("admin/report/getReport").success(function (response) {
-        schedulerObj.reports = response;
+        reportObj.reports = response;
     });
 
     $scope.addReportToScheduler = function (scheduler, report) {
@@ -93,7 +93,7 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
 
     $scope.deleteReport = function (report, index) {
         $http({method: 'DELETE', url: 'admin/report/' + report.id}).success(function (response) {
-            schedulerObj.reports.splice(index, 1);
+            reportObj.reports.splice(index, 1);
         });
     };
 
@@ -110,5 +110,5 @@ app.controller("ReportController", function ($scope, $http, $stateParams, $state
             endDate: $stateParams.endDate
         });
     };
-    $scope.schedulerObj = schedulerObj;
+    $scope.reportObj = reportObj;
 });

@@ -40,28 +40,20 @@
             }
         </style>
     </head>
-    <body ng-controller="LoginController" class="hold-transition login-page">
-        <!--<div class="login-box">
-            <div class="login-logo">
-                <a href="index.html"><img src="static/img/Logo-l2t.png" width="150" /></a>
-            </div>-->
-
+    <body ng-controller="LoginController as loginController" class="hold-transition login-page">
         <div class="login-container">
             <div class="row" ng-cloak>
                 <div class="col-md-12">
                     <div class="text-center m-b-md">
                         <div>
                             <span>
-                                <img ng-src="{{loginObj.logo}}" width="180" />
+                                <img ng-src="{{loginController.logo}}" width="180" />
                             </span>
-                            <!--                            <span ng-if="!agency">
-                                                            <img src="static/img/logos/deeta-logo.png" width="180" />
-                                                        </span>-->
                         </div>
                     </div>
 
                     <div class="hpanel">
-                        <h5 class="text-center text-danger" ng-if="loginObj.showErrorMessage == true;" translate>{{loginObj.errorMessage}}</h5>
+                        <h5 class="text-center text-danger" ng-if="loginController.showErrorMessage == true;" translate>{{loginController.errorMessage}}</h5>
                         <div class="panel-body">
                             <form ng-submit="submitForm()" name="adminForm">
                                 <div class="form-group ">
@@ -72,13 +64,7 @@
                                     <label class="control-label" for="password" translate>Password</label>
                                     <input type="password" title="{{'Password_Title'| translate}}" placeholder="{{'Password'| translate}}" value="" name="password" id="password" class="form-control" ng-model="login.password">
                                 </div>
-
-                                <!--                                <div class="checkbox">
-                                                                    <input type="checkbox" class="i-checks" checked>
-                                                                    Remember login
-                                
-                                                                </div>-->
-                                <button class="btn btn-success btn-block"  ng-click="authenticate(login)" translate>Login</button>
+                                <button class="btn btn-success btn-block"  ng-click="loginController.authenticate(login)" translate>Login</button>
                             </form>  
                         </div>
                     </div>
@@ -101,7 +87,7 @@
         <script src="static/scripts/factory/vb.factory.js" type="text/javascript"></script>
 
         <script src="static/scripts/config/login.js" type="text/javascript"></script>
-        <!--<script src="static/scripts/config/ui-routeprovider.js" type="text/javascript"></script>-->
+        <script src="static/scripts/controller/vb.serviceUrl.js" type="text/javascript"></script>
     </body>
 
 
