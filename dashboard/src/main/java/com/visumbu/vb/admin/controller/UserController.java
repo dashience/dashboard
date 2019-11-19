@@ -128,7 +128,7 @@ public class UserController extends BaseController {
         session.setAttribute("isAuthenticated", userBean.getAuthenticated());
         session.setAttribute("username", userBean.getUsername());
         session.setAttribute("agencyId", userBean.getAgencyId());
-        session.setAttribute("id",userBean.getId());
+        session.setAttribute("id", userBean.getId());
         if (userBean != null && userBean.getUsername() != null && userBean.getAuthenticated()) {
             VbUser user = userService.findByUsername(userBean.getUsername());
             userBean.setPermission(VbUtils.getPermissions(user, uiService.getUserPermissionById(user.getId())));
@@ -466,7 +466,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agency", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     Object createAgency(HttpServletRequest request, HttpServletResponse response, @RequestBody Agency agency) {
-       
+
         return userService.createAgency(agency);
     }
 
@@ -560,7 +560,7 @@ public class UserController extends BaseController {
     @RequestMapping(value = "agencySetting", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody
     AgencySettings createAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
-     
+
         return userService.createAgencySettings(agencySettings);
     }
 
@@ -569,7 +569,7 @@ public class UserController extends BaseController {
     AgencySettings updateAgencySettings(HttpServletRequest request, HttpServletResponse response, @RequestBody AgencySettings agencySettings) {
         return userService.updateAgencySettings(agencySettings);
     }
-    
+
     @RequestMapping(value = "agencySetting/{agencyId}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     AgencySettings getAgencySettingsById(HttpServletRequest request, HttpServletResponse response, @PathVariable Integer agencyId) {
@@ -582,4 +582,3 @@ public class UserController extends BaseController {
         e.printStackTrace();
     }
 }
- 
