@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.dat.dashboard</groupId>
-    <artifactId>richanalytics.devqa.release</artifactId>
+    <artifactId>retail.devqa.release</artifactId>
     <version>1</version>
     <packaging>war</packaging>
 

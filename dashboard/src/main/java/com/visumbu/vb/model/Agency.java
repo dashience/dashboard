@@ -33,9 +33,7 @@ import org.hibernate.annotations.Type;
     , @NamedQuery(name = "Agency.findByAgencyName", query = "SELECT a FROM Agency a WHERE a.agencyName = :agencyName")
     , @NamedQuery(name = "Agency.findByDescription", query = "SELECT a FROM Agency a WHERE a.description = :description")
     , @NamedQuery(name = "Agency.findByEmail", query = "SELECT a FROM Agency a WHERE a.email = :email")
-    , @NamedQuery(name = "Agency.findByStatus", query = "SELECT a FROM Agency a WHERE a.status = :status")
-    , @NamedQuery(name = "Agency.findByAgencyDashiencePath", query = "SELECT a FROM Agency a WHERE a.agencyDashiencePath = :agencyDashiencePath")
-    , @NamedQuery(name = "Agency.findByAgencyLanguage", query = "SELECT a FROM Agency a WHERE a.agencyLanguage = :agencyLanguage")})
+    , @NamedQuery(name = "Agency.findByStatus", query = "SELECT a FROM Agency a WHERE a.status = :status")})
 public class Agency implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -54,18 +52,12 @@ public class Agency implements Serializable {
     @Size(max = 255)
     @Column(name = "email")
     private String email;
-   @Type(type = "org.hibernate.type.StringClobType")
+    @Type(type = "org.hibernate.type.StringClobType")
     @Column(name = "logo")
     private String logo;
     @Size(max = 255)
     @Column(name = "status")
     private String status;
-    @Size(max = 255)
-    @Column(name = "agency_dashience_path")
-    private String agencyDashiencePath;
-    @Size(max = 45)
-    @Column(name = "agency_language")
-    private String agencyLanguage;
 
     public Agency() {
     }
@@ -105,6 +97,7 @@ public class Agency implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getLogo() {
         return logo;
     }
@@ -112,29 +105,13 @@ public class Agency implements Serializable {
     public void setLogo(String logo) {
         this.logo = logo;
     }
-    
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
-    }
-
-    public String getAgencyDashiencePath() {
-        return agencyDashiencePath;
-    }
-
-    public void setAgencyDashiencePath(String agencyDashiencePath) {
-        this.agencyDashiencePath = agencyDashiencePath;
-    }
-
-    public String getAgencyLanguage() {
-        return agencyLanguage;
-    }
-
-    public void setAgencyLanguage(String agencyLanguage) {
-        this.agencyLanguage = agencyLanguage;
     }
 
     @Override
@@ -161,5 +138,5 @@ public class Agency implements Serializable {
     public String toString() {
         return "com.visumbu.vb.model.Agency[ id=" + id + " ]";
     }
-    
+
 }
