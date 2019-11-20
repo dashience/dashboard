@@ -64,14 +64,16 @@ public class DbDataSetController {
         Map<String, String[]> parameterMap = request.getParameterMap();
 
         DbDataSource dataSource = new DbDataSource(connectionUrl, driver, username, password, port, schemaName);
-        System.out.println(dataSource);
-        
+        System.out.println("DataSource ===> " + dataSource);
+
         dataSource.setQuery(query);
-        returnMap.put("columnDefs", dbDataSetService.getMeta(dataSource, parameterMap));
+
+        String queryString = ApiUtils.compileQuery(dataSource.getQuery(), parameterMap);
+        returnMap.put("columnDefs", dbDataSetService.getMeta(dataSource, parameterMap, queryString));
         if (fieldsOnly != null) {
             // return returnMap;
         }
-        returnMap.put("data", dbDataSetService.getData(dataSource, parameterMap));
+        returnMap.put("data", dbDataSetService.getData(dataSource, parameterMap, queryString));
         return returnMap;
     }
 

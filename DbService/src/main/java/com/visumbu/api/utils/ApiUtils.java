@@ -162,8 +162,7 @@ public class ApiUtils {
         return accountDetails;
     }
 
-    public static String compileQuery(String query,
-            Map<String, String[]> parameters) {
+    public static String compileQuery(String query, Map<String, String[]> parameters) {
         if (query == null) {
             return "";
         }
@@ -172,7 +171,7 @@ public class ApiUtils {
         for (Map.Entry<String, String[]> entrySet : parameters.entrySet()) {
             String key = entrySet.getKey();
             String[] value = entrySet.getValue();
-            if (value != null ) {
+            if (value != null) {
                 templateVariable.put(key, joinStringArray(value));
             }
         }

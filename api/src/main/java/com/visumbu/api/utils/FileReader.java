@@ -5,20 +5,11 @@
  */
 package com.visumbu.api.utils;
 
-import com.google.api.ads.adwords.axis.v201603.rm.Rule;
-import com.visumbu.api.adwords.report.xml.bean.AccountReport;
 import com.visumbu.api.adwords.report.xml.bean.AdReport;
-import com.visumbu.api.adwords.report.xml.bean.CampaignDeviceReport;
-import com.visumbu.api.adwords.report.xml.bean.CampaignPerformanceReport;
-import com.visumbu.api.bing.report.xml.bean.CampaignDevicePerformanceReport;
-import com.visumbu.api.bing.report.xml.bean.GeoZipLocationPerformanceReport;
-import com.visumbu.api.bing.report.xml.bean.KeywordPerformanceReport;
 import java.io.File;
 import java.io.FileInputStream;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.bind.ValidationEvent;
-import javax.xml.bind.ValidationEventHandler;
 import javax.xml.transform.sax.SAXSource;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;

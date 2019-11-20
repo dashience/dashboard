@@ -5,11 +5,6 @@
  */
 package com.visumbu.api.admin.service;
 
-import com.google.api.ads.adwords.axis.factory.AdWordsServices;
-import com.google.api.ads.adwords.axis.v201609.cm.Campaign;
-import com.google.api.ads.adwords.axis.v201609.cm.CampaignPage;
-import com.google.api.ads.adwords.axis.v201609.cm.CampaignServiceInterface;
-import com.google.api.ads.adwords.axis.v201609.cm.Selector;
 import com.google.api.ads.adwords.lib.client.AdWordsSession;
 import com.google.api.ads.common.lib.auth.OfflineCredentials;
 import com.google.api.ads.common.lib.exception.OAuthException;
@@ -40,12 +35,10 @@ import com.visumbu.api.adwords.report.xml.bean.CampaignPerformanceReport;
 import com.visumbu.api.adwords.report.xml.bean.CampaignReport;
 import com.visumbu.api.adwords.report.xml.bean.GeoReport;
 import com.visumbu.api.adwords.report.xml.bean.VideoReport;
-import com.visumbu.api.bing.report.xml.bean.KeywordPerformanceReport;
 import com.visumbu.api.utils.DateUtils;
 import com.visumbu.api.utils.FileReader;
 import com.visumbu.api.utils.XmlUtils;
 import java.io.IOException;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;

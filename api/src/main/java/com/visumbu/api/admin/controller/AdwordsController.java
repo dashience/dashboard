@@ -7,8 +7,6 @@ package com.visumbu.api.admin.controller;
 
 import com.visumbu.api.admin.service.AdwordsService;
 import com.visumbu.api.utils.DateUtils;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
