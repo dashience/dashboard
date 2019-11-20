@@ -65,8 +65,13 @@ public class DbDataSetService {
             if (queryString.endsWith(";")) {
                 queryString = queryString.substring(0, queryString.length() - 1);
             }
-            System.out.println("Query String ==> " + queryString + " limit 1;");
-            prepareStatement = connection.prepareStatement(queryString + " limit 1;");
+            if (queryString.contains("limit")) {
+                prepareStatement = connection.prepareStatement(queryString);
+                System.out.println("Query String ==> " + queryString);
+            } else {
+                prepareStatement = connection.prepareStatement(queryString + " limit 1;");
+                System.out.println("Query String ==> " + queryString + " limit 1;");
+            }
             ResultSetMetaData metaData = prepareStatement.getMetaData();
             System.out.println("Test Data" + metaData);
 
