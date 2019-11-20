@@ -7,9 +7,7 @@ package com.visumbu.api.admin.service;
 
 import com.visumbu.api.bean.ColumnDef;
 import com.visumbu.api.bean.DbDataSource;
-import com.visumbu.api.utils.ApiUtils;
 import java.sql.Connection;
-import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ParameterMetaData;
 import java.sql.PreparedStatement;
@@ -22,8 +20,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.BeanHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -37,7 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 public class DbDataSetService {
 
-    public List<Map> getData(DbDataSource dataSource, Map<String, String[]> parameters) {
+    public List<Map> getData(DbDataSource dataSource, Map<String, String[]> parameters, String queryString) {
         List<Map> results = null;
         Connection connection = null;
         try {
@@ -45,8 +41,7 @@ public class DbDataSetService {
             QueryRunner query = new QueryRunner();
             // ResultSetHandler
             MapListHandler handler = new MapListHandler();
-            String queryString = ApiUtils.compileQuery(dataSource.getQuery(), parameters);
-            System.out.println("dataasource ---->"+dataSource.getQuery());
+            System.out.println("datasource ---->" + dataSource.getQuery());
             System.out.println("Query String ---> " + queryString);
             results = (List) query.query(connection, queryString, handler);
         } catch (SQLException ex) {
@@ -61,15 +56,17 @@ public class DbDataSetService {
         return results;
     }
 
-    public List<ColumnDef> getMeta(DbDataSource dataSource, Map<String, String[]> parameters) {
+    public List<ColumnDef> getMeta(DbDataSource dataSource, Map<String, String[]> parameters, String queryString) {
         List<ColumnDef> columnDefs = new ArrayList<>();
         Connection connection = null;
         PreparedStatement prepareStatement = null;
         try {
             connection = getDbConnection(dataSource);
-            String queryString = ApiUtils.compileQuery(dataSource.getQuery(), parameters);
-            System.out.println("Query String ---> " + queryString);
-            prepareStatement = connection.prepareStatement(queryString);
+            if (queryString.endsWith(";")) {
+                queryString = queryString.substring(0, queryString.length() - 1);
+            }
+            System.out.println("Query String ==> " + queryString + " limit 1;");
+            prepareStatement = connection.prepareStatement(queryString + " limit 1;");
             ResultSetMetaData metaData = prepareStatement.getMetaData();
             System.out.println("Test Data" + metaData);
 
@@ -114,6 +111,7 @@ public class DbDataSetService {
             String password = dataSource.getPassword(); //"";
             DbUtils.loadDriver(driver);
             connection = DriverManager.getConnection(url, user, password);
+            System.out.println("Connection ==> " + connection);
             return connection;
         } catch (SQLException ex) {
             Logger.getLogger(DbDataSetService.class.getName()).log(Level.SEVERE, null, ex);
@@ -123,10 +121,10 @@ public class DbDataSetService {
 
     public static void main(String[] argv) {
         try {
-            String connectionUrl = "jdbc:mysql://localhost:3306/vb_arul";
+            String connectionUrl = "jdbc:mysql://localhost:3306/fr_data";
             String driver = "com.mysql.jdbc.Driver";
-            String username = "varghees";
-            String password = "samraj";
+            String username = "root";
+            String password = "root";
             Integer port = 3306;
             String schemaName = "test";
             DbDataSource dataSource = new DbDataSource(connectionUrl, driver, username, password, port, schemaName);
@@ -134,7 +132,10 @@ public class DbDataSetService {
             String query = "select id myId, dealer_name from dealer where dealer_id = '$id$'";
             dataSource.setQuery(query);
             Connection connection = DriverManager.getConnection(connectionUrl, username, password);
+            System.out.println("Connection ==> " + connection);
             PreparedStatement prepareStatement = connection.prepareStatement(dataSource.getQuery());
+            System.out.println("Prepare Statement ==> " + prepareStatement);
+            System.out.println("Meta Data ==> " + prepareStatement.getMetaData());
             ResultSetMetaData metaData = prepareStatement.getMetaData();
             System.out.println("Test Data " + metaData.getColumnType(1));
             List<ColumnDef> columnDefs = new ArrayList<>();
@@ -144,8 +145,6 @@ public class DbDataSetService {
                 System.out.println(columnDef);
                 columnDefs.add(columnDef);
             }
-            ParameterMetaData parameterMetaData = prepareStatement.getParameterMetaData();
-            System.out.println("Test Data" + parameterMetaData);
         } catch (SQLException ex) {
             Logger.getLogger(DbDataSetService.class.getName()).log(Level.SEVERE, null, ex);
         }
